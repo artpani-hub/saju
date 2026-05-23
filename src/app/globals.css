@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+:root {
+  --background: #F9F8F6;
+  --background-secondary: #F6F3EC;
+  --foreground: #2C2C2C;
+  --foreground-muted: #5F5F5F;
+  --accent-brass: #A3845B;
+  --accent-brass-light: #BCA37F;
+  --accent-brass-dark: #86653E;
+  --accent-jade: #5F7A68;
+  --accent-jade-light: #7B9B85;
+  --accent-jade-dark: #465A4B;
+  --border-color: #E2DDD5;
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-brass: var(--accent-brass);
+  --color-brass-light: var(--accent-brass-light);
+  --color-brass-dark: var(--accent-brass-dark);
+  --color-jade: var(--accent-jade);
+  --color-jade-light: var(--accent-jade-light);
+  --color-jade-dark: var(--accent-jade-dark);
+  --color-border-custom: var(--border-color);
+  
+  --font-myeongjo: var(--font-myeongjo);
+  --font-gothic: var(--font-gothic);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-gothic), sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6, .font-traditional {
+  font-family: var(--font-myeongjo), serif;
+}
+
+/* Custom scrollbar to match the traditional design */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-brass);
+}
