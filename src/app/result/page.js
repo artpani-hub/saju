@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Scroll, Printer, ArrowLeft, Heart, Compass, Shield, Sparkles, DollarSign, CalendarDays, Award, CheckSquare, AlertCircle } from "lucide-react";
@@ -129,6 +129,14 @@ const getDeficientPrescription = (elements) => {
 
 function ResultContent() {
   const searchParams = useSearchParams();
+  const [copied, setCopied] = useState(false);
+
+  const handleCopySms = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   // Parsing inputs
   const name = searchParams.get("name") || "이지혜";
@@ -141,6 +149,7 @@ function ResultContent() {
   const hour = searchParams.get("hour") || "10:00";
   const worryCategory = searchParams.get("worryCategory") || "general";
   const worryText = searchParams.get("worryText") || "";
+  const reportGrade = searchParams.get("reportGrade") || "premium"; // premium(고급), deep(심화)
 
   // Partner parameters
   const partnerName = searchParams.get("partnerName") || "강민우";
@@ -244,292 +253,872 @@ function ResultContent() {
   };
 
   // ----------------------------------------------------
-  // Render: 평생 종합 사주 (saju)
+  // Render: 평생 종합 사주 (saju) - 고급 6페이지 / 심화 9페이지
   // ----------------------------------------------------
-  const renderSajuContent = () => (
-    <>
-      <div className="text-center space-y-2 mb-12">
-        <span className="text-xs tracking-widest text-[#A3845B] font-bold block">慧眼堂 寶鑑</span>
-        <h1 className="font-myeongjo text-3xl md:text-4xl font-bold text-[#1A1A1A] tracking-wider">
-          평생 종합 사주팔자 보고서
-        </h1>
-        <div className="w-32 h-0.5 bg-[#A3845B]/40 mx-auto my-3" />
-        <p className="text-xs text-[#5F5F5F] font-light">
-          의뢰인님의 타고난 명식을 십신과 대운으로 조율한 고품격 3만원 종합 명리 보고서입니다.
-        </p>
-      </div>
+    // ----------------------------------------------------
+  // Render: 평생 종합 사주 SMS 요약본
+  // ----------------------------------------------------
+  const renderSmsSajuContent = () => {
+    const lacks = prescriptions.map(p => p.name.split(" - ")[0]).join(", ");
+    const smsText = `[혜안당 명리연구소] ${name} 님 평생 종합 사주 요약 보감
+- 태어난 일간: ${baseEl}
+- 나에게 부족한 오행: ${lacks || "없음"}
+- 행운의 처방:
+  * 행운의 색상: ${prescriptions[0]?.color || ""}
+  * 행운의 방향: ${prescriptions[0]?.direction || ""}
+  * 행운의 숫자: ${prescriptions[0]?.number || ""}
+  * 개운 실천법: ${prescriptions[0]?.action || ""}
+- 고민 처방 솔루션:
+  * 1. ${personalizedText.analysis.slice(0, 100)}...
+  * 2. ${personalizedText.timing.slice(0, 100)}...
+  * 3. 귀인 처방: ${personalizedText.actionPlan.replace(/\n/g, " / ")}
+- 혜안당 보인 공인`;
 
-      {/* Saju Palja Grid */}
-      <div className="space-y-3 mb-10">
-        <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2">
-          <Scroll className="w-4.5 h-4.5 text-[#A3845B]" />
-          사주팔자 (四柱八字) 명식표
-        </h3>
-        
-        <div className="grid grid-cols-4 border border-[#E2DDD5] rounded bg-white text-center text-xs divide-x divide-[#E2DDD5]">
-          <div className="bg-[#F6F3EC] py-2.5 font-semibold text-[#A3845B]">시주 (時柱)</div>
-          <div className="bg-[#F6F3EC] py-2.5 font-semibold text-[#A3845B]">일주 (日柱)</div>
-          <div className="bg-[#F6F3EC] py-2.5 font-semibold text-[#A3845B]">월주 (月柱)</div>
-          <div className="bg-[#F6F3EC] py-2.5 font-semibold text-[#A3845B]">연주 (年柱)</div>
+    return (
+      <div className="max-w-md mx-auto bg-white border border-[#E2DDD5] rounded-xl p-6 shadow-md text-center space-y-6 my-4 print:border-none print:shadow-none">
+        <div className="bg-[#A3845B]/10 p-3 rounded-lg border-b border-[#A3845B]/20 flex justify-between items-center">
+          <span className="text-xs font-semibold text-[#A3845B] tracking-wider">모바일 알림톡 수신본</span>
+          <span className="text-[10px] text-gray-500 font-light">LMS 요약본</span>
+        </div>
+
+        <div className="space-y-4 text-left border border-dashed border-[#A3845B]/30 p-4 rounded bg-[#F9F8F6]/50">
+          <h4 className="font-myeongjo text-sm font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2 text-center">
+            {name} 님의 평생 종합 사주 요약
+          </h4>
           
-          <div className="py-5 space-y-1">
-            <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A]">{sajuInfo.hour.stem}</span>
-            <span className="block text-[10px] text-[#5F5F5F] font-medium">({sajuInfo.hour.stemEl})</span>
-          </div>
-          <div className="py-5 space-y-1">
-            <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A]">{sajuInfo.day.stem}</span>
-            <span className="block text-[10px] text-[#5F5F5F] font-medium">({sajuInfo.day.stemEl})</span>
-          </div>
-          <div className="py-5 space-y-1">
-            <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A]">{sajuInfo.month.stem}</span>
-            <span className="block text-[10px] text-[#5F5F5F] font-medium">({sajuInfo.month.stemEl})</span>
-          </div>
-          <div className="py-5 space-y-1">
-            <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A]">{sajuInfo.year.stem}</span>
-            <span className="block text-[10px] text-[#5F5F5F] font-medium">({sajuInfo.year.stemEl})</span>
-          </div>
-
-          <div className="py-5 space-y-1 bg-[#F9F8F6]/60">
-            <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A]">{sajuInfo.hour.branch}</span>
-            <span className="block text-[10px] text-[#5F5F5F] font-medium">({sajuInfo.hour.branchEl})</span>
-          </div>
-          <div className="py-5 space-y-1 bg-[#F9F8F6]/60">
-            <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A]">{sajuInfo.day.branch}</span>
-            <span className="block text-[10px] text-[#5F5F5F] font-medium">({sajuInfo.day.branchEl})</span>
-          </div>
-          <div className="py-5 space-y-1 bg-[#F9F8F6]/60">
-            <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A]">{sajuInfo.month.branch}</span>
-            <span className="block text-[10px] text-[#5F5F5F] font-medium">({sajuInfo.month.branchEl})</span>
-          </div>
-          <div className="py-5 space-y-1 bg-[#F9F8F6]/60">
-            <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A]">{sajuInfo.year.branch}</span>
-            <span className="block text-[10px] text-[#5F5F5F] font-medium">({sajuInfo.year.branchEl})</span>
-          </div>
-        </div>
-        <div className="text-right text-[10px] text-foreground-muted italic mt-1">
-          * 태어난 생시인 {sajuInfo.hour.name}를 포함하여 정확하게 4주 8글자를 구성했습니다.
-        </div>
-      </div>
-
-      {/* Five Elements Analysis */}
-      <div className="space-y-4 mb-10">
-        <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2">
-          <Compass className="w-4.5 h-4.5 text-[#5F7A68]" />
-          생년월일 기반 오행 (五行) 분석표
-        </h3>
-        
-        <div className="bg-white border border-[#E2DDD5] rounded p-6 space-y-4 shadow-sm">
-          {/* Progress Bars */}
-          <div className="space-y-2.5">
-            {Object.entries(sajuInfo.elements).map(([el, count]) => {
-              const percentage = (count / 8) * 100;
-              return (
-                <div key={el} className="flex items-center gap-3 text-xs">
-                  <span className={`w-14 text-center py-0.5 rounded font-bold text-[11px] ${getElementColor(el)}`}>
-                    {el} ({count}개)
-                  </span>
-                  <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full transition-all duration-500 ${getElementBarColor(el)}`} 
-                      style={{ width: `${percentage}%` }}
-                    />
-                  </div>
-                  <span className="w-8 text-right font-semibold text-foreground-muted">{Math.round(percentage)}%</span>
-                </div>
-              );
-            })}
-          </div>
-
-          <p className="text-xs md:text-sm text-[#5F5F5F] leading-relaxed font-light mt-4 pt-3 border-t border-[#E2DDD5]/50">
-            명조에 배합된 8글자의 오행 에너지 분포 결과입니다. 
-            {sajuInfo.elements.목 > 2 ? " 목(木)의 곧고 솟구치는 자존심과 주도력이 강하게 흐르고 있습니다." : ""}
-            {sajuInfo.elements.화 > 2 ? " 화(火)의 뜨겁게 뻗어 나가는 열정과 추진력이 돋보이는 명조입니다." : ""}
-            {sajuInfo.elements.토 > 2 ? " 토(土)의 넉넉하게 품고 거두어들이는 신뢰감이 충분히 갖춰져 있습니다." : ""}
-            {sajuInfo.elements.금 > 2 ? " 금(金)의 칼날 같은 결단력과 정의로움이 넘쳐나 공사 구분이 확실합니다." : ""}
-            {sajuInfo.elements.수 > 2 ? " 수(水)의 깊은 지혜와 보이지 않는 통찰력이 서려 있습니다." : ""}
-          </p>
-        </div>
-      </div>
-
-      {/* 오행 개운 처방전 */}
-      <div className="space-y-4 mb-10">
-        <h3 className="font-myeongjo text-[#A3845B] text-base font-bold flex items-center gap-2 border-b border-[#E2DDD5] pb-2">
-          <Shield className="w-4.5 h-4.5" />
-          [오행 개운 처방] 부족한 기운을 채우는 비결
-        </h3>
-        
-        <div className="space-y-4">
-          {prescriptions.map((p, idx) => (
-            <div key={idx} className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-3">
-              <span className="font-bold text-[#A3845B] text-sm flex items-center gap-1.5">
-                <Sparkles className="w-4.5 h-4.5 text-[#A3845B]" />
-                {p.name} 기운 처방
-              </span>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] bg-[#F9F8F6] p-3 rounded border border-[#E2DDD5]/60">
-                <div>
-                  <span className="text-foreground-muted block font-medium">행운의 색상</span>
-                  <span className="font-bold text-foreground">{p.color}</span>
-                </div>
-                <div>
-                  <span className="text-foreground-muted block font-medium">행운의 방향</span>
-                  <span className="font-bold text-foreground">{p.direction}</span>
-                </div>
-                <div>
-                  <span className="text-foreground-muted block font-medium">행운의 숫자</span>
-                  <span className="font-bold text-foreground">{p.number}</span>
-                </div>
-                <div>
-                  <span className="text-foreground-muted block font-medium">개운 추천 아이템</span>
-                  <span className="font-bold text-foreground">{p.items}</span>
-                </div>
-              </div>
-
-              <p className="text-xs text-[#5F5F5F] leading-relaxed font-light font-traditional">
-                <strong>개운 실천 강령:</strong> {p.action}
+          <div className="space-y-2.5 text-xs text-[#2C2C2C] leading-relaxed">
+            <p><strong>• 태어난 일간:</strong> <span className="font-bold text-[#A3845B]">{baseEl}</span></p>
+            <p><strong>• 부족한 오행:</strong> <span className="font-semibold text-red-600">{lacks || "없음"}</span></p>
+            <div className="border-t border-[#E2DDD5]/60 pt-2 space-y-1 bg-white p-2 rounded">
+              <span className="font-semibold text-[10px] text-[#A3845B] block">💡 행운의 처방전</span>
+              <p><strong>- 색상:</strong> {prescriptions[0]?.color}</p>
+              <p><strong>- 방향:</strong> {prescriptions[0]?.direction}</p>
+              <p><strong>- 숫자:</strong> {prescriptions[0]?.number}</p>
+            </div>
+            <div className="border-t border-[#E2DDD5]/60 pt-2">
+              <span className="font-semibold text-[10px] text-[#A3845B] block">🔑 고민 처방 요약</span>
+              <p className="text-[11px] text-[#5F5F5F] font-light mt-1 whitespace-pre-line leading-relaxed">
+                {personalizedText.analysis}
               </p>
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 5대 인생 평점 */}
-      <div className="space-y-4 mb-10">
-        <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2">
-          <Award className="w-4.5 h-4.5 text-brass" />
-          분야별 인생 5대 운세 평점 (Scorecard)
-        </h3>
-        
-        <div className="grid grid-cols-5 gap-2 text-center bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm">
-          <div>
-            <span className="text-[10px] text-foreground-muted block mb-1">재물운</span>
-            <span className="text-yellow-500 text-xs block mb-1">★★★★★</span>
-            <span className="text-[10px] bg-jade/10 text-jade px-1.5 py-0.5 rounded font-bold">최상 (5)</span>
-          </div>
-          <div>
-            <span className="text-[10px] text-foreground-muted block mb-1">애정운</span>
-            <span className="text-yellow-500 text-xs block mb-1">★★★★☆</span>
-            <span className="text-[10px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-bold">우수 (4)</span>
-          </div>
-          <div>
-            <span className="text-[10px] text-foreground-muted block mb-1">직업운</span>
-            <span className="text-yellow-500 text-xs block mb-1">★★★★★</span>
-            <span className="text-[10px] bg-jade/10 text-jade px-1.5 py-0.5 rounded font-bold">최상 (5)</span>
-          </div>
-          <div>
-            <span className="text-[10px] text-foreground-muted block mb-1">건강운</span>
-            <span className="text-yellow-500 text-xs block mb-1">★★★☆☆</span>
-            <span className="text-[10px] bg-gray-100 text-foreground-muted px-1.5 py-0.5 rounded font-bold">보통 (3)</span>
-          </div>
-          <div>
-            <span className="text-[10px] text-foreground-muted block mb-1">학업/시험</span>
-            <span className="text-yellow-500 text-xs block mb-1">★★★★☆</span>
-            <span className="text-[10px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-bold">우수 (4)</span>
           </div>
         </div>
-      </div>
 
-      {/* 4대 인생 시기별 운세 흐름 */}
-      <div className="space-y-4 mb-10">
-        <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2">
-          <CalendarDays className="w-4.5 h-4.5 text-[#A3845B]" />
-          평생 4단계 연령대별 흐름
-        </h3>
-        
         <div className="space-y-3">
-          <div className="bg-white border border-[#E2DDD5] rounded p-4 shadow-sm">
-            <span className="text-xs font-bold text-[#A3845B] block mb-1">🌱 초년운 (1세 ~ 20세) : 새싹의 성장</span>
-            <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light">
-              총명함과 남다른 상상력으로 학업에서 뛰어난 두각을 보이나, 감수성이 풍부하고 예민하여 사춘기 시절 일시적인 고독감을 경험했을 운세입니다.
-            </p>
-          </div>
-          
-          <div className="bg-white border border-[#E2DDD5] rounded p-4 shadow-sm">
-            <span className="text-xs font-bold text-[#A3845B] block mb-1">🌿 청년운 (21세 ~ 40세) : 독립과 도전</span>
-            <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light">
-              나의 목소리를 사회에 관철하는 시기입니다. 억압받는 환경을 탈피하고 스스로의 비즈니스나 창작을 도모하는 에너지가 커져 일찍 직장을 나오거나 이직을 성공시키는 도전적인 흐름을 탑니다.
-            </p>
-          </div>
-          
-          <div className="bg-white border border-[#E2DDD5] rounded p-4 shadow-sm">
-            <span className="text-xs font-bold text-[#A3845B] block mb-1">🌾 장년운 (41세 ~ 60세) : 찬란한 결실</span>
-            <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light">
-              인생의 가장 안정된 시기입니다. 부족한 기운이 세운과 대운에서 보강되며 부동산을 취득하거나 자산을 든든히 보존하고, 가정을 단단하게 수호하며 명예를 높이 쌓을 최상의 황금기입니다.
-            </p>
-          </div>
-          
-          <div className="bg-white border border-[#E2DDD5] rounded p-4 shadow-sm">
-            <span className="text-xs font-bold text-[#A3845B] block mb-1">🪵 말년운 (61세 이후) : 지혜와 평정</span>
-            <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light">
-              물과 대지가 조화롭게 흘러 안락한 노후를 약속받습니다. 건강관리에 주의를 기울이며, 자손들의 번창을 수호하고 한 분야의 조력자이자 고문으로서 은퇴 후에도 존경을 받는 흐름입니다.
-            </p>
-          </div>
+          <button
+            type="button"
+            onClick={() => handleCopySms(smsText)}
+            className="w-full py-2.5 bg-[#A3845B] text-[#F9F8F6] rounded text-xs font-semibold hover:bg-[#86653E] transition-colors shadow-sm"
+          >
+            {copied ? "✓ 문자 복사 완료!" : "💬 전체 문자 내용 복사하기"}
+          </button>
+          <p className="text-[9px] text-gray-400 font-light">
+            * 복사한 내용을 가족이나 지인에게 메신저/문자로 공유하실 수 있습니다.
+          </p>
         </div>
       </div>
+    );
+  };
 
-      {/* Dynamic Worry Response */}
-      <div className="space-y-4 mb-10 bg-white border-2 border-[#A3845B]/40 rounded-lg p-6 shadow-sm">
-        <h3 className="font-myeongjo text-base font-bold text-[#A3845B] flex items-center gap-2 border-b border-[#E2DDD5] pb-2">
-          <Heart className="w-4.5 h-4.5 text-red-600 animate-pulse" />
-          {name} 님의 개별 고민 맞춤형 솔루션
-        </h3>
+  const renderSajuContent = () => {
+    if (reportGrade === "sms") {
+      return renderSmsSajuContent();
+    }
+    const totalPages = reportGrade === "deep" ? 9 : 6;
+
+    // 오행 분포에 따른 종합 기질 풀이 생성
+    const getElementsAnalysis = (elements) => {
+      let analysisText = "";
+      
+      const strongElList = Object.entries(elements)
+        .filter(([_, count]) => count >= 3)
+        .map(([el]) => el);
         
-        {worryText ? (
-          <div className="space-y-4">
-            <div className="bg-[#F9F8F6] border-l-4 border-[#A3845B] p-3 rounded text-xs">
-              <span className="font-bold text-foreground block mb-1">작성하신 고민 원문:</span>
-              <p className="text-foreground-muted italic leading-relaxed">"{decodeURIComponent(worryText)}"</p>
+      const weakElList = Object.entries(elements)
+        .filter(([_, count]) => count <= 1)
+        .map(([el]) => el);
+
+      analysisText += `의뢰인 명조에 배합된 8글자의 오행 에너지 분포 분석 결과입니다. 귀하의 사주는 현재 `;
+      analysisText += Object.entries(elements)
+        .map(([el, count]) => `${el}(${count}개)`)
+        .join(", ");
+      analysisText += `의 고유한 에너지 비율을 보이고 있습니다.\n\n`;
+
+      if (strongElList.length > 0) {
+        analysisText += `이 중 사주에서 과다하게 작용하며 중심 기류를 지배하는 오행은 ${strongElList.join(", ")}입니다. `;
+        strongElList.forEach(el => {
+          if (el === "목") {
+            analysisText += "목(木)의 곧게 뻗어나가는 성장 기류가 매우 강하므로, 주체적인 실행력과 목표 돌파력은 탁월하지만 고집과 자존심이 다소 지나치게 세어 타인의 조언을 배척하는 독선적 기질을 주의해야 합니다. ";
+          } else if (el === "화") {
+            analysisText += "화(火)의 뿜어져 나오는 열기와 확산 기류가 넘쳐나 대인관계에서 열정적이고 감정 표현이 확실하지만, 욱하는 다혈질 성향이나 마무리의 지속력 부족으로 인해 손재수와 실수가 잦아질 우려가 큽니다. ";
+          } else if (el === "토") {
+            analysisText += "토(土)의 넉넉하게 품는 포용력과 신뢰의 대지 기운이 풍부해 대인관계가 원만하고 흔들림이 없으나, 결단의 속도가 무디고 변화를 거부하는 완고함에 갇혀 절호의 기회를 놓치기 쉽습니다. ";
+          } else if (el === "금") {
+            analysisText += "금(金)의 예리하고 냉철한 쇠붙이 기운이 견고하여 정의를 중시하고 맺고 끊음이 확실하나, 지나치게 차갑고 날카로운 언어로 주변 사람들에게 서운함을 주거나 융통성 없는 독단에 흐르기 쉽습니다. ";
+          } else if (el === "수") {
+            analysisText += "수(水)의 깊고 어두운 지혜의 통찰 기운이 가득해 상황 판단과 직관력이 매우 뛰어나지만, 속내를 쉽게 드러내지 않아 오해를 사거나 내적인 불안감과 우울이 정체되어 일을 주저할 수 있습니다. ";
+          }
+        });
+        analysisText += "\n\n";
+      } else {
+        analysisText += "사주상 특정 오행의 쏠림이 없고 균형이 잘 잡혀 있어, 성품이 원만하고 조화로우며 급격한 환경 변화나 스트레스 상황 속에서도 유연하게 제자리를 잡는 훌륭한 균형 조화를 자랑합니다.\n\n";
+      }
+
+      if (weakElList.length > 0) {
+        analysisText += `반면 귀하의 명식에서 상대적으로 결핍되거나 보완이 필요한 취약 오행은 ${weakElList.join(", ")}입니다. `;
+        weakElList.forEach(el => {
+          if (el === "목") {
+            analysisText += "목(木)이 결핍될 시 장기적인 미래 계획 설계나 첫발을 떼는 과감성이 무디고 의욕이 쉽게 약해지는 단점이 생길 수 있습니다. ";
+          } else if (el === "화") {
+            analysisText += "화(火)가 모자라면 본인의 재능을 드러내거나 사교적으로 나서는 힘이 약해 소극적인 태도에 머무를 수 있습니다. ";
+          } else if (el === "토") {
+            analysisText += "토(土)가 얇으면 끈기 있게 결실을 지키거나 자산을 안정적으로 묶어두는 수호력이 다소 부족하여 재물의 누수가 생기기 쉽습니다. ";
+          } else if (el === "금") {
+            analysisText += "금(金)이 없거나 약하면 단호하게 거절하지 못해 불필요한 감정 노동에 얽매이거나 매사의 마무리가 모호해지는 단점이 있습니다. ";
+          } else if (el === "수") {
+            analysisText += "수(水)가 결핍되면 지혜의 흐름이 고여 융통성이 줄어들고, 감정의 앙금이 쉽게 풀리지 않아 마음이 조급해질 위험이 있습니다. ";
+          }
+        });
+      }
+
+      analysisText += "\n\n이러한 과다와 결핍 요소를 조율하기 위해 처방된 오행 개운법(행운의 색상, 방향, 취침 루틴)을 일상생활 속에 깊이 녹여낼 때, 막혔던 운이 뚫리고 편안한 상승 기류를 맞이할 수 있게 됩니다.";
+      return analysisText;
+    };
+
+    const elementsAnalysisText = getElementsAnalysis(sajuInfo.elements);
+
+    // 5대 평점 항목별 설명 생성
+    const getFiveAspects = () => {
+      const aspects = {
+        목: {
+          wealth: {
+            stars: "★★★☆☆",
+            grade: "보통",
+            body: "목(木) 일간인 귀하에게 토(土)는 재물(財星)에 해당합니다. 2026년 병오년은 강한 화(火) 기운으로 인해 식상(활동)은 폭발하지만, 대지가 메말라 재물이 조기에 증발하기 쉬운 흐름입니다. 투자 구상은 번뜩이나 자칫 조급한 결정으로 손해를 보기 쉽습니다.",
+            action: "단기 투기성 자산은 피하고, 문서 기반의 안정적 자산(부동산, 우량 채권) 형태로 묶어 재물 누수를 방어하십시오."
+          },
+          career: {
+            stars: "★★★☆☆",
+            grade: "보통",
+            body: "목(木) 일간의 관성(官星: 직장)은 금(金)입니다. 2026년은 욱하는 식상(火)이 직장운(金)을 극하는 '식상제살'의 형국입니다. 회사 시스템이나 상사의 불합리함에 대한 저항심이 끓어올라 충동적인 사표를 던지고 싶은 욕구가 커집니다.",
+            action: "상반기(5~6월) 충동 이직은 절대 금물입니다. 이직은 기운이 안정되는 음력 8월(酉월) 이후에 공식 제안을 통해 조율하십시오."
+          },
+          health: {
+            stars: "★★★☆☆",
+            grade: "보통",
+            body: "강한 화기(火氣)에 의해 나무(木)의 수분이 마르는 조열한 해입니다. 이로 인해 두통, 신경과민, 불면증 및 안구 건조증이 두드러지게 나타날 수 있습니다. 특히 스트레스 조절에 실패하면 만성 피로가 찾아옵니다.",
+            action: "밤늦게 스마트폰을 보는 습관을 지양하고, 저녁 족욕이나 명상을 통해 머리로 쏠리는 열을 아래로 식히십시오."
+          },
+          love: {
+            stars: "★★★★☆",
+            grade: "우수",
+            body: "표현력과 매력을 담당하는 식상 기운이 넘쳐나 연애 세포가 활발히 작동하는 해입니다. 마음에 두던 이성이나 새로운 만남에서 적극적으로 호감을 표출하여 매력을 어필하기에 아주 좋은 타이밍입니다.",
+            action: "첫눈에 반하는 이성에게 적극성을 보이되, 너무 성급하게 관계를 정의하려 들면 상대가 부담을 느낄 수 있으니 페이스를 조절하십시오."
+          },
+          marriage: {
+            stars: "★★★☆☆",
+            grade: "보통",
+            body: "연인과 미래를 꿈꾸며 이야기를 진전시키기에는 무리가 없으나, 사주의 기운이 다소 역동적이라 양가 부모님의 마찰이나 결혼 준비 과정의 사소한 조율 이슈로 인해 기 싸움이 발생하기 쉬운 환경입니다.",
+            action: "2026년에는 결혼 계획 및 자금 확보를 구체화해 두고, 실제 결혼을 공식화하거나 살림을 합치는 것은 2027년(정미년)이 유리합니다."
+          }
+        },
+        화: {
+          wealth: {
+            stars: "★★☆☆☆",
+            grade: "주의",
+            body: "화(火) 일간인 귀하에게 금(金)은 재성(財星)입니다. 2026년 병오년은 내 기운과 같은 거대한 불(비겁)이 들이닥쳐 재물(금)을 모두 녹이려는 '군겁쟁재'의 형상입니다. 동업 제안, 빌려준 돈 사고, 성급한 신규 투자로 인한 손재수가 극히 강합니다.",
+            action: "올해는 '돈을 버는 것보다 지키는 것이 이기는 것'입니다. 지인의 투자 제안이나 동업은 100% 거절하고 고정비 통제에 주력하십시오."
+          },
+          career: {
+            stars: "★★★☆☆",
+            grade: "보통",
+            body: "화(火) 일간의 관성(직장)은 수(水)입니다. 강한 화기가 직장과 내 자리를 의미하는 물을 증발시키려 하므로, 부서 내 경쟁 구도가 과열되거나 내 공을 경쟁자가 가로채는 등 조직 내 불화가 잦을 수 있습니다.",
+            action: "말실수가 가장 큰 화근이 됩니다. 직장 내 험담에 절대 참여하지 마시고, 회식 자리에서도 말을 아끼며 공사 구분을 철저히 하십시오."
+          },
+          health: {
+            stars: "★★☆☆☆",
+            grade: "주의",
+            body: "사주에 불이 과도하게 팽창하여 심혈관계 질환, 고혈압, 급성 피부 트러블, 화상 등의 위험이 짙어집니다. 화(火)의 팽창 에너지가 욱하는 분노 조절 실패로 이어져 편두통을 유발할 수 있습니다.",
+            action: "찬 음식보다는 미지근한 물을 자주 마시고, 매운 음식과 자극적인 유산소 운동 대신 요가나 걷기 같은 차분한 운동을 실천하십시오."
+          },
+          love: {
+            stars: "★★★☆☆",
+            grade: "보통",
+            body: "뜨거운 열정으로 마음에 드는 상대에게 순식간에 몰입하는 강렬한 로맨스가 찾아옵니다. 하지만 내 주장이 너무 강해져 사소한 말다툼이 불꽃처럼 커져 이별수로 돌변할 수 있는 양날의 검과 같습니다.",
+            action: "다툼이 발생했을 때는 마주 앉아 언성을 높이지 말고, 즉시 자리를 피해 10분 이상 찬바람을 쐬며 감정을 식힌 후 대화하십시오."
+          },
+          marriage: {
+            stars: "★★☆☆☆",
+            grade: "주의",
+            body: "결혼 준비 과정에서 자존심 대립이 극대화되는 시기입니다. 예물, 예단, 혼수 등 물질적 조건에 대해 서로의 양보 없는 주장이 이어져 결혼 직전 파토가 나는 살(煞)이 낄 수 있으니 주의가 필요합니다.",
+            action: "양가 조율이 필요한 사항은 반드시 제3자나 플래너의 중재안을 따르고, 두 사람만의 감정 대립으로 번지지 않도록 대화를 통제하십시오."
+          }
+        },
+        토: {
+          wealth: {
+            stars: "★★★★☆",
+            grade: "우수",
+            body: "토(土) 일간인 귀하에게 수(水)는 재성(財星)입니다. 2026년은 인성(화)이 나를 생해 주어 문서상의 권리나 자격증 취득에 매우 이로운 해이지만, 강한 열기가 재물(물)을 말리므로 유동성 확보에는 애를 먹을 수 있습니다.",
+            action: "현금성 단기 투자는 피하되, 부동산 계약서나 상표권, 자격 기술 등을 통한 중장기 문서 자산을 취득하는 투자는 대길합니다."
+          },
+          career: {
+            stars: "★★★★★",
+            grade: "최상",
+            body: "토(土) 일간의 관성(직장)은 목(木)입니다. 나를 후원하는 인성(화)의 에너지가 관성(木)을 흡수하여 나를 돕는 관인상생의 흐름을 보입니다. 상사의 신임을 한 몸에 받거나 승진 시험, 합격 등 명예가 올라가는 최고의 해입니다.",
+            action: "중요한 프로젝트가 맡겨지면 책임감 있게 완수하십시오. 올해 얻는 신뢰와 직급이 향후 5년의 캐리어를 결정짓습니다."
+          },
+          health: {
+            stars: "★★★☆☆",
+            grade: "보통",
+            body: "따뜻한 불이 흙을 데워주는 이로운 형세이지만, 불이 너무 지나치면 위장 장애, 소화 불량, 변비가 발생하기 쉽습니다. 스트레스로 인한 과식이나 폭식은 즉각 소화계에 악영향을 미칩니다.",
+            action: "아침 식사를 거르지 말고, 따뜻하고 맑은 국물 중심의 한식을 섭취해 위장 기능을 따뜻하게 보호하십시오."
+          },
+          love: {
+            stars: "★★★★☆",
+            grade: "우수",
+            body: "나를 진심으로 아끼고 보살펴 주는 따뜻한 연인을 만나게 되는 운세입니다. 이미 연인이 있다면 상대방이 나를 위해 헌신하거나 든든한 조력자 역할을 자처하여 정서적으로 매우 큰 안정을 얻게 됩니다.",
+            action: "상대방의 다정함을 당연하게 여기지 마시고, 고마움을 말과 따뜻한 포옹으로 즉각 피드백하는 노력을 기울이십시오."
+          },
+          marriage: {
+            stars: "★★★★★",
+            grade: "최상",
+            body: "가정을 꾸리고 공식적인 문서를 체결하기에 가장 길한 해입니다. 양가 부모님의 전폭적인 지지와 축복 속에서 일사천리로 결혼 과정이 진행되며, 부부 공동의 명의로 주택을 구입하기에 매우 유리한 시기입니다.",
+            action: "결혼 약속 및 식장 예약, 혼인 신고를 머뭇거리지 마십시오. 2026년의 인성 기운이 단단한 부부의 신뢰를 공인해 줍니다."
+          }
+        },
+        금: {
+          wealth: {
+            stars: "★★★☆☆",
+            grade: "보통",
+            body: "금(金) 일간인 귀하에게 목(木)은 재성(財星)입니다. 2026년은 강한 불(관성)이 나를 단련시키며 동시에 내 재물(木)을 녹이는 흐름입니다. 직장 내 업무 성과나 기본 소득은 유지되나 스트레스를 풀기 위한 보상 심리적 지출이 급격히 증가합니다.",
+            action: "시발 비용(스트레스성 소비)을 막기 위해 체크카드 한도를 설정하고, 번 돈의 50%는 적금 통장으로 강제 이체해 두는 통제가 필수적입니다."
+          },
+          career: {
+            stars: "★★★★★",
+            grade: "최상",
+            body: "금(金) 일간의 관성(직장)은 화(火)입니다. 2026년 병오년은 강력한 용광로(불)가 나를 제련하여 멋진 예술품으로 만드는 관성왕지의 해입니다. 승진, 핵심 요직 발탁, 대기업 이직 등 캐리어의 정점을 찍을 수 있는 해입니다.",
+            action: "업무량이 과중하여 밤낮이 바뀔 수 있으나 피하지 마십시오. 단, 상사와의 지나친 완벽주의적 충돌만 주의하면 명예를 크게 움켜쥡니다."
+          },
+          health: {
+            stars: "★★☆☆☆",
+            grade: "주의",
+            body: "강력한 화기가 금(金)을 극하여 폐, 호흡기 계통, 인후염 및 뼈/관절에 적신호가 켜집니다. 특히 과로로 인한 면역력 저하와 대상포진 등 신경성 질환의 발생 확률이 높아지므로 주의해야 합니다.",
+            action: "과격한 근력 운동은 뼈에 무리를 주니 피하고, 도라지차나 배즙 등 호흡기에 좋은 음식을 챙겨 먹으며 매일 7시간 이상 숙면을 취하십시오."
+          },
+          love: {
+            stars: "★★★★☆",
+            grade: "우수",
+            body: "이성을 끌어당기는 자석 같은 기운(관성)이 최고조에 달합니다. 특히 여성의 경우 멋진 배우자 후보가 등장하거나, 연인과 함께하는 자리에서 내 매력이 돋보여 상대의 고백을 이끌어내는 애정운의 호조가 따릅니다.",
+            action: "마음의 문을 열고 다양한 모임이나 소개팅에 참여하십시오. 정장을 단정하게 입거나 깔끔한 실버 액세서리를 매칭하면 운이 더욱 살아납니다."
+          },
+          marriage: {
+            stars: "★★★★☆",
+            grade: "우수",
+            body: "결혼을 진지하게 논의하고 양가의 상견례를 조율하기에 유리한 흐름입니다. 다만, 내 고집이나 원칙을 너무 앞세우면 상대방이 숨이 막힐 수 있으니 결혼 절차는 유연하게 넘어가야 파열음이 생기지 않습니다.",
+            action: "모든 준비 과정을 내 취향대로 완벽하게 통제하려 하지 마시고, 30% 정도는 예비 배우자의 의견을 전적으로 수용하여 배려를 보이십시오."
+          }
+        },
+        수: {
+          wealth: {
+            stars: "★★★★★",
+            grade: "최상",
+            body: "수(水) 일간인 귀하에게 화(火)는 재성(財星)입니다. 2026년 병오년은 강한 불꽃이 나를 둘러싸는 '재성혼잡 및 편재왕지'의 해입니다. 일생일대의 큰 투자 결실, 연봉의 도약, 사업상 대형 계약 체결 등 금전운이 거대하게 열립니다.",
+            action: "재물운이 최상일 때 기회를 잡으십시오. 단, 사주가 너무 신약한 경우(물 기운 부족) 과로로 이어질 수 있으니 수분 섭취를 늘리고 분수를 지켜야 합니다."
+          },
+          career: {
+            stars: "★★★★☆",
+            grade: "우수",
+            body: "수(水) 일간의 관성(직장)은 토(土)입니다. 2026년의 풍부한 불꽃이 토를 생하여 직장에서 나를 보호하는 든든한 배경이 형성됩니다. 내 아이디어가 고스란히 예산 확보나 신규 프로젝트의 승인으로 연결되는 업무 호재가 따릅니다.",
+            action: "내 공적을 상사에게 명확한 수치와 데이터로 보고하십시오. 성과급 조율이나 연봉 협상에서 매우 유리한 카드를 쥐게 됩니다."
+          },
+          health: {
+            stars: "★★★☆☆",
+            grade: "보통",
+            body: "뜨거운 불꽃을 감당하느라 내 물 기운이 급속도로 증발합니다. 신장, 방광, 자궁 등 비뇨기 계통의 피로가 극심해질 수 있으며, 몸이 건조해져 피부 소양증이나 각질이 악화될 수 있습니다.",
+            action: "매일 아침 공복에 미지근한 물 한 잔을 필수적으로 섭취하고, 짠 자극적인 음식 대신 보리차나 이온 음료를 수시로 마셔 신장 기능을 보강하십시오."
+          },
+          love: {
+            stars: "★★★★★",
+            grade: "최상",
+            body: "남성의 경우 배우자나 매혹적인 이성을 만나는 이성운이 일생 중 가장 강력합니다. 여성의 경우에도 상대에게 사랑을 듬뿍 받고 나의 매력을 완전히 발산하는 달콤한 연애가 시작될 최고의 기운입니다.",
+            action: "호감이 가는 이성과는 가만히 눈치만 보지 마시고, 은근한 터치와 따뜻한 눈빛 교환을 시도해 마음을 자극해 보십시오."
+          },
+          marriage: {
+            stars: "★★★★☆",
+            grade: "우수",
+            body: "경제적인 가치를 우선순위에 두고 가정을 단단하게 묶어가기 좋은 시기입니다. 예비 배우자와 재정적 신뢰 관계를 명확히 구축하고, 결혼 후 자산 관리 계획을 공유하기에 아주 적절한 타이밍입니다.",
+            action: "예식의 허례허식 비용을 과감히 축소하고, 그 예산을 신혼집 마련이나 재테크 시드머니로 돌리는 실용적 결단을 부부가 함께 내리십시오."
+          }
+        }
+      };
+
+      const myAspects = aspects[baseEl] || aspects["목"];
+      return [
+        { icon: "💰", title: "재물운 (財星)", color: "text-[#5F7A68]", ...myAspects.wealth },
+        { icon: "💼", title: "직업운 (官星)", color: "text-blue-700", ...myAspects.career },
+        { icon: "❤️‍🔥", title: "건강운 (健康)", color: "text-orange-600", ...myAspects.health },
+        { icon: "💘", title: "연애운 (桃花)", color: "text-rose-600", ...myAspects.love },
+        { icon: "💍", title: "결혼운 (姻緣)", color: "text-purple-700", ...myAspects.marriage }
+      ];
+    };
+
+    const fiveAspectsData = getFiveAspects();
+
+    // 2026년 운세 연동 텍스트
+    let year2026Text = "";
+    if (baseEl === "목") {
+      year2026Text = "귀하는 나무(木)의 기질로 2026년 병오(丙午)의 불꽃을 만나면 식상(食傷)의 기운이 발동하여 표현력과 활동량이 폭발합니다. 그동안 속으로 키워온 재주와 기술이 세상 밖으로 드러나 인정받는 해가 됩니다. 다만 과로와 번아웃에 주의해야 합니다.";
+    } else if (baseEl === "화") {
+      year2026Text = "귀하는 불(火)의 기질로 2026년 병오(丙午)와 같은 화기를 만나 비겁(比劫) 에너지가 극대화됩니다. 자존심과 독립심이 강해져 창업이나 새로운 도전이 불타오르지만, 동업자나 경쟁자와의 충돌을 각별히 조심해야 합니다.";
+    } else if (baseEl === "토") {
+      year2026Text = "귀하는 대지(土)의 기질로 2026년 병오(丙午)의 불이 흙을 따뜻하게 데워주는 인성(印星) 조화를 얻습니다. 자격증, 공부, 부동산 취득 등 문서운이 강하게 빛나며 귀인의 도움이 겹겹이 쌓이는 매우 길한 해입니다.";
+    } else if (baseEl === "금") {
+      year2026Text = "귀하는 쇠붙이(金)의 기질로 2026년 병오(丙午)의 불이 나를 단련시키는 관성(官星) 압박이 강합니다. 직책이 무거워지거나 승진 기회가 오지만, 뼈와 호흡기 건강 관리와 상사와의 관계 조율에 신경을 써야 합니다.";
+    } else {
+      year2026Text = "귀하는 물(水)의 기질로 2026년 병오(丙午)의 불꽃을 통제하는 재성(財星) 에너지가 발동합니다. 투자 결실, 연봉 상승, 재물 기회가 크게 요동치는 해이나 건강을 과소비하지 않도록 철저히 관리하십시오.";
+    }
+
+    return (
+      <>
+        {/* ===== PAGE 1: 사주원국 + 오행분석 ===== */}
+        <div className="print-page-wrapper print:text-[13px] print:leading-relaxed">
+          <div>
+            <div className="text-center space-y-2 mb-8 print:mb-10">
+              <span className="text-xs tracking-widest text-[#A3845B] font-bold block print:text-sm">혜안당 보감 · {reportGrade === "deep" ? "심화 리포트" : "고급 리포트"}</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A] tracking-wider print:text-3xl">
+                제 1장. 사주 원국 및 오행 분포 분석
+              </h2>
+              <div className="w-24 h-0.5 bg-[#A3845B]/30 mx-auto my-2" />
             </div>
-            
-            <div className="space-y-4 text-xs md:text-sm text-[#2C2C2C] leading-relaxed font-light font-traditional">
-              <div>
-                <span className="font-bold text-[#A3845B] block mb-1">1단계: 고민 상황의 운명적 해석</span>
-                <p>{personalizedText.analysis}</p>
-              </div>
-              
-              <div>
-                <span className="font-bold text-[#A3845B] block mb-1">2단계: 액션 플랜의 최적 타이밍</span>
-                <p>{personalizedText.timing}</p>
-              </div>
-              
-              <div>
-                <span className="font-bold text-[#A3845B] block mb-1">3단계: 귀하를 위한 개운(開運) 비법 수칙</span>
-                <div className="bg-[#F6F3EC] p-3 rounded-md border border-[#E2DDD5]/70 whitespace-pre-line text-xs leading-relaxed text-[#2C2C2C]">
-                  {personalizedText.actionPlan}
+
+            <div className="space-y-3 mb-8 print:mb-10">
+              <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 print:text-lg print:pb-3">
+                <Scroll className="w-4.5 h-4.5 text-[#A3845B] print:w-5 print:h-5" />
+                사주팔자 (四柱八字) 명식원국
+              </h3>
+              <div className="grid grid-cols-4 border border-[#E2DDD5] rounded bg-white text-center text-xs divide-x divide-[#E2DDD5] print:text-sm print:border-2">
+                <div className="bg-[#F6F3EC] py-2.5 font-semibold text-[#A3845B] print:py-4">시주 (時柱)</div>
+                <div className="bg-[#F6F3EC] py-2.5 font-semibold text-[#A3845B] print:py-4">일주 (日柱)</div>
+                <div className="bg-[#F6F3EC] py-2.5 font-semibold text-[#A3845B] print:py-4">월주 (月柱)</div>
+                <div className="bg-[#F6F3EC] py-2.5 font-semibold text-[#A3845B] print:py-4">연주 (年柱)</div>
+                <div className="py-5 space-y-1 print:py-6">
+                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.hour.stem}</span>
+                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.hour.stemEl})</span>
+                </div>
+                <div className="py-5 space-y-1 print:py-6">
+                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.day.stem}</span>
+                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.day.stemEl})</span>
+                </div>
+                <div className="py-5 space-y-1 print:py-6">
+                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.month.stem}</span>
+                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.month.stemEl})</span>
+                </div>
+                <div className="py-5 space-y-1 print:py-6">
+                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.year.stem}</span>
+                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.year.stemEl})</span>
+                </div>
+                <div className="py-5 space-y-1 bg-[#F9F8F6]/60 print:py-6">
+                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.hour.branch}</span>
+                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.hour.branchEl})</span>
+                </div>
+                <div className="py-5 space-y-1 bg-[#F9F8F6]/60 print:py-6">
+                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.day.branch}</span>
+                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.day.branchEl})</span>
+                </div>
+                <div className="py-5 space-y-1 bg-[#F9F8F6]/60 print:py-6">
+                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.month.branch}</span>
+                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.month.branchEl})</span>
+                </div>
+                <div className="py-5 space-y-1 bg-[#F9F8F6]/60 print:py-6">
+                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.year.branch}</span>
+                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.year.branchEl})</span>
                 </div>
               </div>
+              <div className="text-right text-[10px] text-[#5F5F5F] italic mt-1 print:text-xs">
+                * 생시 {sajuInfo.hour.name}를 포함하여 4주 8글자를 구성했습니다.
+              </div>
+            </div>
+
+            <div className="space-y-4 print:space-y-5">
+              <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 print:text-lg print:pb-3">
+                <Compass className="w-4.5 h-4.5 text-[#5F7A68] print:w-5 print:h-5" />
+                오행 (五行) 에너지 분포 분석
+              </h3>
+              <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm print:p-8 print:border-2">
+                <div className="space-y-3 print:space-y-4">
+                  {Object.entries(sajuInfo.elements).map(([el, count]) => {
+                    const percentage = (count / 8) * 100;
+                    return (
+                      <div key={el} className="flex items-center gap-3 text-xs print:text-sm">
+                        <span className={`w-16 text-center py-0.5 rounded font-bold text-[11px] print:text-sm print:py-1 print:w-20 ${getElementColor(el)}`}>
+                          {el} ({count}개)
+                        </span>
+                        <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden print:h-4">
+                          <div className={`h-full transition-all duration-500 ${getElementBarColor(el)}`} style={{ width: `${percentage}%` }} />
+                        </div>
+                        <span className="w-10 text-right font-semibold text-[#5F5F5F] print:text-sm">{Math.round(percentage)}%</span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <p className="text-xs text-[#5F5F5F] leading-relaxed font-light mt-4 pt-3 border-t border-[#E2DDD5]/50 print:text-[13px] print:leading-loose whitespace-pre-line">
+                  {elementsAnalysisText}
+                </p>
+              </div>
             </div>
           </div>
-        ) : (
-          <p className="text-xs md:text-sm text-[#5F5F5F] leading-relaxed font-light">
-            신청 시 구체적인 고민 내용을 작성해 주시면, 명리학 오행 분석과 고민 키워드를 대조하여 이곳에 맞춤 솔루션을 서술해 드립니다.
-          </p>
-        )}
-      </div>
+          <div className="flex justify-between items-center border-t border-[#E2DDD5] pt-4 mt-6 text-[10px] text-[#5F5F5F] print:text-xs print:mt-8">
+            <span className="font-myeongjo">慧眼堂 寶鑑 · 평생 사주팔자</span>
+            <span className="font-myeongjo font-bold">1 / {totalPages}</span>
+          </div>
+        </div>
 
-      {/* Lifetime flow */}
-      <div className="space-y-4">
-        <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2">
-          <Scroll className="w-4.5 h-4.5 text-[#A3845B]" />
-          인생 총평
-        </h3>
-        <p className="text-xs md:text-sm text-[#2C2C2C] leading-relaxed font-light font-traditional">
-          귀하의 사주는 대운의 흐름 상, 초년에 수(水) 기운이 세차게 들어와 다소 내성적이거나 배움에 전념하는 시절을 보냈습니다. 30대 중반 이후로는 점차 따뜻한 화(火)와 토(土) 기운으로 대운의 계절이 전환됨으로써, 그동안 쌓아올렸던 역량이 세상 밖으로 드러나며 명성과 금전적 수확을 일궈내는 중년 대박형 흐름을 타고 있습니다. 꺾이지 않는 대나무처럼 단단하게 중심을 잡으신다면 40대에는 큰 번창을 보장받으실 것입니다.
-        </p>
-      </div>
-    </>
-  );
+        {/* ===== PAGE 2: 타고난 성향 · 기질 · 내면 분석 ===== */}
+        <div className="print-page-wrapper print:text-[13px] print:leading-relaxed">
+          <div>
+            <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 mb-6 print:text-lg print:pb-3 print:mb-8">
+              <Sparkles className="w-4.5 h-4.5 text-[#A3845B] print:w-5 print:h-5" />
+              타고난 성향 · 기질 · 내면 분석
+            </h3>
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 mb-6 shadow-sm print:p-8 print:mb-8 print:border-2">
+              <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] mb-3 print:text-base print:mb-4">
+                🌟 {name}님의 핵심 기질 — {baseEl}({baseEl === "목" ? "木" : baseEl === "화" ? "火" : baseEl === "토" ? "土" : baseEl === "금" ? "金" : "水"}) 기질의 사람
+              </h4>
+              <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional print:text-[14px] print:leading-loose">
+                {baseEl === "목" && "귀하는 곧게 하늘을 향해 뻗어 자라는 나무(木)처럼, 원칙과 비전을 중시하는 독립적인 기질을 타고 났습니다. 남의 말에 쉽게 굴복하지 않는 강한 자존심이 있으며, 한 번 목표를 세우면 집요하게 파고드는 끈기가 있습니다. 다만 과한 자존심이 때로는 융통성의 부재로 이어질 수 있으니, 상황에 따라 유연하게 대응하는 연습이 필요합니다."}
+                {baseEl === "화" && "귀하는 밝고 뜨겁게 타오르는 불(火)의 기질로, 열정과 에너지가 넘쳐 주변을 밝히는 태양 같은 존재입니다. 빠른 판단력과 강한 추진력으로 리더십을 발휘하며 사람들의 이목을 자연스럽게 집중시킵니다. 그러나 흥분과 냉각이 빠른 속성이 있어, 감정을 진정시키는 수련이 평생의 과제입니다."}
+                {baseEl === "토" && "귀하는 만물을 기르고 지탱하는 대지(土)의 기질로, 신뢰감과 포용력이 타고난 장점입니다. 말보다는 행동으로 신의를 쌓아가며 한 번 맺은 인연을 소중히 여기는 끈끈한 의리가 있습니다. 다만 결단의 속도가 느리고 변화에 대한 저항이 강할 수 있으니, 새로운 흐름을 열린 마음으로 받아들이는 유연성을 키우는 것이 중요합니다."}
+                {baseEl === "금" && "귀하는 단단하게 벼려진 쇠붙이(金)의 기질로, 원칙과 정의를 중시하며 공사 구분이 확실한 카리스마를 지녔습니다. 냉철한 분석력과 결단력으로 복잡한 상황을 명확하게 정리하는 탁월한 능력이 있습니다. 그러나 날카로운 성품이 가까운 이들에게 차갑게 느껴질 수 있으니, 따뜻한 언어 표현을 의식적으로 늘리는 것이 관계의 윤활유가 됩니다."}
+                {baseEl === "수" && "귀하는 장애물을 유연하게 비켜 흐르는 물(水)의 기질로, 깊은 통찰력과 지혜가 뛰어난 사색형 인재입니다. 남들이 보지 못하는 이면을 꿰뚫는 직관력과 섬세한 감수성으로 예술, 학문, 연구 분야에서 탁월한 역량을 발휘합니다. 다만 지나친 내성과 우유부단함이 결단의 타이밍을 놓치게 만들 수 있으니, 중요한 순간에는 용기 있는 선택이 필요합니다."}
+              </p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-5 mb-6 print:gap-6 print:mb-8">
+              <div className="bg-[#F6F3EC] border border-[#E2DDD5] rounded-lg p-5 space-y-3 print:p-6">
+                <h4 className="font-myeongjo text-sm font-bold text-[#5F7A68] print:text-base">✨ 타고난 강점</h4>
+                <ul className="text-xs text-[#2C2C2C] space-y-2 font-light leading-relaxed print:text-[13px] print:space-y-3">
+                  <li className="flex gap-2"><span className="text-[#A3845B] font-bold shrink-0">•</span>{baseEl === "목" ? "독립적인 의지력과 주도적인 실행력이 탁월합니다." : baseEl === "화" ? "넘치는 열정과 빠른 상황 판단력이 강점입니다." : baseEl === "토" ? "두터운 신뢰감과 지구력 있는 끈기가 강점입니다." : baseEl === "금" ? "냉철한 분석력과 명확한 결단력이 강점입니다." : "깊은 통찰력과 유연한 적응력이 강점입니다."}</li>
+                  <li className="flex gap-2"><span className="text-[#A3845B] font-bold shrink-0">•</span>{baseEl === "목" ? "창의적인 아이디어와 새로운 시도를 두려워하지 않습니다." : baseEl === "화" ? "사람을 끌어당기는 자연스러운 리더십과 화술이 있습니다." : baseEl === "토" ? "한 번 맺은 인연을 끝까지 아끼는 의리가 강합니다." : baseEl === "금" ? "공사 구분이 확실하고 정의로운 원칙주의 성향이 있습니다." : "감수성이 풍부하고 예술적 직관이 뛰어납니다."}</li>
+                  <li className="flex gap-2"><span className="text-[#A3845B] font-bold shrink-0">•</span>{baseEl === "목" ? "장기적인 목표를 향해 묵묵히 집중하는 집요함이 있습니다." : baseEl === "화" ? "긍정 에너지로 주변 사람들의 의욕을 높여줍니다." : baseEl === "토" ? "안정적인 환경을 조성하여 조직과 가정의 중심이 됩니다." : baseEl === "금" ? "세세한 부분까지 놓치지 않는 완벽주의 집중력이 있습니다." : "학습 능력이 뛰어나 지식과 기술을 빠르게 습득합니다."}</li>
+                </ul>
+              </div>
+              <div className="bg-white border border-red-100 rounded-lg p-5 space-y-3 print:p-6">
+                <h4 className="font-myeongjo text-sm font-bold text-red-700 print:text-base">⚠️ 극복해야 할 약점</h4>
+                <ul className="text-xs text-[#2C2C2C] space-y-2 font-light leading-relaxed print:text-[13px] print:space-y-3">
+                  <li className="flex gap-2"><span className="text-red-500 font-bold shrink-0">•</span>{baseEl === "목" ? "지나친 자존심으로 타인의 의견을 배척하기 쉽습니다." : baseEl === "화" ? "감정의 기복이 심해 과격한 언행을 할 수 있습니다." : baseEl === "토" ? "변화와 새로운 시도에 지나치게 보수적일 수 있습니다." : baseEl === "금" ? "날카로운 직언이 상대방에게 상처를 줄 수 있습니다." : "우유부단함으로 중요한 결정을 미루는 경향이 있습니다."}</li>
+                  <li className="flex gap-2"><span className="text-red-500 font-bold shrink-0">•</span>{baseEl === "목" ? "타협을 약함으로 보아 불필요한 갈등이 생길 수 있습니다." : baseEl === "화" ? "시작은 뜨겁지만 지속력이 부족해 마무리가 약합니다." : baseEl === "토" ? "우유부단한 결단으로 좋은 기회를 놓치기도 합니다." : baseEl === "금" ? "지나친 완벽주의로 자신과 타인을 지치게 만듭니다." : "낯선 환경에서 심한 불안감을 느껴 결단을 미룹니다."}</li>
+                  <li className="flex gap-2"><span className="text-red-500 font-bold shrink-0">•</span>{baseEl === "목" ? "성급하게 행동하여 세부 사항을 놓치는 일이 잦습니다." : baseEl === "화" ? "충동적인 판단으로 경제적 손실을 볼 수 있습니다." : baseEl === "토" ? "남에게 베푸는 것이 많아 재물이 새어나갈 수 있습니다." : baseEl === "금" ? "감정 표현이 서투르고 외로움을 쉽게 느낍니다." : "현실적인 판단보다 이상을 추구하는 경향이 강합니다."}</li>
+                </ul>
+              </div>
+            </div>
+            {worryText && (
+              <div className="bg-white border-2 border-[#A3845B]/40 rounded-lg p-5 print:p-6">
+                <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] mb-3 flex items-center gap-1.5 print:text-base">
+                  <Heart className="w-4 h-4 text-red-500" />
+                  {name} 님의 개별 고민 맞춤형 솔루션
+                </h4>
+                <div className="bg-[#F9F8F6] border-l-4 border-[#A3845B] p-3 rounded text-xs mb-3 print:text-[13px]">
+                  <span className="font-bold text-[#1A1A1A] block mb-1">작성하신 고민 원문:</span>
+                  <p className="text-[#5F5F5F] italic">"{decodeURIComponent(worryText)}"</p>
+                </div>
+                <div className="space-y-3 text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional print:text-[13px] print:leading-loose">
+                  <div><span className="font-bold text-[#A3845B] block mb-1">📍 고민 상황의 운명적 해석</span><p>{personalizedText.analysis}</p></div>
+                  <div><span className="font-bold text-[#A3845B] block mb-1">⏰ 최적의 행동 타이밍</span><p>{personalizedText.timing}</p></div>
+                  <div>
+                    <span className="font-bold text-[#A3845B] block mb-1">🔑 귀하를 위한 개운 비법</span>
+                    <div className="bg-[#F6F3EC] p-3 rounded-md border border-[#E2DDD5]/70 whitespace-pre-line text-xs leading-relaxed text-[#2C2C2C] print:text-[12px]">{personalizedText.actionPlan}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="flex justify-between items-center border-t border-[#E2DDD5] pt-4 mt-6 text-[10px] text-[#5F5F5F] print:text-xs print:mt-8">
+            <span className="font-myeongjo">慧眼堂 寶鑑 · 평생 사주팔자</span>
+            <span className="font-myeongjo font-bold">2 / {totalPages}</span>
+          </div>
+        </div>
+
+        {/* ===== PAGE 3: 2026년 전체 흐름 ===== */}
+        <div className="print-page-wrapper print:text-[13px] print:leading-relaxed">
+          <div>
+            <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 mb-6 print:text-lg print:pb-3 print:mb-8">
+              <CalendarDays className="w-4.5 h-4.5 text-[#A3845B] print:w-5 print:h-5" />
+              2026년 병오년(丙午年) 전체 흐름
+            </h3>
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 mb-6 shadow-sm print:p-8 print:mb-8 print:border-2">
+              <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] mb-3 print:text-base print:mb-4">🔥 {name}님과 병오년(丙午年)의 기운 조합</h4>
+              <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional print:text-[14px] print:leading-loose">{year2026Text}</p>
+            </div>
+            <div className="space-y-4 print:space-y-5">
+              <h4 className="font-myeongjo text-sm font-bold text-[#1A1A1A] print:text-base">2026년 분기별 세부 흐름</h4>
+              {[
+                { season: "🌸 1분기 (1~3월)", title: "새 기운의 도래와 설계의 시작", body: "새해가 시작되며 기분 좋은 변동운이 스쳐 지나갑니다. 이직 제안이나 새로운 인간관계가 생기지만 아직 내실이 완성되지 않은 단계입니다.", tip: "타인의 제안에 즉답을 미루고 충분히 자료를 수집하십시오. 약속을 문서화하여 배신수를 방지하십시오." },
+                { season: "☀️ 2분기 (4~6월)", title: "에너지의 초과 팽창과 충돌 주의", body: "1년 중 화(火) 기운이 가장 폭발하는 시기로 스트레스 지수가 극대화됩니다. 욱하는 감정 때문에 상사나 가족과의 충돌 수가 짙어집니다.", tip: "중요한 도장 날인이나 퇴사 결단은 이 시기에 절대 내리지 마십시오. 수분 섭취와 냉정한 침묵 수련이 운을 살립니다." },
+                { season: "🍁 3분기 (7~9월)", title: "가을의 서리 기운과 안정 조정기", body: "뜨거운 화기를 금(金)의 서리 기운이 식혀주며 이성이 돌아옵니다. 그동안 미뤄졌던 이직이 결정 나거나, 관계의 오해가 풀려 안정감을 되찾습니다.", tip: "상반기에 기획했던 안건을 이때 세상에 내어놓으십시오. 이력서 제출, 투자 포트폴리오 조정이 최적입니다." },
+                { season: "❄️ 4분기 (10~12월)", title: "알찬 수확과 평온한 마무리", body: "대지의 기운이 겨울의 차가운 물속에 고정되며 금전 보상과 가정이 화평해집니다. 1년 농사의 달콤한 보너스를 챙기며 한 해를 마무리합니다.", tip: "번 돈의 절반은 비상금으로 동결하여 내년을 준비하십시오. 가족과 함께하는 시간으로 에너지를 재충전하십시오." }
+              ].map((q, i) => (
+                <div key={i} className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm print:p-6 print:border-2">
+                  <span className="text-xs font-bold text-[#A3845B] block border-b border-[#E2DDD5]/50 pb-1 mb-2 print:text-sm print:pb-2 print:mb-3">{q.season} : {q.title}</span>
+                  <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light mb-2 print:text-[12.5px]"><strong>상황:</strong> {q.body}</p>
+                  <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light print:text-[12.5px]"><strong>전술:</strong> {q.tip}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex justify-between items-center border-t border-[#E2DDD5] pt-4 mt-6 text-[10px] text-[#5F5F5F] print:text-xs print:mt-8">
+            <span className="font-myeongjo">慧眼堂 寶鑑 · 평생 사주팔자</span>
+            <span className="font-myeongjo font-bold">3 / {totalPages}</span>
+          </div>
+        </div>
+
+        {/* ===== PAGE 4: 재물운·직업운·건강운·연애운·결혼운 ===== */}
+        <div className="print-page-wrapper print:text-[13px] print:leading-relaxed">
+          <div>
+            <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 mb-6 print:text-lg print:pb-3 print:mb-8">
+              <Award className="w-4.5 h-4.5 text-[#A3845B] print:w-5 print:h-5" />
+              재물운 · 직업운 · 건강운 · 연애운 · 결혼운 (분야별 오행 분석)
+            </h3>
+            <div className="space-y-4 print:space-y-5">
+              {fiveAspectsData.map((item, i) => (
+                <div key={i} className="bg-white border border-[#E2DDD5] rounded-lg p-4 shadow-sm print:p-5 print:border-2">
+                  <div className="flex items-center justify-between mb-2 print:mb-3">
+                    <h4 className={`font-myeongjo text-sm font-bold ${item.color} flex items-center gap-1.5 print:text-base`}><span>{item.icon}</span> {item.title}</h4>
+                    <div className="flex items-center gap-2">
+                      <span className="text-yellow-500 text-xs print:text-sm">{item.stars}</span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${item.grade === "최상" ? "bg-emerald-50 text-emerald-700" : item.grade === "우수" ? "bg-blue-50 text-blue-700" : item.grade === "주의" ? "bg-red-50 text-red-700" : "bg-orange-50 text-orange-700"} print:text-xs`}>{item.grade}</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-[#5F5F5F] leading-relaxed font-light font-traditional print:text-[13px] print:leading-loose mb-2">
+                    {item.body}
+                  </p>
+                  <div className="bg-[#F6F3EC] border-l-2 border-[#A3845B] pl-3 py-1.5 text-[11px] text-[#2C2C2C] print:text-[12px] print:leading-normal">
+                    <strong className="text-[#A3845B]">🎯 2026년 행동 전략:</strong> {item.action}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex justify-between items-center border-t border-[#E2DDD5] pt-4 mt-6 text-[10px] text-[#5F5F5F] print:text-xs print:mt-8">
+            <span className="font-myeongjo">慧眼堂 寶鑑 · 평생 사주팔자</span>
+            <span className="font-myeongjo font-bold">4 / {totalPages}</span>
+          </div>
+        </div>
+
+        {/* ===== PAGE 5: 평생운 ===== */}
+        <div className="print-page-wrapper print:text-[13px] print:leading-relaxed">
+          <div>
+            <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 mb-6 print:text-lg print:pb-3 print:mb-8">
+              <Scroll className="w-4.5 h-4.5 text-[#A3845B] print:w-5 print:h-5" />
+              평생운 — 초년 / 청년 / 중년 / 말년
+            </h3>
+            <div className="space-y-5 print:space-y-6">
+              {[
+                { icon: "🌱", period: "초년운 (1세 ~ 20세)", subtitle: "새싹의 성장기", body: "총명함과 남다른 상상력으로 학업에서 두각을 보이나, 감수성이 풍부하고 예민하여 사춘기 시절 일시적인 고독감을 경험했을 운세입니다. 가족의 울타리 안에서 안정적으로 성장하되, 내향적인 에너지를 지식과 학업으로 발산하면 장차 큰 밑거름이 됩니다.", fortune: "학업·지식 쌓기에 집중하고, 좋아하는 것을 끝까지 파고드는 집중력을 기르십시오." },
+                { icon: "🌿", period: "청년운 (21세 ~ 40세)", subtitle: "독립과 도전의 시기", body: "나의 목소리를 사회에 관철하는 시기입니다. 억압적인 환경을 탈피하고 스스로의 비즈니스나 창작을 도모하는 에너지가 커져 이직, 창업, 도전적인 시도들이 활발하게 이루어지는 흐름입니다. 30대 중반이 진정한 도약점이 됩니다.", fortune: "두려워도 도전하는 실행력을 갖추십시오. 인맥과 실력을 동시에 쌓는 30대가 인생의 승부처입니다." },
+                { icon: "🌾", period: "중년운 (41세 ~ 60세)", subtitle: "찬란한 결실과 황금기", body: "인생의 가장 안정된 시기입니다. 부족한 기운이 대운에서 보강되며 부동산을 취득하거나 자산을 든든히 보존하고, 가정을 단단하게 수호하며 명예를 높이 쌓을 황금기입니다. 사회적 신뢰와 경제적 풍요가 동시에 꽃을 피웁니다.", fortune: "40대 초반에 핵심 투자를 결정하십시오. 이때 내린 결단이 50대의 경제적 자유를 만들어 줍니다." },
+                { icon: "🪵", period: "말년운 (61세 이후)", subtitle: "지혜와 평정의 시간", body: "물과 대지가 조화롭게 흘러 안락한 노후를 약속받습니다. 건강관리에 주의를 기울이며, 자손들의 번창을 수호하고 한 분야의 조력자이자 고문으로서 은퇴 후에도 존경을 받는 흐름입니다.", fortune: "60대 초반 건강 관리를 최우선으로 하십시오. 자녀와의 관계를 돈독히 하여 노후의 안전망을 탄탄하게 구축하십시오." }
+              ].map((item, i) => (
+                <div key={i} className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm print:p-6 print:border-2">
+                  <div className="mb-3 print:mb-4">
+                    <span className="text-xs font-bold text-[#A3845B] block print:text-sm">{item.icon} {item.period} — {item.subtitle}</span>
+                  </div>
+                  <p className="text-xs text-[#5F5F5F] leading-relaxed font-light font-traditional mb-3 print:text-[13px] print:leading-loose print:mb-4">{item.body}</p>
+                  <div className="bg-[#F6F3EC] border-l-2 border-[#A3845B] pl-3 py-1.5 text-[11px] text-[#2C2C2C] print:text-[12px]">
+                    <strong className="text-[#A3845B]">핵심 조언:</strong> {item.fortune}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex justify-between items-center border-t border-[#E2DDD5] pt-4 mt-6 text-[10px] text-[#5F5F5F] print:text-xs print:mt-8">
+            <span className="font-myeongjo">慧眼堂 寶鑑 · 평생 사주팔자</span>
+            <span className="font-myeongjo font-bold">5 / {totalPages}</span>
+          </div>
+        </div>
+
+        {/* ===== PAGE 6: 조심할 시기 + 개운법 ===== */}
+        <div className="print-page-wrapper print:text-[13px] print:leading-relaxed">
+          <div>
+            <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 mb-6 print:text-lg print:pb-3 print:mb-8">
+              <Shield className="w-4.5 h-4.5 text-red-600 print:w-5 print:h-5" />
+              특히 조심해야 할 시기 &amp; 나만의 개운법
+            </h3>
+            <div className="bg-red-50/50 border border-red-200 rounded-lg p-5 mb-6 space-y-3 print:p-6 print:mb-8 print:border-2">
+              <h4 className="font-myeongjo text-sm font-bold text-red-700 flex items-center gap-1.5 print:text-base">⚠️ 특히 조심해야 할 시기와 액운 방어법</h4>
+              <ul className="text-xs text-[#5F5F5F] leading-relaxed space-y-3 font-light print:text-[13px] print:space-y-4">
+                <li className="flex gap-2 items-start"><span className="text-red-600 font-bold shrink-0">•</span><div><strong className="text-[#1A1A1A]">2026년 5~6월 과잉 화기 경보:</strong> 병오년의 불꽃이 가장 매섭게 튀는 여름철에는 절대 시비에 휘말리지 마십시오. 감정이 끓어오를 때는 '그럴 수도 있지'를 마음속으로 되뇌며 상황을 객관화하는 연습을 하십시오.</div></li>
+                <li className="flex gap-2 items-start"><span className="text-red-600 font-bold shrink-0">•</span><div><strong className="text-[#1A1A1A]">충살(沖煞) 주의 시기 — 자오충(子午沖):</strong> 매년 음력 5월(午월)과 11월(子월)에는 사주 내 충살이 극대화됩니다. 이 시기에는 중요한 계약 서명, 이사, 수술 등 인생의 큰 결정을 피하고 준비와 점검의 시간으로 활용하십시오.</div></li>
+                <li className="flex gap-2 items-start"><span className="text-red-600 font-bold shrink-0">•</span><div><strong className="text-[#1A1A1A]">재물 누수 방어 수칙:</strong> 어떤 서류 체결이든 당일 즉각 서명하지 말고 최소 하룻밤 이상 검토하는 습관을 철칙으로 삼으십시오. 충동 소비와 보증 서기를 극도로 조심하십시오.</div></li>
+              </ul>
+            </div>
+            <div className="space-y-4 print:space-y-5">
+              <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] print:text-base">✨ 나만의 오행 개운법 — 부족한 기운을 채우는 비결</h4>
+              {prescriptions.map((p, idx) => (
+                <div key={idx} className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-3 print:p-6 print:border-2">
+                  <span className="font-bold text-[#A3845B] text-sm flex items-center gap-1.5 print:text-base">
+                    <Sparkles className="w-4.5 h-4.5 text-[#A3845B]" />
+                    {p.name} 기운 처방
+                  </span>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] bg-[#F9F8F6] p-3 rounded border border-[#E2DDD5]/60 print:grid-cols-4 print:text-xs print:p-4">
+                    <div><span className="text-[#5F5F5F] block font-medium">행운의 색상</span><span className="font-bold text-[#1A1A1A]">{p.color}</span></div>
+                    <div><span className="text-[#5F5F5F] block font-medium">행운의 방향</span><span className="font-bold text-[#1A1A1A]">{p.direction}</span></div>
+                    <div><span className="text-[#5F5F5F] block font-medium">행운의 숫자</span><span className="font-bold text-[#1A1A1A]">{p.number}</span></div>
+                    <div><span className="text-[#5F5F5F] block font-medium">개운 추천</span><span className="font-bold text-[#1A1A1A]">{p.items}</span></div>
+                  </div>
+                  <p className="text-xs text-[#5F5F5F] leading-relaxed font-light font-traditional print:text-[13px] print:leading-loose"><strong>개운 실천 강령:</strong> {p.action}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex justify-between items-center border-t border-[#E2DDD5] pt-4 mt-6 text-[10px] text-[#5F5F5F] print:text-xs print:mt-8">
+            <span className="font-myeongjo">慧眼堂 寶鑑 · 평생 사주팔자</span>
+            <span className="font-myeongjo font-bold">6 / {totalPages}</span>
+          </div>
+        </div>
+
+        {/* ===== PAGE 7~9: 심화 전용 ===== */}
+        {reportGrade === "deep" && (
+          <>
+            {/* PAGE 7: 신년운세 심화 */}
+            <div className="print-page-wrapper print:text-[13px] print:leading-relaxed">
+              <div>
+                <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 mb-6 print:text-lg print:pb-3 print:mb-8">
+                  <CalendarDays className="w-4.5 h-4.5 text-[#A3845B] print:w-5 print:h-5" />
+                  [심화] 2026년 병오년 신년운세 심화 분석
+                </h3>
+                <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 mb-6 shadow-sm print:p-8 print:mb-8 print:border-2">
+                  <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] mb-3 print:text-base print:mb-4">병오년(丙午年)의 세운(歲運) 심층 해석</h4>
+                  <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional print:text-[14px] print:leading-loose">
+                    2026년 병오년(丙午年)은 하늘의 밝은 태양(丙火)과 땅 위의 강력한 말(午火)이 결합된 '천지합화(天地合火)'의 해입니다. 온 세상이 그 어느 해보다 뜨겁고 역동적인 에너지가 급속도로 팽창하는 해로, 감추어졌던 진실이 백일하에 드러나고 새로운 트렌드와 혁신적 변화가 가장 강렬하게 도래하는 혁명적 주기입니다.
+                  </p>
+                  <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional mt-3 pt-3 border-t border-[#E2DDD5]/60 print:text-[14px] print:leading-loose print:mt-4 print:pt-4">
+                    <strong>{name}님과 병오년의 심층 기운 조합:</strong><br />{year2026Text}
+                  </p>
+                </div>
+                <div className="bg-red-50/50 border border-red-200 rounded-lg p-5 mb-5 space-y-3 print:p-6 print:mb-6 print:border-2">
+                  <h4 className="font-myeongjo text-sm font-bold text-red-700 flex items-center gap-1.5 print:text-base">피흉(避凶) 처방: 올해의 액난과 흉운을 피하는 비법</h4>
+                  <ul className="text-xs text-[#5F5F5F] leading-relaxed space-y-2 font-light print:text-[13px] print:space-y-3">
+                    <li className="flex gap-1.5 items-start"><span className="text-red-600 font-bold">•</span><span><strong>5~6월 분노 통제:</strong> 병오년의 불꽃이 가장 매섭게 튀는 여름철에는 절대 시비에 휘말리지 마십시오.</span></li>
+                    <li className="flex gap-1.5 items-start"><span className="text-red-600 font-bold">•</span><span><strong>도장 찍기 금지 수칙:</strong> 올해의 성급함은 나쁜 계약으로 이어집니다. 반드시 하룻밤 검토 후 서명하십시오.</span></li>
+                    <li className="flex gap-1.5 items-start"><span className="text-red-600 font-bold">•</span><span><strong>화(火)성 질환 예방:</strong> 두통, 피부 발진, 심혈관계 이상이 올 수 있습니다. 차가운 음식과 수분 섭취로 몸을 다스리십시오.</span></li>
+                  </ul>
+                </div>
+                <div className="bg-[#F6F3EC] border border-[#E2DDD5] rounded-lg p-5 space-y-3 shadow-sm print:p-6 print:border-2">
+                  <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] flex items-center gap-1.5 print:text-base">
+                    <CheckSquare className="w-4 h-4 text-[#A3845B]" />
+                    추길(趨吉) 처방: 운명을 내 것으로 만드는 3대 개운 실천
+                  </h4>
+                  <div className="space-y-3 text-xs text-[#2C2C2C] print:space-y-4">
+                    {[
+                      { num: 1, title: "침실 및 사무실 남동쪽 공간 정비 (공간 개운)", body: "매일 아침 남쪽과 동쪽 창문을 열어 10분 이상 공기를 순환시키고, 남쪽 구석에 스탠드 조명을 켜거나 맑은 물이 담긴 컵을 배치하여 화기를 중화하십시오." },
+                      { num: 2, title: "물(水) 에너지를 흡수하는 저녁 족욕 루틴 (생리 개운)", body: "매주 3회 이상 취침 전 15분간 따뜻한 소금물로 족욕을 실천하십시오. 화 기운으로 날뛰는 열기를 아래로 끌어내려 깊은 통찰력을 기르는 신체 조율법입니다." },
+                      { num: 3, title: "주 1회 자연 속 녹색 숲길 걷기 (행동 개운)", body: "나무가 우거진 숲길이나 공원을 걸으며 나무의 청색(木) 기운을 온몸으로 호흡하십시오. 대자연의 생기를 정기적으로 흡입하는 것만으로도 나쁜 시비수를 튕겨낼 수 있습니다." }
+                    ].map(item => (
+                      <div key={item.num} className="flex gap-3 items-start border-b border-[#E2DDD5]/50 pb-2 print:pb-3 last:border-0">
+                        <span className="bg-[#A3845B] text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 print:w-6 print:h-6">{item.num}</span>
+                        <div>
+                          <strong className="block text-[#1A1A1A] print:text-[13px]">{item.title}</strong>
+                          <span className="text-[#5F5F5F] font-light block mt-0.5 leading-relaxed print:text-[12px]">{item.body}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center border-t border-[#E2DDD5] pt-4 mt-6 text-[10px] text-[#5F5F5F] print:text-xs print:mt-8">
+                <span className="font-myeongjo">慧眼堂 寶鑑 · 평생 사주팔자 [심화]</span>
+                <span className="font-myeongjo font-bold">7 / {totalPages}</span>
+              </div>
+            </div>
+
+            {/* PAGE 8: 용신 해석 */}
+            <div className="print-page-wrapper print:text-[13px] print:leading-relaxed">
+              <div>
+                <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 mb-6 print:text-lg print:pb-3 print:mb-8">
+                  <Sparkles className="w-4.5 h-4.5 text-[#A3845B] print:w-5 print:h-5" />
+                  [심화] 용신 해석 — 팔자에서 가장 중요한 힘과 활용법
+                </h3>
+                <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 mb-6 shadow-sm print:p-8 print:mb-8 print:border-2">
+                  <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] mb-3 print:text-base print:mb-4">용신(用神)이란 무엇인가?</h4>
+                  <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional print:text-[14px] print:leading-loose">
+                    용신(用神)은 귀하의 사주 명조에서 가장 핵심적인 역할을 하는 오행으로, 부족하거나 과잉된 기운의 균형을 잡아주며 귀하의 삶을 운명적으로 끌어올리는 '운명의 키(key)'입니다. 이 기운을 생활 속에서 강화할수록 사주 원국의 잠재력이 최대로 발현됩니다.
+                  </p>
+                </div>
+                <div className="bg-[#F6F3EC] border-2 border-[#A3845B]/40 rounded-lg p-6 mb-6 print:p-8 print:mb-8">
+                  <h4 className="font-myeongjo text-sm font-bold text-[#1A1A1A] mb-4 print:text-base print:mb-5">
+                    🔑 {name}님의 용신 — {baseEl === "목" ? "수(水) 또는 화(火)" : baseEl === "화" ? "목(木) 또는 토(土)" : baseEl === "토" ? "화(火) 또는 금(金)" : baseEl === "금" ? "토(土) 또는 수(水)" : "금(金) 또는 목(木)"}
+                  </h4>
+                  <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional mb-5 print:text-[14px] print:leading-loose">
+                    귀하의 명조에서 일간(日干)은 <strong>{baseEl}</strong>을 대표하며, 사주 전체의 오행 균형을 맞추기 위해
+                    {baseEl === "목" ? " 수(水)가 뿌리를 적셔 성장을 돕고, 화(火)가 재주와 표현력을 세상으로 발산시켜주는 역할을" : ""}
+                    {baseEl === "화" ? " 목(木)이 연료가 되어 지속적인 열정을 유지시켜주고, 토(土)가 불꽃을 담아 재물로 전환시켜주는 역할을" : ""}
+                    {baseEl === "토" ? " 화(火)가 대지를 따뜻하게 데워 생산성을 높이고, 금(金)이 결실을 맺어 재물로 전환시켜주는 역할을" : ""}
+                    {baseEl === "금" ? " 토(土)가 쇠를 생성하여 힘을 보강하고, 수(水)가 예리함을 세상으로 흘러보내 재물로 전환시켜주는 역할을" : ""}
+                    {baseEl === "수" ? " 금(金)이 수원(水源)이 되어 지혜를 충전시키고, 목(木)이 물을 흡수해 재주로 발현시켜주는 역할을" : ""}
+                    합니다.
+                  </p>
+                  <div className="grid md:grid-cols-2 gap-4 print:gap-5">
+                    <div className="bg-white rounded-lg p-4 border border-[#E2DDD5] print:p-5">
+                      <span className="font-bold text-[#A3845B] block mb-2 print:text-sm">💎 용신을 강화하는 실천법</span>
+                      <ul className="space-y-1.5 print:space-y-2">
+                        {(baseEl === "목" ? ["매일 저녁 족욕이나 수분 섭취를 늘려 水 기운을 보충하십시오.", "남쪽(火)으로 책상을 배치하여 재주를 세상으로 발산하십시오.", "파란색·검은색 계열의 의류나 소품을 활용하십시오."] :
+                          baseEl === "화" ? ["매일 녹색 식물을 가까이 두어 木 기운으로 열정을 유지하십시오.", "황토색 소품을 사무실에 배치해 재물 창고를 굳건히 하십시오.", "동쪽 방향을 향해 아침 일과를 시작하십시오."] :
+                          baseEl === "토" ? ["따뜻한 조명과 붉은 소품으로 火 기운을 강화하십시오.", "흰색·실버 계열의 소품으로 결실의 金 기운을 더하십시오.", "남쪽 창문을 열어 햇빛을 충분히 받으십시오."] :
+                          baseEl === "금" ? ["노란색·브라운 계열의 물건으로 土 기운을 보강하십시오.", "검은색·파란색 소품으로 水 기운을 추가하십시오.", "서쪽을 향해 중요한 결정을 내리십시오."] :
+                          ["흰색·실버 소품과 의류로 金 기운을 강화하십시오.", "녹색 식물을 키워 木 기운으로 재주를 발산하십시오.", "서쪽·북쪽 방향에 책상을 두어 통찰력을 높이십시오."]
+                        ).map((t, i) => (
+                          <li key={i} className="text-[11px] text-[#5F5F5F] flex gap-1.5 print:text-xs"><span className="text-[#A3845B] font-bold shrink-0">✓</span>{t}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-[#E2DDD5] print:p-5">
+                      <span className="font-bold text-red-700 block mb-2 print:text-sm">🚫 용신을 해치는 행동</span>
+                      <ul className="space-y-1.5 print:space-y-2">
+                        {(baseEl === "목" ? ["토(土)가 강한 방향(남서쪽)에서 중요한 결정을 피하십시오.", "갈색·황토색 계열의 과도한 사용은 재물 흐름을 막습니다.", "과식이나 과도한 스트레스는 水 기운을 소모시킵니다."] :
+                          baseEl === "화" ? ["수(水)가 강한 방향(북쪽)에서 중요한 결정을 피하십시오.", "검은색·파란색 계열의 과도한 사용이 열정을 식힙니다.", "밤 늦게 일하는 습관이 木 기운을 소모시킵니다."] :
+                          baseEl === "토" ? ["수(水)가 강한 환경에서 재물 결정을 피하십시오.", "과도한 목(木) 기운이 토를 흩어지게 합니다.", "불규칙한 식사가 土 기운을 약화시킵니다."] :
+                          baseEl === "금" ? ["화(火)가 강한 방향(남쪽)에서 감정적 결정을 피하십시오.", "붉은색 계열의 과도한 사용이 결단력을 흐릿하게 합니다.", "불규칙한 수면이 金 기운을 약화시킵니다."] :
+                          ["토(土) 과잉 환경이 물의 흐름을 막아 막힘을 만듭니다.", "황토색·브라운 계열 과잉이 지혜 흐름을 방해합니다.", "정체된 공간에 오래 있으면 水 기운이 고여 정체됩니다."]
+                        ).map((t, i) => (
+                          <li key={i} className="text-[11px] text-[#5F5F5F] flex gap-1.5 print:text-xs"><span className="text-red-500 font-bold shrink-0">✗</span>{t}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center border-t border-[#E2DDD5] pt-4 mt-6 text-[10px] text-[#5F5F5F] print:text-xs print:mt-8">
+                <span className="font-myeongjo">慧眼堂 寶鑑 · 평생 사주팔자 [심화]</span>
+                <span className="font-myeongjo font-bold">8 / {totalPages}</span>
+              </div>
+            </div>
+
+            {/* PAGE 9: 대운 흐름 */}
+            <div className="print-page-wrapper print:text-[13px] print:leading-relaxed">
+              <div>
+                <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 mb-6 print:text-lg print:pb-3 print:mb-8">
+                  <Compass className="w-4.5 h-4.5 text-[#A3845B] print:w-5 print:h-5" />
+                  [심화] 대운(大運) 흐름 분석 — 10년 단위 인생 방향성
+                </h3>
+                <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 mb-6 shadow-sm print:p-8 print:mb-8 print:border-2">
+                  <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] mb-3 print:text-base print:mb-4">대운(大運)이란 무엇인가?</h4>
+                  <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional print:text-[14px] print:leading-loose">
+                    대운(大運)은 10년 주기로 바뀌는 운명의 큰 흐름입니다. 사람의 일생을 10년씩 나누어 각 시기마다 어떤 오행의 기운이 지배적으로 흐르는지를 알려주는 것이 대운입니다. 같은 사주를 타고나도 대운에 따라 전혀 다른 인생 경로를 걷게 되므로, 대운의 흐름을 파악하는 것은 인생 전략을 세우는 핵심 도구입니다.
+                  </p>
+                </div>
+                <div className="space-y-4 print:space-y-5">
+                  {[
+                    { period: "20대 중반 ~ 30대 중반", element: "수(水) 대운", num: 1, desc: "깊은 내공을 쌓는 시기입니다. 겉으로 드러나는 화려한 성취보다는 전문적 역량과 인적 자산을 조용히 쌓아가는 준비의 10년입니다. 이 시기에 배운 지식과 기술이 이후 대운에서 폭발적인 성취의 씨앗이 됩니다.", advice: "기회를 기다리며 실력을 갈고닦으십시오. 좋은 스승과 멘토를 찾아 적극 배우는 것이 이 대운의 핵심 전략입니다." },
+                    { period: "30대 후반 ~ 40대 후반", element: "목(木) 대운", num: 2, desc: "씨앗이 싹을 틔우고 성장하기 시작하는 도약의 10년입니다. 사회적 위치가 빠르게 상승하고 이직, 창업, 독립 등 주체적인 행보를 본격적으로 실천하는 시기입니다.", advice: "네트워크를 최대한 활용하고, 기회가 왔을 때 과감히 도전하십시오. 인맥이 재물로 연결되는 시기입니다." },
+                    { period: "40대 후반 ~ 50대 후반", element: "화(火) 대운", num: 3, desc: "인생의 절정기입니다. 화(火)의 밝고 뜨거운 기운이 귀하의 잠재력을 세상 앞에 완전히 발현시킵니다. 사회적 명성, 경제적 풍요, 직위의 상승이 동시에 찾아오는 인생 최대의 황금기입니다.", advice: "이 시기에 큰 결실을 거두되, 교만하지 않게 겸손함을 유지하는 것이 과유불급을 막는 지혜입니다." },
+                    { period: "50대 후반 ~ 60대 후반", element: "토(土) 대운", num: 4, desc: "결실을 단단히 굳히고 자산을 보존하는 안정의 10년입니다. 대지처럼 넉넉하게 품는 土의 기운이 귀하를 주변의 신뢰와 존경으로 감싸줍니다. 은퇴를 준비하거나 후진을 양성하는 멘토의 역할이 시작됩니다.", advice: "욕심을 줄이고 이미 이룬 것을 지키는 데 집중하십시오. 자선과 베풂이 이 대운의 기운을 더욱 빛나게 합니다." }
+                  ].map((d) => (
+                    <div key={d.num} className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm print:p-6 print:border-2">
+                      <div className="flex items-start justify-between mb-3 print:mb-4">
+                        <div>
+                          <span className="font-myeongjo text-xs font-bold text-[#1A1A1A] block print:text-sm">{d.period}</span>
+                          <span className="text-xs text-[#A3845B] font-semibold print:text-sm">{d.element}</span>
+                        </div>
+                        <span className="text-[10px] bg-[#A3845B]/10 text-[#A3845B] px-2 py-0.5 rounded font-bold print:text-xs">대운 {d.num}기</span>
+                      </div>
+                      <p className="text-xs text-[#5F5F5F] leading-relaxed font-light font-traditional mb-2 print:text-[13px] print:leading-loose print:mb-3">{d.desc}</p>
+                      <div className="bg-[#F6F3EC] border-l-2 border-[#A3845B] pl-3 py-1.5 text-[11px] text-[#2C2C2C] print:text-[12px]">
+                        <strong className="text-[#A3845B]">대운 전략:</strong> {d.advice}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex justify-between items-center border-t border-[#E2DDD5] pt-4 mt-6 text-[10px] text-[#5F5F5F] print:text-xs print:mt-8">
+                <span className="font-myeongjo">慧眼堂 寶鑑 · 평생 사주팔자 [심화]</span>
+                <span className="font-myeongjo font-bold">9 / {totalPages}</span>
+              </div>
+            </div>
+          </>
+        )}
+      </>
+    );
+  };
+
 
   // ----------------------------------------------------
   // Render: 신년 운세 (newyear) - Upgraded based on feedback
   // ----------------------------------------------------
+    // ----------------------------------------------------
+  // Render: 신년 운세 SMS 요약본
+  // ----------------------------------------------------
+  const renderSmsNewYearContent = () => {
+    const smsText = `[혜안당 명리연구소] ${name} 님 2026 병오년 신년운세 요약
+- 병오년 운세 기조: 태양과 대지의 불꽃이 활활 타오르는 형세
+- 나의 기운과의 조화: ${baseEl} 일간으로서 역동적인 세운의 흐름을 얻습니다.
+- 2026년 행동 전략:
+  * 1분기: 변동 제안은 신중히 문서화하십시오.
+  * 2분기: 분노 조절 및 상사와의 마찰을 조심하십시오.
+  * 3분기: 성과 창출과 이직 최적기입니다.
+  * 4분기: 한 해 결실 수확 및 재충전 시기입니다.
+- 고민 처방 솔루션:
+  올해 고민은 급한 팽창력 때문에 충돌로 번지기 쉬우니 가을 전까지는 현 상태를 유지하며 에너지를 비축하시길 권장합니다.
+- 혜안당 보인 공인`;
+
+    return (
+      <div className="max-w-md mx-auto bg-white border border-[#E2DDD5] rounded-xl p-6 shadow-md text-center space-y-6 my-4 print:border-none print:shadow-none">
+        <div className="bg-[#A3845B]/10 p-3 rounded-lg border-b border-[#A3845B]/20 flex justify-between items-center">
+          <span className="text-xs font-semibold text-[#A3845B] tracking-wider">모바일 알림톡 수신본</span>
+          <span className="text-[10px] text-gray-500 font-light">LMS 요약본</span>
+        </div>
+
+        <div className="space-y-4 text-left border border-dashed border-[#A3845B]/30 p-4 rounded bg-[#F9F8F6]/50">
+          <h4 className="font-myeongjo text-sm font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2 text-center">
+            {name} 님의 2026년 신년운세 요약
+          </h4>
+          
+          <div className="space-y-2.5 text-xs text-[#2C2C2C] leading-relaxed">
+            <p><strong>• 올해의 세운 기조:</strong> <span className="font-bold text-[#A3845B]">천지합화(天地合火) - 뜨거운 불꽃</span></p>
+            <p><strong>• 운세 상성 조화:</strong> {baseEl} 일간 기반 2026년 기운 융합</p>
+            
+            <div className="border-t border-[#E2DDD5]/60 pt-2 space-y-1 bg-white p-2 rounded">
+              <span className="font-semibold text-[10px] text-[#A3845B] block">💡 분기별 전술</span>
+              <p><strong>- 1분기:</strong> 이직/변동 제안은 신중히 문서화</p>
+              <p><strong>- 2분기:</strong> 분노 조절 및 감정 충돌 극도 조심</p>
+              <p><strong>- 3분기:</strong> 이직 및 성과 창출의 최적기</p>
+              <p><strong>- 4분기:</strong> 자산 동결 및 평온한 재충전</p>
+            </div>
+            
+            <div className="border-t border-[#E2DDD5]/60 pt-2">
+              <span className="font-semibold text-[10px] text-[#A3845B] block">🔑 올해의 고민 솔루션</span>
+              <p className="text-[11px] text-[#5F5F5F] font-light mt-1 leading-relaxed">
+                올해 적어주신 이 고민은 급한 마음에 충돌로 이어지기 쉬우니, 음력 8월(가을철) 이전까지는 결정을 서두르지 마시고 현상을 유지하며 실력을 다듬으셔야 길합니다.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <button
+            type="button"
+            onClick={() => handleCopySms(smsText)}
+            className="w-full py-2.5 bg-[#A3845B] text-[#F9F8F6] rounded text-xs font-semibold hover:bg-[#86653E] transition-colors shadow-sm"
+          >
+            {copied ? "✓ 문자 복사 완료!" : "💬 전체 문자 내용 복사하기"}
+          </button>
+          <p className="text-[9px] text-gray-400 font-light">
+            * 복사한 내용을 가족이나 지인에게 메신저/문자로 공유하실 수 있습니다.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   const renderNewYearContent = () => {
+    if (reportGrade === "sms") {
+      return renderSmsNewYearContent();
+    }
+    const totalPages = reportGrade === "deep" ? 4 : 3;
     // Generate interaction summary based on user's birth element
     let yearInteractionText = "";
     if (baseEl === "목") {
-      yearInteractionText = "귀하는 청량한 나무(木)의 사주 기질을 지녀, 2026년 병오년의 불꽃(火)을 만나면 내 능력을 넓게 세상에 알리는 활기찬 '식상 대운(食傷大運)'의 해가 됩니다. 잠자던 두뇌 회전이 빨라지고 활동량이 급증하지만, 내 수분이 빨려 나가 피로감과 불만족(욱하는 감정)이 동반되므로 체력의 한계를 늘 감시해야 합니다.";
+      yearInteractionText = "귀하는 청량한 나무(木)의 사주 기질을 지녀, 2026년 병오년의 불꽃(火)을 만나면 내 능력을 넓게 세상에 알리는 활기찬 '식상 대운(食傷大운)'의 해가 됩니다. 잠자던 두뇌 회전이 빨라지고 활동량이 급증하지만, 내 수분이 빨려 나가 피로감과 불만족(욱하는 감정)이 동반되므로 체력의 한계를 늘 감시해야 합니다.";
     } else if (baseEl === "화") {
-      yearInteractionText = "귀하는 태오난 불(火)의 기운을 담아, 2026년의 거대한 동일 불꽃(火)을 보아 사주상 '비겁 대왕(比劫大王)'의 주체적 해가 됩니다. 자존심이 극대화되어 스스로의 독립, 창업, 신규 구상이 꿈틀거립니다. 다만, 강한 불끼리 충돌하여 동업자 간 자존심 대립이나 지인과의 시비가 커질 우려가 크니 한 걸음 양보가 필수입니다.";
+      yearInteractionText = "귀하는 태오난 불(火)의 기운을 담아, 2026년의 거대한 동일 불꽃(火)을 보아 사주상 '비겁 대왕(比劫大왕)'의 주체적 해가 됩니다. 자존심이 극대화되어 스스로의 독립, 창업, 신규 구상이 꿈틀거립니다. 다만, 강한 불끼리 충돌하여 동업자 간 자존심 대립이나 지인과의 시비가 커질 우려가 크니 한 걸음 양보가 필수입니다.";
     } else if (baseEl === "토") {
       yearInteractionText = "귀하는 넉넉한 대지(土)의 기운을 품고 태어나, 2026년의 불(火)이 흙을 다정히 덥혀주는 '인성 대운(印星大運)'의 매우 길한 조화를 얻습니다. 공부운, 자격증, 관청의 인허가 등 문서 취득에 큰 공이 따르고 나를 후원해 주는 조력자나 귀인의 등장이 강력하게 보장되는 은혜로운 한 해가 될 것입니다.";
     } else if (baseEl === "금") {
@@ -540,163 +1129,193 @@ function ResultContent() {
 
     return (
       <>
-        {/* Title Block */}
-        <div className="text-center space-y-2 mb-12">
-          <span className="text-xs tracking-widest text-[#A3845B] font-bold block">丙午年 土亭秘訣</span>
-          <h1 className="font-myeongjo text-3xl md:text-4xl font-bold text-[#1A1A1A] tracking-wider">
-            2026년 병오년(丙午年) 신년 운세
-          </h1>
-          <div className="w-32 h-0.5 bg-[#A3845B]/40 mx-auto my-3" />
-          <p className="text-xs text-[#5F5F5F] font-light">
-            태양과 대지의 불꽃이 얽히는 해, 의뢰인 {name}님이 올해를 무사히 헤쳐 나가고 행운을 움켜쥐기 위한 실천 지침서입니다.
-          </p>
-        </div>
+        {/* --- PAGE 1: 2026 병오년 신년 운세 --- */}
+        <div className="print-page-wrapper print:text-[13.5px] print:leading-relaxed">
+          <div>
+            {/* Title Block */}
+            <div className="text-center space-y-2 mb-8 print:mb-10">
+              <span className="text-xs tracking-widest text-[#A3845B] font-bold block print:text-sm">병오년 토정비결</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A] tracking-wider print:text-3xl">
+                제 1장. 2026년 세운 및 기질 융합
+              </h2>
+              <div className="w-24 h-0.5 bg-[#A3845B]/30 mx-auto my-2" />
+            </div>
 
-        {/* 2026 Meaning Section */}
-        <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 mb-8 shadow-sm space-y-3">
-          <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] flex items-center gap-1.5">
-            <Compass className="w-4 h-4 text-[#A3845B]" />
-            2026년 병오년(丙午年)은 어떤 해인가?
-          </h4>
-          <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
-            올해 <strong>병오년(丙午年)은 하늘의 밝은 태양(丙火)과 땅 위의 강력한 말(午火)이 결합된 '천지합화(天地合火)'의 해</strong>입니다. 온 세상이 그 어느 해보다 뜨겁고 역동적인 에너지가 급속도로 팽창하는 해로, 감추어졌던 진실이 백일하에 드러나고 새로운 트렌드나 혁신적 변화가 가장 강렬하게 도래하는 혁명적 주기입니다.
-          </p>
-          <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional border-t border-[#E2DDD5]/60 pt-3">
-            <strong>{name}님의 타고난 기질과 병오년 불꽃의 궁합:</strong><br />
-            {yearInteractionText}
-          </p>
-        </div>
+            {/* 2026 Meaning Section */}
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 mb-8 shadow-sm space-y-3 print:p-8 print:border-2">
+              <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] flex items-center gap-1.5 print:text-base print:font-bold">
+                <Compass className="w-4 h-4 text-[#A3845B] print:w-5 print:h-5" />
+                2026년 병오년(丙午年)은 어떤 해인가?
+              </h4>
+              <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional print:text-[14px] print:leading-loose">
+                올해 <strong>병오년(丙午年)은 하늘의 밝은 태양(丙火)과 땅 위의 강력한 말(午火)이 결합된 '천지합화(天地合火)'의 해</strong>입니다. 온 세상이 그 어느 해보다 뜨겁고 역동적인 에너지가 급속도로 팽창하는 해로, 감추어졌던 진실이 백일하에 드러나고 새로운 트렌드나 혁신적 변화가 가장 강렬하게 도래하는 혁명적 주기입니다.
+              </p>
+              <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional border-t border-[#E2DDD5]/60 pt-3 print:text-[14px] print:leading-loose print:pt-4">
+                <strong>{name}님의 타고난 기질과 병오년 불꽃의 궁합:</strong><br />
+                {yearInteractionText}
+              </p>
+            </div>
 
-        {/* Worry Context Analysis if exists */}
-        {worryText && (
-          <div className="bg-[#F6F3EC] border-2 border-red-200/50 rounded-lg p-5 mb-8 shadow-sm space-y-3">
-            <span className="font-bold text-red-600 text-xs flex items-center gap-1">
-              <AlertCircle className="w-3.5 h-3.5" />
-              올해의 1순위 극복 과제: "{decodeURIComponent(worryText)}"
-            </span>
-            <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
-              올해 귀하께서 질문하신 이 안건은 병오년 특유의 <strong>'조급한 감정적 충돌'과 '급작스러운 팽창력'</strong> 때문에 발생하거나 악화될 위험이 큽니다. 현재 답을 억지로 짜내기 위해 발을 동동 구르기보다, 음력 윤달과 절기가 겹치는 가을 문턱 이전까지는 현 상태를 유지하며 에너지를 충전하는 정중동(靜中動)의 전술이 절실합니다.
-            </p>
+            {/* Worry Context Analysis if exists */}
+            {worryText && (
+              <div className="bg-[#F6F3EC] border-2 border-red-200/50 rounded-lg p-5 mb-8 shadow-sm space-y-3 print:p-8 print:border-red-300">
+                <span className="font-bold text-red-600 text-xs flex items-center gap-1 print:text-sm">
+                  <AlertCircle className="w-3.5 h-3.5 print:w-4 print:h-4" />
+                  올해의 1순위 극복 과제: "{decodeURIComponent(worryText)}"
+                </span>
+                <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional print:text-[14px] print:leading-loose">
+                  올해 귀하께서 질문하신 이 안건은 병오년 특유의 <strong>'조급한 감정적 충돌'과 '급작스러운 팽창력'</strong> 때문에 발생하거나 악화될 위험이 큽니다. 현재 답을 억지로 짜내기 위해 발을 동동 구르기보다, 음력 윤달과 절기가 겹치는 가을 문턱 이전까지는 현 상태를 유지하며 에너지를 충전하는 정중동(靜中동)의 전술이 절실합니다.
+                </p>
+              </div>
+            )}
           </div>
-        )}
 
-        {/* Quarterly 상황 & 전술 Playbook */}
-        <div className="space-y-4 mb-8">
-          <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2">
-            <CalendarDays className="w-4.5 h-4.5 text-[#A3845B]" />
-            2026년 분기별 흐름과 행동 전술
-          </h3>
-
-          <div className="space-y-4">
-            {/* Q1 */}
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2.5">
-              <span className="text-xs font-bold text-[#A3845B] block border-b border-[#E2DDD5]/50 pb-1">
-                🌸 1분기 (음력 1~3월) : 새 기운의 도래와 설계의 시작
-              </span>
-              <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light">
-                <strong>상황 상황:</strong> 새해가 시작되며 기분 좋은 변동운이 스쳐 지나갑니다. 이직 제안이나 새로운 인간관계가 생기지만 아직 내실이 완성되지 않은 단계입니다. 계약 등을 체결할 때 조건 조율에 어려움이 있을 수 있습니다.<br />
-                <strong>생존 전술:</strong> 타인의 제안에 귀가 솔깃하더라도 즉답을 미루고 일주일 간 자료를 수집하십시오. 특히 대인관계에서 사소한 약속을 꼭 문서화하여 뒷날의 배신수를 미연에 방지하는 실천이 필요합니다.
-              </p>
-            </div>
-
-            {/* Q2 */}
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2.5">
-              <span className="text-xs font-bold text-[#A3845B] block border-b border-[#E2DDD5]/50 pb-1">
-                ☀️ 2분기 (음력 4~6월) : 에너지의 초과 팽창과 충돌 주의보
-              </span>
-              <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light">
-                <strong>상황 상황:</strong> 1년 중 화(火) 기운이 가장 폭발하는 시기로 스트레스 지수가 극대화됩니다. 욱하는 성정 때문에 상사나 배우자와의 충돌 수가 짙어지며, 재물 투자에서 욕심을 내다 손재수가 생기기 쉬운 최대의 고비입니다.<br />
-                <strong>생존 전술:</strong> 중요한 도장 날인이나 퇴사 결단은 절대 이 시기에 내리지 마십시오. 몸에 수분을 공급하고 찬 성질의 음식을 먹어 혈압을 낮추며, 갈등 상황에서 10초간 눈을 감고 대답하는 침묵 수련이 운을 살립니다.
-              </p>
-            </div>
-
-            {/* Q3 */}
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2.5">
-              <span className="text-xs font-bold text-[#A3845B] block border-b border-[#E2DDD5]/50 pb-1">
-                🍁 3분기 (음력 7~9월) : 가을의 서리 기운과 안정적인 조정
-              </span>
-              <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light">
-                <strong>상황 상황:</strong> 뜨거운 화기를 금(金)의 서리 기운이 식혀주며 이성이 돌아옵니다. 그동안 미뤄졌던 이직이 가을에 결정 나거나, 관계의 오해가 풀려 안정감을 되찾습니다. 건강상의 회복 탄력성도 최고조에 달합니다.<br />
-                <strong>생존 전술:</strong> 상반기에 기획했던 안건을 이때 세상에 내어놓으십시오. 이력서를 넣거나 투자 포트폴리오를 조정하기에 가장 완벽한 시기입니다. 귀인의 조언을 경청하면 뜻밖의 소득을 얻습니다.
-              </p>
-            </div>
-
-            {/* Q4 */}
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2.5">
-              <span className="text-xs font-bold text-[#A3845B] block border-b border-[#E2DDD5]/50 pb-1">
-                ❄️ 4분기 (음력 10~12월) : 알찬 수확과 평온한 마무리
-              </span>
-              <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light">
-                <strong>상황 상황:</strong> 대지의 기운이 겨울의 차가운 물속에 고정되며 금전 보상과 가정이 화평해집니다. 지나치게 욕심내지 않았다면 1년 농사의 달콤한 보너스를 챙기며 한 해를 미소 지으며 보낼 수 있습니다.<br />
-                <strong>생존 전술:</strong> 번 돈의 절반은 비상금으로 동결하여 내년을 준비하십시오. 가족과 뜻깊은 여행을 가거나 나를 위한 작은 사치를 누려 에너지를 재충전하고 정서적 균형을 가다듬는 휴식을 누려야 합니다.
-              </p>
-            </div>
+          {/* Footer Seal */}
+          <div className="flex justify-between items-center border-t border-[#E2DDD5] pt-4 mt-6 text-[10px] text-[#5F5F5F] print:text-xs">
+            <span className="font-myeongjo">慧眼堂 寶鑑 · 신년운세</span>
+            <span className="font-myeongjo font-bold">1 / {totalPages}</span>
           </div>
         </div>
 
-        {/* 피흉처방 (Avoid Bad Luck) */}
-        <div className="bg-red-50/50 border border-red-200 rounded-lg p-5 mb-6 space-y-3">
-          <h4 className="font-myeongjo text-sm font-bold text-red-700 flex items-center gap-1.5">
-            <AlertCircle className="w-4 h-4" />
-            피흉(避凶) 처방: 올해의 액난과 흉운을 무사히 피하는 비법
-          </h4>
-          <ul className="text-xs text-[#5F5F5F] leading-relaxed space-y-2 font-light">
-            <li className="flex gap-1.5 items-start">
-              <span className="text-red-600 font-bold">•</span>
-              <strong>5~6월 분노 통제:</strong> 병오년의 불꽃이 가장 매섭게 튀는 여름철(음력 5~6월)에는 절대 시비에 휘말리지 마십시오. 시비가 있을 때는 '그럴 수 있지'라는 문장을 입에 달고 사셔야 화를 피합니다.
-            </li>
-            <li className="flex gap-1.5 items-start">
-              <span className="text-red-600 font-bold">•</span>
-              <strong>도장 찍기 금지 수칙:</strong> 올해의 성급함은 나쁜 계약으로 연결되기 쉽습니다. 어떠한 서류 체결이든 당일 즉각 승인하지 마시고, 최소 하룻밤을 자고 타인의 검토를 거친 후 서명하십시오.
-            </li>
-            <li className="flex gap-1.5 items-start">
-              <span className="text-red-600 font-bold">•</span>
-              <strong>화(火)성 질환 예방:</strong> 몸에 열이 몰려 두통, 피부 발진, 심혈관계 이상이 올 수 있습니다. 매일 차가운 물이나 오이, 수박 같은 음의 기질을 지닌 식품을 섭취해 몸속 온도를 낮추십시오.
-            </li>
-          </ul>
+        {/* --- PAGE 2: 분기별 흐름과 행동 전술 --- */}
+        <div className="print-page-wrapper print:text-[13.5px] print:leading-relaxed">
+          <div>
+            {/* Quarterly 상황 & 전술 Playbook */}
+            <div className="space-y-4 mb-4">
+              <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 print:text-lg print:pb-3">
+                <CalendarDays className="w-4.5 h-4.5 text-[#A3845B] print:w-5 print:h-5" />
+                2026년 분기별 흐름과 행동 전술
+              </h3>
+
+              <div className="space-y-4 print:space-y-5">
+                {/* Q1 */}
+                <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2.5 print:p-6 print:border-2">
+                  <span className="text-xs font-bold text-[#A3845B] block border-b border-[#E2DDD5]/50 pb-1 print:text-sm print:pb-2">
+                    🌸 1분기 (음력 1~3월) : 새 기운의 도래와 설계의 시작
+                  </span>
+                  <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light print:text-[12.5px] print:leading-relaxed">
+                    <strong>상황 상황:</strong> 새해가 시작되며 기분 좋은 변동운이 스쳐 지나갑니다. 이직 제안이나 새로운 인간관계가 생기지만 아직 내실이 완성되지 않은 단계입니다. 계약 등을 체결할 때 조건 조율에 어려움이 있을 수 있습니다.<br />
+                    <strong>생존 전술:</strong> 타인의 제안에 귀가 솔깃하더라도 즉답을 미루고 일주일 간 자료를 수집하십시오. 특히 대인관계에서 사소한 약속을 꼭 문서화하여 뒷날의 배신수를 미연에 방지하는 실천이 필요합니다.
+                  </p>
+                </div>
+
+                {/* Q2 */}
+                <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2.5 print:p-6 print:border-2">
+                  <span className="text-xs font-bold text-[#A3845B] block border-b border-[#E2DDD5]/50 pb-1 print:text-sm print:pb-2">
+                    ☀️ 2분기 (음력 4~6월) : 에너지의 초과 팽창과 충돌 주의보
+                  </span>
+                  <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light print:text-[12.5px] print:leading-relaxed">
+                    <strong>상황 상황:</strong> 1년 중 화(火) 기운이 가장 폭발하는 시기로 스트레스 지수가 극대화됩니다. 욱하는 성정 때문에 상사나 배우자와의 충돌 수가 짙어지며, 재물 투자에서 욕심을 내다 손재수가 생기기 쉬운 최대의 고비입니다.<br />
+                    <strong>생존 전술:</strong> 중요한 도장 날인이나 퇴사 결단은 절대 이 시기에 내리지 마십시오. 몸에 수분을 공급하고 찬 성질의 음식을 먹어 혈압을 낮추며, 갈등 상황에서 10초간 눈을 감고 대답하는 침묵 수련이 운을 살립니다.
+                  </p>
+                </div>
+
+                {/* Q3 */}
+                <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2.5 print:p-6 print:border-2">
+                  <span className="text-xs font-bold text-[#A3845B] block border-b border-[#E2DDD5]/50 pb-1 print:text-sm print:pb-2">
+                    🍁 3분기 (음력 7~9월) : 가을의 서리 기운과 안정적인 조정
+                  </span>
+                  <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light print:text-[12.5px] print:leading-relaxed">
+                    <strong>상황 상황:</strong> 뜨거운 화기를 금(金)의 서리 기운이 식혀주며 이성이 돌아옵니다. 그동안 미뤄졌던 이직이 가을에 결정 나거나, 관계의 오해가 풀려 안정감을 되찾습니다. 건강상의 회복 탄력성도 최고조에 달합니다.<br />
+                    <strong>생존 전술:</strong> 상반기에 기획했던 안건을 이때 세상에 내어놓으십시오. 이력서를 넣거나 투자 포트폴리오를 조정하기에 가장 완벽한 시기입니다. 귀인의 조언을 경청하면 뜻밖의 소득을 얻습니다.
+                  </p>
+                </div>
+
+                {/* Q4 */}
+                <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2.5 print:p-6 print:border-2">
+                  <span className="text-xs font-bold text-[#A3845B] block border-b border-[#E2DDD5]/50 pb-1 print:text-sm print:pb-2">
+                    ❄️ 4분기 (음력 10~12월) : 알찬 수확과 평온한 마무리
+                  </span>
+                  <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light print:text-[12.5px] print:leading-relaxed">
+                    <strong>상황 상황:</strong> 대지의 기운이 겨울의 차가운 물속에 고정되며 금전 보상과 가정이 화평해집니다. 지나치게 욕심내지 않았다면 1년 농사의 달콤한 보너스를 챙기며 한 해를 미소 지으며 보낼 수 있습니다.<br />
+                    <strong>생존 전술:</strong> 번 돈의 절반은 비상금으로 동결하여 내년을 준비하십시오. 가족과 뜻깊은 여행을 가거나 나를 위한 작은 사치를 누려 에너지를 재충전하고 정서적 균형을 가다듬는 휴식을 누려야 합니다.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer Seal */}
+          <div className="flex justify-between items-center border-t border-[#E2DDD5] pt-4 mt-6 text-[10px] text-[#5F5F5F] print:text-xs">
+            <span className="font-myeongjo">慧眼堂 寶鑑 · 신년운세</span>
+            <span className="font-myeongjo font-bold">2 / {totalPages}</span>
+          </div>
         </div>
 
-        {/* 추길처방 (Improve Fortune To-Dos) */}
-        <div className="bg-[#F6F3EC] border border-[#E2DDD5] rounded-lg p-5 space-y-3 shadow-sm">
-          <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] flex items-center gap-1.5">
-            <CheckSquare className="w-4 h-4 text-[#A3845B]" />
-            추길(趨吉) 처방: 운명을 내 것으로 만드는 3대 개운 실천 To-Do 리스트
-          </h4>
-          <div className="space-y-3 text-xs text-[#2C2C2C]">
-            <div className="flex gap-3 items-start border-b border-[#E2DDD5]/50 pb-2">
-              <span className="bg-[#A3845B] text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</span>
-              <div>
-                <strong className="block text-[#1A1A1A]">침실 및 사무실 남동쪽 공간 정비 (공간 개운)</strong>
-                <span className="text-foreground-muted font-light block mt-0.5 leading-relaxed">
-                  매일 아침 남쪽과 동쪽 창문을 열어 10분 이상 공기를 순환시키고, 남쪽 구석의 어둡고 먼지가 쌓인 곳에 스탠드 조명을 켜거나 맑은 물이 담긴 컵을 배치하여 화기를 중화하십시오.
-                </span>
-              </div>
+        {/* --- PAGE 3: 피흉 처방 및 추길 처방 --- */}
+        <div className="print-page-wrapper print:text-[13.5px] print:leading-relaxed">
+          <div>
+            {/* 피흉처방 (Avoid Bad Luck) */}
+            <div className="bg-red-50/50 border border-red-200 rounded-lg p-5 mb-6 space-y-3 print:p-6 print:mb-8 print:border-2">
+              <h4 className="font-myeongjo text-sm font-bold text-red-700 flex items-center gap-1.5 print:text-base print:font-bold">
+                <AlertCircle className="w-4 h-4 text-red-700" />
+                피흉(避凶) 처방: 올해의 액난과 흉운을 무사히 피하는 비법
+              </h4>
+              <ul className="text-xs text-[#5F5F5F] leading-relaxed space-y-2 font-light print:text-[13px] print:leading-relaxed">
+                <li className="flex gap-1.5 items-start">
+                  <span className="text-red-600 font-bold">•</span>
+                  <strong>5~6월 분노 통제:</strong> 병오년의 불꽃이 가장 매섭게 튀는 여름철(음력 5~6월)에는 절대 시비에 휘말리지 마십시오. 시비가 있을 때는 '그럴 수 있지'라는 문장을 입에 달고 사셔야 화를 피합니다.
+                </li>
+                <li className="flex gap-1.5 items-start">
+                  <span className="text-red-600 font-bold">•</span>
+                  <strong>도장 찍기 금지 수칙:</strong> 올해의 성급함은 나쁜 계약으로 연결되기 쉽습니다. 어떠한 서류 체결이든 당일 즉각 승인하지 마시고, 최소 하룻밤을 자고 타인의 검토를 거친 후 서명하십시오.
+                </li>
+                <li className="flex gap-1.5 items-start">
+                  <span className="text-red-600 font-bold">•</span>
+                  <strong>화(火)성 질환 예방:</strong> 몸에 열이 몰려 두통, 피부 발진, 심혈관계 이상이 올 수 있습니다. 매일 차가운 물이나 오이, 수박 같은 음의 기질을 지닌 식품을 섭취해 몸속 온도를 낮추십시오.
+                </li>
+              </ul>
             </div>
 
-            <div className="flex gap-3 items-start border-b border-[#E2DDD5]/50 pb-2">
-              <span className="bg-[#A3845B] text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</span>
-              <div>
-                <strong className="block text-[#1A1A1A]">물(水) 에너지를 흡수하는 저녁 족욕 루틴 (생리 개운)</strong>
-                <span className="text-foreground-muted font-light block mt-0.5 leading-relaxed">
-                  매주 3회 이상 취침 전 15분간 따뜻한 소금물로 족욕을 실천하십시오. 화 기운으로 날뛰는 열기를 아래로 끌어내려 밤사이 뇌의 피로를 지우고 깊은 통찰력을 기르는 신체 조율법입니다.
-                </span>
-              </div>
-            </div>
+            {/* 추길처방 (Improve Fortune To-Dos) */}
+            <div className="bg-[#F6F3EC] border border-[#E2DDD5] rounded-lg p-5 space-y-3 shadow-sm print:p-6 print:border-2">
+              <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] flex items-center gap-1.5 print:text-base print:font-bold">
+                <CheckSquare className="w-4 h-4 text-[#A3845B]" />
+                추길(趨吉) 처방: 운명을 내 것으로 만드는 3대 개운 실천 To-Do 리스트
+              </h4>
+              <div className="space-y-3 text-xs text-[#2C2C2C] print:space-y-4">
+                <div className="flex gap-3 items-start border-b border-[#E2DDD5]/50 pb-2 print:pb-3">
+                  <span className="bg-[#A3845B] text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 print:w-6 print:h-6 print:text-[11px]">1</span>
+                  <div>
+                    <strong className="block text-[#1A1A1A] print:text-[13px]">침실 및 사무실 남동쪽 공간 정비 (공간 개운)</strong>
+                    <span className="text-foreground-muted font-light block mt-0.5 leading-relaxed print:text-[12px]">
+                      매일 아침 남쪽과 동쪽 창문을 열어 10분 이상 공기를 순환시키고, 남쪽 구석의 어둡고 먼지가 쌓인 곳에 스탠드 조명을 켜거나 맑은 물이 담긴 컵을 배치하여 화기를 중화하십시오.
+                    </span>
+                  </div>
+                </div>
 
-            <div className="flex gap-3 items-start">
-              <span className="bg-[#A3845B] text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</span>
-              <div>
-                <strong className="block text-[#1A1A1A]">주 1회 자연 속 녹색 숲길 걷기 (행동 개운)</strong>
-                <span className="text-foreground-muted font-light block mt-0.5 leading-relaxed">
-                  나무가 우거진 숲길이나 공원을 걸으며 나무의 청색(木) 기운을 온몸으로 호흡하십시오. 올해는 기운의 소모가 격렬하므로, 대자연의 생기를 정기적으로 흡입해 주는 것만으로도 나쁜 시비수를 완전히 튕겨낼 수 있습니다.
-                </span>
+                <div className="flex gap-3 items-start border-b border-[#E2DDD5]/50 pb-2 print:pb-3">
+                  <span className="bg-[#A3845B] text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 print:w-6 print:h-6 print:text-[11px]">2</span>
+                  <div>
+                    <strong className="block text-[#1A1A1A] print:text-[13px]">물(水) 에너지를 흡수하는 저녁 족욕 루틴 (생리 개운)</strong>
+                    <span className="text-foreground-muted font-light block mt-0.5 leading-relaxed print:text-[12px]">
+                      매주 3회 이상 취침 전 15분간 따뜻한 소금물로 족욕을 실천하십시오. 화 기운으로 날뛰는 열기를 아래로 끌어내려 밤사이 뇌의 피로를 지우고 깊은 통찰력을 기르는 신체 조율법입니다.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 items-start">
+                  <span className="bg-[#A3845B] text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 print:w-6 print:h-6 print:text-[11px]">3</span>
+                  <div>
+                    <strong className="block text-[#1A1A1A] print:text-[13px]">주 1회 자연 속 녹색 숲길 걷기 (행동 개운)</strong>
+                    <span className="text-foreground-muted font-light block mt-0.5 leading-relaxed print:text-[12px]">
+                      나무가 우거진 숲길이나 공원을 걸으며 나무의 청색(木) 기운을 온몸으로 호흡하십시오. 올해는 기운의 소모가 격렬하므로, 대자연의 생기를 정기적으로 흡입해 주는 것만으로도 나쁜 시비수를 완전히 튕겨낼 수 있습니다.
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
+
+          {/* Footer Seal */}
+          <div className="flex justify-between items-center border-t border-[#E2DDD5] pt-4 mt-6 text-[10px] text-[#5F5F5F] print:text-xs">
+            <span className="font-myeongjo">慧眼堂 寶鑑 · 신년운세</span>
+            <span className="font-myeongjo font-bold">3 / {totalPages}</span>
           </div>
         </div>
       </>
     );
-  };
+  };;
 
   // ----------------------------------------------------
   // Render: 재물 & 비즈니스운 (wealth) - Upgraded to Premium
@@ -738,15 +1357,12 @@ function ResultContent() {
     return (
       <>
         {/* Header Section */}
-        <div className="text-center space-y-2 mb-12">
-          <span className="text-xs tracking-widest text-[#5F7A68] font-bold block">財物 運勢 寶鑑</span>
-          <h1 className="font-myeongjo text-3xl md:text-4xl font-bold text-[#1A1A1A] tracking-wider">
-            평생 재물 & 비즈니스운 보감
-          </h1>
-          <div className="w-32 h-0.5 bg-[#5F7A68]/40 mx-auto my-3" />
-          <p className="text-xs text-[#5F5F5F] font-light">
-            의뢰인 {name}님이 타고나신 재물창고의 크기와 비즈니스 수익 모델을 사주팔자의 편재/정재 기운으로 풀어냈습니다.
-          </p>
+        <div className="text-center space-y-2 mb-8">
+          <span className="text-xs tracking-widest text-[#5F7A68] font-bold block">재물 운세 보감</span>
+          <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A] tracking-wider">
+            제 1장. 평생 재물 및 비즈니스 성향 진단
+          </h2>
+          <div className="w-24 h-0.5 bg-[#5F7A68]/30 mx-auto my-2" />
         </div>
 
         {/* User Worry Context Analysis */}
@@ -972,15 +1588,12 @@ function ResultContent() {
     return (
       <>
         {/* Header Block */}
-        <div className="text-center space-y-2 mb-12">
-          <span className="text-xs tracking-widest text-red-600 font-bold block">慧眼堂 秘密 타로</span>
-          <h1 className="font-myeongjo text-3xl md:text-4xl font-bold text-[#1A1A1A] tracking-wider">
-            상대방 속마음 비밀 타로 레코드
-          </h1>
-          <div className="w-32 h-0.5 bg-red-600/30 mx-auto my-3" />
-          <p className="text-xs text-[#5F5F5F] font-light">
-            의뢰인 {name}님이 직접 선택하신 3장의 카드에 투영된 우주적 기운과 상대방의 속내를 직관적으로 해독해 낸 1만원 비밀 레코드입니다.
-          </p>
+        <div className="text-center space-y-2 mb-8">
+          <span className="text-xs tracking-widest text-red-600 font-bold block">혜안당 비밀 타로</span>
+          <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A] tracking-wider">
+            제 1장. 상대방 속마음 비밀 타로 레코드
+          </h2>
+          <div className="w-24 h-0.5 bg-red-600/30 mx-auto my-2" />
         </div>
 
         {/* Process Guide Box */}
@@ -1120,15 +1733,12 @@ function ResultContent() {
     return (
       <>
         {/* Title Block */}
-        <div className="text-center space-y-2 mb-12">
-          <span className="text-xs tracking-widest text-red-700 font-bold block">百年偕老 姻緣宮合</span>
-          <h1 className="font-myeongjo text-3xl md:text-4xl font-bold text-[#1A1A1A] tracking-wider">
-            연인 궁합
-          </h1>
-          <div className="w-32 h-0.5 bg-[#A3845B]/40 mx-auto my-3" />
-          <p className="text-xs text-[#5F5F5F] font-light">
-            명리학적 정밀 오행 분석과 일지 간의 조화를 통해 두 분의 상성과 백년해로 지수를 짚어드립니다.
-          </p>
+        <div className="text-center space-y-2 mb-8">
+          <span className="text-xs tracking-widest text-red-700 font-bold block">백년해로 인연궁합</span>
+          <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A] tracking-wider">
+            제 1장. 연인 궁합 상성 분석
+          </h2>
+          <div className="w-24 h-0.5 bg-[#A3845B]/30 mx-auto my-2" />
         </div>
 
         {/* Score Board Cards */}
@@ -1370,15 +1980,12 @@ function ResultContent() {
     return (
       <>
         {/* 타이틀 */}
-        <div className="text-center space-y-2 mb-12">
-          <span className="text-xs tracking-widest text-[#6B5B8B] font-bold block">夢兆 寶鑑 · 明理解夢</span>
-          <h1 className="font-myeongjo text-3xl md:text-4xl font-bold text-[#1A1A1A] tracking-wider">
-            꿈해몽 & 사주 동조 분석 보감
-          </h1>
-          <div className="w-32 h-0.5 bg-[#6B5B8B]/40 mx-auto my-3" />
-          <p className="text-xs text-[#5F5F5F] font-light">
-            의뢰인 {name}님의 사주 오행과 꿈속 기운의 동조 현상을 전통 명리학으로 해석한 맞춤 해몽 보고서입니다.
-          </p>
+        <div className="text-center space-y-2 mb-8">
+          <span className="text-xs tracking-widest text-[#6B5B8B] font-bold block">몽조 보감 · 명리해몽</span>
+          <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A] tracking-wider">
+            제 1장. 꿈해몽 및 사주 동조 분석
+          </h2>
+          <div className="w-24 h-0.5 bg-[#6B5B8B]/30 mx-auto my-2" />
         </div>
 
         {/* 꿈 내용 원문 */}
@@ -1592,51 +2199,93 @@ function ResultContent() {
           </button>
         </div>
 
-        {/* Summary Info Header Block */}
-        <div className="border border-[#E2DDD5] bg-[#F9F8F6]/80 rounded p-5 mb-8 space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <span className="text-[10px] text-[#5F5F5F] block">의뢰인 성명</span>
-              <span className="font-myeongjo text-base font-bold text-[#1A1A1A]">{name} 님 ({gender})</span>
-            </div>
-            <div className="space-y-1">
-              <span className="text-[10px] text-[#5F5F5F] block">의뢰인 출생 정보</span>
-              <span className="text-xs font-medium text-[#1A1A1A]">
-                {year}년 {month}월 {day}일 {hour} ({calendar === "solar" ? "양력" : "음력"})
-              </span>
-            </div>
+        {/* Cover Page (표지) - 인쇄 시 단독 1페이지 차지 */}
+        <div className="print:break-after-page min-h-[calc(100vh-120px)] print:min-h-screen flex flex-col justify-between py-16 px-6 border-b-2 border-dashed border-[#A3845B]/40 print:border-none relative">
+          
+          {/* Top Branding */}
+          <div className="text-center space-y-2 mt-4">
+            <span className="text-sm tracking-[0.25em] text-[#A3845B] font-bold block font-myeongjo">
+              혜안당 보감
+            </span>
+            <div className="w-16 h-0.5 bg-[#A3845B]/40 mx-auto" />
           </div>
 
-          {type === "gunghap" && (
-            <div className="border-t border-[#E2DDD5] pt-3 grid md:grid-cols-2 gap-4">
+          {/* Main Title */}
+          <div className="text-center my-auto py-12 space-y-6">
+            <h1 className="font-myeongjo text-4xl md:text-5xl font-extrabold text-[#1A1A1A] tracking-widest leading-tight print:text-5xl">
+              {type === "saju" && "평생 종합 사주팔자 보고서"}
+              {type === "newyear" && "신년 운세 - 토정비결 보고서"}
+              {type === "wealth" && "재물 및 비즈니스 운세 보고서"}
+              {type === "tarot" && "속마음 타로 심리 분석 보고서"}
+              {type === "gunghap" && "연인 궁합 정밀 분석 보고서"}
+              {type === "dream" && "꿈 해몽 및 개운 처방 보고서"}
+            </h1>
+            <p className="text-sm text-[#5F5F5F] tracking-wide font-light">
+              명리학적 천간 지지의 상생상극을 조율한 개운 보감
+            </p>
+          </div>
+
+          {/* User Information Block */}
+          <div className="border border-[#E2DDD5] bg-[#F9F8F6]/90 rounded-lg p-6 max-w-xl mx-auto w-full space-y-4 shadow-sm print:bg-white print:border-2">
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-red-700 block font-semibold">상대방 성명</span>
-                <span className="font-myeongjo text-base font-bold text-[#1A1A1A]">{partnerName} 님 ({partnerGender})</span>
+                <span className="text-[10px] text-[#A3845B] font-semibold block">의뢰인 성명</span>
+                <span className="font-myeongjo text-base font-bold text-[#1A1A1A]">{name} 님 ({gender})</span>
               </div>
               <div className="space-y-1">
-                <span className="text-[10px] text-[#5F5F5F] block">상대방 출생 정보</span>
-                <span className="text-xs font-medium text-[#1A1A1A]">
-                  {partnerYear}년 {partnerMonth}월 {partnerDay}일 {partnerHour === "unknown" ? "시간 모름" : partnerHour + "시"} ({partnerCalendar === "solar" ? "양력" : "음력"})
+                <span className="text-[10px] text-[#A3845B] font-semibold block">의뢰인 출생 정보</span>
+                <span className="text-xs font-semibold text-[#1A1A1A]">
+                  {year}년 {month}월 {day}일 {hour} ({calendar === "solar" ? "양력" : "음력"})
                 </span>
               </div>
             </div>
-          )}
 
-          <div className="border-t border-[#E2DDD5] pt-3 grid md:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <span className="text-[10px] text-[#5F5F5F] block">의뢰 운세 구분</span>
-              <span className="text-xs font-bold text-[#A3845B]">
-                {type === "saju" && "평생 종합 사주팔자 (30,000원)"}
-                {type === "newyear" && "신년 운세 / 토정비결 (35,000원)"}
-                {type === "wealth" && "재물 & 비즈니스운 (20,000원)"}
-                {type === "tarot" && "그 사람의 속마음 퀵 타로 (10,000원)"}
-                {type === "gunghap" && "연인 궁합 (30,000원)"}
-              </span>
+            {type === "gunghap" && (
+              <div className="border-t border-[#E2DDD5]/70 pt-3 grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <span className="text-[10px] text-red-700 font-semibold block">상대방 성명</span>
+                  <span className="font-myeongjo text-base font-bold text-[#1A1A1A]">{partnerName} 님 ({partnerGender})</span>
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[10px] text-[#A3845B] font-semibold block">상대방 출생 정보</span>
+                  <span className="text-xs font-semibold text-[#1A1A1A]">
+                    {partnerYear}년 {partnerMonth}월 {partnerDay}일 {partnerHour === "unknown" ? "시간 모름" : partnerHour + "시"} ({partnerCalendar === "solar" ? "양력" : "음력"})
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <div className="border-t border-[#E2DDD5]/70 pt-3 grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <span className="text-[10px] text-[#A3845B] font-semibold block">의뢰 구분 및 등급</span>
+                <span className="text-xs font-bold text-[#A3845B]">
+                  {type === "saju" && `평생 종합 사주 (${reportGrade === "deep" ? "심화" : "고급"})`}
+                  {type === "newyear" && "신년 운세 / 토정비결"}
+                  {type === "wealth" && "재물 & 비즈니스운"}
+                  {type === "tarot" && "속마음 퀵 타로"}
+                  {type === "gunghap" && "연인 궁합 정밀 분석"}
+                  {type === "dream" && "꿈 해몽 & 개운 처방"}
+                </span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-[10px] text-[#A3845B] font-semibold block">분석 기관</span>
+                <span className="text-xs font-semibold text-[#5F7A68]">혜안당 명리연구소</span>
+              </div>
             </div>
-            <div className="space-y-1">
-              <span className="text-[10px] text-[#5F5F5F] block">분석 기관</span>
-              <span className="text-xs font-medium text-[#5F7A68]">혜안당 명리연구소 (慧眼堂)</span>
+          </div>
+
+          {/* Cover Bottom Seal */}
+          <div className="text-center mt-12 mb-4 space-y-2">
+            <div className="flex items-center justify-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 100 100" className="text-[#A3845B]">
+                <rect x="15" y="15" width="70" height="70" rx="4" fill="none" stroke="currentColor" strokeWidth="12" />
+                <path d="M35 35 L65 35 M35 50 L65 50 M35 65 L65 65" stroke="currentColor" strokeWidth="8" />
+              </svg>
+              <span className="font-myeongjo text-base font-bold tracking-widest text-[#1A1A1A]">혜안당 보인</span>
             </div>
+            <p className="text-[9px] text-[#5F5F5F] font-light">
+              본 문서의 지적 재산권은 혜안당에 있으며, 무단 배포 및 도용을 금지합니다.
+            </p>
           </div>
         </div>
 

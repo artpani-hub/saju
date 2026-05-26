@@ -119,14 +119,31 @@ export default function Home() {
               <div>
                 <span className="text-xs font-semibold text-jade tracking-wider uppercase block mb-1">사주팔자</span>
                 <h3 className="font-myeongjo text-xl font-bold text-foreground mb-2 group-hover:text-brass transition-colors">평생 종합 사주팔자</h3>
-                <p className="text-sm text-foreground-muted leading-relaxed mb-6 font-light">
+                <p className="text-sm text-foreground-muted leading-relaxed mb-4 font-light">
                   타고난 오행 분포, 평생의 흐름을 짚어주는 10년 주기 대운, 인생의 황금기와 솔루션을 포함한 종합 보고서.
                 </p>
+
+                {/* 등급별 요금 안내 박스 */}
+                <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-2 font-light text-foreground-muted">
+                  <div className="flex justify-between items-center">
+                    <span className="flex items-center gap-1.5 text-foreground font-medium">✨ 고급 리포트 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span></span>
+                    <span className="font-semibold text-brass">30,000원</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="flex items-center gap-1.5 text-[#5F7A68] font-medium">👑 심화 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span></span>
+                    <span className="font-semibold text-[#5F7A68]">45,000원</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="flex items-center gap-1.5 font-medium text-gray-700">💬 문자메시지 요약</span>
+                    <span className="font-semibold text-gray-700">20,000원</span>
+                  </div>
+                </div>
               </div>
               <div>
                 <div className="border-t border-border-custom pt-4 mb-4 flex items-baseline gap-1">
+                  <span className="text-xs text-foreground-muted">기본 요금</span>
                   <span className="text-2xl font-bold text-foreground">30,000</span>
-                  <span className="text-xs text-foreground-muted">원</span>
+                  <span className="text-xs text-foreground-muted">원~</span>
                 </div>
                 <Link
                   href="/input?product=saju"
@@ -143,14 +160,31 @@ export default function Home() {
               <div>
                 <span className="text-xs font-semibold text-brass tracking-wider uppercase block mb-1">시즌 한정</span>
                 <h3 className="font-myeongjo text-xl font-bold text-foreground mb-2 group-hover:text-brass transition-colors">신년 운세 / 토정비결</h3>
-                <p className="text-sm text-foreground-muted leading-relaxed mb-6 font-light">
+                <p className="text-sm text-foreground-muted leading-relaxed mb-4 font-light">
                   새해에 가장 많이 찾는 상품으로, 한 해의 총체적인 흐름, 월별 상세 운세와 나아갈 행동 지침 제안.
                 </p>
+
+                {/* 등급별 요금 안내 박스 */}
+                <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-2 font-light text-foreground-muted">
+                  <div className="flex justify-between items-center">
+                    <span className="flex items-center gap-1.5 text-foreground font-medium">✨ 고급 리포트 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span></span>
+                    <span className="font-semibold text-brass">35,000원</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="flex items-center gap-1.5 text-[#5F7A68] font-medium">👑 심화 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span></span>
+                    <span className="font-semibold text-[#5F7A68]">50,000원</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="flex items-center gap-1.5 font-medium text-gray-700">💬 문자메시지 요약</span>
+                    <span className="font-semibold text-gray-700">25,000원</span>
+                  </div>
+                </div>
               </div>
               <div>
                 <div className="border-t border-border-custom pt-4 mb-4 flex items-baseline gap-1">
+                  <span className="text-xs text-foreground-muted">기본 요금</span>
                   <span className="text-2xl font-bold text-foreground">35,000</span>
-                  <span className="text-xs text-foreground-muted">원</span>
+                  <span className="text-xs text-foreground-muted">원~</span>
                 </div>
                 <Link
                   href="/input?product=newyear"

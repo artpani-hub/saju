@@ -51,6 +51,7 @@ function InputFormContent() {
 
   // Selected product state
   const [productKey, setProductKey] = useState("saju");
+  const [reportGrade, setReportGrade] = useState("premium"); // premium, deep, sms
   const [formData, setFormData] = useState({
     name: "",
     gender: "female",
@@ -729,25 +730,99 @@ function InputFormContent() {
 
                 {/* Micro selector */}
                 <div className="space-y-2.5 mb-6">
-                  {Object.entries(products).map(([key, value]) => (
-                    <button
-                      key={key}
-                      onClick={() => handleSelectProduct(key)}
-                      className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
-                        productKey === key
-                          ? "border-brass bg-brass/5"
-                          : "border-border-custom bg-background hover:bg-background-secondary/30"
-                      }`}
-                    >
-                      <div>
-                        <span className="text-[10px] text-foreground-muted block font-light">{value.category}</span>
-                        <span className="text-sm font-bold text-foreground">{value.title}</span>
+                  {Object.entries(products).map(([key, value]) => {
+                    const isSelected = productKey === key;
+                    const showGradeSelector = isSelected && (key === "saju" || key === "newyear");
+                    return (
+                      <div key={key} className="space-y-2">
+                        <button
+                          type="button"
+                          onClick={() => handleSelectProduct(key)}
+                          className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+                            isSelected
+                              ? "border-brass bg-brass/5"
+                              : "border-border-custom bg-background hover:bg-background-secondary/30"
+                          }`}
+                        >
+                          <div>
+                            <span className="text-[10px] text-foreground-muted block font-light">{value.category}</span>
+                            <span className="text-sm font-bold text-foreground">{value.title}</span>
+                          </div>
+                          <span className="text-sm font-bold text-brass">
+                            {value.price.toLocaleString()}원
+                          </span>
+                        </button>
+
+                        {/* Report Grade Selector inline under selected saju/newyear product */}
+                        {showGradeSelector && (
+                          <div className="p-3.5 bg-background-secondary/40 border border-border-custom/50 rounded-lg space-y-2.5 mt-1.5 transition-all">
+                            <span className="text-[10px] font-semibold text-foreground block tracking-wider">리포트 등급 선택</span>
+                            <div className="space-y-2">
+                              <button
+                                type="button"
+                                onClick={() => setReportGrade("premium")}
+                                className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+                                  reportGrade === "premium"
+                                    ? "border-brass bg-brass/10"
+                                    : "border-border-custom bg-background hover:bg-background-secondary/20"
+                                }`}
+                              >
+                                <div>
+                                  <span className="text-[11px] font-bold text-foreground flex items-center gap-1">
+                                    ✨ 고급 리포트 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span>
+                                  </span>
+                                  <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
+                                    사주원국, 오행분석, 평생운 등 종합 분석
+                                  </span>
+                                </div>
+                                <span className="text-[10px] text-foreground-muted">추가금 없음</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setReportGrade("deep")}
+                                className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+                                  reportGrade === "deep"
+                                    ? "border-[#5F7A68] bg-[#5F7A68]/10"
+                                    : "border-border-custom bg-background hover:bg-background-secondary/20"
+                                }`}
+                              >
+                                <div>
+                                  <span className="text-[11px] font-bold text-[#5F7A68] flex items-center gap-1">
+                                    👑 심화 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span>
+                                  </span>
+                                  <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
+                                    고급 리포트 전체 + 신년운세 + 용신/대운 + 질문 심화 풀이
+                                  </span>
+                                </div>
+                                <span className="text-[10px] font-bold text-[#5F7A68]">+15,000원</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setReportGrade("sms")}
+                                className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+                                  reportGrade === "sms"
+                                    ? "border-gray-500 bg-gray-500/10"
+                                    : "border-border-custom bg-background hover:bg-background-secondary/20"
+                                }`}
+                              >
+                                <div>
+                                  <span className="text-[11px] font-bold text-foreground flex items-center gap-1">
+                                    💬 문자메시지 요약
+                                  </span>
+                                  <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
+                                    핵심 요약본 모바일 문자/카카오톡 전송
+                                  </span>
+                                </div>
+                                <span className="text-[10px] font-bold text-red-500">-10,000원</span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <span className="text-sm font-bold text-brass">
-                        {value.price.toLocaleString()}원
-                      </span>
-                    </button>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Info block */}
@@ -757,11 +832,20 @@ function InputFormContent() {
                     제공 품목 안내
                   </h4>
                   <p className="text-xs text-foreground-muted leading-relaxed font-light mb-2">
-                    {activeProduct.desc}
+                    {(productKey === "saju" || productKey === "newyear")
+                      ? (reportGrade === "sms" 
+                        ? "모바일 화면에 최적화된 핵심 한 줄 요약 및 핵심 개운 처방 문자 발송"
+                        : reportGrade === "deep"
+                        ? `${activeProduct.desc} 및 2026 신년운세 상세, 용신 해석, 대운 흐름 분석과 질문 3가지 심화 답변 제공`
+                        : activeProduct.desc)
+                      : activeProduct.desc}
                   </p>
                   <ul className="text-[10px] text-foreground-muted space-y-1 font-light border-t border-border-custom/50 pt-2">
                     <li className="flex items-center gap-1">
-                      <Check className="w-3 h-3 text-jade" /> 이메일로 HTML + PDF 발송
+                      <Check className="w-3 h-3 text-jade" />{" "}
+                      {(productKey === "saju" || productKey === "newyear") && reportGrade === "sms" 
+                        ? "모바일 알림톡/LMS로 즉시 발송" 
+                        : "이메일로 HTML + PDF 발송"}
                     </li>
                     <li className="flex items-center gap-1">
                       <Check className="w-3 h-3 text-jade" /> 5~15분 내외 초고속 분석 및 발송
@@ -770,22 +854,34 @@ function InputFormContent() {
                 </div>
 
                 {/* Total invoice details */}
-                <div className="space-y-2 mb-6">
-                  <div className="flex justify-between text-xs text-foreground-muted">
-                    <span>분석 대행 수수료</span>
-                    <span>{(activeProduct.price * 0.9).toLocaleString()}원</span>
-                  </div>
-                  <div className="flex justify-between text-xs text-foreground-muted">
-                    <span>부가세(10%)</span>
-                    <span>{(activeProduct.price * 0.1).toLocaleString()}원</span>
-                  </div>
-                  <div className="flex justify-between items-center border-t border-border-custom pt-3 mt-1.5">
-                    <span className="text-sm font-bold text-foreground font-myeongjo">최종 결제 금액</span>
-                    <span className="text-lg font-bold text-brass">
-                      {activeProduct.price.toLocaleString()}원
-                    </span>
-                  </div>
-                </div>
+                {(() => {
+                  const base = activeProduct.price;
+                  const finalPrice = (productKey === "saju" || productKey === "newyear")
+                    ? (reportGrade === "deep" 
+                      ? base + 15000 
+                      : reportGrade === "sms" 
+                      ? Math.max(5000, base - 10000) 
+                      : base)
+                    : base;
+                  return (
+                    <div className="space-y-2 mb-6">
+                      <div className="flex justify-between text-xs text-foreground-muted">
+                        <span>분석 대행 수수료</span>
+                        <span>{Math.round(finalPrice * 0.9).toLocaleString()}원</span>
+                      </div>
+                      <div className="flex justify-between text-xs text-foreground-muted">
+                        <span>부가세(10%)</span>
+                        <span>{Math.round(finalPrice * 0.1).toLocaleString()}원</span>
+                      </div>
+                      <div className="flex justify-between items-center border-t border-border-custom pt-3 mt-1.5">
+                        <span className="text-sm font-bold text-foreground font-myeongjo">최종 결제 금액</span>
+                        <span className="text-lg font-bold text-brass">
+                          {finalPrice.toLocaleString()}원
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 <div className="flex items-center gap-1.5 text-[10px] text-foreground-muted bg-background-secondary/30 p-2.5 rounded border border-border-custom/30">
                   <ShieldCheck className="w-4 h-4 text-jade shrink-0" />
@@ -811,14 +907,30 @@ function InputFormContent() {
                   <span className="text-[10px] text-foreground-muted block">가맹점명</span>
                   <span className="text-base font-bold text-foreground">혜안당 (慧眼堂)</span>
                 </div>
-                <div>
-                  <span className="text-[10px] text-foreground-muted block">상품명</span>
-                  <span className="text-sm text-foreground">{activeProduct.title}</span>
-                </div>
-                <div>
-                  <span className="text-[10px] text-foreground-muted block">결제 금액</span>
-                  <span className="text-xl font-bold text-brass">{activeProduct.price.toLocaleString()}원</span>
-                </div>
+                {(() => {
+                  const base = activeProduct.price;
+                  const finalPrice = (productKey === "saju" || productKey === "newyear")
+                    ? (reportGrade === "deep" 
+                      ? base + 15000 
+                      : reportGrade === "sms" 
+                      ? Math.max(5000, base - 10000) 
+                      : base)
+                    : base;
+                  return (
+                    <>
+                      <div>
+                        <span className="text-[10px] text-foreground-muted block">상품명</span>
+                        <span className="text-sm text-foreground">
+                          {activeProduct.title} {(productKey === "saju" || productKey === "newyear") && `(${reportGrade === "premium" ? "고급 리포트" : reportGrade === "deep" ? "심화 리포트" : "문자 요약"})`}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-foreground-muted block">결제 금액</span>
+                        <span className="text-xl font-bold text-brass">{finalPrice.toLocaleString()}원</span>
+                      </div>
+                    </>
+                  );
+                })()}
 
                 {/* Options of paying */}
                 <div className="border-t border-border-custom pt-4 text-left">
@@ -888,7 +1000,7 @@ function InputFormContent() {
                 <span className="text-foreground font-medium">출생 정보 음양력 변환 완료</span>
               </div>
               <div className="flex items-center gap-3 text-xs">
-                <span className="w-5 h-5 bg-jade text-background rounded-full flex items-center justify-center font-bold text-[10px]">2</span>
+                        <span className="w-5 h-5 bg-jade text-background rounded-full flex items-center justify-center font-bold text-[10px]">2</span>
                 <span className="text-foreground font-medium">사주팔자(四柱八字) 육친 배치 완료</span>
               </div>
               <div className="flex items-center gap-3 text-xs animate-pulse">
@@ -925,11 +1037,15 @@ function InputFormContent() {
               </div>
               <div className="flex justify-between text-xs">
                 <span className="text-foreground-muted">신청 상품</span>
-                <span className="font-semibold text-foreground">{activeProduct.title}</span>
+                <span className="font-semibold text-foreground">
+                  {activeProduct.title} {(productKey === "saju" || productKey === "newyear") && `(${reportGrade === "premium" ? "고급 리포트" : reportGrade === "deep" ? "심화 리포트" : "문자 요약"})`}
+                </span>
               </div>
               <div className="flex justify-between text-xs">
-                <span className="text-foreground-muted">수신 이메일</span>
-                <span className="font-semibold text-brass underline">{formData.email}</span>
+                <span className="text-foreground-muted">수신 방식</span>
+                <span className="font-semibold text-foreground">
+                  {(productKey === "saju" || productKey === "newyear") && reportGrade === "sms" ? `문자메시지 (${formData.phone})` : `이메일 (${formData.email})`}
+                </span>
               </div>
               <div className="flex justify-between text-xs border-t border-border-custom/40 pt-2 mt-2">
                 <span className="text-foreground-muted">사주 간지</span>
@@ -943,7 +1059,7 @@ function InputFormContent() {
 
             <div className="flex flex-col gap-3">
               <Link
-                href={`/result?name=${encodeURIComponent(formData.name || "이지혜")}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendarType}&year=${formData.birthYear}&month=${formData.birthMonth}&day=${formData.birthDay}&hour=${encodeURIComponent(formData.birthHour)}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText)}&cards=${selectedCards.join(",")}&partnerName=${encodeURIComponent(formData.partnerName)}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendarType}&partnerYear=${formData.partnerBirthYear}&partnerMonth=${formData.partnerBirthMonth}&partnerDay=${formData.partnerBirthDay}&partnerHour=${encodeURIComponent(formData.partnerBirthHour)}`}
+                href={`/result?name=${encodeURIComponent(formData.name || "이지혜")}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendarType}&year=${formData.birthYear}&month=${formData.birthMonth}&day=${formData.birthDay}&hour=${encodeURIComponent(formData.birthHour)}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText)}&cards=${selectedCards.join(",")}&partnerName=${encodeURIComponent(formData.partnerName)}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendarType}&partnerYear=${formData.partnerBirthYear}&partnerMonth=${formData.partnerBirthMonth}&partnerDay=${formData.partnerBirthDay}&partnerHour=${encodeURIComponent(formData.partnerBirthHour)}&reportGrade=${(productKey === "saju" || productKey === "newyear") ? reportGrade : "premium"}`}
                 className="w-full py-3 bg-jade text-background rounded font-semibold text-sm hover:bg-jade-dark transition-all block text-center"
               >
                 생성된 결과서 미리보기 (샘플)
