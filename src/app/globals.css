@@ -220,3 +220,15 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
   font-family: var(--font-myeongjo), serif;
 }
 
+/* 혜안당 고유의 한옥/안개 산수화 백그라운드 오버레이 */
+.hyeandang-traditional-bg {
+  background-image: linear-gradient(
+    rgba(249, 248, 246, 0.88), 
+    rgba(246, 243, 236, 0.93)
+  ), url("/traditional-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+

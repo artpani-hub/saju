@@ -2475,7 +2475,7 @@ function ResultContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9F8F6] text-[#2C2C2C] py-10 px-4 md:py-16 print:bg-white print:py-0 print:px-0">
+    <div className="min-h-screen hyeandang-traditional-bg text-[#2C2C2C] py-10 px-4 md:py-16 print:bg-white print:py-0 print:px-0">
       <div className="max-w-3xl mx-auto bg-[#F6F3EC] border-4 border-[#A3845B] rounded-lg p-6 md:p-12 shadow-md relative print:shadow-none print:border-none print:bg-white">
         
         {/* Decorative corner motifs */}
@@ -2625,7 +2625,7 @@ function ResultContent() {
 export default function ResultPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#F9F8F6] flex items-center justify-center">
+      <div className="min-h-screen hyeandang-traditional-bg flex items-center justify-center">
         <div className="font-myeongjo text-lg text-[#A3845B] animate-pulse">혜안당 보감 렌더링 중...</div>
       </div>
     }>
