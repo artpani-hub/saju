@@ -1,7 +1,188 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Compass, Sparkles, Mail, ArrowRight, Scroll, HelpCircle } from "lucide-react";
+import { Compass, Sparkles, Mail, ArrowRight, Scroll, HelpCircle, Calendar, User, Phone, Clock, Heart, Coins, Activity } from "lucide-react";
+
+const ZODIAC_LIST = [
+  { name: "쥐띠", hanja: "子", emoji: "🐭" },
+  { name: "소띠", hanja: "丑", emoji: "🐮" },
+  { name: "호랑이띠", hanja: "寅", emoji: "🐯" },
+  { name: "토끼띠", hanja: "卯", emoji: "🐰" },
+  { name: "용띠", hanja: "辰", emoji: "🐲" },
+  { name: "뱀띠", hanja: "巳", emoji: "🐍" },
+  { name: "말띠", hanja: "午", emoji: "🐴" },
+  { name: "양띠", hanja: "未", emoji: "🐑" },
+  { name: "원숭이띠", hanja: "申", emoji: "🐵" },
+  { name: "닭띠", hanja: "酉", emoji: "🐔" },
+  { name: "개띠", hanja: "戌", emoji: "🐶" },
+  { name: "돼지띠", hanja: "亥", emoji: "🐷" }
+];
+
+const YEARS = Array.from({ length: 97 }, (_, i) => 2026 - i);
+const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
+const DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
+const HOURS = [
+  "모름",
+  "子 (23:30 ~ 01:29)",
+  "丑 (01:30 ~ 03:29)",
+  "寅 (03:30 ~ 05:29)",
+  "卯 (05:30 ~ 07:29)",
+  "辰 (07:30 ~ 09:29)",
+  "巳 (09:30 ~ 11:29)",
+  "午 (11:30 ~ 13:29)",
+  "未 (13:30 ~ 15:29)",
+  "申 (15:30 ~ 17:29)",
+  "酉 (17:30 ~ 19:29)",
+  "戌 (19:30 ~ 21:29)",
+  "亥 (21:30 ~ 23:29)"
+];
+
+const getZodiacFortune = (zodiacName, index) => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  
+  const seed = (year * 13 + month * 7 + day * 3 + index * 17) % 10;
+  const scoreSeed = (year * 7 + month * 13 + day * 5 + index * 23) % 5;
+  const moneySeed = (year * 9 + month * 11 + day * 7 + index * 19) % 5;
+  const loveSeed = (year * 11 + month * 3 + day * 13 + index * 29) % 5;
+  
+  const fortunes = [
+    "노력해 온 일이 서서히 결실을 맺는 하루입니다. 주변 사람들의 도움으로 원하던 결과를 얻게 되니 감사한 마음을 표현해 보세요.",
+    "사소한 오해로 갈등이 생길 수 있으니 감정적인 대립은 피하는 것이 좋습니다. 한 발 물러서서 생각하면 지혜로운 해법이 보입니다.",
+    "예상치 못한 기쁜 소식이 찾아옵니다. 금전이나 일자리 면에서 긍정적인 제안을 받게 되니 적극적으로 검토해 보세요.",
+    "기운이 솟구치고 자신감이 넘치는 날입니다. 미뤄왔던 계획이나 어려운 과제를 오늘 시작하면 수월하게 풀릴 것입니다.",
+    "몸과 마음이 다소 지칠 수 있으니 휴식이 필요한 때입니다. 무리한 약속이나 과도한 업무는 피하고 내실을 다지세요.",
+    "새로운 인연과의 만남이 기대되는 하루입니다. 대인관계 운이 상승하니 모임이나 사교 활동에 활발히 참여해 보세요.",
+    "선택의 기로에서 고민이 깊어지는 날입니다. 서두르지 말고 신뢰할 수 있는 멘토나 가족에게 조언을 구하면 큰 도움이 됩니다.",
+    "금전 운이 상승하는 좋은 흐름입니다. 뜻밖의 이익이 생기거나 투자한 곳에서 좋은 소식이 들려올 수 있습니다.",
+    "가까운 사람과의 소통이 중요한 날입니다. 오해가 있었다면 오늘 대화로 풀어보세요. 진심은 언제나 통하게 되어 있습니다.",
+    "창의적인 아이디어가 번뜩이는 날입니다. 직장이나 학업에서 본인의 능력을 인정받을 기회가 오니 자신 있게 의견을 개시하세요."
+  ];
+
+  const colors = ["청색", "황색", "백색", "흑색", "적색", "보라색", "녹색", "금색", "은색", "주황색"];
+  const tips = [
+    "동쪽 방향으로 가벼운 산책을 해보세요.",
+    "따뜻한 차 한 잔을 마시며 생각을 정리하세요.",
+    "약속 시간보다 10분 먼저 도착하도록 하세요.",
+    "밝은 톤의 옷을 입으면 긍정적인 에너지를 줍니다.",
+    "오늘만큼은 SNS 사용 시간을 줄여보세요.",
+    "주변 자리를 깨끗이 정리 정돈하는 것이 좋습니다.",
+    "오랜만에 지인에게 안부 전화를 걸어보세요.",
+    "중요한 결정을 하기 전에 심호흡을 크게 세 번 하세요.",
+    "견과류나 건강한 간식을 챙겨 먹으며 에너지를 보충하세요.",
+    "길에서 마주치는 사람들에게 가벼운 미소를 건네보세요."
+  ];
+
+  const overallScore = 60 + scoreSeed * 10;
+  const moneyScore = 60 + moneySeed * 10;
+  const loveScore = 60 + loveSeed * 10;
+  
+  return {
+    overallScore,
+    moneyScore,
+    loveScore,
+    desc: fortunes[seed],
+    color: colors[(seed + index) % colors.length],
+    number: (seed * 3 + index * 7) % 10,
+    tip: tips[(seed + index * 2) % tips.length]
+  };
+};
+
+const getZodiacColorHex = (colorName) => {
+  const mapping = {
+    "청색": "#2b6cb0",
+    "황색": "#d69e2e",
+    "백색": "#e2e8f0",
+    "흑색": "#1a202c",
+    "적색": "#c53030",
+    "보라색": "#6b46c1",
+    "녹색": "#2f855a",
+    "금색": "#ecc94b",
+    "은색": "#cbd5e0",
+    "주황색": "#dd6b20"
+  };
+  return mapping[colorName] || "#cbd5e0";
+};
+
+const renderStars = (score) => {
+  const rating = score / 20;
+  const fullStars = Math.floor(rating);
+  const hasHalf = rating % 1 !== 0;
+  
+  return (
+    <div className="flex items-center gap-0.5 text-amber-500">
+      {Array.from({ length: fullStars }).map((_, i) => (
+        <span key={i} className="text-sm">★</span>
+      ))}
+      {hasHalf && <span className="text-sm">☆</span>}
+      {Array.from({ length: 5 - Math.ceil(rating) }).map((_, i) => (
+        <span key={i} className="text-sm text-gray-300">★</span>
+      ))}
+      <span className="ml-1.5 text-xs text-foreground-muted font-medium">{score}점</span>
+    </div>
+  );
+};
 
 export default function Home() {
+  const router = useRouter();
+  
+  const [activeTab, setActiveTab] = useState("free");
+  const [selectedZodiacIndex, setSelectedZodiacIndex] = useState(null);
+  const [zodiacFortune, setZodiacFortune] = useState(null);
+  
+  const [formData, setFormData] = useState({
+    name: "",
+    gender: "male",
+    calendarType: "solar",
+    birthYear: "1995",
+    birthMonth: "5",
+    birthDay: "15",
+    birthHour: "모름",
+    phone: ""
+  });
+  
+  const [formError, setFormError] = useState("");
+
+  const handleSubmitPremium = () => {
+    if (!formData.name.trim()) {
+      setFormError("이름을 입력해 주세요.");
+      return;
+    }
+    if (formData.name.trim().length < 2) {
+      setFormError("이름은 최소 2자 이상 입력해 주세요.");
+      return;
+    }
+    if (!formData.phone.trim()) {
+      setFormError("휴대폰 번호를 입력해 주세요.");
+      return;
+    }
+    const cleanPhone = formData.phone.replace(/[^0-9]/g, "");
+    if (cleanPhone.length < 10) {
+      setFormError("올바른 휴대폰 번호를 입력해 주세요.");
+      return;
+    }
+    
+    setFormError("");
+    
+    const query = new URLSearchParams({
+      product: "today",
+      name: formData.name,
+      gender: formData.gender,
+      calendar: formData.calendarType,
+      year: formData.birthYear,
+      month: formData.birthMonth,
+      day: formData.birthDay,
+      hour: formData.birthHour,
+      phone: formData.phone
+    }).toString();
+    
+    router.push(`/input?${query}`);
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
@@ -59,7 +240,7 @@ export default function Home() {
           
           <p className="text-lg md:text-xl text-foreground-muted max-w-2xl mx-auto leading-relaxed mb-10 font-light">
             전통 만세력 알고리즘을 통한 오행 분석과<br className="hidden sm:inline" />
-            고객님의 구체적인 고민 상황을 연동하여, 인공지능이 서술하는<br className="hidden sm:inline" />
+            고객님의 구체적인 고민 상황을 연동하여,<br className="hidden sm:inline" />
             단 하나의 **개인 맞춤형 운세 분석서**를 메일로 보내드립니다.
           </p>
 
@@ -97,6 +278,315 @@ export default function Home() {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Today's Fortune Lead Magnet Section */}
+      <section id="today-fortune" className="py-20 border-b border-border-custom bg-background-secondary/10">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <div className="inline-flex items-center gap-1.5 text-brass font-semibold tracking-wider text-xs uppercase mb-3">
+              <Sparkles className="w-3.5 h-3.5" />
+              오늘의 운세 寶鑑
+            </div>
+            <h2 className="font-myeongjo text-3xl font-bold text-foreground mb-4">오늘의 운세를 확인해보세요</h2>
+            <p className="text-sm text-foreground-muted leading-relaxed font-light">
+              가벼운 무료 띠별 운세부터 하루의 행운을 극대화해 줄 5,000원의 정밀 맞춤 운세까지, 오늘 하루의 흐름을 미리 확인하세요.
+            </p>
+          </div>
+
+          {/* Tab Navigation */}
+          <div className="flex border-b border-border-custom mb-10 max-w-md mx-auto">
+            <button
+              onClick={() => setActiveTab("free")}
+              className={`flex-1 text-center py-3.5 text-sm font-semibold tracking-wide border-b-2 transition-all cursor-pointer ${
+                activeTab === "free"
+                  ? "border-brass text-brass font-bold"
+                  : "border-transparent text-foreground-muted hover:text-foreground"
+              }`}
+            >
+              무료 띠별 운세
+            </button>
+            <button
+              onClick={() => setActiveTab("premium")}
+              className={`flex-1 text-center py-3.5 text-sm font-semibold tracking-wide border-b-2 transition-all cursor-pointer relative ${
+                activeTab === "premium"
+                  ? "border-brass text-brass font-bold"
+                  : "border-transparent text-foreground-muted hover:text-foreground"
+              }`}
+            >
+              나만의 맞춤 운세
+              <span className="absolute -top-1.5 -right-2 bg-jade text-background text-[9px] font-bold px-1.5 py-0.5 rounded-full scale-90">
+                5,000원
+              </span>
+            </button>
+          </div>
+
+          {/* Tab Contents */}
+          {activeTab === "free" ? (
+            <div className="space-y-8">
+              {/* 12 Zodiac Grid */}
+              <div className="grid grid-cols-4 sm:grid-cols-6 gap-3.5">
+                {ZODIAC_LIST.map((zodiac, idx) => (
+                  <button
+                    key={zodiac.name}
+                    onClick={() => {
+                      setSelectedZodiacIndex(idx);
+                      setZodiacFortune(getZodiacFortune(zodiac.name, idx));
+                    }}
+                    className={`border rounded-xl p-3 flex flex-col items-center justify-center gap-1 cursor-pointer transition-all hover:-translate-y-0.5 ${
+                      selectedZodiacIndex === idx
+                        ? "border-brass bg-brass/5 shadow-sm scale-105"
+                        : "border-border-custom/60 bg-background/50 hover:border-brass/40"
+                    }`}
+                  >
+                    <span className="text-2xl sm:text-3xl filter drop-shadow-sm">{zodiac.emoji}</span>
+                    <span className="text-xs font-semibold text-foreground mt-1">{zodiac.name}</span>
+                    <span className="text-[10px] text-brass-dark/70 font-myeongjo font-bold">{zodiac.hanja}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Zodiac Fortune Result Card */}
+              {zodiacFortune && selectedZodiacIndex !== null && (
+                <div className="border-2 border-brass/35 rounded-xl bg-background p-6 sm:p-8 shadow-sm transition-all duration-500 animate-fadeIn relative overflow-hidden">
+                  <div className="absolute top-0 right-0 opacity-[0.03] text-brass text-9xl font-myeongjo select-none translate-x-12 translate-y-12 pointer-events-none">
+                    {ZODIAC_LIST[selectedZodiacIndex].hanja}
+                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-border-custom pb-5 mb-6 gap-4">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-2xl">{ZODIAC_LIST[selectedZodiacIndex].emoji}</span>
+                        <h3 className="font-myeongjo text-xl font-bold text-foreground">
+                          {ZODIAC_LIST[selectedZodiacIndex].name} 오늘의 운세
+                        </h3>
+                      </div>
+                      <p className="text-xs text-foreground-muted font-light">
+                        기준일: {new Date().getFullYear()}년 {new Date().getMonth() + 1}월 {new Date().getDate()}일
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 bg-brass/5 border border-brass/20 px-3.5 py-1.5 rounded-lg">
+                      <span className="text-xs font-bold text-brass">오늘의 총운</span>
+                      <div className="w-1.5 h-1.5 rounded-full bg-brass" />
+                      <span className="text-sm font-bold text-brass-dark">{zodiacFortune.overallScore}점</span>
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-3 gap-6 mb-6">
+                    <div className="bg-background-secondary/40 border border-border-custom/50 rounded-xl p-4.5 flex flex-col justify-between">
+                      <div className="flex items-center gap-1.5 text-xs text-foreground-muted font-medium mb-2">
+                        <Coins className="w-4 h-4 text-[#A3845B]" />
+                        금전 및 성공운
+                      </div>
+                      <div>
+                        {renderStars(zodiacFortune.moneyScore)}
+                      </div>
+                    </div>
+                    
+                    <div className="bg-background-secondary/40 border border-border-custom/50 rounded-xl p-4.5 flex flex-col justify-between">
+                      <div className="flex items-center gap-1.5 text-xs text-foreground-muted font-medium mb-2">
+                        <Heart className="w-4 h-4 text-rose-500" />
+                        인연 및 대인운
+                      </div>
+                      <div>
+                        {renderStars(zodiacFortune.loveScore)}
+                      </div>
+                    </div>
+
+                    <div className="bg-background-secondary/40 border border-border-custom/50 rounded-xl p-4.5 flex flex-col justify-between">
+                      <div className="flex items-center gap-1.5 text-xs text-foreground-muted font-medium mb-2">
+                        <Activity className="w-4 h-4 text-jade" />
+                        오늘의 행동 팁
+                      </div>
+                      <p className="text-xs font-medium text-foreground leading-relaxed">
+                        {zodiacFortune.tip}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-border-custom pt-5 space-y-4">
+                    <div>
+                      <h4 className="font-myeongjo text-sm font-bold text-foreground mb-1.5">운세 해설</h4>
+                      <p className="text-sm text-foreground-muted leading-relaxed font-light">
+                        {zodiacFortune.desc}
+                      </p>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-4 pt-2">
+                      <div className="inline-flex items-center gap-2 border border-red-800/20 bg-red-50/50 px-3 py-1.5 rounded-lg text-xs">
+                        <span className="font-bold text-red-800">행운의 색상</span>
+                        <div className="w-3 h-3 rounded-full border border-black/5" style={{ backgroundColor: getZodiacColorHex(zodiacFortune.color) }} />
+                        <span className="font-semibold text-foreground-muted">{zodiacFortune.color}</span>
+                      </div>
+                      
+                      <div className="inline-flex items-center gap-2 border border-red-800/20 bg-red-50/50 px-3 py-1.5 rounded-lg text-xs">
+                        <span className="font-bold text-red-800">행운의 숫자</span>
+                        <span className="font-bold text-foreground">{zodiacFortune.number}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="border border-border-custom bg-background rounded-xl p-6 sm:p-8 shadow-sm">
+              <div className="max-w-2xl mx-auto">
+                <div className="text-center mb-8">
+                  <h3 className="font-myeongjo text-lg font-bold text-foreground mb-2">오늘 하루, 나만을 위한 맞춤형 행운의 열쇠는?</h3>
+                  <p className="text-xs text-foreground-muted font-light">
+                    개인 출생 정보(생년월일시)를 정밀 분석하여 오늘의 오행 기운과 조율된 1:1 맞춤 일일 운세를 도출하고,<br />
+                    아침에 가장 먼저 확인하실 수 있도록 <strong>휴대폰 문자메시지(SMS)</strong>로 전송해 드립니다.
+                  </p>
+                </div>
+
+                {formError && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 text-xs px-4 py-2.5 rounded-lg mb-6 text-center font-medium">
+                    ⚠️ {formError}
+                  </div>
+                )}
+
+                <div className="space-y-6">
+                  {/* Name and Gender Grid */}
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-foreground mb-1.5 flex items-center gap-1">
+                        <User className="w-3.5 h-3.5 text-brass" /> 이름
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="이름을 입력하세요"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full border border-border-custom bg-background-secondary/30 px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brass focus:bg-background transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-foreground mb-1.5">성별</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, gender: "male" })}
+                          className={`py-2.5 text-sm rounded-lg border font-medium cursor-pointer transition-colors ${
+                            formData.gender === "male"
+                              ? "border-brass bg-brass/5 text-brass font-semibold"
+                              : "border-border-custom/60 bg-transparent text-foreground-muted hover:border-brass/35"
+                          }`}
+                        >
+                          남성
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, gender: "female" })}
+                          className={`py-2.5 text-sm rounded-lg border font-medium cursor-pointer transition-colors ${
+                            formData.gender === "female"
+                              ? "border-brass bg-brass/5 text-brass font-semibold"
+                              : "border-border-custom/60 bg-transparent text-foreground-muted hover:border-brass/35"
+                          }`}
+                        >
+                          여성
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Calendar and Phone Grid */}
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-foreground mb-1.5 flex items-center gap-1">
+                        <Calendar className="w-3.5 h-3.5 text-brass" /> 역법 선택
+                      </label>
+                      <div className="grid grid-cols-3 gap-1.5">
+                        {[
+                          { key: "solar", label: "양력" },
+                          { key: "lunar", label: "음력 평달" },
+                          { key: "lunar_leap", label: "음력 윤달" }
+                        ].map((item) => (
+                          <button
+                            key={item.key}
+                            type="button"
+                            onClick={() => setFormData({ ...formData, calendarType: item.key })}
+                            className={`py-2.5 text-xs rounded-lg border font-medium cursor-pointer transition-colors ${
+                              formData.calendarType === item.key
+                                ? "border-brass bg-brass/5 text-brass font-semibold"
+                                : "border-border-custom/60 bg-transparent text-foreground-muted hover:border-brass/35"
+                            }`}
+                          >
+                            {item.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-foreground mb-1.5 flex items-center gap-1">
+                        <Phone className="w-3.5 h-3.5 text-brass" /> 휴대폰 번호 (문자 전송용)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="예: 010-1234-5678"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="w-full border border-border-custom bg-background-secondary/30 px-3.5 py-2.5 rounded-lg text-sm focus:outline-none focus:border-brass focus:bg-background transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Birth Date Grid */}
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground mb-1.5 flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5 text-brass" /> 출생정보 (년/월/일/시)
+                    </label>
+                    <div className="grid grid-cols-4 gap-2">
+                      <select
+                        value={formData.birthYear}
+                        onChange={(e) => setFormData({ ...formData, birthYear: e.target.value })}
+                        className="border border-border-custom bg-background-secondary/30 px-2 py-2.5 rounded-lg text-xs focus:outline-none focus:border-brass focus:bg-background transition-colors"
+                      >
+                        {YEARS.map((y) => (
+                          <option key={y} value={y}>{y}년</option>
+                        ))}
+                      </select>
+                      <select
+                        value={formData.birthMonth}
+                        onChange={(e) => setFormData({ ...formData, birthMonth: e.target.value })}
+                        className="border border-border-custom bg-background-secondary/30 px-2 py-2.5 rounded-lg text-xs focus:outline-none focus:border-brass focus:bg-background transition-colors"
+                      >
+                        {MONTHS.map((m) => (
+                          <option key={m} value={m}>{m}월</option>
+                        ))}
+                      </select>
+                      <select
+                        value={formData.birthDay}
+                        onChange={(e) => setFormData({ ...formData, birthDay: e.target.value })}
+                        className="border border-border-custom bg-background-secondary/30 px-2 py-2.5 rounded-lg text-xs focus:outline-none focus:border-brass focus:bg-background transition-colors"
+                      >
+                        {DAYS.map((d) => (
+                          <option key={d} value={d}>{d}일</option>
+                        ))}
+                      </select>
+                      <select
+                        value={formData.birthHour}
+                        onChange={(e) => setFormData({ ...formData, birthHour: e.target.value })}
+                        className="border border-border-custom bg-background-secondary/30 px-1 py-2.5 rounded-lg text-xs focus:outline-none focus:border-brass focus:bg-background transition-colors"
+                      >
+                        {HOURS.map((h) => (
+                          <option key={h} value={h}>{h}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleSubmitPremium}
+                    className="w-full inline-flex items-center justify-center gap-2 bg-brass text-background py-3.5 rounded-lg text-sm font-bold hover:bg-brass-dark shadow-sm transition-all transform hover:-translate-y-0.5 cursor-pointer mt-2"
+                  >
+                    오늘의 맞춤 운세 신청하기 (5,000원 결제)
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
