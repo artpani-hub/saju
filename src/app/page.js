@@ -209,11 +209,11 @@ export default function Home() {
           </nav>
           <div>
             <Link
-              href="/input"
-              className="inline-flex items-center gap-2 bg-brass text-background px-4 py-2 rounded-md text-sm font-medium hover:bg-brass-dark shadow-sm transition-all"
+              href="/input?product=saju&reportGrade=free"
+              className="inline-flex items-center gap-2 bg-[#8B221E] hover:bg-[#6D1B18] text-white px-4 py-2 rounded-md text-sm font-medium shadow-sm transition-all font-traditional"
             >
-              사주 분석하기
-              <ArrowRight className="w-4 height-4" />
+              무료 사주 보기
+              <ArrowRight className="w-4 h-4 text-brass-light" />
             </Link>
           </div>
         </div>
@@ -233,24 +233,22 @@ export default function Home() {
             현대적으로 재해석한 전통 사주/운세 리포트
           </div>
           
-          <h1 className="font-myeongjo text-4xl md:text-6xl font-bold text-foreground tracking-tight leading-[1.2] mb-6">
-            지혜로운 눈으로<br />
-            <span className="text-brass">내 인생의 길</span>을 밝히다
+          <h1 className="font-myeongjo text-4xl md:text-5xl font-bold text-foreground tracking-tight leading-[1.3] mb-6">
+            하늘이 내린 귀하의 평생 사주첩 속<br />
+            <span className="text-brass">5가지 운명의 비밀은?</span>
           </h1>
           
-          <p className="text-lg md:text-xl text-foreground-muted max-w-2xl mx-auto leading-relaxed mb-10 font-light">
-            전통 만세력 알고리즘을 통한 오행 분석과<br className="hidden sm:inline" />
-            고객님의 구체적인 고민 상황을 연동하여,<br className="hidden sm:inline" />
-            단 하나의 **개인 맞춤형 운세 분석서**를 메일로 보내드립니다.
+          <p className="text-lg md:text-xl text-foreground-muted max-w-2xl mx-auto leading-relaxed mb-10 font-light font-traditional">
+            평생의 자산 흐름과 위기의 타이밍 등, 혜안당 보감에 잠겨 있는 귀하만의 5가지 비밀 중 첫 장을 즉시 열어드립니다.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/input"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-jade text-background px-8 py-4 rounded-md text-base font-medium hover:bg-jade-dark shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
+              href="/input?product=saju&reportGrade=free"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#8B221E] hover:bg-[#6D1B18] text-white px-8 py-4 rounded-md text-base font-medium shadow-md transition-all duration-300 transform hover:-translate-y-0.5 font-traditional tracking-wider"
             >
-              <Scroll className="w-5 h-5" />
-              지금 사주 상담 신청하기
+              <Scroll className="w-5 h-5 text-brass-light" />
+              내 사주 등급 확인하기 ➔
             </Link>
             <a
               href="#services"
@@ -258,6 +256,73 @@ export default function Home() {
             >
               운세 상품 보기
             </a>
+          </div>
+
+          {/* 실시간 혜안당 보감 열람 현황 */}
+          <div className="mt-12 pt-8 border-t border-border-custom/50 max-w-2xl mx-auto space-y-6">
+            {/* 누적 수치 */}
+            <div className="flex justify-center items-center gap-8 md:gap-16 text-center">
+              <div>
+                <span className="text-brass text-lg md:text-xl font-bold font-myeongjo">18</span>
+                <span className="text-[10px] text-foreground-muted block mt-0.5">지금 열람 중</span>
+              </div>
+              <div className="w-px h-8 bg-border-custom/80" />
+              <div>
+                <span className="text-brass text-lg md:text-xl font-bold font-myeongjo">412</span>
+                <span className="text-[10px] text-foreground-muted block mt-0.5">오늘 발행</span>
+              </div>
+              <div className="w-px h-8 bg-border-custom/80" />
+              <div>
+                <span className="text-brass text-lg md:text-xl font-bold font-myeongjo">14,820</span>
+                <span className="text-[10px] text-foreground-muted block mt-0.5">누적 보감 발행</span>
+              </div>
+            </div>
+
+            {/* 실시간 리스트 (세로 무한 롤링 Ticker) */}
+            <div className="bg-background-secondary/35 border border-border-custom/50 rounded-xl p-4.5 text-left space-y-3 overflow-hidden relative h-[145px]">
+              <div className="flex items-center gap-1.5 text-[10px] font-semibold text-jade border-b border-border-custom/30 pb-2 bg-[#F9F8F6]/10 z-10 relative">
+                <span className="w-1.5 h-1.5 rounded-full bg-jade animate-pulse" />
+                지금 보감을 열람 중인 분들
+              </div>
+              <div className="relative h-[85px] overflow-hidden">
+                <div className="space-y-2.5 animate-scroll-vertical absolute w-full">
+                  {/* 루프를 위해 데이터를 두 번 중복 배치 */}
+                  {[
+                    { name: "김O현", title: "단비 머금은 푸른 대나무", rarity: "12.5%" },
+                    { name: "박O아", title: "태산을 비추는 밤하늘의 등불", rarity: "18.2%" },
+                    { name: "정O우", title: "안개 낀 강물 위의 돛배", rarity: "22.1%" },
+                    { name: "이O은", title: "계곡물에 씻긴 눈부신 보석", rarity: "6.4%" },
+                    { name: "송O우", title: "포근한 이불 속 공상가", rarity: "28.2%" },
+                    { name: "홍O은", title: "구름 위의 산책자", rarity: "26.2%" },
+                    { name: "송O린", title: "아침 안개 속 정원사", rarity: "28.5%" },
+                    { name: "류O호", title: "구름 위의 산책자", rarity: "37.7%" },
+                    // 중복 배치
+                    { name: "김O현", title: "단비 머금은 푸른 대나무", rarity: "12.5%" },
+                    { name: "박O아", title: "태산을 비추는 밤하늘의 등불", rarity: "18.2%" },
+                    { name: "정O우", title: "안개 낀 강물 위의 돛배", rarity: "22.1%" },
+                    { name: "이O은", title: "계곡물에 씻긴 눈부신 보석", rarity: "6.4%" },
+                    { name: "송O우", title: "포근한 이불 속 공상가", rarity: "28.2%" },
+                    { name: "홍O은", title: "구름 위의 산책자", rarity: "26.2%" },
+                    { name: "송O린", title: "아침 안개 속 정원사", rarity: "28.5%" },
+                    { name: "류O호", title: "구름 위의 산책자", rarity: "37.7%" }
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex justify-between items-center text-xs font-traditional py-1 border-b border-border-custom/10 last:border-b-0">
+                      <div className="flex items-center gap-3">
+                        <span className="text-foreground-muted font-medium">{item.name}</span>
+                        <span className="font-bold text-foreground">{item.title}</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-right">
+                        <span className="text-[10px] text-brass bg-brass/5 px-2 py-0.5 rounded-full font-semibold border border-brass/10">희소성 {item.rarity}</span>
+                        <span className="text-[10px] text-jade font-semibold flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-jade" />
+                          열람 중
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

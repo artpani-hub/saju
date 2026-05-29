@@ -130,6 +130,11 @@ const getDeficientPrescription = (elements) => {
 function ResultContent() {
   const searchParams = useSearchParams();
   const [copied, setCopied] = useState(false);
+  const [isPaid, setIsPaid] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const debugUnlock = searchParams.get("unlock") === "true" || searchParams.get("debug") === "true";
 
   const handleCopySms = (text) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -167,6 +172,137 @@ function ResultContent() {
 
   // Determine user's base element for 2026 compatibility
   const baseEl = sajuInfo.year.stemEl; // Representing birth year element
+
+  // Check payment status on mount
+  const [hasCheckedPayment, setHasCheckedPayment] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // reportGrade가 free가 아니거나 debugUnlock이 활성화되어 있으면 즉시 잠금 해제
+      if (debugUnlock || reportGrade !== "free") {
+        setIsPaid(true);
+        return;
+      }
+      try {
+        const existingStr = localStorage.getItem("hyeandang_orders");
+        if (existingStr) {
+          const orders = JSON.parse(existingStr);
+          const matched = orders.find(o => 
+            o.name === name && 
+            o.status === "paid" &&
+            o.year === String(year) &&
+            o.month === String(month) &&
+            o.day === String(day)
+          );
+          if (matched) {
+            setIsPaid(true);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      setHasCheckedPayment(true);
+    }
+  }, [reportGrade, name, year, month, day, debugUnlock]);
+
+  const updateLocalStorageOrderToPaid = () => {
+    try {
+      const existingStr = localStorage.getItem("hyeandang_orders");
+      if (existingStr) {
+        const orders = JSON.parse(existingStr);
+        const matchedIdx = orders.findIndex(o => 
+          o.name === name && 
+          o.year === String(year) &&
+          o.month === String(month) &&
+          o.day === String(day)
+        );
+        if (matchedIdx > -1) {
+          orders[matchedIdx].status = "paid";
+          localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handlePortonePayment = () => {
+    if (typeof window === "undefined" || !window.IMP) {
+      alert("결제 모듈을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+
+    const IMP = window.IMP;
+    IMP.init("imp00000000"); // 포트원 테스트 식별코드
+
+    IMP.request_pay({
+      pg: "html5_inicis.INIpayTest",
+      pay_method: "card",
+      merchant_uid: `merchant_${new Date().getTime()}`,
+      name: `${name}님 정통 사주 풀이 보고서`,
+      amount: 34900,
+      buyer_name: name,
+    }, function (rsp) {
+      if (rsp.success) {
+        // 결제 성공 시 1.8초 동안 만세력 정밀 보조 빌드 애니메이션 시작
+        setIsProcessing(true);
+        setProgress(0);
+        
+        let currentProgress = 0;
+        const interval = setInterval(() => {
+          currentProgress += 10;
+          if (currentProgress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+              setIsProcessing(false);
+              setIsPaid(true);
+              updateLocalStorageOrderToPaid();
+            }, 300);
+          } else {
+            setProgress(currentProgress);
+          }
+        }, 150);
+      } else {
+        alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
+      }
+    });
+  };
+
+  const renderLockOverlay = (sectionTitle) => {
+    return (
+      <div className="absolute inset-0 bg-[#F9F8F6]/85 backdrop-blur-md flex flex-col items-center justify-center z-20 p-6 text-center select-none print:hidden">
+        <div className="border-2 border-[#A3845B] bg-[#F9F8F6] rounded-xl p-8 max-w-sm shadow-xl space-y-4 relative">
+          <div className="absolute top-2 left-2 text-[#A3845B]/20 text-[10px]">卍</div>
+          <div className="absolute top-2 right-2 text-[#A3845B]/20 text-[10px]">卍</div>
+          <div className="absolute bottom-2 left-2 text-[#A3845B]/20 text-[10px]">卍</div>
+          <div className="absolute bottom-2 right-2 text-[#A3845B]/20 text-[10px]">卍</div>
+          
+          <div className="w-12 h-12 bg-[#A3845B]/10 text-[#A3845B] rounded-full flex items-center justify-center mx-auto text-xl font-bold">
+            🔒
+          </div>
+          <h4 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">
+            {sectionTitle || "정밀 운세 분석"} 잠금 해제
+          </h4>
+          <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light font-traditional">
+            이 영역은 <strong>정통 사주 풀이 보고서 (유료)</strong> 결제 시 제공되는 고품격 정밀 분석서입니다. 결제 즉시 잠금이 해제되며 전체 리포트 열람 및 출력이 가능해집니다.
+          </p>
+          <button
+            type="button"
+            onClick={handlePortonePayment}
+            className="w-full py-2.5 bg-[#8B221E] hover:bg-[#6D1B18] text-white rounded text-xs font-semibold shadow-md transition-all font-traditional"
+          >
+            정통 사주 풀이로 잠금 해제 (34,900원)
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsPaid(true)}
+            className="w-full py-1.5 bg-[#5F7A68] hover:bg-[#38493D] text-[#FAF7F0] rounded text-[10px] font-semibold tracking-wider transition-all mt-1"
+          >
+            ⚙️ [개발자 테스트] 즉시 잠금해제 확인하기
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   const handlePrint = () => {
     window.print();
@@ -374,6 +510,7 @@ function ResultContent() {
       return renderSmsSajuContent();
     }
     const totalPages = reportGrade === "deep" ? 9 : 6;
+    const isFree = reportGrade === "free" && !isPaid;
 
     // 오행 분포에 따른 종합 기질 풀이 생성
     const getElementsAnalysis = (elements) => {
@@ -750,9 +887,10 @@ function ResultContent() {
                   <li className="flex gap-2"><span className="text-[#A3845B] font-bold shrink-0">•</span>{baseEl === "목" ? "장기적인 목표를 향해 묵묵히 집중하는 집요함이 있습니다." : baseEl === "화" ? "긍정 에너지로 주변 사람들의 의욕을 높여줍니다." : baseEl === "토" ? "안정적인 환경을 조성하여 조직과 가정의 중심이 됩니다." : baseEl === "금" ? "세세한 부분까지 놓치지 않는 완벽주의 집중력이 있습니다." : "학습 능력이 뛰어나 지식과 기술을 빠르게 습득합니다."}</li>
                 </ul>
               </div>
-              <div className="bg-white border border-red-100 rounded-lg p-5 space-y-3 print:p-6">
+              <div className="bg-white border border-red-100 rounded-lg p-5 space-y-3 print:p-6 relative overflow-hidden">
+                {isFree && renderLockOverlay("기질 약점")}
                 <h4 className="font-myeongjo text-sm font-bold text-red-700 print:text-base">⚠️ 극복해야 할 약점</h4>
-                <ul className="text-xs text-[#2C2C2C] space-y-2 font-light leading-relaxed print:text-[13px] print:space-y-3">
+                <ul className={`text-xs text-[#2C2C2C] space-y-2 font-light leading-relaxed print:text-[13px] print:space-y-3 ${isFree ? "select-none blur-[4px]" : ""}`}>
                   <li className="flex gap-2"><span className="text-red-500 font-bold shrink-0">•</span>{baseEl === "목" ? "지나친 자존심으로 타인의 의견을 배척하기 쉽습니다." : baseEl === "화" ? "감정의 기복이 심해 과격한 언행을 할 수 있습니다." : baseEl === "토" ? "변화와 새로운 시도에 지나치게 보수적일 수 있습니다." : baseEl === "금" ? "날카로운 직언이 상대방에게 상처를 줄 수 있습니다." : "우유부단함으로 중요한 결정을 미루는 경향이 있습니다."}</li>
                   <li className="flex gap-2"><span className="text-red-500 font-bold shrink-0">•</span>{baseEl === "목" ? "타협을 약함으로 보아 불필요한 갈등이 생길 수 있습니다." : baseEl === "화" ? "시작은 뜨겁지만 지속력이 부족해 마무리가 약합니다." : baseEl === "토" ? "우유부단한 결단으로 좋은 기회를 놓치기도 합니다." : baseEl === "금" ? "지나친 완벽주의로 자신과 타인을 지치게 만듭니다." : "낯선 환경에서 심한 불안감을 느껴 결단을 미룹니다."}</li>
                   <li className="flex gap-2"><span className="text-red-500 font-bold shrink-0">•</span>{baseEl === "목" ? "성급하게 행동하여 세부 사항을 놓치는 일이 잦습니다." : baseEl === "화" ? "충동적인 판단으로 경제적 손실을 볼 수 있습니다." : baseEl === "토" ? "남에게 베푸는 것이 많아 재물이 새어나갈 수 있습니다." : baseEl === "금" ? "감정 표현이 서투르고 외로움을 쉽게 느낍니다." : "현실적인 판단보다 이상을 추구하는 경향이 강합니다."}</li>
@@ -760,7 +898,8 @@ function ResultContent() {
               </div>
             </div>
             {worryText && (
-              <div className="bg-white border-2 border-[#A3845B]/40 rounded-lg p-5 print:p-6">
+              <div className="bg-white border-2 border-[#A3845B]/40 rounded-lg p-5 print:p-6 relative overflow-hidden">
+                {isFree && renderLockOverlay("개인 맞춤 솔루션")}
                 <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] mb-3 flex items-center gap-1.5 print:text-base">
                   <Heart className="w-4 h-4 text-red-500" />
                   {name} 님의 개별 고민 맞춤형 솔루션
@@ -769,7 +908,7 @@ function ResultContent() {
                   <span className="font-bold text-[#1A1A1A] block mb-1">작성하신 고민 원문:</span>
                   <p className="text-[#5F5F5F] italic">"{decodeURIComponent(worryText)}"</p>
                 </div>
-                <div className="space-y-3 text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional print:text-[13px] print:leading-loose">
+                <div className={`space-y-3 text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional print:text-[13px] print:leading-loose ${isFree ? "select-none blur-[4px]" : ""}`}>
                   <div><span className="font-bold text-[#A3845B] block mb-1">📍 고민 상황의 운명적 해석</span><p>{personalizedText.analysis}</p></div>
                   <div><span className="font-bold text-[#A3845B] block mb-1">⏰ 최적의 행동 타이밍</span><p>{personalizedText.timing}</p></div>
                   <div>
@@ -786,6 +925,75 @@ function ResultContent() {
           </div>
         </div>
 
+        {isFree ? (
+          <div className="relative mt-8">
+            {/* 블러 처리된 가짜 콘텐츠 영역 */}
+            <div className="select-none blur-[6px] pointer-events-none space-y-12">
+              {/* PAGE 3: 2026 전체 흐름 */}
+              <div className="print-page-wrapper">
+                <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">2026년 병오년 전체 흐름</h3>
+                <div className="bg-white p-5 rounded-lg border">대단히 뜨거운 불꽃의 흐름이 내 사주를 가로질러 작용하고 있습니다. 1~4분기 중 특히 2분기(여름철)에 욱하는 시비수와 손재수를 조심해야 합니다.</div>
+              </div>
+              
+              {/* PAGE 4: 분야별 오행 분석 */}
+              <div className="print-page-wrapper mt-10">
+                <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">재물/직업/연애 분야별 분석</h3>
+                <div className="space-y-2 mt-4">
+                  <div className="p-3 bg-white border rounded">재물운: ★★★★☆ (우수) 2026년 문서 관련 성과가 돋보입니다.</div>
+                  <div className="p-3 bg-white border rounded">직업운: ★★★★★ (최상) 관인상생의 흐름으로 승진과 신뢰를 독차지합니다.</div>
+                </div>
+              </div>
+            </div>
+
+            {/* 정교한 유료 잠금 오버레이 배너 (포장 도장 붉은색 #8B221E 및 황동색 #A3845B 테마) */}
+            <div className="absolute inset-0 bg-[#F9F8F6]/60 backdrop-blur-lg flex flex-col items-center justify-center p-6 z-30">
+              <div className="max-w-md w-full border-4 border-double border-[#A3845B] bg-[#2D3A30] text-[#FAF7F0] rounded-xl p-8 shadow-2xl space-y-5 text-center font-traditional relative">
+                <div className="absolute top-2 left-2 text-[#A3845B]/30 text-[10px]">卍</div>
+                <div className="absolute top-2 right-2 text-[#A3845B]/30 text-[10px]">卍</div>
+                <div className="absolute bottom-2 left-2 text-[#A3845B]/30 text-[10px]">卍</div>
+                <div className="absolute bottom-2 right-2 text-[#A3845B]/30 text-[10px]">卍</div>
+                
+                <div className="w-14 h-14 bg-[#A3845B]/20 text-[#A3845B] rounded-full flex items-center justify-center mx-auto text-2xl border border-[#A3845B]/50 animate-bounce">
+                  🔒
+                </div>
+                
+                <h4 className="font-myeongjo text-lg font-bold tracking-wider text-[#A3845B]">
+                  5가지 평생 비밀 분석서가 잠겨있습니다
+                </h4>
+                
+                <p className="text-xs text-[#FAF7F0]/90 leading-relaxed font-light">
+                  무료 보고서 분석이 완료되었습니다. 귀하의 <span className="text-[#A3845B] font-bold">평생 재물 폭발 시기</span>, <span className="text-[#A3845B] font-bold">인생 최대의 대운 10년 주기</span>, <span className="text-[#A3845B] font-bold">사주 속 흉살과 액운 방어 비법</span> 등 5대 치명적 비밀이 포함된 고품격 전체 리포트를 즉시 열람하실 수 있습니다.
+                </p>
+
+                {/* 실시간 Ticker 피드 */}
+                <div className="bg-black/35 py-2 px-4 rounded text-[10px] text-gray-300 font-sans tracking-wide">
+                  현재 <span className="text-[#A3845B] font-bold animate-pulse">14,821명</span>의 사용자가 혜안당 정통 사주를 열람 중입니다.
+                </div>
+
+                <div className="space-y-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={handlePortonePayment}
+                    className="w-full py-3 bg-[#8B221E] hover:bg-[#6D1B18] text-white rounded text-xs font-bold shadow-lg transition-all transform hover:scale-[1.01] tracking-widest cursor-pointer"
+                  >
+                    평생 정통 사주 보감 잠금 해제 (34,900원)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsPaid(true)}
+                    className="w-full py-2 bg-[#A3845B]/80 hover:bg-[#A3845B] text-white rounded text-[10px] font-semibold tracking-wider transition-all"
+                  >
+                    ⚙️ [개발자 테스트] 결제 없이 즉시 잠금해제 확인하기
+                  </button>
+                  <p className="text-[9px] text-[#FAF7F0]/60">
+                    * 결제 즉시 페이지 상의 블러 처리가 영구 해제되며, 인쇄 및 PDF 다운로드가 가능해집니다.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <>
         {/* ===== PAGE 3: 2026년 전체 흐름 ===== */}
         <div className="print-page-wrapper print:text-[13px] print:leading-relaxed">
           <div>
@@ -1083,6 +1291,7 @@ function ResultContent() {
               </div>
             </div>
           </>
+        )}          </>
         )}
       </>
     );

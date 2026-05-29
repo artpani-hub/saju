@@ -12,27 +12,6 @@ export async function POST(request) {
       );
     }
 
-    // ========================================================
-    // [로컬 테스트를 위한 임시 Mocking 처리]
-    // 알리고 발신번호 승인 대기 중 오류 우회를 위해 가상으로 성공 응답을 내립니다.
-    // ========================================================
-    console.log("=========================================");
-    console.log("[MOCK SMS 발송 시뮬레이션]");
-    console.log(`수신번호: ${receiver}`);
-    console.log(`메시지 제목: ${title || "[혜안당]"}`);
-    console.log(`메시지 본문: \n${msg}`);
-    console.log("=========================================");
-
-    return NextResponse.json({
-      success: true,
-      message: "문자 발송에 성공했습니다. (로컬 임시 시뮬레이션 성공)",
-      data: {
-        result_code: "1",
-        message: "success"
-      },
-    });
-
-    /* ---- 추후 알리고 발신번호 승인 완료 후 아래 주석을 풀고 위 Mock 코드를 지우세요 ----
     const key = process.env.ALIGO_KEY;
     const userid = process.env.ALIGO_USER_ID;
     const sender = process.env.ALIGO_SENDER;
@@ -60,7 +39,8 @@ export async function POST(request) {
       formData.append("title", "[혜안당]");
     }
     
-    formData.append("testmode_yn", "Y");
+    // testmode_yn을 비활성화하여 실제 전송 모드로 전환
+    // formData.append("testmode_yn", "Y");
 
     const response = await fetch("https://apis.aligo.in/send/", {
       method: "POST",
@@ -90,7 +70,6 @@ export async function POST(request) {
         data: data,
       }, { status: 400 });
     }
-    ---------------------------------------------------------------------------------- */
 
   } catch (error) {
     console.error("SMS 전송 오류:", error);

@@ -232,3 +232,93 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
   background-attachment: fixed;
 }
 
+/* 혜안당 프리미엄 결제 유도 스티키 바 */
+.hyeandang-sticky-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background-color: rgba(246, 243, 236, 0.93);
+  backdrop-filter: blur(12px);
+  border-top: 2px solid #A3845B;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* 리포트 본문 흐림 차단 박스 */
+.hyeandang-blur-box {
+  filter: blur(7px);
+  user-select: none;
+  pointer-events: none;
+  opacity: 0.35;
+  transition: filter 0.5s ease;
+}
+
+/* 만세력 한자 카드 공중 부양 애니메이션 */
+@keyframes hyeandangFloat {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
+}
+
+.hyeandang-card-floating {
+  animation: hyeandangFloat 3s ease-in-out infinite;
+}
+
+/* 오행 상징 텍스트 컬러군 */
+.saju-el-wood { color: #1b5e20 !important; }
+.saju-el-fire { color: #b71c1c !important; }
+.saju-el-earth { color: #8d6e63 !important; }
+.saju-el-metal { color: #455a64 !important; }
+.saju-el-water { color: #0d47a1 !important; }
+
+/* 오행 상징 연한 배경 컬러군 */
+.saju-bg-wood { background-color: rgba(27, 94, 32, 0.07) !important; }
+.saju-bg-fire { background-color: rgba(183, 28, 28, 0.07) !important; }
+.saju-bg-earth { background-color: rgba(141, 110, 99, 0.07) !important; }
+.saju-bg-metal { background-color: rgba(69, 90, 100, 0.07) !important; }
+.saju-bg-water { background-color: rgba(13, 71, 161, 0.07) !important; }
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.35s ease-out forwards;
+}
+
+/* ----------------------------------------------------
+   Hyeandang Premium Styling & Animations
+   ---------------------------------------------------- */
+.hyeandang-dark-jade-box {
+  background-color: #2D3A30 !important; /* 다크 비취 */
+  border: 4px double #A3845B !important; /* 황동 이중선 */
+  color: #FAF7F0 !important;
+}
+
+.hyeandang-inline-blur {
+  filter: blur(5.5px) !important;
+  user-select: none !important;
+  pointer-events: none !important;
+  opacity: 0.38 !important;
+}
+
+@keyframes scrollVertical {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.animate-scroll-vertical {
+  animation: scrollVertical 22s linear infinite;
+}
+
+.animate-scroll-vertical:hover {
+  animation-play-state: paused;
+}
+
+
