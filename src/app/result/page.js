@@ -1291,9 +1291,9 @@ function ResultContent() {
               </div>
             </div>
           </>
-        )}          </>
         )}
-      </>
+          </>
+        )}      </>
     );
   };
 
