@@ -10,13 +10,13 @@ const products = {
   saju: {
     title: "평생 종합 사주팔자",
     category: "사주팔자",
-    price: 34900,
+    price: 33900,
     desc: "타고난 오행 분포, 대운의 흐름, 전반적인 라이프사이클 솔루션 제공",
   },
   newyear: {
     title: "신년 운세 / 토정비결",
     category: "시즌 한정",
-    price: 34900,
+    price: 35000,
     desc: "한 해의 전체적인 기운과 방향성, 월별 상세 운세 가이드",
   },
   wealth: {
@@ -272,7 +272,7 @@ function InputFormContent() {
   const [selectedCards, setSelectedCards] = useState([]);
   const [progress, setProgress] = useState(0);
 
-  // step === "processing" 진행 상황 실시간 타이머
+  // step === "processing" 일 때 진행도를 실시간으로 올리는 타이머
   useEffect(() => {
     if (step !== "processing") {
       setProgress(0);
@@ -284,31 +284,7 @@ function InputFormContent() {
         if (prev >= 100) {
           clearInterval(interval);
           setTimeout(() => {
-            if (reportGrade === "free") {
-              const queryParams = new URLSearchParams({
-                name: formData.name,
-                gender: formData.gender,
-                type: productKey,
-                calendar: formData.calendarType,
-                year: formData.birthYear,
-                month: formData.birthMonth,
-                day: formData.birthDay,
-                hour: formData.birthHour,
-                worryCategory: formData.worryCategory,
-                worryText: formData.worryText || "",
-                partnerName: formData.partnerName || "",
-                partnerGender: formData.partnerGender || "male",
-                partnerCalendar: formData.partnerCalendarType || "solar",
-                partnerYear: formData.partnerBirthYear || "1995",
-                partnerMonth: formData.partnerBirthMonth || "08",
-                partnerDay: formData.partnerBirthDay || "25",
-                partnerHour: formData.partnerBirthHour || "unknown",
-                reportGrade: "free"
-              });
-              router.push(`/result?${queryParams.toString()}`);
-            } else {
-              setStep("success");
-            }
+            setStep("success");
           }, 600);
           return 100;
         }
@@ -318,7 +294,7 @@ function InputFormContent() {
     }, 250);
 
     return () => clearInterval(interval);
-  }, [step, reportGrade, formData, productKey, router]);
+  }, [step]);
 
   const tarotDeck = [
     { id: "magician", name: "마법사", roman: "I", eng: "THE MAGICIAN" },
@@ -368,7 +344,6 @@ function InputFormContent() {
     const dayParam = searchParams.get("day");
     const hourParam = searchParams.get("hour");
     const phoneParam = searchParams.get("phone");
-    const reportGradeParam = searchParams.get("reportGrade");
 
     if (nameParam || phoneParam) {
       setFormData(prev => ({
@@ -391,6 +366,7 @@ function InputFormContent() {
       }
     }
 
+    const reportGradeParam = searchParams.get("reportGrade");
     if (reportGradeParam) {
       setReportGrade(reportGradeParam);
     }
@@ -435,13 +411,13 @@ function InputFormContent() {
 
   const validateForm = () => {
     if (!formData.name.trim()) return "성명을 입력해 주세요.";
-    if (productKey !== "today" && reportGrade !== "free") {
+    if (productKey !== "today") {
       if (!formData.email.trim() || !formData.email.includes("@")) return "올바른 이메일 주소를 입력해 주세요.";
     }
     if (!formData.phone.trim() || formData.phone.length < 9) return "올바른 연락처를 입력해 주세요.";
     if (productKey === "tarot" && selectedCards.length < 3) return "속마음 타로 카드를 3장 선택해 주세요.";
     if (productKey === "gunghap" && !formData.partnerName.trim()) return "상대방의 성명을 입력해 주세요.";
-    if (productKey !== "today" && reportGrade !== "free" && !formData.worryText.trim()) return "고민하고 계시는 구체적인 내용을 적어주세요.";
+    if (productKey !== "today" && !formData.worryText.trim()) return "고민하고 계시는 구체적인 내용을 적어주세요.";
     return null;
   };
 
@@ -453,53 +429,42 @@ function InputFormContent() {
       return;
     }
     
-    // If it's a free trial, bypass paying step and start analysis directly
-    if (reportGrade === "free") {
-      startAnalysis();
-    } else {
-      setStep("paying");
-    }
+    // Transition to payment step
+    setStep("paying");
   };
 
   const startAnalysis = () => {
     setStep("processing");
     
-    try {
-      const orderId = Math.floor(Math.random() * 9000) + 1000;
-      const now = new Date();
-      const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      
-      const traditionalTime = getTraditionalTimeName(formData.birthHour);
-      const sajuGanji = `${formData.birthYear}년 ${formData.birthMonth}월 ${formData.birthDay}일 (${traditionalTime})`;
+    // Simulate manseoryok derivation and AI generation
+    setTimeout(() => {
+      try {
+        const orderId = Math.floor(Math.random() * 9000) + 1000;
+        const now = new Date();
+        const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        
+        const traditionalTime = getTraditionalTimeName(formData.birthHour);
+        const sajuGanji = `${formData.birthYear}년 ${formData.birthMonth}월 ${formData.birthDay}일 (${traditionalTime})`;
 
-      const base = products[productKey]?.price || 30000;
-      const finalPrice = reportGrade === "free" ? 0 : ((productKey === "saju" || productKey === "newyear")
-        ? (reportGrade === "deep" 
-          ? base + 15000 
-          : reportGrade === "sms" 
-          ? Math.max(5000, base - 10000) 
-          : base)
-        : base);
-
-      const newOrder = {
-        id: orderId,
-        name: formData.name || "홍길동",
-        email: formData.email || "today_sms@hyeandang.com",
-        phone: formData.phone || "010-0000-0000",
-        productName: `${products[productKey]?.title || "맞춤 사주"}${reportGrade === "free" ? " (무료 체험판)" : ""}`,
-        amount: finalPrice,
-        status: reportGrade === "free" ? "free" : "paid",
-        sajuGanji: sajuGanji,
-        emailStatus: "pending",
-        createdAt: formattedDate,
-        gender: formData.gender,
-        calendar: formData.calendarType,
-        year: formData.birthYear,
-        month: formData.birthMonth,
-        day: formData.birthDay,
-        hour: formData.birthHour,
-        worryText: formData.worryText || "오늘의 운세"
-      };
+        const newOrder = {
+          id: orderId,
+          name: formData.name || "홍길동",
+          email: formData.email || "today_sms@hyeandang.com",
+          phone: formData.phone || "010-0000-0000",
+          productName: products[productKey]?.title || "맞춤 사주",
+          amount: products[productKey]?.price || 30000,
+          status: "paid",
+          sajuGanji: sajuGanji,
+          emailStatus: "pending",
+          createdAt: formattedDate,
+          gender: formData.gender,
+          calendar: formData.calendarType,
+          year: formData.birthYear,
+          month: formData.birthMonth,
+          day: formData.birthDay,
+          hour: formData.birthHour,
+          worryText: formData.worryText || "오늘의 운세"
+        };
 
         const existingStr = localStorage.getItem("hyeandang_orders");
         let currentOrders = [];
@@ -652,47 +617,11 @@ function InputFormContent() {
 
         sendSmsMessage();
       } catch (err) {
-        console.error("Local storage/SMS error:", err);
+        console.error("Local storage error:", err);
       }
-  };
-
-  // 실제 포트원 결제창 호출 및 처리
-  const handlePortonePayment = () => {
-    if (typeof window === "undefined" || !window.IMP) {
-      alert("결제 모듈을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
-      return;
-    }
-
-    const IMP = window.IMP;
-    const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
-    const pgChannel = process.env.NEXT_PUBLIC_PORTONE_PG || "kcp.T0000";
-    IMP.init(impCode);
-
-    const base = activeProduct.price;
-    const finalPrice = (productKey === "saju" || productKey === "newyear")
-      ? (reportGrade === "deep" 
-        ? base + 15000 
-        : reportGrade === "sms" 
-        ? Math.max(5000, base - 10000) 
-        : base)
-      : base;
-
-    IMP.request_pay({
-      pg: pgChannel,
-      pay_method: "card",
-      merchant_uid: `merchant_${new Date().getTime()}`,
-      name: `${formData.name || "의뢰인"}님 ${activeProduct.title}`,
-      amount: finalPrice,
-      buyer_name: formData.name,
-      buyer_tel: formData.phone,
-      buyer_email: formData.email || "test@example.com",
-    }, function (rsp) {
-      if (rsp.success) {
-        startAnalysis(); // 결제 완료 시 분석 진행
-      } else {
-        alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
-      }
-    });
+      
+      setStep("success");
+    }, 5000);
   };
 
   const getTraditionalTimeName = (hourVal) => {
@@ -1078,159 +1007,10 @@ function InputFormContent() {
                           >
                             <div className="absolute inset-1 border border-dashed border-[#A3845B]/25 rounded flex items-center justify-center">
                               {isSelected ? (
-                                <span className="bg-[#A3845B] text-background text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow">
-                                  {order}
-                                </span>
-                              ) : (
-                                <div className="absolute inset-0 bg-[#2C2621]/10 hover:bg-transparent transition-colors" />
-                              )}
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {selectedCards.length > 0 && (
-                      <div className="flex justify-between items-center text-xs pt-2">
-                        <span className="text-foreground-muted">
-                          선택 순서:{" "}
-                          <strong className="text-[#A3845B]">
-                            {selectedCards.map(c => tarotDeck.find(d => d.id === c)?.name).join(" → ")}
-                          </strong>
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setSelectedCards([])}
-                          className="text-red-500 hover:underline text-[11px]"
-                        >
-                          선택 초기화
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* 3. Delivery and Context */}
-                <div className="bg-background-secondary/30 border border-border-custom rounded-lg p-6 space-y-4">
-                  <h3 className="font-myeongjo text-base font-bold text-foreground flex items-center gap-2 border-b border-border-custom/50 pb-2">
-                    <Mail className="w-4 h-4 text-brass" />
-                    수신 정보 & 고민 작성
-                  </h3>
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="email" className="block text-xs font-semibold text-foreground mb-1.5">결과 수신 이메일</label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="example@hyeandang.com"
-                        className="w-full bg-background border border-border-custom rounded px-3 py-2 text-sm focus:outline-none focus:border-brass"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="phone" className="block text-xs font-semibold text-foreground mb-1.5">연락처 (안내 문자용)</label>
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        placeholder="010-0000-0000"
-                        className="w-full bg-background border border-border-custom rounded px-3 py-2 text-sm focus:outline-none focus:border-brass"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      {productKey === "dream" ? "꿈의 핵심 주제" : "가장 고민인 분야"}
-                    </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      {(productKey === "wealth"
-                        ? [
-                            { key: "business", label: "사업 / 운영" },
-                            { key: "startup", label: "창업 / 부업" },
-                            { key: "trade", label: "장사 / 유통" },
-                            { key: "facility", label: "설비투자 / 확장" },
-                            { key: "general", label: "종합 / 기타" },
-                          ]
-                        : productKey === "dream"
-                        ? [
-                            { key: "animal_plant", label: "학동물 / 식물" },
-                            { key: "people_family", label: "인물 / 가족" },
-                            { key: "death_blood", label: "죽음 / 피" },
-                            { key: "nature_weather", label: "자연 / 날씨" },
-                            { key: "wealth_jewel", label: "재물 / 보석" },
-                            { key: "general", label: "일반 / 기타" },
-                          ]
-                        : [
-                            { key: "love", label: "연애 / 속마음" },
-                            { key: "career", label: "직장 / 이직" },
-                            { key: "wealth", label: "금전 / 투자" },
-                            { key: "exam", label: "학업 / 시험" },
-                            { key: "general", label: "종합 / 기타" },
-                          ]
-                      ).map((cat) => (
-                        <button
-                          key={cat.key}
-                          type="button"
-                          onClick={() => setFormData(prev => ({ ...prev, worryCategory: cat.key }))}
-                          className={`py-2 text-xs font-medium rounded border transition-colors ${
-                            formData.worryCategory === cat.key
-                              ? "bg-brass text-background border-brass"
-                              : "bg-background text-foreground-muted border-border-custom hover:border-brass/50"
-                          }`}
-                        >
-                          {cat.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between items-center mb-1.5">
-                      <label htmlFor="worryText" className="block text-xs font-semibold text-foreground">
-                        {productKey === "dream"
-                          ? "꿈의 구체적인 내용 서술 (최대 500자)"
-                          : "구체적인 고민이나 현재 겪고 계신 상태 (최대 500자)"}
-                      </label>
-                      <span className="text-[10px] text-foreground-muted font-normal">{charCount} / 500자</span>
-                    </div>
-                    <textarea
-                      id="worryText"
-                      name="worryText"
-                      value={formData.worryText}
-                      onChange={handleInputChange}
-                      maxLength={500}
-                      rows={5}
-                      placeholder={productKey === "dream"
-                        ? "예시: 어젯밤에 검은 덕치마가 나타나 나를 품어안는 꿈을 꽜었습니다. 덕치가 새끼하게 움직이지는 않았고 오히려 저를 감싸 안아주는 듯한 느낌이었습니다. 불로 타오르는 산과 수력이 보이는 꿈이었습니다. 이 꿈과 요즘 직장 이직 문제가 어떤 관계인지 알고 싶습니다..."
-                        : "예시: 다니고 있는 회사에서 올해 이직을 준비하고 있는데, 언제가 좋을지, 제 사주에 어떤 기운이 도움이 되는지 알려주세요. 또한 대인관계로 인한 스트레스가 많습니다..."}
-                      className="w-full bg-background border border-border-custom rounded px-3 py-2 text-sm focus:outline-none focus:border-brass font-light leading-relaxed resize-none"
-                      required
-                    ></textarea>
-                  </div>
-                </div>
-
-                {/* Submitting button */}
-                <button
-                  type="submit"
-                  className="w-full py-4 bg-jade text-background rounded-lg font-myeongjo text-lg font-bold shadow-md hover:bg-jade-dark hover:shadow-lg transition-all cursor-pointer"
-                >
-                  {reportGrade === "free" ? "확인하기" : "기입 완료 및 결제 진행"}
-                </button>
-              </form>
-            </div>
-
-            {/* Right side: Product selection and invoice */}
+                                <span className="bg-[#A3845B] text-backgrou            {/* Right side: Product selection and invoice */}
             <div className="space-y-6">
               {reportGrade !== "free" ? (
-                <div className="border border-border-custom bg-background rounded-lg p-6 sticky top-24">
+                <div className="border border-border-custom bg-background rounded-lg p-6 sticky top-24 animate-fadeIn">
                   <h3 className="font-myeongjo text-lg font-bold text-foreground mb-4 pb-2 border-b border-border-custom">
                     선택된 상품 보감
                   </h3>
@@ -1344,7 +1124,7 @@ function InputFormContent() {
                         : (productKey === "saju" || productKey === "newyear")
                         ? (reportGrade === "sms" 
                           ? "모바일 화면에 최적화된 핵심 한 줄 요약 및 핵심 개운 처방 문자 발송"
-                          : reportGrade === "deep"
+                          : reportGrade === "deep" 
                           ? `${activeProduct.desc} 및 2026 신년운세 상세, 용신 해석, 대운 흐름 분석과 질문 3가지 심화 답변 제공`
                           : activeProduct.desc)
                         : activeProduct.desc}
@@ -1407,55 +1187,184 @@ function InputFormContent() {
                   <div className="absolute bottom-2 right-2 text-jade/25 text-xs">卍</div>
 
                   <div className="text-center pb-2.5 border-b border-border-custom/60">
-                    <span className="text-[10px] text-jade font-bold tracking-widest block mb-1">무료 분석</span>
+                    <span className="text-[10px] text-jade font-bold tracking-widest block mb-1">FREE TRIAL</span>
                     <h3 className="font-myeongjo text-base font-bold text-foreground">
-                      🎁 혜안당 무료 사주 보감
+                      🎁 혜안당 무료 체험판
                     </h3>
                   </div>
 
                   <div className="space-y-4 text-xs font-light leading-relaxed">
-                    <p className="text-foreground-muted text-center font-traditional">
-                      귀하의 타고난 생년월일시 오행 기류를 정밀 분석하여, 사주 원국과 등급 및 희소성 분석 결과를 <strong>일체의 카드 등록이나 비용 없이</strong> 즉시 공개해 드립니다.
+                    <div className="bg-jade/5 border border-jade/25 rounded-lg p-4 text-center space-y-1">
+                      <span className="text-[10px] text-jade font-bold block">분석 비용</span>
+                      <span className="text-2xl font-extrabold text-jade">0<span className="text-sm font-bold ml-0.5">원</span></span>
+                    </div>
+
+                    <p className="text-foreground-muted text-center font-traditional pt-2">
+                      귀하의 타고난 생년월일시 오행 기류를 정밀 분석하여, 5가지 운명의 비밀 중 2가지 핵심 항목을 <strong>일체의 결제나 카드 등록 절차 없이</strong> 완전히 무료로 즉시 공개해 드립니다.
                     </p>
 
                     <div className="border-t border-border-custom/60 pt-4 space-y-2.5">
-                      <span className="font-bold text-foreground block">✔ 무료 제공 범위:</span>
+                      <span className="font-bold text-foreground block">✔ 무료 제공 분석 내용:</span>
                       <ul className="space-y-2 pl-1">
                         <li className="flex gap-2 items-start text-foreground-muted">
                           <span className="text-jade font-bold">1.</span>
-                          <span><strong>사주 팔자 명식 원국 분석</strong></span>
+                          <span><strong>1-1. 타고난 성향과 핵심 기질 분석</strong></span>
                         </li>
                         <li className="flex gap-2 items-start text-foreground-muted">
                           <span className="text-jade font-bold">2.</span>
-                          <span><strong>오행 에너지 분포 및 조화도</strong></span>
-                        </li>
-                        <li className="flex gap-2 items-start text-foreground-muted">
-                          <span className="text-jade font-bold">3.</span>
-                          <span><strong>내 사주 등급(1~7등급) 및 희소성 판정</strong></span>
-                        </li>
-                        <li className="flex gap-2 items-start text-foreground-muted">
-                          <span className="text-jade font-bold">4.</span>
-                          <span><strong>타고난 핵심 성향 해설</strong></span>
+                          <span><strong>1-2. 오행 에너지 구성표 분석</strong></span>
                         </li>
                       </ul>
                     </div>
 
-                    <div className="border-t border-border-custom/60 pt-4 text-center">
-                      <button
-                        type="button"
-                        onClick={() => setReportGrade("premium")}
-                        className="text-xs text-brass font-bold hover:underline cursor-pointer"
-                      >
-                        ← 정통 정밀 사주 보감 신청하기
-                      </button>
-                    </div>
-
                     <div className="border-t border-border-custom/60 pt-4 text-center text-[10px] text-foreground-muted/70">
-                      💡 정보 기입을 완료하고 하단의 <strong className="text-jade">"내 사주 등급 확인하기"</strong> 버튼을 누르면 즉시 사주 분석이 개시됩니다.
+                      💡 정보 기입을 완료하고 하단의 <strong className="text-jade">"무료 분석 시작하기"</strong> 버튼을 누르면 즉시 사주 분석이 개시됩니다.
                     </div>
                   </div>
                 </div>
               )}
+            </div>체험판 <span className="text-[8px] bg-jade/10 text-jade px-1.5 py-0.5 rounded font-normal">선택됨</span>
+                                    </span>
+                                    <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
+                                      인생 보감 첫 장 무료 분석 제공 (결제 불필요)
+                                    </span>
+                                  </div>
+                                  <span className="text-[10px] text-foreground-muted">0원</span>
+                                </button>
+                              )}
+
+                              <button
+                                type="button"
+                                onClick={() => setReportGrade("premium")}
+                                className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+                                  reportGrade === "premium"
+                                    ? "border-brass bg-brass/10"
+                                    : "border-border-custom bg-background hover:bg-background-secondary/20"
+                                }`}
+                              >
+                                <div>
+                                  <span className="text-[11px] font-bold text-foreground flex items-center gap-1">
+                                    ✨ 고급 리포트 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span>
+                                  </span>
+                                  <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
+                                    사주원국, 오행분석, 평생운 등 종합 분석
+                                  </span>
+                                </div>
+                                <span className="text-[10px] text-foreground-muted">추가금 없음</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setReportGrade("deep")}
+                                className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+                                  reportGrade === "deep"
+                                    ? "border-[#5F7A68] bg-[#5F7A68]/10"
+                                    : "border-border-custom bg-background hover:bg-background-secondary/20"
+                                }`}
+                              >
+                                <div>
+                                  <span className="text-[11px] font-bold text-[#5F7A68] flex items-center gap-1">
+                                    👑 심화 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span>
+                                  </span>
+                                  <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
+                                    고급 리포트 전체 + 신년운세 + 용신/대운 + 질문 심화 풀이
+                                  </span>
+                                </div>
+                                <span className="text-[10px] font-bold text-[#5F7A68]">+15,000원</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setReportGrade("sms")}
+                                className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+                                  reportGrade === "sms"
+                                    ? "border-gray-500 bg-gray-500/10"
+                                    : "border-border-custom bg-background hover:bg-background-secondary/20"
+                                }`}
+                              >
+                                <div>
+                                  <span className="text-[11px] font-bold text-foreground flex items-center gap-1">
+                                    💬 문자메시지 요약
+                                  </span>
+                                  <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
+                                    핵심 요약본 모바일 문자/카카오톡 전송
+                                  </span>
+                                </div>
+                                <span className="text-[10px] font-bold text-red-500">-10,000원</span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Info block */}
+                <div className="bg-background-secondary/60 rounded-lg p-4 mb-6 border border-border-custom/50">
+                  <h4 className="text-xs font-bold text-foreground mb-1.5 flex items-center gap-1.5">
+                    <Scroll className="w-3.5 h-3.5 text-brass" />
+                    제공 품목 안내
+                  </h4>
+                  <p className="text-xs text-foreground-muted leading-relaxed font-light mb-2">
+                    {productKey === "today"
+                      ? "모바일 화면에 최적화된 맞춤형 오늘의 대길흉/오행 수호 비법 요약 문자 즉시 발송"
+                      : (productKey === "saju" || productKey === "newyear")
+                      ? (reportGrade === "sms" 
+                        ? "모바일 화면에 최적화된 핵심 한 줄 요약 및 핵심 개운 처방 문자 발송"
+                        : reportGrade === "deep"
+                        ? `${activeProduct.desc} 및 2026 신년운세 상세, 용신 해석, 대운 흐름 분석과 질문 3가지 심화 답변 제공`
+                        : activeProduct.desc)
+                      : activeProduct.desc}
+                  </p>
+                  <ul className="text-[10px] text-foreground-muted space-y-1 font-light border-t border-border-custom/50 pt-2">
+                    <li className="flex items-center gap-1">
+                      <Check className="w-3 h-3 text-jade" />{" "}
+                      {productKey === "today" || ((productKey === "saju" || productKey === "newyear") && reportGrade === "sms")
+                        ? "모바일 알림톡/LMS로 즉시 발송" 
+                        : "이메일로 HTML + PDF 발송"}
+                    </li>
+                    <li className="flex items-center gap-1">
+                      <Check className="w-3 h-3 text-jade" /> 5~15분 내외 초고속 분석 및 발송
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Total invoice details */}
+                {(() => {
+                  const base = activeProduct.price;
+                  const finalPrice = reportGrade === "free" ? 0 : ((productKey === "saju" || productKey === "newyear")
+                    ? (reportGrade === "deep" 
+                      ? base + 15000 
+                      : reportGrade === "sms" 
+                      ? Math.max(5000, base - 10000) 
+                      : base)
+                    : base);
+                  return (
+                    <div className="space-y-2 mb-6">
+                      <div className="flex justify-between text-xs text-foreground-muted">
+                        <span>분석 대행 수수료</span>
+                        <span>{Math.round(finalPrice * 0.9).toLocaleString()}원</span>
+                      </div>
+                      <div className="flex justify-between text-xs text-foreground-muted">
+                        <span>부가세(10%)</span>
+                        <span>{Math.round(finalPrice * 0.1).toLocaleString()}원</span>
+                      </div>
+                      <div className="flex justify-between items-center border-t border-border-custom pt-3 mt-1.5">
+                        <span className="text-sm font-bold text-foreground font-myeongjo">최종 결제 금액</span>
+                        <span className="text-lg font-bold text-brass">
+                          {finalPrice.toLocaleString()}원
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                <div className="flex items-center gap-1.5 text-[10px] text-foreground-muted bg-background-secondary/30 p-2.5 rounded border border-border-custom/30">
+                  <ShieldCheck className="w-4 h-4 text-jade shrink-0" />
+                  <span>혜안당은 포트원 통합 결제 모듈을 통하여 암호화된 금융 보안 결제를 지원합니다.</span>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -1466,8 +1375,12 @@ function InputFormContent() {
             {/* Mockup Traditional styled payment gateway frame */}
             <div className="border border-border-custom bg-background rounded-lg p-6 mb-6">
               <div className="bg-brass/10 border-b border-border-custom p-3 -mx-6 -mt-6 rounded-t-lg flex items-center justify-between">
-                <span className="text-xs font-semibold text-brass tracking-wider">포트원 통합 결제창</span>
-                <span className="text-[10px] text-foreground-muted">PortOne Secure Pay</span>
+                <span className="text-xs font-semibold text-brass tracking-wider">
+                  {reportGrade === "free" ? "무료 체험판 신청" : "포트원 통합 결제창"}
+                </span>
+                <span className="text-[10px] text-foreground-muted">
+                  {reportGrade === "free" ? "Free Trial Activation" : "PortOne Secure Pay"}
+                </span>
               </div>
 
               <div className="py-6 space-y-4">
@@ -1477,19 +1390,19 @@ function InputFormContent() {
                 </div>
                 {(() => {
                   const base = activeProduct.price;
-                  const finalPrice = (productKey === "saju" || productKey === "newyear")
+                  const finalPrice = reportGrade === "free" ? 0 : ((productKey === "saju" || productKey === "newyear")
                     ? (reportGrade === "deep" 
                       ? base + 15000 
                       : reportGrade === "sms" 
                       ? Math.max(5000, base - 10000) 
                       : base)
-                    : base;
+                    : base);
                   return (
                     <>
                       <div>
                         <span className="text-[10px] text-foreground-muted block">상품명</span>
                         <span className="text-sm text-foreground">
-                          {activeProduct.title} {(productKey === "saju" || productKey === "newyear") && `(${reportGrade === "premium" ? "고급 리포트" : reportGrade === "deep" ? "심화 리포트" : "문자 요약"})`}
+                          {activeProduct.title} {reportGrade === "free" ? "(무료 체험판)" : ((productKey === "saju" || productKey === "newyear") && `(${reportGrade === "premium" ? "고급 리포트" : reportGrade === "deep" ? "심화 리포트" : "문자 요약"})`)}
                         </span>
                       </div>
                       <div>
@@ -1501,23 +1414,31 @@ function InputFormContent() {
                 })()}
 
                 {/* Options of paying */}
-                <div className="border-t border-border-custom pt-4 text-left">
-                  <span className="text-xs font-semibold text-foreground block mb-2">결제수단 선택</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button type="button" className="py-2.5 text-xs text-center border border-brass bg-brass/5 rounded hover:bg-brass/10 font-medium">
-                      신용/체크카드
-                    </button>
-                    <button type="button" className="py-2.5 text-xs text-center border border-border-custom rounded hover:border-brass font-medium">
-                      카카오페이
-                    </button>
-                    <button type="button" className="py-2.5 text-xs text-center border border-border-custom rounded hover:border-brass font-medium">
-                      네이버페이
-                    </button>
-                    <button type="button" className="py-2.5 text-xs text-center border border-border-custom rounded hover:border-brass font-medium">
-                      토스페이
-                    </button>
+                {reportGrade !== "free" ? (
+                  <div className="border-t border-border-custom pt-4 text-left">
+                    <span className="text-xs font-semibold text-foreground block mb-2">결제수단 선택</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button type="button" className="py-2.5 text-xs text-center border border-brass bg-brass/5 rounded hover:bg-brass/10 font-medium">
+                        신용/체크카드
+                      </button>
+                      <button type="button" className="py-2.5 text-xs text-center border border-border-custom rounded hover:border-brass font-medium">
+                        카카오페이
+                      </button>
+                      <button type="button" className="py-2.5 text-xs text-center border border-border-custom rounded hover:border-brass font-medium">
+                        네이버페이
+                      </button>
+                      <button type="button" className="py-2.5 text-xs text-center border border-border-custom rounded hover:border-brass font-medium">
+                        토스페이
+                      </button>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="border-t border-border-custom pt-4 text-center">
+                    <p className="text-xs text-foreground-muted leading-relaxed font-light">
+                      무료 체험판은 별도의 결제 수단 입력 없이 즉시 사주 분석이 가능합니다.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -1531,16 +1452,16 @@ function InputFormContent() {
               </button>
               <button
                 type="button"
-                onClick={handlePortonePayment}
+                onClick={startAnalysis}
                 className="flex-1 py-3 bg-jade text-background rounded text-sm font-semibold hover:bg-jade-dark shadow-sm transition-all"
               >
-                결제 및 승인 진행
+                {reportGrade === "free" ? "무료 체험판 분석 시작" : "테스트 결제 승인"}
               </button>
             </div>
           </div>
         )}
 
-        {/* Step: Processing */}
+        {/* Step: Processing (DERIVING MANSEORYOK & AI REASONING SCREEN) */}
         {step === "processing" && (() => {
           const sajuInfo = getGanjiTable(
             parseInt(formData.birthYear) || 1995,
@@ -1695,8 +1616,6 @@ function InputFormContent() {
               >
                 생성된 결과서 미리보기 (샘플)
               </Link>
-
-
 
               <button
                 type="button"

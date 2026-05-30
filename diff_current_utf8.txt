@@ -1,0 +1,693 @@
+﻿diff --git a/src/app/globals.css b/src/app/globals.css
+index dc7e1dd..dde2b7a 100644
+--- a/src/app/globals.css
++++ b/src/app/globals.css
+@@ -232,3 +232,51 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
+   background-attachment: fixed;
+ }
+ 
++/* ?쒖븞???꾨━誘몄뾼 寃곗젣 ?좊룄 ?ㅽ떚??諛?*/
++.hyeandang-sticky-cta {
++  position: fixed;
++  bottom: 0;
++  left: 0;
++  right: 0;
++  z-index: 100;
++  background-color: rgba(246, 243, 236, 0.93);
++  backdrop-filter: blur(12px);
++  border-top: 2px solid #A3845B;
++  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
++}
++
++/* 由ы룷??蹂몃Ц ?먮┝ 李⑤떒 諛뺤뒪 */
++.hyeandang-blur-box {
++  filter: blur(7px);
++  user-select: none;
++  pointer-events: none;
++  opacity: 0.35;
++  transition: filter 0.5s ease;
++}
++
++/* 留뚯꽭???쒖옄 移대뱶 怨듭쨷 遺???좊땲硫붿씠??*/
++@keyframes hyeandangFloat {
++  0% { transform: translateY(0px); }
++  50% { transform: translateY(-5px); }
++  100% { transform: translateY(0px); }
++}
++
++.hyeandang-card-floating {
++  animation: hyeandangFloat 3s ease-in-out infinite;
++}
++
++/* ?ㅽ뻾 ?곸쭠 ?띿뒪??而щ윭援?*/
++.saju-el-wood { color: #1b5e20 !important; }
++.saju-el-fire { color: #b71c1c !important; }
++.saju-el-earth { color: #8d6e63 !important; }
++.saju-el-metal { color: #455a64 !important; }
++.saju-el-water { color: #0d47a1 !important; }
++
++/* ?ㅽ뻾 ?곸쭠 ?고븳 諛곌꼍 而щ윭援?*/
++.saju-bg-wood { background-color: rgba(27, 94, 32, 0.07) !important; }
++.saju-bg-fire { background-color: rgba(183, 28, 28, 0.07) !important; }
++.saju-bg-earth { background-color: rgba(141, 110, 99, 0.07) !important; }
++.saju-bg-metal { background-color: rgba(69, 90, 100, 0.07) !important; }
++.saju-bg-water { background-color: rgba(13, 71, 161, 0.07) !important; }
++
++
+diff --git a/src/app/page.js b/src/app/page.js
+index 9a336b5..6b0159f 100644
+--- a/src/app/page.js
++++ b/src/app/page.js
+@@ -233,24 +233,22 @@ export default function Home() {
+             ?꾨??곸쑝濡??ы빐?앺븳 ?꾪넻 ?ъ＜/?댁꽭 由ы룷??           </div>
+           
+-          <h1 className="font-myeongjo text-4xl md:text-6xl font-bold text-foreground tracking-tight leading-[1.2] mb-6">
+-            吏?쒕줈???덉쑝濡?br />
+-            <span className="text-brass">???몄깮??湲?/span>??諛앺엳??+          <h1 className="font-myeongjo text-4xl md:text-5xl font-bold text-foreground tracking-tight leading-[1.3] mb-6">
++            ?섎뒛???대┛ 洹?섏쓽 ?됱깮 ?ъ＜泥???br />
++            <span className="text-brass">5媛吏 ?대챸??鍮꾨?</span>???뺤씤??蹂댁꽭??
+           </h1>
+           
+-          <p className="text-lg md:text-xl text-foreground-muted max-w-2xl mx-auto leading-relaxed mb-10 font-light">
+-            ?꾪넻 留뚯꽭???뚭퀬由ъ쬁???듯븳 ?ㅽ뻾 遺꾩꽍怨?br className="hidden sm:inline" />
+-            怨좉컼?섏쓽 援ъ껜?곸씤 怨좊? ?곹솴???곕룞?섏뿬,<br className="hidden sm:inline" />
+-            ???섎굹??**媛쒖씤 留욎땄???댁꽭 遺꾩꽍??*瑜?硫붿씪濡?蹂대궡?쒕┰?덈떎.
++          <p className="text-lg md:text-xl text-foreground-muted max-w-2xl mx-auto leading-relaxed mb-10 font-light font-traditional">
++            ?됱깮???먯궛 ?먮쫫怨??꾧린????대컢 ?? ?쒖븞??蹂닿컧???좉꺼 ?덈뒗 洹?섎쭔??5媛吏 鍮꾨? 以?泥??μ쓣 利됱떆 ?댁뼱?쒕┰?덈떎.
+           </p>
+ 
+           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+             <Link
+               href="/input"
+-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-jade text-background px-8 py-4 rounded-md text-base font-medium hover:bg-jade-dark shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
++              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-jade text-background px-8 py-4 rounded-md text-base font-medium hover:bg-brass shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
+             >
+               <Scroll className="w-5 h-5" />
+-              吏湲??ъ＜ ?곷떞 ?좎껌?섍린
++              ???몄깮 蹂닿컧 泥???臾대즺濡??닿린 ??             </Link>
+             <a
+               href="#services"
+@@ -259,6 +257,57 @@ export default function Home() {
+               ?댁꽭 ?곹뭹 蹂닿린
+             </a>
+           </div>
++
++          {/* ?ㅼ떆媛??쒖븞??蹂닿컧 ?대엺 ?꾪솴 */}
++          <div className="mt-12 pt-8 border-t border-border-custom/50 max-w-2xl mx-auto space-y-6 animate-fadeIn">
++            {/* ?꾩쟻 ?섏튂 */}
++            <div className="flex justify-center items-center gap-8 md:gap-16 text-center">
++              <div>
++                <span className="text-brass text-lg md:text-xl font-bold font-myeongjo">48</span>
++                <span className="text-[10px] text-foreground-muted block mt-0.5">吏湲??대엺 以?/span>
++              </div>
++              <div className="w-px h-8 bg-border-custom/80" />
++              <div>
++                <span className="text-brass text-lg md:text-xl font-bold font-myeongjo">842</span>
++                <span className="text-[10px] text-foreground-muted block mt-0.5">?ㅻ뒛 諛쒗뻾</span>
++              </div>
++              <div className="w-px h-8 bg-border-custom/80" />
++              <div>
++                <span className="text-brass text-lg md:text-xl font-bold font-myeongjo">18,529</span>
++                <span className="text-[10px] text-foreground-muted block mt-0.5">?꾩쟻 蹂닿컧 諛쒗뻾</span>
++              </div>
++            </div>
++
++            {/* ?ㅼ떆媛?由ъ뒪??*/}
++            <div className="bg-background-secondary/35 border border-border-custom/50 rounded-xl p-4.5 text-left space-y-3">
++              <div className="flex items-center gap-1.5 text-[10px] font-semibold text-jade">
++                <span className="w-1.5 h-1.5 rounded-full bg-jade animate-pulse" />
++                吏湲?蹂닿컧???대엺 以묒씤 遺꾨뱾
++              </div>
++              <div className="space-y-2.5 max-h-48 overflow-hidden">
++                {[
++                  { name: "源O??, title: "?⑤퉬 癒멸툑? ?몃Ⅸ ??섎Т", rarity: "12.5%" },
++                  { name: "諛뷤??, title: "?쒖궛??鍮꾩텛??諛ㅽ븯?섏쓽 ?깅텋", rarity: "18.2%" },
++                  { name: "?뷤??, title: "?덇컻 ? 媛뺣Ъ ?꾩쓽 ?쏅같", rarity: "22.1%" },
++                  { name: "?큀?", title: "怨꾧끝臾쇱뿉 ?산릿 ?덈???蹂댁꽍", rarity: "6.4%" }
++                ].map((item, idx) => (
++                  <div key={idx} className="flex justify-between items-center text-xs font-traditional py-1.5 border-b border-border-custom/20 last:border-b-0">
++                    <div className="flex items-center gap-3">
++                      <span className="text-foreground-muted font-medium">{item.name}</span>
++                      <span className="font-bold text-foreground">{item.title}</span>
++                    </div>
++                    <div className="flex items-center gap-3 text-right">
++                      <span className="text-[10px] text-brass bg-brass/5 px-2 py-0.5 rounded-full font-semibold border border-brass/10">?ъ냼??{item.rarity}</span>
++                      <span className="text-[10px] text-jade font-semibold flex items-center gap-1">
++                        <span className="w-1.5 h-1.5 rounded-full bg-jade" />
++                        ?대엺 以?+                      </span>
++                    </div>
++                  </div>
++                ))}
++              </div>
++            </div>
++          </div>
+         </div>
+ 
+         {/* Traditional Korean Frame Visual Element */}
+diff --git a/src/app/result/page.js b/src/app/result/page.js
+index e5c4d9f..0384e43 100644
+--- a/src/app/result/page.js
++++ b/src/app/result/page.js
+@@ -151,6 +151,37 @@ function ResultContent() {
+   const worryText = searchParams.get("worryText") || "";
+   const reportGrade = searchParams.get("reportGrade") || "premium"; // premium(怨좉툒), deep(?ы솕)
+ 
++  // 3?? Freemium 寃곗젣 ?곹깭 愿由?+  // reportGrade媛 'free'??寃쎌슦 寃곗젣 ???곹깭(isPaid: false)濡??쒖옉??+  const [isPaid, setIsPaid] = useState(reportGrade !== "free");
++  const [unlocking, setUnlocking] = useState(false);
++
++  // 紐⑥쓽 寃곗젣 ?닿툑 ?몃━嫄?+  const handleUnlockPayment = () => {
++    setUnlocking(true);
++    // 1.8珥??숈븞 留뚯꽭???뺣? 蹂댁“ 鍮뚮뱶 ?좊땲硫붿씠?????닿툑
++    setTimeout(() => {
++      setIsPaid(true);
++      setUnlocking(false);
++      
++      // 濡쒖뺄 ?ㅽ넗由ъ????깅줉??二쇰Ц ?댁뿭???덈떎硫?寃곗젣 ?곹깭 ?낅뜲?댄듃
++      try {
++        const ordersStr = localStorage.getItem("hyeandang_orders");
++        if (ordersStr) {
++          const orders = JSON.parse(ordersStr);
++          // ?섎ː???대쫫怨??곕씫泥??뺣낫(?먮뒗 理쒓렐 二쇰Ц) 留ㅼ묶?섏뿬 paid濡??낅뜲?댄듃
++          const matchedIdx = orders.findIndex(o => o.name === name && o.status !== "paid");
++          if (matchedIdx > -1) {
++            orders[matchedIdx].status = "paid";
++            localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
++          }
++        }
++      } catch (err) {}
++      
++      alert("?뵏 ?몄깮 蹂닿컧??5媛吏 鍮꾨?怨?23媛??꾩껜 ??ぉ???깃났?곸쑝濡??닿툑?섏뿀?듬땲??");
++    }, 1800);
++  };
++
+   // Partner parameters
+   const partnerName = searchParams.get("partnerName") || "媛뺣???;
+   const partnerGender = searchParams.get("partnerGender") === "female" ? "?ъ꽦" : "?⑥꽦";
+@@ -168,6 +199,67 @@ function ResultContent() {
+   // Determine user's base element for 2026 compatibility
+   const baseEl = sajuInfo.year.stemEl; // Representing birth year element
+ 
++  // ?ㅽ뻾蹂??ㅽ???留ㅽ븨
++  const getSajuClass = (el) => {
++    switch (el) {
++      case "紐?: return "saju-el-wood saju-bg-wood border-[#1b5e20]/20";
++      case "??: return "saju-el-fire saju-bg-fire border-[#b71c1c]/20";
++      case "??: return "saju-el-earth saju-bg-earth border-[#8d6e63]/20";
++      case "湲?: return "saju-el-metal saju-bg-metal border-[#455a64]/20";
++      case "??: return "saju-el-water saju-bg-water border-[#0d47a1]/20";
++      default: return "";
++    }
++  };
++
++  // 8? ?좎옱???ㅽ꺈 怨꾩궛湲?+  const getEightStats = (elements) => {
++    const wood = elements.紐?|| 0;
++    const fire = elements.??|| 0;
++    const earth = elements.??|| 0;
++    const metal = elements.湲?|| 0;
++    const water = elements.??|| 0;
++
++    return [
++      { name: "李쎌쓽??(?앹긽)", val: Math.min(99, Math.max(35, wood * 12 + fire * 15)), desc: "?덈줈??媛移섎? ?곸긽?섍퀬 ?ㅺ퀎?섎뒗 ??웾" },
++      { name: "寃곕떒??(愿??", val: Math.min(99, Math.max(35, metal * 15 + fire * 8)), desc: "?녠퀬 洹몃쫫??媛???⑦샇?섍쾶 ?됰룞?섎뒗 ?? },
++      { name: "?몃궡??(?몄꽦)", val: Math.min(99, Math.max(35, earth * 14 + water * 10)), desc: "?대젮???쒕젴 ?띿뿉?쒕룄 臾듬У??踰꾪뀲?대뒗 ?덇린" },
++      { name: "?ш탳??(鍮꾧쾪)", val: Math.min(99, Math.max(35, fire * 12 + wood * 10 + 15)), desc: "??멸낵 移쒕??섍쾶 援먭컧?섍퀬 議곗쑉?섎뒗 ?ш탳?? },
++      { name: "由щ뜑??(愿??", val: Math.min(99, Math.max(35, earth * 12 + metal * 12 + 10)), desc: "怨듬룞泥댁쓽 ?먮쫫??二쇰룄?섍퀬 梨낆엫??吏???λ젰" },
++      { name: "?щЪ?섑샇??(?ъ꽦)", val: Math.min(99, Math.max(35, earth * 18 + metal * 10)), desc: "?살? ?댁씡??諛뽰쑝濡??꾩닔?섏? ?딄쾶 吏?ㅻ뒗 ?? },
++      { name: "?숆뎄??(?몄꽦)", val: Math.min(99, Math.max(35, water * 15 + earth * 12)), desc: "?덈줈??吏?앹쓣 源딆씠 ?먭뎄?섍퀬 吏?쒕? 媛덇퀬??뒗 ?뺢뎄" },
++      { name: "吏곴???(?앹긽)", val: Math.min(99, Math.max(35, water * 16 + wood * 10 + 5)), desc: "?곹솴???대㈃??轅곕슟??蹂닿퀬 ?듭떖???ъ갑?섎뒗 ?듭같" }
++    ];
++  };
++
++  const eightStatsData = getEightStats(sajuInfo.elements);
++
++  // 23媛??곸꽭 ??ぉ 紐⑹감 由ъ뒪??+  const tocList = [
++    { id: "1-1", title: "1-1. ?怨좊궃 ?깊뼢怨??듭떖 湲곗쭏 遺꾩꽍", status: "free", desc: "?섎ː?몃떂???쒖뼱?????쇨컙??湲곗??쇰줈 ???깊뼢 遺꾩꽍" },
++    { id: "1-2", title: "1-2. ?ㅽ뻾 ?먮꼫吏 援ъ꽦??遺꾩꽍", status: "free", desc: "?ъ＜??諛고빀??紐⑺솕?좉툑???먮꼫吏 媛쒖닔? 鍮꾩쑉" },
++    { id: "1-3", title: "1-3. 8? ?대챸 ?좎옱???ㅽ꺈(Stats) 遺꾩꽍", status: "paid", desc: "李쎌쓽?? 寃곕떒?? ?몃궡?? 由щ뜑?????섏튂?? },
++    { id: "1-4", title: "1-4. ?섎? ?섑??대뒗 ?듭떖 ?섑샇 ?숇Ъ", status: "paid", desc: "??씠吏??湲곗슫 以?洹?섎? 鍮꾨낫?섎뒗 ?숇Ъ" },
++    { id: "1-5", title: "1-5. ???ъ＜???좊┝ ?꾩긽怨?洹밸났 ?꾨왂", status: "paid", desc: "?뱀젙 ?ㅽ뻾 怨쇰떎 諛?怨쇱냼???곕Ⅸ 紐낅━ 泥섎갑" },
++    { id: "2-1", title: "2-1. 2026????댁쓽 ?꾨컲?곸씤 諛⑺뼢??, status: "paid", desc: "10??二쇨린 ??닿낵 ?ы빐 ?몄슫??留뚮뱶???蹂?? },
++    { id: "2-2", title: "2-2. ?ы빐 媛???좊━???ш낵 ?쇳빐??????, status: "paid", desc: "?뚮젰 ?붾퀎 湲명쓨 罹섎┛???붿빟" },
++    { id: "2-3", title: "2-3. 遺꾧린蹂??≪뀡 ?뚮옖 ?뚮젅?대턿", status: "paid", desc: "媛?遺꾧린留덈떎 ?ㅽ뻾?댁빞 ??援ъ껜?곸씤 湲곗슫 議곗쑉 ?됰룞" },
++    { id: "2-4", title: "2-4. ?ㅺ??ㅻ뒗 ?듭떖 ?곕떇?ъ씤???쒓린", status: "paid", desc: "?됱깮???댁씠 諛붾????덈뒗 怨⑤뱺???遺꾩꽍" },
++    { id: "3-1", title: "3-1. ?됱깮 ?щЪ??諛??먯궛 ?뺤꽦 ?깊뼢", status: "paid", desc: "?щЪ 李쎄퀬 ?ш린 諛?湲덉쟾 ?뚮퉬/?섑샇 泥댁쭏" },
++    { id: "3-2", title: "3-2. 吏곸뾽 ?곸꽦怨??깃났?????덈뒗 而ㅻ━??諛⑺뼢", status: "paid", desc: "?섏뿉寃?理쒖쟻???곗뾽援곌낵 吏곷Т ?깊뼢 遺꾩꽍" },
++    { id: "3-3", title: "3-3. ?됱깮??嫄닿컯 吏?꾩? 痍⑥빟 吏덊솚 ?鍮?, status: "paid", desc: "?ㅽ뻾 遺덇퇏?뺤뿉 ?곕Ⅸ ?좎껜 ?κ린蹂?痍⑥빟??泥섎갑" },
++    { id: "3-4", title: "3-4. ?怨좊궃 ?깃꺽??鍮쏄낵 洹몃┝??, status: "paid", desc: "?μ젏??洹밸???諛?移섎챸?곸씤 ?⑥젏 洹밸났 鍮꾨쾿" },
++    { id: "3-5", title: "3-5. 洹?섏뿉寃??닿? ?섎뒗 湲곗슫怨??몄뿰", status: "paid", desc: "?쇳빐?????ㅽ뻾 湲곗슫 諛??됲븳 ???? 諛⑹뼱踰? },
++    { id: "4-1", title: "4-1. ?몄깮??諛붽씀??以???紐낆쓽 洹??縕답볶) ?뱀쭠", status: "paid", desc: "???ъ＜瑜?鍮꾨낫(?뺢린)??二쇰뒗 洹?몄쓽 ?좎? ?깊뭹" },
++    { id: "4-2", title: "4-2. 諛곗슦???몄뿰怨??댁긽?곸씤 ?쇱씤 ??대컢", status: "paid", desc: "諛곗슦?먯쓽 ?깃꺽 ?좏삎 諛?寃고샎 ?湲??쒓린" },
++    { id: "4-3", title: "4-3. ?щ엺?ㅺ낵??媛덈벑???몃뒗 愿怨꾩쓽 ?댁뇿", status: "paid", desc: "鍮꾧쾪怨??앹긽??異⑸룎???쒖뼱?섎뒗 ?붾쾿" },
++    { id: "4-4", title: "4-4. 洹?섎? ?뺣뒗 ?먮??닿낵 媛?뺤쓽 踰덉쁺", status: "paid", desc: "?먮?????ъ꽦 議고빀 諛?媛??議곗쑉 鍮꾩콉" },
++    { id: "4-5", title: "4-5. ?숈뾽 ?먮뒗 怨듬룞 ?ъ옄 ??二쇱쓽?ы빆", status: "paid", desc: "??멸낵 湲덉쟾 嫄곕옒 ???뚰깂??留됱븘二쇰뒗 ?덉쟾?μ튂" },
++    { id: "5-1", title: "5-1. ?섎? ?대━???ㅽ뻾 媛쒖슫踰?(諛⑺뼢, ?됱긽, ?レ옄)", status: "paid", desc: "遺議깊븳 湲곗슫??梨꾩썙 留됲엺 ?댁쓣 ?ル뒗 鍮꾨쾿" },
++    { id: "5-2", title: "5-2. 留ㅼ씪 ?ㅼ쿇?섎뒗 ?쇱긽 媛쒖슫 由ъ텛??, status: "paid", desc: "?쇨낵 以?媛蹂띻쾶 ?됲븯???섏듅?붽컯 ?붾쾿" },
++    { id: "5-3", title: "5-3. ?ъ＜???곕Ⅸ 留욎땄 怨좊? ?뺣? ?닿껐梨?, status: "paid", desc: "?낅젰?섏떊 1:1 媛쒕퀎 吏덈Ц?????紐낆풄????? },
++    { id: "5-4", title: "5-4. ?몄깮???꾧린瑜?湲고쉶濡?諛붽씀???섑샇 吏移?, status: "paid", desc: "?쒖븞?뱀씠 ?꾪븯??留덉?留?媛쒖슫 鍮꾨갑" }
++  ];
++
+   const handlePrint = () => {
+     window.print();
+   };
+@@ -557,80 +649,271 @@ function ResultContent() {
+           love: {
+             stars: "?끸쁾?끸쁾??,
+             grade: "?곗닔",
+-            body: "?댁꽦???뚯뼱?밴린???먯꽍 媛숈? 湲곗슫(愿????理쒓퀬議곗뿉 ?ы빀?덈떎. ?뱁엳 ?ъ꽦??寃쎌슦 硫뗭쭊 諛곗슦???꾨낫媛 ?깆옣?섍굅?? ?곗씤怨??④퍡?섎뒗 ?먮━?먯꽌 ??留ㅻ젰???뗫낫???곷???怨좊갚???대걣?대궡???좎젙?댁쓽 ?몄“媛 ?곕쫭?덈떎.",
+-            action: "留덉쓬??臾몄쓣 ?닿퀬 ?ㅼ뼇??紐⑥엫?대굹 ?뚭컻?낆뿉 李몄뿬?섏떗?쒖삤. ?뺤옣???⑥젙?섍쾶 ?낃굅??源붾걫???ㅻ쾭 ?≪꽭?쒕━瑜?留ㅼ묶?섎㈃ ?댁씠 ?붿슧 ?댁븘?⑸땲??"
+-          },
+-          marriage: {
+-            stars: "?끸쁾?끸쁾??,
+-            grade: "?곗닔",
+-            body: "寃고샎??吏꾩??섍쾶 ?쇱쓽?섍퀬 ?묎????곴껄濡瑜?議곗쑉?섍린???좊━???먮쫫?낅땲?? ?ㅻ쭔, ??怨좎쭛?대굹 ?먯튃???덈Т ?욎꽭?곕㈃ ?곷?諛⑹씠 ?⑥씠 留됲옄 ???덉쑝??寃고샎 ?덉감???좎뿰?섍쾶 ?섏뼱媛???뚯뿴?뚯씠 ?앷린吏 ?딆뒿?덈떎.",
+-            action: "紐⑤뱺 以鍮?怨쇱젙????痍⑦뼢?濡??꾨꼍?섍쾶 ?듭젣?섎젮 ?섏? 留덉떆怨? 30% ?뺣룄???덈퉬 諛곗슦?먯쓽 ?섍껄???꾩쟻?쇰줈 ?섏슜?섏뿬 諛곕젮瑜?蹂댁씠??떆??"
+-          }
+-        },
+-        ?? {
+-          wealth: {
+-            stars: "?끸쁾?끸쁾??,
+-            grade: "理쒖긽",
+-            body: "??麗? ?쇨컙??洹?섏뿉寃????????ъ꽦(縕→삜)?낅땲?? 2026??蹂묒삤?꾩? 媛뺥븳 遺덇퐙???섎? ?섎윭?몃뒗 '?ъ꽦?쇱옟 諛??몄옱?뺤?'???댁엯?덈떎. ?쇱깮?쇰??????ъ옄 寃곗떎, ?곕큺???꾩빟, ?ъ뾽?????怨꾩빟 泥닿껐 ??湲덉쟾?댁씠 嫄곕??섍쾶 ?대┰?덈떎.",
+-            action: "?щЪ?댁씠 理쒖긽????湲고쉶瑜??≪쑝??떆?? ?? ?ъ＜媛 ?덈Т ?좎빟??寃쎌슦(臾?湲곗슫 遺議? 怨쇰줈濡??댁뼱吏????덉쑝???섎텇 ??랬瑜??섎━怨?遺꾩닔瑜?吏耳쒖빞 ?⑸땲??"
+-          },
+-          career: {
+-            stars: "?끸쁾?끸쁾??,
+-            grade: "?곗닔",
+-            body: "??麗? ?쇨컙??愿??吏곸옣)? ?????낅땲?? 2026?꾩쓽 ?띾???遺덇퐙???좊? ?앺븯??吏곸옣?먯꽌 ?섎? 蹂댄샇?섎뒗 ?좊뱺??諛곌꼍???뺤꽦?⑸땲?? ???꾩씠?붿뼱媛 怨좎뒪????덉궛 ?뺣낫???좉퇋 ?꾨줈?앺듃???뱀씤?쇰줈 ?곌껐?섎뒗 ?낅Т ?몄옱媛 ?곕쫭?덈떎.",
+-            action: "??怨듭쟻???곸궗?먭쾶 紐낇솗???섏튂? ?곗씠?곕줈 蹂닿퀬?섏떗?쒖삤. ?깃낵湲?議곗쑉?대굹 ?곕큺 ?묒긽?먯꽌 留ㅼ슦 ?좊━??移대뱶瑜?伊먭쾶 ?⑸땲??"
+-          },
+-          health: {
+-            stars: "?끸쁾?끸쁿??,
+-            grade: "蹂댄넻",
+-            body: "?④굅??遺덇퐙??媛먮떦?섎뒓????臾?湲곗슫??湲됱냽?꾨줈 利앸컻?⑸땲?? ?좎옣, 諛⑷킅, ?먭턿 ??鍮꾨눊湲?怨꾪넻???쇰줈媛 洹뱀떖?댁쭏 ???덉쑝硫? 紐몄씠 嫄댁“?댁졇 ?쇰? ?뚯뼇利앹씠??媛곸쭏???낇솕?????덉뒿?덈떎.",
+-            action: "留ㅼ씪 ?꾩묠 怨듬났??誘몄?洹쇳븳 臾????붿쓣 ?꾩닔?곸쑝濡???랬?섍퀬, 吏??먭레?곸씤 ?뚯떇 ???蹂대━李⑤굹 ?댁삩 ?뚮즺瑜??섏떆濡?留덉뀛 ?좎옣 湲곕뒫??蹂닿컯?섏떗?쒖삤."
+-          },
+-          love: {
+-            stars: "?끸쁾?끸쁾??,
+-            grade: "理쒖긽",
+-            body: "?⑥꽦??寃쎌슦 諛곗슦?먮굹 留ㅽ샊?곸씤 ?댁꽦??留뚮굹???댁꽦?댁씠 ?쇱깮 以?媛??媛뺣젰?⑸땲?? ?ъ꽦??寃쎌슦?먮룄 ?곷??먭쾶 ?щ옉???щ퓤 諛쏄퀬 ?섏쓽 留ㅻ젰???꾩쟾??諛쒖궛?섎뒗 ?ъ숴???곗븷媛 ?쒖옉??理쒓퀬??湲곗슫?낅땲??",
+-            action: "?멸컧??媛???댁꽦怨쇰뒗 媛留뚰엳 ?덉튂留?蹂댁? 留덉떆怨? ?洹쇳븳 ?곗튂? ?곕쑜???덈튆 援먰솚???쒕룄??留덉쓬???먭레??蹂댁떗?쒖삤."
+-          },
+-          marriage: {
+-            stars: "?끸쁾?끸쁾??,
+-            grade: "?곗닔",
+-            body: "寃쎌젣?곸씤 媛移섎? ?곗꽑?쒖쐞???먭퀬 媛?뺤쓣 ?⑤떒?섍쾶 臾띠뼱媛湲?醫뗭? ?쒓린?낅땲?? ?덈퉬 諛곗슦?먯? ?ъ젙???좊ː 愿怨꾨? 紐낇솗??援ъ텞?섍퀬, 寃고샎 ???먯궛 愿由?怨꾪쉷??怨듭쑀?섍린???꾩＜ ?곸젅????대컢?낅땲??",
+-            action: "?덉떇???덈??덉떇 鍮꾩슜??怨쇨컧??異뺤냼?섍퀬, 洹??덉궛???좏샎吏?留덈젴?대굹 ?ы뀒???쒕뱶癒몃땲濡??뚮━???ㅼ슜??寃곕떒??遺遺媛 ?④퍡 ?대━??떆??"
+-          }
+-        }
+-      };
++            body: "?댁꽦???뚯뼱?밴린???먯꽍 媛숈? 湲곗?       {/* ===== PAGE 2: ?怨좊궃 ?깊뼢 쨌 湲곗쭏 쨌 ?대㈃ 遺꾩꽍 ===== */}
++        <div id="toc-1-3" className="print-page-wrapper print:text-[13px] print:leading-relaxed">
++          <div>
++            <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 mb-6 print:text-lg print:pb-3 print:mb-8">
++              <Sparkles className="w-4.5 h-4.5 text-[#A3845B] print:w-5 print:h-5" />
++              ?怨좊궃 ?깊뼢 쨌 湲곗쭏 쨌 ?대㈃ 遺꾩꽍 (1-1. 湲곗쭏 / 1-2. 媛뺤젏 / 1-3. 8? ?좎옱??
++            </h3>
++            
++            {/* 1-1 & 1-2. ?怨좊궃 ?듭떖 湲곗쭏 諛?媛뺤젏/?쎌젏 (臾대즺 怨듦컻) */}
++            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 mb-6 shadow-sm print:p-8 print:mb-8 print:border-2">
++              <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] mb-3 print:text-base print:mb-4">
++                ?뙚 {name}?섏쓽 ?듭떖 湲곗쭏 ??{baseEl}({baseEl === "紐? ? "?? : baseEl === "?? ? "?? : baseEl === "?? ? "?? : baseEl === "湲? ? "?? : "麗?}) 湲곗쭏???щ엺
++              </h4>
++              <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional print:text-[14px] print:leading-loose">
++                {baseEl === "紐? && "洹?섎뒗 怨㏐쾶 ?섎뒛???ν빐 六쀬뼱 ?먮씪???섎Т(??泥섎읆, ?먯튃怨?鍮꾩쟾??以묒떆?섎뒗 ?낅┰?곸씤 湲곗쭏???怨??ъ뒿?덈떎. ?⑥쓽 留먯뿉 ?쎄쾶 援대났?섏? ?딅뒗 媛뺥븳 ?먯〈?ъ씠 ?덉쑝硫? ??踰?紐⑺몴瑜??몄슦硫?吏묒슂?섍쾶 ?뚭퀬?쒕뒗 ?덇린媛 ?덉뒿?덈떎. ?ㅻ쭔 怨쇳븳 ?먯〈?ъ씠 ?뚮줈???듯넻?깆쓽 遺?щ줈 ?댁뼱吏????덉쑝?? ?곹솴???곕씪 ?좎뿰?섍쾶 ??묓븯???곗뒿???꾩슂?⑸땲??"}
++                {baseEl === "?? && "洹?섎뒗 諛앷퀬 ?④쾪寃???ㅻⅤ??遺?????湲곗쭏濡? ?댁젙怨??먮꼫吏媛 ?섏퀜 二쇰???諛앺엳???쒖뼇 媛숈? 議댁옱?낅땲?? 鍮좊Ⅸ ?먮떒?κ낵 媛뺥븳 異붿쭊?μ쑝濡?由щ뜑??쓣 諛쒗쐶?섎ŉ ?щ엺?ㅼ쓽 ?대ぉ???먯뿰?ㅻ읇寃?吏묒쨷?쒗궢?덈떎. 洹몃윭???λ텇怨??됯컖??鍮좊Ⅸ ?띿꽦???덉뼱, 媛먯젙??吏꾩젙?쒗궎???섎젴???됱깮??怨쇱젣?낅땲??"}
++                {baseEl === "?? && "洹?섎뒗 留뚮Ъ??湲곕Ⅴ怨?吏?깊븯???吏(????湲곗쭏濡? ?좊ː媛먭낵 ?ъ슜?μ씠 ?怨좊궃 ?μ젏?낅땲?? 留먮낫?ㅻ뒗 ?됰룞?쇰줈 ?좎쓽瑜??볦븘媛硫???踰?留븐? ?몄뿰???뚯쨷???ш린???덈걟???섎━媛 ?덉뒿?덈떎. ?ㅻ쭔 寃곕떒???띾룄媛 ?먮━怨?蹂?붿뿉 ??????씠 媛뺥븷 ???덉쑝?? ?덈줈???먮쫫???대┛ 留덉쓬?쇰줈 諛쏆븘?ㅼ씠???좎뿰?깆쓣 ?ㅼ슦??寃껋씠 以묒슂?⑸땲??"}
++                {baseEl === "湲? && "洹?섎뒗 ?⑤떒?섍쾶 踰쇰젮吏??좊텤??????湲곗쭏濡? ?먯튃怨??뺤쓽瑜?以묒떆?섎ŉ 怨듭궗 援щ텇???뺤떎??移대━?ㅻ쭏瑜?吏?붿뒿?덈떎. ?됱쿋??遺꾩꽍?κ낵 寃곕떒?μ쑝濡?蹂듭옟???곹솴??紐낇솗?섍쾶 ?뺣━?섎뒗 ?곸썡???λ젰???덉뒿?덈떎. 洹몃윭???좎뭅濡쒖슫 ?깊뭹??媛源뚯슫 ?대뱾?먭쾶 李④컩寃??먭뺨吏????덉쑝?? ?곕쑜???몄뼱 ?쒗쁽???섏떇?곸쑝濡??섎━??寃껋씠 愿怨꾩쓽 ?ㅽ솢?좉? ?⑸땲??"}
++                {baseEl === "?? && "洹?섎뒗 ?μ븷臾쇱쓣 ?좎뿰?섍쾶 鍮꾩폒 ?먮Ⅴ??臾?麗???湲곗쭏濡? 源딆? ?듭같?κ낵 吏?쒓? ?곗뼱???ъ깋???몄옱?낅땲?? ?⑤뱾??蹂댁? 紐삵븯???대㈃??轅곕슟??吏곴??κ낵 ?ъ꽭??媛먯닔?깆쑝濡??덉닠, ?숇Ц, ?곌뎄 遺꾩빞?먯꽌 ?곸썡????웾??諛쒗쐶?⑸땲?? ?ㅻ쭔 吏?섏튇 ?댁꽦怨??곗쑀遺?⑦븿??寃곕떒????대컢???볦튂寃?留뚮뱾 ???덉쑝?? 以묒슂???쒓컙?먮뒗 ?⑷린 ?덈뒗 ?좏깮???꾩슂?⑸땲??"}
++              </p>
++            </div>
++            
++            <div className="grid md:grid-cols-2 gap-5 mb-6 print:gap-6 print:mb-8">
++              <div className="bg-[#F6F3EC] border border-[#E2DDD5] rounded-lg p-5 space-y-3 print:p-6">
++                <h4 className="font-myeongjo text-sm font-bold text-[#5F7A68] print:text-base">???怨좊궃 媛뺤젏</h4>
++                <ul className="text-xs text-[#2C2C2C] space-y-2 font-light leading-relaxed print:text-[13px] print:space-y-3">
++                  <li className="flex gap-2"><span className="text-[#A3845B] font-bold shrink-0">??/span>{baseEl === "紐? ? "?낅┰?곸씤 ?섏??κ낵 二쇰룄?곸씤 ?ㅽ뻾?μ씠 ?곸썡?⑸땲??" : baseEl === "?? ? "?섏튂???댁젙怨?鍮좊Ⅸ ?곹솴 ?먮떒?μ씠 媛뺤젏?낅땲??" : baseEl === "?? ? "?먰꽣???좊ː媛먭낵 吏援щ젰 ?덈뒗 ?덇린媛 媛뺤젏?낅땲??" : baseEl === "湲? ? "?됱쿋??遺꾩꽍?κ낵 紐낇솗??寃곕떒?μ씠 媛뺤젏?낅땲??" : "源딆? ?듭같?κ낵 ?좎뿰???곸쓳?μ씠 媛뺤젏?낅땲??"}</li>
++                  <li className="flex gap-2"><span className="text-[#A3845B] font-bold shrink-0">??/span>{baseEl === "紐? ? "李쎌쓽?곸씤 ?꾩씠?붿뼱? ?덈줈???쒕룄瑜??먮젮?뚰븯吏 ?딆뒿?덈떎." : baseEl === "?? ? "?щ엺???뚯뼱?밴린???먯뿰?ㅻ윭??由щ뜑??낵 ?붿닠???덉뒿?덈떎." : baseEl === "?? ? "??踰?留븐? ?몄뿰???앷퉴吏 ?꾨겮???섎━媛 媛뺥빀?덈떎." : baseEl === "湲? ? "怨듭궗 援щ텇???뺤떎?섍퀬 ?뺤쓽濡쒖슫 ?먯튃二쇱쓽 ?깊뼢???덉뒿?덈떎." : "媛먯닔?깆씠 ?띾??섍퀬 ?덉닠??吏곴????곗뼱?⑸땲??"}</li>
++                  <li className="flex gap-2"><span className="text-[#A3845B] font-bold shrink-0">??/span>{baseEl === "紐? ? "?κ린?곸씤 紐⑺몴瑜??ν빐 臾듬У??吏묒쨷?섎뒗 吏묒슂?⑥씠 ?덉뒿?덈떎." : baseEl === "?? ? "湲띿젙 ?먮꼫吏濡?二쇰? ?щ엺?ㅼ쓽 ?섏슃???믪뿬以띾땲??" : baseEl === "?? ? "?덉젙?곸씤 ?섍꼍??議곗꽦?섏뿬 議곗쭅怨?媛?뺤쓽 以묒떖???⑸땲??" : baseEl === "湲? ? "?몄꽭??遺遺꾧퉴吏 ?볦튂吏 ?딅뒗 ?꾨꼍二쇱쓽 吏묒쨷?μ씠 ?덉뒿?덈떎." : "?숈뒿 ?λ젰???곗뼱??吏?앷낵 湲곗닠??鍮좊Ⅴ寃??듬뱷?⑸땲??"}</li>
++                </ul>
++              </div>
++              <div className="bg-white border border-red-100 rounded-lg p-5 space-y-3 print:p-6">
++                <h4 className="font-myeongjo text-sm font-bold text-red-700 print:text-base">?좑툘 洹밸났?댁빞 ???쎌젏</h4>
++                <ul className="text-xs text-[#2C2C2C] space-y-2 font-light leading-relaxed print:text-[13px] print:space-y-3">
++                  <li className="flex gap-2"><span className="text-red-500 font-bold shrink-0">??/span>{baseEl === "紐? ? "吏?섏튇 ?먯〈?ъ쑝濡???몄쓽 ?섍껄??諛곗쿃?섍린 ?쎌뒿?덈떎." : baseEl === "?? ? "媛먯젙??湲곕났???ы빐 怨쇨꺽???명뻾???????덉뒿?덈떎." : baseEl === "?? ? "蹂?붿? ?덈줈???쒕룄??吏?섏튂寃?蹂댁닔?곸씪 ???덉뒿?덈떎." : baseEl === "湲? ? "?좎뭅濡쒖슫 吏곸뼵???곷?諛⑹뿉寃??곸쿂瑜?以????덉뒿?덈떎." : "?곗쑀遺?⑦븿?쇰줈 以묒슂??寃곗젙??誘몃（??寃쏀뼢???덉뒿?덈떎."}</li>
++                  <li className="flex gap-2"><span className="text-red-500 font-bold shrink-0">??/span>{baseEl === "紐? ? "??묒쓣 ?쏀븿?쇰줈 蹂댁븘 遺덊븘?뷀븳 媛덈벑???앷만 ???덉뒿?덈떎." : baseEl === "?? ? "?쒖옉? ?④쾪吏留?吏?띾젰??遺議깊빐 留덈Т由ш? ?쏀빀?덈떎." : baseEl === "?? ? "?곗쑀遺?⑦븳 寃곕떒?쇰줈 醫뗭? 湲고쉶瑜??볦튂湲곕룄 ?⑸땲??" : baseEl === "湲? ? "吏?섏튇 ?꾨꼍二쇱쓽濡??먯떊怨???몄쓣 吏移섍쾶 留뚮벊?덈떎." : "??꽑 ?섍꼍?먯꽌 ?ы븳 遺덉븞媛먯쓣 ?먭뺨 寃곕떒??誘몃９?덈떎."}</li>
++                  <li className="flex gap-2"><span className="text-red-500 font-bold shrink-0">??/span>{baseEl === "紐? ? "?깃툒?섍쾶 ?됰룞?섏뿬 ?몃? ?ы빆???볦튂???쇱씠 ??뒿?덈떎." : baseEl === "?? ? "異⑸룞?곸씤 ?먮떒?쇰줈 寃쎌젣???먯떎??蹂????덉뒿?덈떎." : baseEl === "?? ? "?⑥뿉寃?踰좏뫖??寃껋씠 留롮븘 ?щЪ???덉뼱?섍컝 ???덉뒿?덈떎." : baseEl === "湲? ? "媛먯젙 ?쒗쁽???쒗닾瑜닿퀬 ?몃줈????쎄쾶 ?먮굧?덈떎." : "?꾩떎?곸씤 ?먮떒蹂대떎 ?댁긽??異붽뎄?섎뒗 寃쏀뼢??媛뺥빀?덈떎."}</li>
++                </ul>
++              </div>
++            </div>
+ 
+-      const myAspects = aspects[baseEl] || aspects["紐?];
+-      return [
+-        { icon: "?뮥", title: "?щЪ??(縕→삜)", color: "text-[#5F7A68]", ...myAspects.wealth },
+-        { icon: "?뮳", title: "吏곸뾽??(若섉삜)", color: "text-blue-700", ...myAspects.career },
+-        { icon: "?ㅿ툘?랅윍?, title: "嫄닿컯??(?ε볜)", color: "text-orange-600", ...myAspects.health },
+-        { icon: "?뮊", title: "?곗븷??(旅껇뒻)", color: "text-rose-600", ...myAspects.love },
+-        { icon: "?뭾", title: "寃고샎??(冶사랜)", color: "text-purple-700", ...myAspects.marriage }
+-      ];
+-    };
++            {/* 1-3. 8? ?대챸 ?좎옱???ㅽ꺈 */}
++            <div className="space-y-4 mb-8">
++              <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 print:text-lg print:pb-3">
++                <Compass className="w-4.5 h-4.5 text-brass" />
++                1-3. 8? ?대챸 ?좎옱??吏??(Stats)
++              </h3>
++              
++              {!isPaid ? (
++                /* 誘멸껐???곹깭: ?ㅽ꺈 釉붾윭 諛뺤뒪 諛???媛由쇰쭑 ?뚮뜑留?*/
++                <div className="relative">
++                  <div className="grid grid-cols-2 gap-4 hyeandang-blur-box">
++                    {eightStatsData.map((stat, sIdx) => (
++                      <div key={sIdx} className="bg-white border border-[#E2DDD5] rounded-xl p-4.5 space-y-2.5">
++                        <div className="flex justify-between items-center text-xs">
++                          <span className="font-bold text-gray-800">{stat.name}</span>
++                          <span className="font-bold text-brass-dark">50%</span>
++                        </div>
++                        <div className="h-2.5 bg-gray-100 rounded-full" />
++                        <p className="text-[9.5px] text-gray-400 font-light block leading-normal">{stat.desc}</p>
++                      </div>
++                    ))}
++                  </div>
++                  <div className="absolute inset-0 bg-[#FAF7F0]/40 flex flex-col justify-center items-center p-6 text-center z-10 rounded-xl">
++                    <span className="text-3xl text-brass mb-2 animate-bounce">?뵏</span>
++                    <span className="font-myeongjo text-sm font-bold text-gray-800">?좎옱???ㅽ꺈 ?곸꽭 遺꾩꽍 ?좉?</span>
++                    <span className="text-[10px] text-gray-500 font-light mt-1 max-w-xs">
++                      8? ?곸뿭 ?대챸 ?좎옱???먯닔 諛??댁꽍? ?몄깮 蹂닿컧 ?닿툑 ??利됱떆 遺꾩꽍???쒓났?⑸땲??
++                    </span>
++                  </div>
++                </div>
++              ) : (
++                /* 寃곗젣 ?꾨즺 ?곹깭: ?ㅼ젣 ?ㅽ꺈 ?뚮뜑留?*/
++                <div className="grid grid-cols-2 gap-4">
++                  {eightStatsData.map((stat, sIdx) => (
++                    <div key={sIdx} className="bg-white border border-[#E2DDD5] rounded-xl p-4.5 space-y-2.5 shadow-sm hover:shadow transition-shadow">
++                      <div className="flex justify-between items-center text-xs">
++                        <span className="font-bold text-gray-800">{stat.name}</span>
++                        <span className="font-bold text-brass-dark">{stat.val}%</span>
++                      </div>
++                      <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
++                        <div className="h-full bg-gradient-to-r from-brass-light to-brass transition-all duration-700" style={{ width: `${stat.val}%` }} />
++                      </div>
++                      <p className="text-[9.5px] text-gray-400 font-light block leading-normal">{stat.desc}</p>
++                    </div>
++                  ))}
++                </div>
++              )}
++            </div>
+ 
+-    const fiveAspectsData = getFiveAspects();
++            {/* 1-4. ?듭떖 ?섑샇 ?숇Ъ & 1-5. ?좊┝ 洹밸났 ?꾨왂 (寃곗젣 ?좉툑 ??? */}
++            <div id="toc-1-4" className="space-y-4">
++              <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 print:text-lg print:pb-3">
++                <Shield className="w-4.5 h-4.5 text-brass" />
++                1-4. ?섎? ?섑샇?섎뒗 ?숇Ъ &amp; 1-5. ?좊┝ 議곗쑉 泥섎갑
++              </h3>
++              
++              {!isPaid ? (
++                /* 誘멸껐???곹깭: ?먮Ъ??泥섎━ */
++                <div className="bg-white border border-dashed border-[#E2DDD5] rounded-xl p-6 text-center space-y-2 relative" id="toc-1-5">
++                  <span className="text-3xl text-brass-dark block">?뵏</span>
++                  <span className="font-myeongjo text-sm font-bold text-gray-800">1-4 ?섑샇?숇Ъ 諛?1-5 ?좊┝ 洹밸났 泥섎갑???湲?以?/span>
++                  <p className="text-[10px] text-gray-500 font-light max-w-md mx-auto leading-relaxed">
++                    ?섎ː?몃떂???ъ＜ 湲곗슫 ??遺議깊븿怨??좊┝??蹂댁셿??以??됱깮???섑샇 ???숇Ъ 議고빀怨?媛쒖슫 ?≪뀡? 寃곗젣 ?꾨즺 ???⑥쟾?섍쾶 ?몄텧?⑸땲??
++                  </p>
++                </div>
++              ) : (
++                /* 寃곗젣 ?꾨즺 ?곹깭: ?섑샇 ?숇Ъ 諛??좊┝ 洹밸났 ?뚮뜑留?*/
++                <div className="grid md:grid-cols-2 gap-4" id="toc-1-5">
++                  <div className="bg-white border border-[#E2DDD5] rounded-xl p-4.5 space-y-2">
++                    <span className="font-bold text-brass-dark text-xs block">??1-4. 洹?섏쓽 ?섑샇 ?숇Ъ : {baseEl === "紐? ? "泥?깋 泥?！" : baseEl === "?? ? "?곸깋 ?곹넗留? : baseEl === "?? ? "?⑹깋 諛깊샇" : baseEl === "湲? ? "諛깆깋 ?좊！" : "?묒깋 ?꾨Т"}</span>
++                    <p className="text-[11px] text-gray-500 font-light leading-relaxed font-traditional">
++                      洹?섏쓽 異쒖깮 ?ㅽ뻾怨??곕룞?섎뒗 ?섑샇 ?숇Ъ? 洹?섏쓽 ?섏빟??湲곗슫???섑샇?섍퀬 ?꾩떎???꾧린 ?곹솴 ?띿뿉??吏곴????대쾿???뺣뒗 硫붿떊??낅땲?? 梨낆긽?대굹 媛諛????댁뇿怨좊━濡??대떦 ?곸쭠??媛誘명븯硫?媛쒖슫??鍮⑤씪吏묐땲??
++                    </p>
++                  </div>
++                  <div className="bg-white border border-[#E2DDD5] rounded-xl p-4.5 space-y-2">
++                    <span className="font-bold text-brass-dark text-xs block">?렞 1-5. ?ㅽ뻾 ?좊┝ 洹밸났 紐낅━ 泥섎갑</span>
++                    <p className="text-[11px] text-gray-500 font-light leading-relaxed font-traditional">
++                      洹?섏쓽 ?ъ＜ ?먭뎅?먯꽌 ?뱀젙 ?ㅽ뻾???좊━??臾몄젣瑜?留됯린 ?꾪빐?쒕뒗, 媛뺤젣?곸쑝濡??섏쓽 湲곗슫??媛?먯뼱 二쇰뒗 ?몄쐞?곸씤 ?섎졃 怨듦컙(遺곸꽌履?諛? 李⑤텇??紐낆긽????二쇰???援ъ꽦?섍퀬 ?뚮━ ?녿뒗 移⑤У ?쒓컙??媛?몄빞留??먮꼫吏媛 ?꾩닔?섏? ?딄퀬 蹂댁〈?⑸땲??
++                    </p>
++                  </div>
++                </div>
++              )}
++            </div>
+ 
+-    // 2026???댁꽭 ?곕룞 ?띿뒪??-    let year2026Text = "";
+-    if (baseEl === "紐?) {
+-      year2026Text = "洹?섎뒗 ?섎Т(????湲곗쭏濡?2026??蹂묒삤(訝쇿뜄)??遺덇퐙??留뚮굹硫??앹긽(繇잌궥)??湲곗슫??諛쒕룞?섏뿬 ?쒗쁽?κ낵 ?쒕룞?됱씠 ??컻?⑸땲?? 洹몃룞???띿쑝濡??ㅼ썙???ъ＜? 湲곗닠???몄긽 諛뽰쑝濡??쒕윭???몄젙諛쏅뒗 ?닿? ?⑸땲?? ?ㅻ쭔 怨쇰줈? 踰덉븘?껋뿉 二쇱쓽?댁빞 ?⑸땲??";
+-    } else if (baseEl === "??) {
+-      year2026Text = "洹?섎뒗 遺?????湲곗쭏濡?2026??蹂묒삤(訝쇿뜄)? 媛숈? ?붽린瑜?留뚮굹 鍮꾧쾪(驪붷뒲) ?먮꼫吏媛 洹밸??붾맗?덈떎. ?먯〈?ш낵 ?낅┰?ъ씠 媛뺥빐??李쎌뾽?대굹 ?덈줈???꾩쟾??遺덊??ㅻⅤ吏留? ?숈뾽?먮굹 寃쎌웳?먯???異⑸룎??媛곷퀎??議곗떖?댁빞 ?⑸땲??";
+-    } else if (baseEl === "??) {
+-      year2026Text = "洹?섎뒗 ?吏(????湲곗쭏濡?2026??蹂묒삤(訝쇿뜄)??遺덉씠 ?숈쓣 ?곕쑜?섍쾶 ?곗썙二쇰뒗 ?몄꽦(?경삜) 議고솕瑜??살뒿?덈떎. ?먭꺽利? 怨듬?, 遺?숈궛 痍⑤뱷 ??臾몄꽌?댁씠 媛뺥븯寃?鍮쏅굹硫?洹?몄쓽 ?꾩???寃밴껸???볦씠??留ㅼ슦 湲명븳 ?댁엯?덈떎.";
+-    } else if (baseEl === "湲?) {
+-      year2026Text = "洹?섎뒗 ?좊텤??????湲곗쭏濡?2026??蹂묒삤(訝쇿뜄)??遺덉씠 ?섎? ?⑤젴?쒗궎??愿??若섉삜) ?뺣컯??媛뺥빀?덈떎. 吏곸콉??臾닿굅?뚯?嫄곕굹 ?뱀쭊 湲고쉶媛 ?ㅼ?留? 堉덉? ?명씉湲?嫄닿컯 愿由ъ? ?곸궗???愿怨?議곗쑉???좉꼍???⑥빞 ?⑸땲??";
+-    } else {
+-      year2026Text = "洹?섎뒗 臾?麗???湲곗쭏濡?2026??蹂묒삤(訝쇿뜄)??遺덇퐙???듭젣?섎뒗 ?ъ꽦(縕→삜) ?먮꼫吏媛 諛쒕룞?⑸땲?? ?ъ옄 寃곗떎, ?곕큺 ?곸듅, ?щЪ 湲고쉶媛 ?ш쾶 ?붾룞移섎뒗 ?댁씠??嫄닿컯??怨쇱냼鍮꾪븯吏 ?딅룄濡?泥좎???愿由ы븯??떆??";
+-    }
++            {/* 1:1 媛쒕퀎 吏덈Ц ?붾（??(臾대즺 泥댄뿕?먯씪 ?뚮뒗 ?좉툑) */}
++            {worryText && (
++              <div className="bg-white border-2 border-[#A3845B]/40 rounded-lg p-5 mt-6 print:p-6" id="toc-5-3">
++                <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] mb-3 flex items-center gap-1.5 print:text-base">
++                  <Heart className="w-4 h-4 text-red-500" />
++                  {name} ?섏쓽 媛쒕퀎 怨좊? 留욎땄???붾（??+                </h4>
++                
++                <div className="bg-[#F9F8F6] border-l-4 border-[#A3845B] p-3 rounded text-xs mb-3 print:text-[13px]">
++                  <span className="font-bold text-[#1A1A1A] block mb-1">?묒꽦?섏떊 怨좊? ?먮Ц:</span>
++                  <p className="text-[#5F5F5F] italic">"{decodeURIComponent(worryText)}"</p>
++                </div>
++
++                {!isPaid ? (
++                  /* 誘멸껐?? 吏덈Ц ????먮Ъ??*/
++                  <div className="bg-[#FAF7F0] border border-dashed border-[#A3845B]/30 rounded-xl p-5 text-center space-y-2">
++                    <span className="text-2xl text-brass block">?뵏</span>
++                    <span className="font-myeongjo text-xs font-bold text-gray-800">1:1 怨좊? ?뺣? 紐낅━ ?댁꽕 ?좉?</span>
++                    <p className="text-[9.5px] text-gray-400 font-light max-w-sm mx-auto leading-normal">
++                      ?곸뼱二쇱떊 怨좊? ["{decodeURIComponent(worryText).slice(0, 30)}..."] ?덇굔??????쒖븞??紐낅━?곌뎄?뚯쓽 1:1 留욎땄??吏꾨떒, ?댁쭅/?щЪ ??대컢, 媛쒖슫 ?梨낆? 寃곗젣 ??諛붾줈 ?쎌씠 ????몄텧?⑸땲??
++                    </p>
++                  </div>
++                ) : (
++                  /* 寃곗젣 ?꾨즺: ?ㅼ젣 吏덈Ц ?댁꽕 */
++                  <div className="space-y-3 text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional print:text-[13px] print:leading-loose">
++                    <div><span className="font-bold text-[#A3845B] block mb-1">?뱧 怨좊? ?곹솴???대챸???댁꽍</span><p>{personalizedText.analysis}</p></div>
++                    <div><span className="font-bold text-[#A3845B] block mb-1">??理쒖쟻???됰룞 ??대컢</span><p>{personalizedText.timing}</p></div>
++                    <div>
++                      <span className="font-bold text-[#A3845B] block mb-1">?뵎 洹?섎? ?꾪븳 媛쒖슫 鍮꾨쾿</span>
++                      <div className="bg-[#F6F3EC] p-3 rounded-md border border-[#E2DDD5]/70 whitespace-pre-line text-xs leading-relaxed text-[#2C2C2C] print:text-[12px]">{personalizedText.actionPlan}</div>
++                    </div>
++                  </div>
++                )}
++              </div>
++            )}
++          </div>
++          <div className="flex justify-between items-center border-t border-[#E2DDD5] pt-4 mt-6 text-[10px] text-[#5F5F5F] print:text-xs print:mt-8">
++            <span className="font-myeongjo">?㎫쑝??野띌몣 쨌 ?됱깮 ?ъ＜?붿옄</span>
++            <span className="font-myeongjo font-bold">2 / {totalPages}</span>
++          </div>
++        </div>racking-widest text-[#A3845B] font-bold block">?㎫쑝??野띌몣 ??А</span>
++            <h2 className="font-myeongjo text-xl md:text-2xl font-bold text-[#1A1A1A]">
++              ?몄깮 蹂닿컧 遺꾩꽍 寃곌낵 諛??닿툑 ?꾪솴
++            </h2>
++            <div className="w-16 h-0.5 bg-[#A3845B]/40 mx-auto" />
++          </div>
++
++          {/* ?닿툑 吏꾪뻾瑜?寃뚯씠吏 */}
++          <div className="bg-[#F6F3EC] border border-[#E2DDD5] rounded-xl p-5 space-y-3.5">
++            <div className="flex justify-between items-center text-xs">
++              <span className="font-semibold text-foreground flex items-center gap-1.5">
++                <span className="w-2.5 h-2.5 rounded-full bg-jade animate-pulse" />
++                蹂닿컧 ?닿툑 吏꾪뻾瑜?+              </span>
++              <span className="font-bold text-brass-dark">
++                {isPaid ? "23 / 23 ??ぉ ?닿툑 ?꾨즺 (100%)" : "2 / 23 ??ぉ ?닿툑??(8.7%)"}
++              </span>
++            </div>
++            
++            {/* 寃뚯씠吏 諛?*/}
++            <div className="h-4 bg-gray-200/80 rounded-full overflow-hidden relative shadow-inner">
++              <div 
++                className="h-full bg-gradient-to-r from-brass to-jade transition-all duration-1000 ease-out" 
++                style={{ width: isPaid ? "100%" : "8.7%" }} 
++              />
++              <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-foreground/80">
++                {isPaid ? "?꾩껜 遺꾩꽍 ?대룆 ?꾨즺" : "臾대즺 泥댄뿕??遺꾩꽍 以?(?좊즺 ????湲?"}
++              </span>
++            </div>
++
++            <div className="flex justify-between items-center text-[10px] text-foreground-muted font-light pt-1">
++              <span>* 臾대즺 ?대엺 ??1-1, 1-2 ??ぉ???좉났媛쒕맗?덈떎.</span>
++              <span className="text-jade font-medium animate-pulse">?ㅼ떆媛?14紐??대엺 以?/span>
++            </div>
++          </div>
++
++          {/* 5? ?뚰듃 23媛?紐⑹감 由ъ뒪??*/}
++          <div className="grid md:grid-cols-2 gap-6 text-xs pt-2">
++            {[
++              { 
++                partName: "??1?? ?섎? ?뚯븘蹂닿린 (湲곗쭏/?ㅽ뻾)", 
++                items: tocList.slice(0, 5) 
++              },
++              { 
++                partName: "??2?? ??대컢??湲곗닠 (2026 ?댁꽭)", 
++                items: tocList.slice(5, 9) 
++              },
++              { 
++                partName: "??3?? ?섏쓽 蹂몄쭏 ?꾩쟾??(?됱깮??遺꾩빞)", 
++                items: tocList.slice(9, 14) 
++              },
++              { 
++                partName: "??4?? 愿怨꾩쓽 湲곗닠 (?몄뿰/洹??", 
++                items: tocList.slice(14, 19) 
++              },
++              { 
++                partName: "??5?? ?ㅼ쿇???쒖옉 (媛쒖슫/泥섎갑)", 
++                items: tocList.slice(19, 23) 
++              }
++            ].map((part, pIdx) => (
++              <div key={pIdx} className="border border-[#E2DDD5]/70 bg-white/60 p-4.5 rounded-lg space-y-3.5 shadow-sm">
++                <span className="font-myeongjo text-xs font-bold text-brass-dark block border-b border-[#E2DDD5]/60 pb-1.5">
++                  {part.partName}
++                </span>
++                <ul className="space-y-2.5">
++                  {part.items.map((item) => {
++                    const isUnlocked = isPaid || item.status === "free";
++                    return (
++                      <li key={item.id} className={`flex items-start justify-between gap-2 transition-all ${isUnlocked ? "text-foreground" : "text-foreground-muted/50"}`}>
++                        <div className="space-y-0.5 text-left">
++                          <button
++                            type="button"
++                            onClick={() => {
++                              const el = document.getElementById(`toc-${item.id}`);
++                              if (el) el.scrollIntoView({ behavior: "smooth" });
++                            }}
++                            className={`font-semibold text-[11px] block hover:underline text-left cursor-pointer ${isUnlocked ? "text-[#1A1A1A]" : "text-gray-400"}`}
++                          >
++                            {item.title}
++                          </button>
++                          <span className="text-[9px] text-gray-400 font-light block leading-normal">{item.desc}</span>
++                        </div>
++                        <span className="shrink-0 mt-0.5">
++                          {isUnlocked ? (
++                            <span className="bg-jade/10 text-jade text-[9px] font-bold px-1.5 py-0.5 rounded border border-jade/20">???닿툑</span>
++                          ) : (
++                            <span className="bg-amber-50 text-[#A3845B] text-[9px] font-bold px-1.5 py-0.5 rounded border border-[#A3845B]/20">?뵏 ?좉?</span>
++                          )}
++                        </span>
++                      </li>
++                    );
++                  })}
++                </ul>
++              </div>
++            ))}
++          </div>
++        </div>
+ 
+-    return (
+-      <>
+         {/* ===== PAGE 1: ?ъ＜?먭뎅 + ?ㅽ뻾遺꾩꽍 ===== */}
+-        <div className="print-page-wrapper print:text-[13px] print:leading-relaxed">
++        <div id="toc-1-1" className="print-page-wrapper print:text-[13px] print:leading-relaxed">
+           <div>
+             <div className="text-center space-y-2 mb-8 print:mb-10">
+               <span className="text-xs tracking-widest text-[#A3845B] font-bold block print:text-sm">?쒖븞??蹂닿컧 쨌 {reportGrade === "deep" ? "?ы솕 由ы룷?? : "怨좉툒 由ы룷??}</span>
+@@ -640,49 +923,73 @@ function ResultContent() {
+               <div className="w-24 h-0.5 bg-[#A3845B]/30 mx-auto my-2" />
+             </div>
+ 
+-            <div className="space-y-3 mb-8 print:mb-10">
++            {/* 紐낆떇 洹몃━??(?κ렐 ?꾪넻 ?쒖옄 移대뱶 ?낃렇?덉씠?? */}
++            <div className="space-y-4 mb-8 print:mb-10" id="toc-1-2">
+               <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 print:text-lg print:pb-3">
+                 <Scroll className="w-4.5 h-4.5 text-[#A3845B] print:w-5 print:h-5" />
+                 ?ъ＜?붿옄 (?쎿윶?ュ춻) 紐낆떇?먭뎅
+               </h3>
+-              <div className="grid grid-cols-4 border border-[#E2DDD5] rounded bg-white text-center text-xs divide-x divide-[#E2DDD5] print:text-sm print:border-2">
+-                <div className="bg-[#F6F3EC] py-2.5 font-semibold text-[#A3845B] print:py-4">?쒖＜ (?귝윶)</div>
+-                <div className="bg-[#F6F3EC] py-2.5 font-semibold text-[#A3845B] print:py-4">?쇱＜ (?ζ윶)</div>
+-                <div className="bg-[#F6F3EC] py-2.5 font-semibold text-[#A3845B] print:py-4">?붿＜ (?덃윶)</div>
+-                <div className="bg-[#F6F3EC] py-2.5 font-semibold text-[#A3845B] print:py-4">?곗＜ (亮닸윶)</div>
+-                <div className="py-5 space-y-1 print:py-6">
+-                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.hour.stem}</span>
+-                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.hour.stemEl})</span>
++              
++              <div className="grid grid-cols-4 gap-2.5 sm:gap-4 border border-[#E2DDD5] rounded-xl p-5 bg-white shadow-inner text-center print:border-2">
++                {/* 4二???댄? */}
++                <div className="bg-[#F6F3EC]/80 py-1.5 rounded-md font-semibold text-[#A3845B] text-[10px] sm:text-xs print:py-2">?쒖＜ (?귝윶)</div>
++                <div className="bg-[#F6F3EC]/80 py-1.5 rounded-md font-semibold text-[#A3845B] text-[10px] sm:text-xs print:py-2">?쇱＜ (?ζ윶)</div>
++                <div className="bg-[#F6F3EC]/80 py-1.5 rounded-md font-semibold text-[#A3845B] text-[10px] sm:text-xs print:py-2">?붿＜ (?덃윶)</div>
++                <div className="bg-[#F6F3EC]/80 py-1.5 rounded-md font-semibold text-[#A3845B] text-[10px] sm:text-xs print:py-2">?곗＜ (亮닸윶)</div>
++                
++                {/* 泥쒓컙 移대뱶 */}
++                <div className="flex flex-col items-center justify-center pt-2">
++                  <div className={`w-14 h-16 sm:w-16 sm:h-20 rounded-xl border flex flex-col justify-center items-center shadow-sm hyeandang-card-floating ${getSajuClass(sajuInfo.hour.stemEl)}`} style={{ animationDelay: "0.2s" }}>
++                    <span className="text-xl sm:text-2xl font-bold font-myeongjo">{sajuInfo.hour.stem}</span>
++                    <span className="text-[8px] sm:text-[9px] font-semibold opacity-75">{sajuInfo.hour.stemEl}</span>
++                  </div>
+                 </div>
+-                <div className="py-5 space-y-1 print:py-6">
+-                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.day.stem}</span>
+-                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.day.stemEl})</span>
++                <div className="flex flex-col items-center justify-center pt-2">
++                  <div className={`w-14 h-16 sm:w-16 sm:h-20 rounded-xl border flex flex-col justify-center items-center shadow-sm hyeandang-card-floating ${getSajuClass(sajuInfo.day.stemEl)}`} style={{ animationDelay: "0.4s" }}>
++                    <span className="text-xl sm:text-2xl font-bold font-myeongjo">{sajuInfo.day.stem}</span>
++                    <span className="text-[8px] sm:text-[9px] font-semibold opacity-75">{sajuInfo.day.stemEl}</span>
++                  </div>
+                 </div>
+-                <div className="py-5 space-y-1 print:py-6">
+-                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.month.stem}</span>
+-                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.month.stemEl})</span>
++                <div className="flex flex-col items-center justify-center pt-2">
++                  <div className={`w-14 h-16 sm:w-16 sm:h-20 rounded-xl border flex flex-col justify-center items-center shadow-sm hyeandang-card-floating ${getSajuClass(sajuInfo.month.stemEl)}`} style={{ animationDelay: "0.6s" }}>
++                    <span className="text-xl sm:text-2xl font-bold font-myeongjo">{sajuInfo.month.stem}</span>
++                    <span className="text-[8px] sm:text-[9px] font-semibold opacity-75">{sajuInfo.month.stemEl}</span>
++                  </div>
+                 </div>
+-                <div className="py-5 space-y-1 print:py-6">
+-                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.year.stem}</span>
+-                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.year.stemEl})</span>
++                <div className="flex flex-col items-center justify-center pt-2">
++                  <div className={`w-14 h-16 sm:w-16 sm:h-20 rounded-xl border flex flex-col justify-center items-center shadow-sm hyeandang-card-floating ${getSajuClass(sajuInfo.year.stemEl)}`} style={{ animationDelay: "0.8s" }}>
++                    <span className="text-xl sm:text-2xl font-bold font-myeongjo">{sajuInfo.year.stem}</span>
++                    <span className="text-[8px] sm:text-[9px] font-semibold opacity-75">{sajuInfo.year.stemEl}</span>
++                  </div>
+                 </div>
+-                <div className="py-5 space-y-1 bg-[#F9F8F6]/60 print:py-6">
+-                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.hour.branch}</span>
+-                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.hour.branchEl})</span>
++
++                {/* 吏吏 移대뱶 */}
++                <div className="flex flex-col items-center justify-center pb-2">
++                  <div className={`w-14 h-16 sm:w-16 sm:h-20 rounded-xl border flex flex-col justify-center items-center shadow-sm hyeandang-card-floating ${getSajuClass(sajuInfo.hour.branchEl)}`} style={{ animationDelay: "1s" }}>
++                    <span className="text-xl sm:text-2xl font-bold font-myeongjo">{sajuInfo.hour.branch}</span>
++                    <span className="text-[8px] sm:text-[9px] font-semibold opacity-75">{sajuInfo.hour.branchEl}</span>
++                  </div>
+                 </div>
+-                <div className="py-5 space-y-1 bg-[#F9F8F6]/60 print:py-6">
+-                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.day.branch}</span>
+-                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.day.branchEl})</span>
++                <div className="flex flex-col items-center justify-center pb-2">
++                  <div className={`w-14 h-16 sm:w-16 sm:h-20 rounded-xl border flex flex-col justify-center items-center shadow-sm hyeandang-card-floating ${getSajuClass(sajuInfo.day.branchEl)}`} style={{ animationDelay: "1.2s" }}>
++                    <span className="text-xl sm:text-2xl font-bold font-myeongjo">{sajuInfo.day.branch}</span>
++                    <span className="text-[8px] sm:text-[9px] font-semibold opacity-75">{sajuInfo.day.branchEl}</span>
++                  </div>
+                 </div>
+-                <div className="py-5 space-y-1 bg-[#F9F8F6]/60 print:py-6">
+-                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.month.branch}</span>
+-                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.month.branchEl})</span>
++                <div className="flex flex-col items-center justify-center pb-2">
++                  <div className={`w-14 h-16 sm:w-16 sm:h-20 rounded-xl border flex flex-col justify-center items-center shadow-sm hyeandang-card-floating ${getSajuClass(sajuInfo.month.branchEl)}`} style={{ animationDelay: "1.4s" }}>
++                    <span className="text-xl sm:text-2xl font-bold font-myeongjo">{sajuInfo.month.branch}</span>
++                    <span className="text-[8px] sm:text-[9px] font-semibold opacity-75">{sajuInfo.month.branchEl}</span>
++                  </div>
+                 </div>
+-                <div className="py-5 space-y-1 bg-[#F9F8F6]/60 print:py-6">
+-                  <span className="text-2xl font-bold font-myeongjo text-[#1A1A1A] print:text-4xl">{sajuInfo.year.branch}</span>
+-                  <span className="block text-[10px] text-[#5F5F5F] font-medium print:text-sm">({sajuInfo.year.branchEl})</span>
++                <div className="flex flex-col items-center justify-center pb-2">
++                  <div className={`w-14 h-16 sm:w-16 sm:h-20 rounded-xl border flex flex-col justify-center items-center shadow-sm hyeandang-card-floating ${getSajuClass(sajuInfo.year.branchEl)}`} style={{ animationDelay: "1.6s" }}>
++                    <span className="text-xl sm:text-2xl font-bold font-myeongjo">{sajuInfo.year.branch}</span>
++                    <span className="text-[8px] sm:text-[9px] font-semibold opacity-75">{sajuInfo.year.branchEl}</span>
++                  </div>
+                 </div>
+               </div>
++              
+               <div className="text-right text-[10px] text-[#5F5F5F] italic mt-1 print:text-xs">
+                 * ?앹떆 {sajuInfo.hour.name}瑜??ы븿?섏뿬 4二?8湲?먮? 援ъ꽦?덉뒿?덈떎.
+               </div>

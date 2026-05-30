@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
+// 테스트 중 실제 문자 발송 여부 제어 (true: 실제 발송 안 함 / false: 실제 발송)
+const IS_TEST_MODE = true;
+
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -10,6 +13,16 @@ export async function POST(request) {
         { success: false, message: "수신번호(receiver)와 메시지(msg)는 필수 입력 사항입니다." },
         { status: 400 }
       );
+    }
+
+    // 테스트 모드일 때는 실제 Aligo API를 호출하지 않고 가상 성공 처리
+    if (IS_TEST_MODE) {
+      console.log(`[SMS MOCK] 실제 발송 차단 (테스트 중) | 수신번호: ${receiver} | 내용: ${msg.slice(0, 50)}...`);
+      return NextResponse.json({
+        success: true,
+        message: "테스트 중이므로 실제 문자는 발송되지 않고 성공 처리되었습니다. (Mocking)",
+        data: { result_code: "1", message: "테스트 모드 가상 성공" },
+      });
     }
 
     const key = process.env.ALIGO_KEY;

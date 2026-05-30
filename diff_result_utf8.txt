@@ -1,0 +1,293 @@
+﻿diff --git a/src/app/result/page.js b/src/app/result/page.js
+index e5c4d9f..0b2d994 100644
+--- a/src/app/result/page.js
++++ b/src/app/result/page.js
+@@ -1,6 +1,6 @@
+ "use client";
+ 
+-import { Suspense, useState } from "react";
++import { Suspense, useState, useEffect } from "react";
+ import { useSearchParams } from "next/navigation";
+ import Link from "next/link";
+ import { Scroll, Printer, ArrowLeft, Heart, Compass, Shield, Sparkles, DollarSign, CalendarDays, Award, CheckSquare, AlertCircle } from "lucide-react";
+@@ -130,6 +130,9 @@ const getDeficientPrescription = (elements) => {
+ function ResultContent() {
+   const searchParams = useSearchParams();
+   const [copied, setCopied] = useState(false);
++  const [isPaid, setIsPaid] = useState(false);
++  const [isProcessing, setIsProcessing] = useState(false);
++  const [progress, setProgress] = useState(0);
+ 
+   const handleCopySms = (text) => {
+     navigator.clipboard.writeText(text).then(() => {
+@@ -168,6 +171,130 @@ function ResultContent() {
+   // Determine user's base element for 2026 compatibility
+   const baseEl = sajuInfo.year.stemEl; // Representing birth year element
+ 
++  // Check payment status on mount
++  const [hasCheckedPayment, setHasCheckedPayment] = useState(false);
++  useEffect(() => {
++    if (typeof window !== "undefined") {
++      // reportGrade가 free가 아니거나, 이미 로컬스토리지에 paid 이력이 있으면 잠금 해제
++      if (reportGrade !== "free") {
++        setIsPaid(true);
++        return;
++      }
++      try {
++        const existingStr = localStorage.getItem("hyeandang_orders");
++        if (existingStr) {
++          const orders = JSON.parse(existingStr);
++          const matched = orders.find(o => 
++            o.name === name && 
++            o.status === "paid" &&
++            o.year === String(year) &&
++            o.month === String(month) &&
++            o.day === String(day)
++          );
++          if (matched) {
++            setIsPaid(true);
++          }
++        }
++      } catch (e) {
++        console.error(e);
++      }
++      setHasCheckedPayment(true);
++    }
++  }, [reportGrade, name, year, month, day]);
++
++  const updateLocalStorageOrderToPaid = () => {
++    try {
++      const existingStr = localStorage.getItem("hyeandang_orders");
++      if (existingStr) {
++        const orders = JSON.parse(existingStr);
++        const matchedIdx = orders.findIndex(o => 
++          o.name === name && 
++          o.year === String(year) &&
++          o.month === String(month) &&
++          o.day === String(day)
++        );
++        if (matchedIdx > -1) {
++          orders[matchedIdx].status = "paid";
++          localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
++        }
++      }
++    } catch (e) {
++      console.error(e);
++    }
++  };
++
++  const handlePortonePayment = () => {
++    if (typeof window === "undefined" || !window.IMP) {
++      alert("결제 모듈을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
++      return;
++    }
++
++    const IMP = window.IMP;
++    IMP.init("imp00000000"); // 포트원 테스트 식별코드
++
++    IMP.request_pay({
++      pg: "html5_inicis.INIpayTest",
++      pay_method: "card",
++      merchant_uid: `merchant_${new Date().getTime()}`,
++      name: `${name}님 정통 사주 풀이 보고서`,
++      amount: 34900,
++      buyer_name: name,
++    }, function (rsp) {
++      if (rsp.success) {
++        // 결제 성공 시 1.8초 동안 만세력 정밀 보조 빌드 애니메이션 시작
++        setIsProcessing(true);
++        setProgress(0);
++        
++        let currentProgress = 0;
++        const interval = setInterval(() => {
++          currentProgress += 10;
++          if (currentProgress >= 100) {
++            clearInterval(interval);
++            setTimeout(() => {
++              setIsProcessing(false);
++              setIsPaid(true);
++              updateLocalStorageOrderToPaid();
++            }, 300);
++          } else {
++            setProgress(currentProgress);
++          }
++        }, 150);
++      } else {
++        alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
++      }
++    });
++  };
++
++  const renderLockOverlay = (sectionTitle) => {
++    return (
++      <div className="absolute inset-0 bg-[#F9F8F6]/85 backdrop-blur-md flex flex-col items-center justify-center z-20 p-6 text-center select-none print:hidden">
++        <div className="border-2 border-[#A3845B] bg-[#F9F8F6] rounded-xl p-8 max-w-sm shadow-xl space-y-4 relative">
++          <div className="absolute top-2 left-2 text-[#A3845B]/20 text-[10px]">卍</div>
++          <div className="absolute top-2 right-2 text-[#A3845B]/20 text-[10px]">卍</div>
++          <div className="absolute bottom-2 left-2 text-[#A3845B]/20 text-[10px]">卍</div>
++          <div className="absolute bottom-2 right-2 text-[#A3845B]/20 text-[10px]">卍</div>
++          
++          <div className="w-12 h-12 bg-[#A3845B]/10 text-[#A3845B] rounded-full flex items-center justify-center mx-auto text-xl font-bold">
++            🔒
++          </div>
++          <h4 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">
++            {sectionTitle || "정밀 운세 분석"} 잠금 해제
++          </h4>
++          <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light font-traditional">
++            이 영역은 <strong>정통 사주 풀이 보고서 (유료)</strong> 결제 시 제공되는 고품격 정밀 분석서입니다. 결제 즉시 잠금이 해제되며 전체 리포트 열람 및 출력이 가능해집니다.
++          </p>
++          <button
++            type="button"
++            onClick={handlePortonePayment}
++            className="w-full py-2.5 bg-[#8B221E] hover:bg-[#6D1B18] text-white rounded text-xs font-semibold shadow-md transition-all font-traditional"
++          >
++            정통 사주 풀이로 잠금 해제 (34,900원)
++          </button>
++        </div>
++      </div>
++    );
++  };
++
+   const handlePrint = () => {
+     window.print();
+   };
+@@ -500,71 +627,56 @@ function ResultContent() {
+             stars: "★★☆☆☆",
+             grade: "주의",
+             body: "결혼 준비 과정에서 자존심 대립이 극대화되는 시기입니다. 예물, 예단, 혼수 등 물질적 조건에 대해 서로의 양보 없는 주장이 이어져 결혼 직전 파토가 나는 살(煞)이 낄 수 있으니 주의가 필요합니다.",
+-            action: "양가 조율이 필요한 사항은 반드시 제3자나 플래너의 중재안을 따르고, 두 사람만의 감정 대립으로 번지지 않도록 대화를 통제하십시오."
+-          }
+-        },
+-        토: {
+-          wealth: {
+-            stars: "★★★★☆",
+-            grade: "우수",
+-            body: "토(土) 일간인 귀하에게 수(水)는 재성(財星)입니다. 2026년은 인성(화)이 나를 생해 주어 문서상의 권리나 자격증 취득에 매우 이로운 해이지만, 강한 열기가 재물(물)을 말리므로 유동성 확보에는 애를 먹을 수 있습니다.",
+-            action: "현금성 단기 투자는 피하되, 부동산 계약서나 상표권, 자격 기술 등을 통한 중장기 문서 자산을 취득하는 투자는 대길합니다."
+-          },
+-          career: {
+-            stars: "★★★★★",
+-            grade: "최상",
+-            body: "토(土) 일간의 관성(직장)은 목(木)입니다. 나를 후원하는 인성(화)의 에너지가 관성(木)을 흡수하여 나를 돕는 관인상생의 흐름을 보입니다. 상사의 신임을 한 몸에 받거나 승진 시험, 합격 등 명예가 올라가는 최고의 해입니다.",
+-            action: "중요한 프로젝트가 맡겨지면 책임감 있게 완수하십시오. 올해 얻는 신뢰와 직급이 향후 5년의 캐리어를 결정짓습니다."
+-          },
+-          health: {
+-            stars: "★★★☆☆",
+-            grade: "보통",
+-            body: "따뜻한 불이 흙을 데워주는 이로운 형세이지만, 불이 너무 지나치면 위장 장애, 소화 불량, 변비가 발생하기 쉽습니다. 스트레스로 인한 과식이나 폭식은 즉각 소화계에 악영향을 미칩니다.",
+-            action: "아침 식사를 거르지 말고, 따뜻하고 맑은 국물 중심의 한식을 섭취해 위장 기능을 따뜻하게 보호하십시오."
+-          },
+-          love: {
+-            stars: "★★★★☆",
+-            grade: "우수",
+-            body: "나를 진심으로 아끼고 보살펴 주는 따뜻한 연인을 만나게 되는 운세입니다. 이미 연인이 있다면 상대방이 나를 위해 헌신하거나 든든한 조력자 역할을 자처하여 정서적으로 매우 큰 안정을 얻게 됩니다.",
+-            action: "상대방의 다정함을 당연하게 여기지 마시고, 고마움을 말과 따뜻한 포옹으로 즉각 피드백하는 노력을 기울이십시오."
+-          },
+-          marriage: {
+-            stars: "★★★★★",
+-            grade: "최상",
+-            body: "가정을 꾸리고 공식적인 문서를 체결하기에 가장 길한 해입니다. 양가 부모님의 전폭적인 지지와 축복 속에서 일사천리로 결혼 과정이 진행되며, 부부 공동의 명의로 주택을 구입하기에 매우 유리한 시기입니다.",
+-            action: "결혼 약속 및 식장 예약, 혼인 신고를 머뭇거리지 마십시오. 2026년의 인성 기운이 단단한 부부의 신뢰를 공인해 줍니다."
+-          }
+-        },
+-        금: {
+-          wealth: {
+-            stars: "★★★☆☆",
+-            grade: "보통",
+-            body: "금(金) 일간인 귀하에게 목(木)은 재성(財星)입니다. 2026년은 강한 불(관성)이 나를 단련시키며 동시에 내 재물(木)을 녹이는 흐름입니다. 직장 내 업무 성과나 기본 소득은 유지되나 스트레스를 풀기 위한 보상 심리적 지출이 급격히 증가합니다.",
+-            action: "시발 비용(스트레스성 소비)을 막기 위해 체크카드 한도를 설정하고, 번 돈의 50%는 적금 통장으로 강제 이체해 두는 통제가 필수적입니다."
+-          },
+-          career: {
+-            stars: "★★★★★",
+-            grade: "최상",
+-            body: "금(金) 일간의 관성(직장)은 화(火)입니다. 2026년 병오년은 강력한 용광로(불)가 나를 제련하여 멋진 예술품으로 만드는 관성왕지의 해입니다. 승진, 핵심 요직 발탁, 대기업 이직 등 캐리어의 정점을 찍을 수 있는 해입니다.",
+-            action: "업무량이 과중하여 밤낮이 바뀔 수 있으나 피하지 마십시오. 단, 상사와의 지나친 완벽주의적 충돌만 주의하면 명예를 크게 움켜쥡니다."
+-          },
+-          health: {
+-            stars: "★★☆☆☆",
+-            grade: "주의",
+-            body: "강력한 화기가 금(金)을 극하여 폐, 호흡기 계통, 인후염 및 뼈/관절에 적신호가 켜집니다. 특히 과로로 인한 면역력 저하와 대상포진 등 신경성 질환의 발생 확률이 높아지므로 주의해야 합니다.",
+-            action: "과격한 근력 운동은 뼈에 무리를 주니 피하고, 도라지차나 배즙 등 호흡기에 좋은 음식을 챙겨 먹으며 매일 7시간 이상 숙면을 취하십시오."
+-          },
+-          love: {
+-            stars: "★★★★☆",
+-            grade: "우수",
+-            body: "이성을 끌어당기는 자석 같은 기운(관성)이 최고조에 달합니다. 특히 여성의 경우 멋진 배우자 후보가 등장하거나, 연인과 함께하는 자리에서 내 매력이 돋보여 상대의 고백을 이끌어내는 애정운의 호조가 따릅니다.",
+-            action: "마음의 문을 열고 다양한 모임이나 소개팅에 참여하십시오. 정장을 단정하게 입거나 깔끔한 실버 액세서리를 매칭하면 운이 더욱 살아납니다."
+-          },
+-          marriage: {
+-            stars: "★★★★☆",
+-            grade: "우수",
+-            body: "결혼을 진지하게 논의하고 양가의 상견례를 조율하기에 유리한 흐름입니다. 다만, 내 고집이나 원칙을 너무 앞세우면 상대방이 숨이 막힐 수 있으니 결혼 절차는 유연하게 넘어가야 파열음이 생기지 않습니다.",
+-            action: "모든 준비 과정을 내 취향대로 완벽하게 통제하려 하지 마시고, 30% 정도는 예비 배우자의 의견을 전적으로 수용하여 배려를 보이십시오."
++            a            <div id="toc-1-1" className="bg-white border border-[#E2DDD5] rounded-lg p-6 mb-6 shadow-sm print:p-8 print:mb-8 print:border-2 scroll-mt-20">
++              <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] mb-3 print:text-base print:mb-4">
++                🌟 {name}님의 핵심 기질 — {baseEl}({baseEl === "목" ? "木" : baseEl === "화" ? "火" : baseEl === "토" ? "土" : baseEl === "금" ? "金" : "水"}) 기질의 사람
++              </h4>
++              <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional print:text-[14px] print:leading-loose">
++                {baseEl === "목" && "귀하는 곧게 하늘을 향해 뻗어 자라는 나무(木)처럼, 원칙과 비전을 중시하는 독립적인 기질을 타고 났습니다. 남의 말에 쉽게 굴복하지 않는 강한 자존심이 있으며, 한 번 목표를 세우면 집요하게 파고드는 끈기가 있습니다. 다만 과한 자존심이 때로는 융통성의 부재로 이어질 수 있으니, 상황에 따라 유연하게 대응하는 연습이 필요합니다."}
++                {baseEl === "화" && "귀하는 밝고 뜨겁게 타오르는 불(火)의 기질로, 열정과 에너지가 넘쳐 주변을 밝히는 태양 같은 존재입니다. 빠른 판단력과 강한 추진력으로 리더십을 발휘하며 사람들의 이목을 자연스럽게 집중시킵니다. 그러나 흥분과 냉각이 빠른 속성이 있어, 감정을 진정시키는 수련이 평생의 과제입니다."}
++                {baseEl === "토" && "귀하는 만물을 기르고 지탱하는 대지(土)의 기질로, 신뢰감과 포용력이 타고난 장점입니다. 말보다는 행동으로 신의를 쌓아가며 한 번 맺은 인연을 소중히 여기는 끈끈한 의리가 있습니다. 다만 결단의 속도가 느리고 변화에 대한 저항이 강할 수 있으니, 새로운 흐름을 열린 마음으로 받아들이는 유연성을 키우는 것이 중요합니다."}
++                {baseEl === "금" && "귀하는 단단하게 벼려진 쇠붙이(金)의 기질로, 원칙과 정의를 중시하며 공사 구분이 확실한 카리스마를 지녔습니다. 냉철한 분석력과 결단력으로 복잡한 상황을 명확하게 정리하는 탁월한 능력이 있습니다. 그러나 날카로운 성품이 가까운 이들에게 차갑게 느껴질 수 있으니, 따뜻한 언어 표현을 의식적으로 늘리는 것이 관계의 윤활유가 됩니다."}
++                {baseEl === "수" && "귀하는 장애물을 유연하게 비켜 흐르는 물(水)의 기질로, 깊은 통찰력과 지혜가 뛰어난 사색형 인재입니다. 남들이 보지 못하는 이면을 꿰뚫는 직관력과 섬세한 감수성으로 예술, 학문, 연구 분야에서 탁월한 역량을 발휘합니다. 다만 지나친 내성과 우유부단함이 결단의 타이밍을 놓치게 만들 수 있으니, 중요한 순간에는 용기 있는 선택이 필요합니다."}
++              </p>
++            </div>
++            <div id="toc-1-2" className="grid md:grid-cols-2 gap-5 mb-6 print:gap-6 print:mb-8 scroll-mt-20">
++              <div className="bg-[#F6F3EC] border border-[#E2DDD5] rounded-lg p-5 space-y-3 print:p-6">
++                <h4 className="font-myeongjo text-sm font-bold text-[#5F7A68] print:text-base">✨ 타고난 강점</h4>
++                <ul className="text-xs text-[#2C2C2C] space-y-2 font-light leading-relaxed print:text-[13px] print:space-y-3">
++                  <li className="flex gap-2"><span className="text-[#A3845B] font-bold shrink-0">•</span>{baseEl === "목" ? "독립적인 의지력과 주도적인 실행력이 탁월합니다." : baseEl === "화" ? "넘치는 열정과 빠른 상황 판단력이 강점입니다." : baseEl === "토" ? "두터운 신뢰감과 지구력 있는 끈기가 강점입니다." : baseEl === "금" ? "냉철한 분석력과 명확한 결단력이 강점입니다." : "깊은 통찰력과 유연한 적응력이 강점입니다."}</li>
++                  <li className="flex gap-2"><span className="text-[#A3845B] font-bold shrink-0">•</span>{baseEl === "목" ? "창의적인 아이디어와 새로운 시도를 두려워하지 않습니다." : baseEl === "화" ? "사람을 끌어당기는 자연스러운 리더십과 화술이 있습니다." : baseEl === "토" ? "한 번 맺은 인연을 끝까지 아끼는 의리가 강합니다." : baseEl === "금" ? "공사 구분이 확실하고 정의로운 원칙주의 성향이 있습니다." : "감수성이 풍부하고 예술적 직관이 뛰어납니다."}</li>
++                  <li className="flex gap-2"><span className="text-[#A3845B] font-bold shrink-0">•</span>{baseEl === "목" ? "장기적인 목표를 향해 묵묵히 집중하는 집요함이 있습니다." : baseEl === "화" ? "긍정 에너지로 주변 사람들의 의욕을 높여줍니다." : baseEl === "토" ? "안정적인 환경을 조성하여 조직과 가정의 중심이 됩니다." : baseEl === "금" ? "세세한 부분까지 놓치지 않는 완벽주의 집중력이 있습니다." : "학습 능력이 뛰어나 지식과 기술을 빠르게 습득합니다."}</li>
++                </ul>
++              </div>
++              <div className="bg-white border border-red-100 rounded-lg p-5 space-y-3 print:p-6">
++                <h4 className="font-myeongjo text-sm font-bold text-red-700 print:text-base">⚠️ 극복해야 할 약점</h4>
++                <ul className="text-xs text-[#2C2C2C] space-y-2 font-light leading-relaxed print:text-[13px] print:space-y-3">
++                  <li className="flex gap-2"><span className="text-red-500 font-bold shrink-0">•</span>{baseEl === "목" ? "지나친 자존심으로 타인의 의견을 배척하기 쉽습니다." : baseEl === "화" ? "감정의 기복이 심해 과격한 언행을 할 수 있습니다." : baseEl === "토" ? "변화와 새로운 시도에 지나치게 보수적일 수 있습니다." : baseEl === "금" ? "날카로운 직언이 상대방에게 상처를 줄 수 있습니다." : "우유부단함으로 중요한 결정을 미루는 경향이 있습니다."}</li>
++                  <li className="flex gap-2"><span className="text-red-500 font-bold shrink-0">•</span>{baseEl === "목" ? "타합을 약함으로 보아 불필요한 갈등이 생길 수 있습니다." : baseEl === "화" ? "시작은 뜨겁지만 지속력이 부족해 마무리가 약합니다." : baseEl === "토" ? "우유부단한 결단으로 좋은 기회를 놓치기도 합니다." : baseEl === "금" ? "지나친 완벽주의로 자신과 타인을 지치게 만듭니다." : "낯선 환경에서 심한 불안감을 느껴 결단을 미룹니다."}</li>
++                  <li className="flex gap-2"><span className="text-red-500 font-bold shrink-0">•</span>{baseEl === "목" ? "성급하게 행동하여 세부 사항을 놓치는 일이 잦습니다." : baseEl === "화" ? "충동적인 판단으로 경제적 손실을 볼 수 있습니다." : baseEl === "토" ? "남에게 베푸는 것이 많아 재물이 새어나갈 수 있습니다." : baseEl === "금" ? "감정 표현이 서투르고 외로움을 쉽게 느낍니다." : "현실적인 판단보다 이상을 추구하는 경향이 강합니다."}</li>
++                </ul>
++              </div>
++            </div>
++            {worryText && (
++              <div id="toc-1-3" className="bg-white border-2 border-[#A3845B]/40 rounded-lg p-5 print:p-6 scroll-mt-20">
++                <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] mb-3 flex items-center gap-1.5 print:text-base">
++                  <Heart className="w-4 h-4 text-red-500" />
++                  {name} 님의 개별 고민 맞춤형 솔루션
++                </h4>
++                <div className="bg-[#F9F8F6] border-l-4 border-[#A3845B] p-3 rounded text-xs mb-3 print:text-[13px]">
++                  <span className="font-bold text-[#1A1A1A] block mb-1">작성하신 고민 원문:</span>
++                  <p className="text-[#5F5F5F] italic">"{decodeURIComponent(worryText)}"</p>
++                </div>
++                <div className="space-y-3 text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional print:text-[13px] print:leading-loose">
++                  <div><span className="font-bold text-[#A3845B] block mb-1">📍 고민 상황의 운명적 해석</span><p>{personalizedText.analysis}</p></div>
++                  <div><span className="font-bold text-[#A3845B] block mb-1">⏰ 최적의 행동 타이밍</span><p>{personalizedText.timing}</p></div>
++                  <div>
++                    <span className="font-bold text-[#A3845B] block mb-1">🔑 귀하를 위한 개운 비법</span>
++                    <div className="bg-[#F6F3EC] p-3 rounded-md border border-[#E2DDD5]/70 whitespace-pre-line text-xs leading-relaxed text-[#2C2C2C] print:text-[12px]">{personalizedText.actionPlan}</div>
++                  </div>
++                </div>
++              </div>
++            )}��고, 30% 정도는 예비 배우자의 의견을 전적으로 수용하여 배려를 보이십시오."
+           }
+         },
+         수: {
+@@ -640,7 +752,7 @@ function ResultContent() {
+               <div className="w-24 h-0.5 bg-[#A3845B]/30 mx-auto my-2" />
+             </div>
+ 
+-            <div className="space-y-3 mb-8 print:mb-10">
++            <div id="toc-1-4" className="space-y-3 mb-8 print:mb-10 scroll-mt-20">
+               <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 print:text-lg print:pb-3">
+                 <Scroll className="w-4.5 h-4.5 text-[#A3845B] print:w-5 print:h-5" />
+                 사주팔자 (四柱八字) 명식원국
+@@ -688,7 +800,7 @@ function ResultContent() {
+               </div>
+             </div>
+ 
+-            <div className="space-y-4 print:space-y-5">
++            <div id="toc-1-5" className="space-y-4 print:space-y-5 scroll-mt-20">
+               <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] flex items-center gap-2 border-b border-[#E2DDD5] pb-2 print:text-lg print:pb-3">
+                 <Compass className="w-4.5 h-4.5 text-[#5F7A68] print:w-5 print:h-5" />
+                 오행 (五行) 에너지 분포 분석

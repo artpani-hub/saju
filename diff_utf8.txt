@@ -1,0 +1,511 @@
+﻿diff --git a/src/app/globals.css b/src/app/globals.css
+index 05981c7..8361df7 100644
+--- a/src/app/globals.css
++++ b/src/app/globals.css
+@@ -57,3 +57,159 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
+ ::-webkit-scrollbar-thumb:hover {
+   background: var(--accent-brass);
+ }
++
++/* ----------------------------------------------------
++   Print Media Styles: PDF & ?몄뇙 ?덉씠?꾩썐 蹂댁젙
++   ---------------------------------------------------- */
++@media print {
++  @page {
++    size: A4 portrait;
++    margin: 8mm 10mm 8mm 10mm; /* A4 理쒖쟻 ?곹븯醫뚯슦 ?щ갚 */
++  }
++  
++  body {
++    background-color: #FAF7F0 !important; /* 怨좎쟾?곸씤 ?쒓뎅 ?꾪넻 ?쒖? 諛뷀깢??*/
++    color: #1A1A1A !important;
++    padding: 0 !important;
++    margin: 0 !important;
++    font-size: 11px; /* ?꾩껜?곸씤 湲瑗??ш린瑜?肄ㅽ뙥?명븯寃?蹂댁젙 */
++    -webkit-print-color-adjust: exact !important;
++    print-color-adjust: exact !important;
++  }
++
++  /* ?몄뇙 ??紐⑤뱺 諛곌꼍怨??됱긽??媛뺤젣濡??쒖떆?섎룄濡?吏??*/
++  * {
++    -webkit-print-color-adjust: exact !important;
++    print-color-adjust: exact !important;
++    color-adjust: exact !important;
++  }
++
++  /* ???꾩슜 諛붽묑 而⑦뀒?대꼫 留덉쭊 諛??⑤뵫 媛뺤젣 ?쒓굅 */
++  .min-h-screen {
++    padding-top: 0 !important;
++    padding-bottom: 0 !important;
++    min-height: auto !important;
++    background: transparent !important;
++  }
++  
++  .max-w-3xl {
++    max-width: 100% !important;
++    padding: 0 !important;
++    margin: 0 !important;
++    border: none !important;
++    background: transparent !important;
++    box-shadow: none !important;
++  }
++
++  /* 媛쒕퀎 A4 ?쒖? 臾몄꽌泥??뺥깭???섑띁 */
++  .print-page-wrapper {
++    background: radial-gradient(circle, #FAF7F0 0%, #F4EFE6 100%) !important;
++    background-color: #FAF7F0 !important;
++    border: 4px double #A3845B !important;
++    padding: 16mm 18mm !important; /* ?대? ?щ갚?쇰줈 ?덉젙???뺣낫 */
++    margin: 0 0 10mm 0 !important;
++    box-shadow: none !important;
++    box-sizing: border-box !important;
++    page-break-inside: avoid !important;
++    break-inside: avoid !important;
++    position: relative !important;
++    width: 100% !important;
++    min-height: 275mm !important; /* A4 ?몃줈 湲몄씠(297mm) ?鍮??대? 肄섑뀗痢??곸뿭 ?믪씠 */
++    display: flex !important;
++    flex-direction: column !important;
++    justify-content: space-between !important;
++  }
++
++  /* ?뱀슜 ?щ갚 ?대옒??mb-12, space-y-10 ??瑜??몄뇙 ???곸젙 ?뺤텞 */
++  .mb-12, .my-12 {
++    margin-bottom: 12px !important;
++    margin-top: 4px !important;
++  }
++  .mb-10 {
++    margin-bottom: 10px !important;
++  }
++  .mb-8 {
++    margin-bottom: 8px !important;
++  }
++  .mt-12 {
++    margin-top: 12px !important;
++  }
++  
++  .space-y-12 > * + * {
++    margin-top: 12px !important;
++  }
++  .space-y-10 > * + * {
++    margin-top: 10px !important;
++  }
++  .space-y-6 > * + * {
++    margin-top: 6px !important;
++  }
++  .space-y-4 > * + * {
++    margin-top: 4px !important;
++  }
++
++  /* ?⑤뵫 ?쇨큵 異뺤냼 */
++  .p-12 {
++    padding: 0 !important;
++  }
++  .p-6, .p-5, .p-4 {
++    padding: 8px !important; /* 諛뺤뒪 ?대? ?щ갚 異뺤냼 */
++  }
++  .py-10, .py-16 {
++    padding-top: 0 !important;
++    padding-bottom: 0 !important;
++  }
++  .py-5 {
++    padding-top: 4px !important;
++    padding-bottom: 4px !important;
++  }
++  .mb-6 {
++    margin-bottom: 6px !important;
++  }
++
++  /* ?몄뇙 ???댁젙姨≫븯寃?諛섏쑝濡?履쇨컻吏???꾩긽 諛⑹? ?대옒??*/
++  .print-avoid-break,
++  .bg-white,
++  .bg-red-50\/50,
++  .bg-[#F9F8F6]\/80 {
++    page-break-inside: avoid !important;
++    break-inside: avoid !important;
++  }
++
++  /* ?쒕ぉ 諛붾줈 ?ㅼ뿉???섏씠吏媛 ?섏뼱媛???꾩긽 諛⑹? */
++  h1, h2, h3, h4, h5 {
++    page-break-after: avoid !important;
++    break-after: avoid !important;
++  }
++
++  /* ?몄뇙 ??遺덊븘?뷀븳 ?뚮몢由?洹몃┝???쒓굅 */
++  .shadow-md, .shadow-sm {
++    box-shadow: none !important;
++  }
++
++  /* ?몄뇙 媛뺤젣 ?섏씠吏 遺꾪븷???대옒??*/
++  .print-page-break-before {
++    page-break-before: always !important;
++    break-before: page !important;
++    margin-top: 0 !important;
++  }
++}
++
++/* ----------------------------------------------------
++   Korean Traditional Design Utilities
++   ---------------------------------------------------- */
++.traditional-hanji-bg {
++  background: radial-gradient(circle, #FAF7F0 0%, #F4EFE6 100%) !important;
++  background-color: #FAF7F0 !important;
++}
++
++.traditional-border {
++  border: 4px double #A3845B !important;
++}
++
++.traditional-seal {
++  border: 2px solid #C94A29 !important;
++  color: #C94A29 !important;
++  font-family: var(--font-myeongjo), serif;
++}
++
+diff --git a/src/app/input/page.js b/src/app/input/page.js
+index 34bd39e..09d8c4e 100644
+--- a/src/app/input/page.js
++++ b/src/app/input/page.js
+@@ -51,6 +51,7 @@ function InputFormContent() {
+ 
+   // Selected product state
+   const [productKey, setProductKey] = useState("saju");
++  const [reportGrade, setReportGrade] = useState("premium"); // premium, deep, sms
+   const [formData, setFormData] = useState({
+     name: "",
+     gender: "female",
+@@ -729,25 +730,99 @@ function InputFormContent() {
+ 
+                 {/* Micro selector */}
+                 <div className="space-y-2.5 mb-6">
+-                  {Object.entries(products).map(([key, value]) => (
+-                    <button
+-                      key={key}
+-                      onClick={() => handleSelectProduct(key)}
+-                      className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+-                        productKey === key
+-                          ? "border-brass bg-brass/5"
+-                          : "border-border-custom bg-background hover:bg-background-secondary/30"
+-                      }`}
+-                    >
+-                      <div>
+-                        <span className="text-[10px] text-foreground-muted block font-light">{value.category}</span>
+-                        <span className="text-sm font-bold text-foreground">{value.title}</span>
++                  {Object.entries(products).map(([key, value]) => {
++                    const isSelected = productKey === key;
++                    const showGradeSelector = isSelected && (key === "saju" || key === "newyear");
++                    return (
++                      <div key={key} className="space-y-2">
++                        <button
++                          type="button"
++                          onClick={() => handleSelectProduct(key)}
++                          className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
++                            isSelected
++                              ? "border-brass bg-brass/5"
++                              : "border-border-custom bg-background hover:bg-background-secondary/30"
++                          }`}
++                        >
++                          <div>
++                            <span className="text-[10px] text-foreground-muted block font-light">{value.category}</span>
++                            <span className="text-sm font-bold text-foreground">{value.title}</span>
++                          </div>
++                          <span className="text-sm font-bold text-brass">
++                            {value.price.toLocaleString()}??+                          </span>
++                        </button>
++
++                        {/* Report Grade Selector inline under selected saju/newyear product */}
++                        {showGradeSelector && (
++                          <div className="p-3.5 bg-background-secondary/40 border border-border-custom/50 rounded-lg space-y-2.5 mt-1.5 transition-all">
++                            <span className="text-[10px] font-semibold text-foreground block tracking-wider">由ы룷???깃툒 ?좏깮</span>
++                            <div className="space-y-2">
++                              <button
++                                type="button"
++                                onClick={() => setReportGrade("premium")}
++                                className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
++                                  reportGrade === "premium"
++                                    ? "border-brass bg-brass/10"
++                                    : "border-border-custom bg-background hover:bg-background-secondary/20"
++                                }`}
++                              >
++                                <div>
++                                  <span className="text-[11px] font-bold text-foreground flex items-center gap-1">
++                                    ??怨좉툒 由ы룷??<span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">湲곕낯</span>
++                                  </span>
++                                  <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
++                                    ?ъ＜?먭뎅, ?ㅽ뻾遺꾩꽍, ?됱깮????醫낇빀 遺꾩꽍
++                                  </span>
++                                </div>
++                                <span className="text-[10px] text-foreground-muted">異붽?湲??놁쓬</span>
++                              </button>
++
++                              <button
++                                type="button"
++                                onClick={() => setReportGrade("deep")}
++                                className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
++                                  reportGrade === "deep"
++                                    ? "border-[#5F7A68] bg-[#5F7A68]/10"
++                                    : "border-border-custom bg-background hover:bg-background-secondary/20"
++                                }`}
++                              >
++                                <div>
++                                  <span className="text-[11px] font-bold text-[#5F7A68] flex items-center gap-1">
++                                    ?몣 ?ы솕 由ы룷??<span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">異붿쿇</span>
++                                  </span>
++                                  <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
++                                    怨좉툒 由ы룷???꾩껜 + ?좊뀈?댁꽭 + ?⑹떊/???+ 吏덈Ц ?ы솕 ???+                                  </span>
++                                </div>
++                                <span className="text-[10px] font-bold text-[#5F7A68]">+15,000??/span>
++                              </button>
++
++                              <button
++                                type="button"
++                                onClick={() => setReportGrade("sms")}
++                                className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
++                                  reportGrade === "sms"
++                                    ? "border-gray-500 bg-gray-500/10"
++                                    : "border-border-custom bg-background hover:bg-background-secondary/20"
++                                }`}
++                              >
++                                <div>
++                                  <span className="text-[11px] font-bold text-foreground flex items-center gap-1">
++                                    ?뮠 臾몄옄硫붿떆吏 ?붿빟
++                                  </span>
++                                  <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
++                                    ?듭떖 ?붿빟蹂?紐⑤컮??臾몄옄/移댁뭅?ㅽ넚 ?꾩넚
++                                  </span>
++                                </div>
++                                <span className="text-[10px] font-bold text-red-500">-10,000??/span>
++                              </button>
++                            </div>
++                          </div>
++                        )}
+                       </div>
+-                      <span className="text-sm font-bold text-brass">
+-                        {value.price.toLocaleString()}??-                      </span>
+-                    </button>
+-                  ))}
++                    );
++                  })}
+                 </div>
+ 
+                 {/* Info block */}
+@@ -757,11 +832,20 @@ function InputFormContent() {
+                     ?쒓났 ?덈ぉ ?덈궡
+                   </h4>
+                   <p className="text-xs text-foreground-muted leading-relaxed font-light mb-2">
+-                    {activeProduct.desc}
++                    {(productKey === "saju" || productKey === "newyear")
++                      ? (reportGrade === "sms" 
++                        ? "紐⑤컮???붾㈃??理쒖쟻?붾맂 ?듭떖 ??以??붿빟 諛??듭떖 媛쒖슫 泥섎갑 臾몄옄 諛쒖넚"
++                        : reportGrade === "deep"
++                        ? `${activeProduct.desc} 諛?2026 ?좊뀈?댁꽭 ?곸꽭, ?⑹떊 ?댁꽍, ????먮쫫 遺꾩꽍怨?吏덈Ц 3媛吏 ?ы솕 ?듬? ?쒓났`
++                        : activeProduct.desc)
++                      : activeProduct.desc}
+                   </p>
+                   <ul className="text-[10px] text-foreground-muted space-y-1 font-light border-t border-border-custom/50 pt-2">
+                     <li className="flex items-center gap-1">
+-                      <Check className="w-3 h-3 text-jade" /> ?대찓?쇰줈 HTML + PDF 諛쒖넚
++                      <Check className="w-3 h-3 text-jade" />{" "}
++                      {(productKey === "saju" || productKey === "newyear") && reportGrade === "sms" 
++                        ? "紐⑤컮???뚮┝??LMS濡?利됱떆 諛쒖넚" 
++                        : "?대찓?쇰줈 HTML + PDF 諛쒖넚"}
+                     </li>
+                     <li className="flex items-center gap-1">
+                       <Check className="w-3 h-3 text-jade" /> 5~15遺??댁쇅 珥덇퀬??遺꾩꽍 諛?諛쒖넚
+@@ -770,22 +854,34 @@ function InputFormContent() {
+                 </div>
+ 
+                 {/* Total invoice details */}
+-                <div className="space-y-2 mb-6">
+-                  <div className="flex justify-between text-xs text-foreground-muted">
+-                    <span>遺꾩꽍 ????섏닔猷?/span>
+-                    <span>{(activeProduct.price * 0.9).toLocaleString()}??/span>
+-                  </div>
+-                  <div className="flex justify-between text-xs text-foreground-muted">
+-                    <span>遺媛??10%)</span>
+-                    <span>{(activeProduct.price * 0.1).toLocaleString()}??/span>
+-                  </div>
+-                  <div className="flex justify-between items-center border-t border-border-custom pt-3 mt-1.5">
+-                    <span className="text-sm font-bold text-foreground font-myeongjo">理쒖쥌 寃곗젣 湲덉븸</span>
+-                    <span className="text-lg font-bold text-brass">
+-                      {activeProduct.price.toLocaleString()}??-                    </span>
+-                  </div>
+-                </div>
++                {(() => {
++                  const base = activeProduct.price;
++                  const finalPrice = (productKey === "saju" || productKey === "newyear")
++                    ? (reportGrade === "deep" 
++                      ? base + 15000 
++                      : reportGrade === "sms" 
++                      ? Math.max(5000, base - 10000) 
++                      : base)
++                    : base;
++                  return (
++                    <div className="space-y-2 mb-6">
++                      <div className="flex justify-between text-xs text-foreground-muted">
++                        <span>遺꾩꽍 ????섏닔猷?/span>
++                        <span>{Math.round(finalPrice * 0.9).toLocaleString()}??/span>
++                      </div>
++                      <div className="flex justify-between text-xs text-foreground-muted">
++                        <span>遺媛??10%)</span>
++                        <span>{Math.round(finalPrice * 0.1).toLocaleString()}??/span>
++                      </div>
++                      <div className="flex justify-between items-center border-t border-border-custom pt-3 mt-1.5">
++                        <span className="text-sm font-bold text-foreground font-myeongjo">理쒖쥌 寃곗젣 湲덉븸</span>
++                        <span className="text-lg font-bold text-brass">
++                          {finalPrice.toLocaleString()}??+                        </span>
++                      </div>
++                    </div>
++                  );
++                })()}
+ 
+                 <div className="flex items-center gap-1.5 text-[10px] text-foreground-muted bg-background-secondary/30 p-2.5 rounded border border-border-custom/30">
+                   <ShieldCheck className="w-4 h-4 text-jade shrink-0" />
+@@ -811,14 +907,30 @@ function InputFormContent() {
+                   <span className="text-[10px] text-foreground-muted block">媛留뱀젏紐?/span>
+                   <span className="text-base font-bold text-foreground">?쒖븞??(?㎫쑝??</span>
+                 </div>
+-                <div>
+-                  <span className="text-[10px] text-foreground-muted block">?곹뭹紐?/span>
+-                  <span className="text-sm text-foreground">{activeProduct.title}</span>
+-                </div>
+-                <div>
+-                  <span className="text-[10px] text-foreground-muted block">寃곗젣 湲덉븸</span>
+-                  <span className="text-xl font-bold text-brass">{activeProduct.price.toLocaleString()}??/span>
+-                </div>
++                {(() => {
++                  const base = activeProduct.price;
++                  const finalPrice = (productKey === "saju" || productKey === "newyear")
++                    ? (reportGrade === "deep" 
++                      ? base + 15000 
++                      : reportGrade === "sms" 
++                      ? Math.max(5000, base - 10000) 
++                      : base)
++                    : base;
++                  return (
++                    <>
++                      <div>
++                        <span className="text-[10px] text-foreground-muted block">?곹뭹紐?/span>
++                        <span className="text-sm text-foreground">
++                          {activeProduct.title} {(productKey === "saju" || productKey === "newyear") && `(${reportGrade === "premium" ? "怨좉툒 由ы룷?? : reportGrade === "deep" ? "?ы솕 由ы룷?? : "臾몄옄 ?붿빟"})`}
++                        </span>
++                      </div>
++                      <div>
++                        <span className="text-[10px] text-foreground-muted block">寃곗젣 湲덉븸</span>
++                        <span className="text-xl font-bold text-brass">{finalPrice.toLocaleString()}??/span>
++                      </div>
++                    </>
++                  );
++                })()}
+ 
+                 {/* Options of paying */}
+                 <div className="border-t border-border-custom pt-4 text-left">
+@@ -888,7 +1000,7 @@ function InputFormContent() {
+                 <span className="text-foreground font-medium">異쒖깮 ?뺣낫 ?뚯뼇??蹂???꾨즺</span>
+               </div>
+               <div className="flex items-center gap-3 text-xs">
+-                <span className="w-5 h-5 bg-jade text-background rounded-full flex items-center justify-center font-bold text-[10px]">2</span>
++                        <span className="w-5 h-5 bg-jade text-background rounded-full flex items-center justify-center font-bold text-[10px]">2</span>
+                 <span className="text-foreground font-medium">?ъ＜?붿옄(?쎿윶?ュ춻) ?≪튇 諛곗튂 ?꾨즺</span>
+               </div>
+               <div className="flex items-center gap-3 text-xs animate-pulse">
+@@ -925,11 +1037,15 @@ function InputFormContent() {
+               </div>
+               <div className="flex justify-between text-xs">
+                 <span className="text-foreground-muted">?좎껌 ?곹뭹</span>
+-                <span className="font-semibold text-foreground">{activeProduct.title}</span>
++                <span className="font-semibold text-foreground">
++                  {activeProduct.title} {(productKey === "saju" || productKey === "newyear") && `(${reportGrade === "premium" ? "怨좉툒 由ы룷?? : reportGrade === "deep" ? "?ы솕 由ы룷?? : "臾몄옄 ?붿빟"})`}
++                </span>
+               </div>
+               <div className="flex justify-between text-xs">
+-                <span className="text-foreground-muted">?섏떊 ?대찓??/span>
+-                <span className="font-semibold text-brass underline">{formData.email}</span>
++                <span className="text-foreground-muted">?섏떊 諛⑹떇</span>
++                <span className="font-semibold text-foreground">
++                  {(productKey === "saju" || productKey === "newyear") && reportGrade === "sms" ? `臾몄옄硫붿떆吏 (${formData.phone})` : `?대찓??(${formData.email})`}
++                </span>
+               </div>
+               <div className="flex justify-between text-xs border-t border-border-custom/40 pt-2 mt-2">
+                 <span className="text-foreground-muted">?ъ＜ 媛꾩?</span>
+@@ -943,7 +1059,7 @@ function InputFormContent() {
+ 
+             <div className="flex flex-col gap-3">
+               <Link
+-                href={`/result?name=${encodeURIComponent(formData.name || "?댁???)}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendarType}&year=${formData.birthYear}&month=${formData.birthMonth}&day=${formData.birthDay}&hour=${encodeURIComponent(formData.birthHour)}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText)}&cards=${selectedCards.join(",")}&partnerName=${encodeURIComponent(formData.partnerName)}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendarType}&partnerYear=${formData.partnerBirthYear}&partnerMonth=${formData.partnerBirthMonth}&partnerDay=${formData.partnerBirthDay}&partnerHour=${encodeURIComponent(formData.partnerBirthHour)}`}
++                href={`/result?name=${encodeURIComponent(formData.name || "?댁???)}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendarType}&year=${formData.birthYear}&month=${formData.birthMonth}&day=${formData.birthDay}&hour=${encodeURIComponent(formData.birthHour)}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText)}&cards=${selectedCards.join(",")}&partnerName=${encodeURIComponent(formData.partnerName)}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendarType}&partnerYear=${formData.partnerBirthYear}&partnerMonth=${formData.partnerBirthMonth}&partnerDay=${formData.partnerBirthDay}&partnerHour=${encodeURIComponent(formData.partnerBirthHour)}&reportGrade=${(productKey === "saju" || productKey === "newyear") ? reportGrade : "premium"}`}
+                 className="w-full py-3 bg-jade text-background rounded font-semibold text-sm hover:bg-jade-dark transition-all block text-center"
+               >
+                 ?앹꽦??寃곌낵??誘몃━蹂닿린 (?섑뵆)
+diff --git a/src/app/page.js b/src/app/page.js
+index af08373..47e436b 100644
+--- a/src/app/page.js
++++ b/src/app/page.js
+@@ -119,14 +119,31 @@ export default function Home() {
+               <div>
+                 <span className="text-xs font-semibold text-jade tracking-wider uppercase block mb-1">?ъ＜?붿옄</span>
+                 <h3 className="font-myeongjo text-xl font-bold text-foreground mb-2 group-hover:text-brass transition-colors">?됱깮 醫낇빀 ?ъ＜?붿옄</h3>
+-                <p className="text-sm text-foreground-muted leading-relaxed mb-6 font-light">
++                <p className="text-sm text-foreground-muted leading-relaxed mb-4 font-light">
+                   ?怨좊궃 ?ㅽ뻾 遺꾪룷, ?됱깮???먮쫫??吏싳뼱二쇰뒗 10??二쇨린 ??? ?몄깮???⑷툑湲곗? ?붾（?섏쓣 ?ы븿??醫낇빀 蹂닿퀬??
+                 </p>
++
++                {/* ?깃툒蹂??붽툑 ?덈궡 諛뺤뒪 */}
++                <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-2 font-light text-foreground-muted">
++                  <div className="flex justify-between items-center">
++                    <span className="flex items-center gap-1.5 text-foreground font-medium">??怨좉툒 由ы룷??<span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">湲곕낯</span></span>
++                    <span className="font-semibold text-brass">30,000??/span>
++                  </div>
++                  <div className="flex justify-between items-center">
++                    <span className="flex items-center gap-1.5 text-[#5F7A68] font-medium">?몣 ?ы솕 由ы룷??<span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">異붿쿇</span></span>
++                    <span className="font-semibold text-[#5F7A68]">45,000??/span>
++                  </div>
++                  <div className="flex justify-between items-center">
++                    <span className="flex items-center gap-1.5 font-medium text-gray-700">?뮠 臾몄옄硫붿떆吏 ?붿빟</span>
++                    <span className="font-semibold text-gray-700">20,000??/span>
++                  </div>
++                </div>
+               </div>
+               <div>
+                 <div className="border-t border-border-custom pt-4 mb-4 flex items-baseline gap-1">
++                  <span className="text-xs text-foreground-muted">湲곕낯 ?붽툑</span>
+                   <span className="text-2xl font-bold text-foreground">30,000</span>
+-                  <span className="text-xs text-foreground-muted">??/span>
++                  <span className="text-xs text-foreground-muted">??</span>
+                 </div>
+                 <Link
+                   href="/input?product=saju"
+@@ -143,14 +160,31 @@ export default function Home() {
+               <div>
+                 <span className="text-xs font-semibold text-brass tracking-wider uppercase block mb-1">?쒖쫵 ?쒖젙</span>
+                 <h3 className="font-myeongjo text-xl font-bold text-foreground mb-2 group-hover:text-brass transition-colors">?좊뀈 ?댁꽭 / ?좎젙鍮꾧껐</h3>
+-                <p className="text-sm text-foreground-muted leading-relaxed mb-6 font-light">
++                <p className="text-sm text-foreground-muted leading-relaxed mb-4 font-light">
+                   ?덊빐??媛??留롮씠 李얜뒗 ?곹뭹?쇰줈, ???댁쓽 珥앹껜?곸씤 ?먮쫫, ?붾퀎 ?곸꽭 ?댁꽭? ?섏븘媛??됰룞 吏移??쒖븞.
+                 </p>
++
++                {/* ?깃툒蹂??붽툑 ?덈궡 諛뺤뒪 */}
++                <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-2 font-light text-foreground-muted">
++                  <div className="flex justify-between items-center">
++                    <span className="flex items-center gap-1.5 text-foreground font-medium">??怨좉툒 由ы룷??<span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">湲곕낯</span></span>
++                    <span className="font-semibold text-brass">35,000??/span>
++                  </div>
++                  <div className="flex justify-between items-center">
++                    <span className="flex items-center gap-1.5 text-[#5F7A68] font-medium">?몣 ?ы솕 由ы룷??<span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">異붿쿇</span></span>
++                    <span className="font-semibold text-[#5F7A68]">50,000??/span>
++                  </div>
++                  <div className="flex justify-between items-center">
++                    <span className="flex items-center gap-1.5 font-medium text-gray-700">?뮠 臾몄옄硫붿떆吏 ?붿빟</span>
++                    <span className="font-semibold text-gray-700">25,000??/span>
++                  </div>
++                </div>
+               </div>
+               <div>
+                 <div className="border-t border-border-custom pt-4 mb-4 flex items-baseline gap-1">
++                  <span className="text-xs text-foreground-muted">湲곕낯 ?붽툑</span>
+                   <span className="text-2xl font-bold text-foreground">35,000</span>
+-                  <span className="text-xs text-foreground-muted">??/span>
++                  <span className="text-xs text-foreground-muted">??</span>
+                 </div>
+                 <Link
+                   href="/input?product=newyear"
