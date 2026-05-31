@@ -229,36 +229,38 @@ const getPagesConfiguration = (name, partnerName) => {
     { page: 3, type: "manseryeo", title: "기본 사주 팔자 명조 분석" },
     { page: 4, type: "elements", title: "오행(五행) 에너지 분포 분석" },
     { page: 5, type: "metrics_chart", title: "사주 8대 성향 수치표" },
-    { page: 6, type: "metrics_detail_1", title: "8대 성향 수치 심층 풀이 (독립심/승부욕)" },
+    { page: 6, type: "metrics_detail_1", title: "8대 성향 수치 심층 풀이 (독립성/승부욕)" },
     { page: 7, type: "metrics_detail_2", title: "8대 성향 수치 심층 풀이 (기회포착/사업감각)" },
-    { page: 8, type: "stem_detail", title: "나의 일간(日干) 심층 분석" },
-    { page: 9, type: "ilju_secret", title: "나의 일주(日柱)의 비밀 분석" },
-    { page: 10, type: "destiny_harmony", title: "여덟 글자의 운명 조화 및 마음가짐 처방" },
-    { page: 11, type: "inner_disposition", title: "타고난 기질 분석 및 3대 행동 강령" },
-    { page: 12, type: "lifestyle_strategy", title: "살아가는 방식 및 행운물 풍수 공간 처방" },
-    { page: 13, type: "deficiency", title: "사주 속 결핍의 비밀 및 생존 본능 분석" },
-    { page: 14, type: "strength", title: "타고난 성향과 기질 총평" },
-    { page: 15, type: "weakness", title: "극복해야 할 치명적인 약점 분석" },
-    { page: 16, type: "worry_solution", title: "의뢰인 개별 고민 정밀 조율 솔루션" },
-    { page: 17, type: "sipsin_1", title: "사주 원국의 십신(十神) 분석 - 비견·겁재" },
-    { page: 18, type: "sipsin_2", title: "사주 원국의 십신(十神) 분석 - 식신·상관" },
-    { page: 19, type: "sipsin_3", title: "사주 원국의 십신(十神) 분석 - 편재·정재" },
-    { page: 20, type: "sipsin_4", title: "사주 원국의 십신(十神) 분석 - 편관·정관" },
-    { page: 21, type: "sipsin_5", title: "사주 원국의 십신(十神) 분석 - 편인·정인" },
-    { page: 22, type: "sinsal", title: "사주 속 길흉 신살(神殺) 분석" },
-    { page: 23, type: "gwiin", title: "내 인생의 귀인(貴人) 분석" },
-    { page: 24, type: "job_aptitude", title: "평생 직업 적성 처방" },
-    { page: 25, type: "wealth_wave", title: "재물 창고(財庫)와 시기별 재산 흐름 파동 그래프" },
-    { page: 26, type: "seoun_2026", title: "2026년 병오년(丙午年) 전체 세운 흐름" },
-    { page: 27, type: "seoun_quarterly", title: "2026년 분기별 상세 흐름 및 월별 대응 전술" },
-    { page: 28, type: "seoun_aspects", title: "2026년 분야별 상세 등급 및 행동 강령" },
-    { page: 29, type: "daeun_orbit", title: "평생 대운(大運) 흐름 총평 및 10년 대운 궤도 다이어그램" },
-    { page: 30, type: "daeun_roadmap_1", title: "대운 1기~2기 상세 로드맵" },
-    { page: 31, type: "daeun_roadmap_2", title: "대운 3기~4기 상세 로드맵" },
-    { page: 32, type: "warning_period", title: "평생 조심해야 할 흉한 시기 & 액운 소멸 방어 비책" },
-    { page: 33, type: "gaewoon_presc", title: "부족한 기운을 채우는 나만의 오행 개운법" },
-    { page: 34, type: "ten_year_seoun", title: "향후 10개년(2026~2035) 연도별 족집게 세운 운세" },
-    { page: 35, type: "fengshui_bless", title: "공간 풍수 인테리어 처방 및 지혜의 마지막 축원" }
+    { page: 8, type: "metrics_detail_3", title: "8대 성향 수치 심층 풀이 (추진력/인내력)" },
+    { page: 9, type: "metrics_detail_4", title: "8대 성향 수치 심층 풀이 (통찰력/대인협상)" },
+    { page: 10, type: "stem_detail", title: "나의 일간(日干) 심층 분석" },
+    { page: 11, type: "ilju_secret", title: "나의 일주(日柱)의 비밀 분석" },
+    { page: 12, type: "destiny_harmony", title: "여덟 글자의 운명 조화 및 마음가짐 처방" },
+    { page: 13, type: "inner_disposition", title: "타고난 기질 분석 및 3대 행동 강령" },
+    { page: 14, type: "lifestyle_strategy", title: "살아가는 방식 및 행운물 풍수 공간 처방" },
+    { page: 15, type: "deficiency", title: "사주 속 결핍의 비밀 및 생존 본능 분석" },
+    { page: 16, type: "strength", title: "타고난 성향과 기질 총평" },
+    { page: 17, type: "weakness", title: "극복해야 할 치명적인 약점 분석" },
+    { page: 18, type: "worry_solution", title: "의뢰인 개별 고민 정밀 조율 솔루션" },
+    { page: 19, type: "sipsin_1", title: "사주 원국의 십신(十神) 분석 - 비견·겁재" },
+    { page: 20, type: "sipsin_2", title: "사주 원국의 십신(十神) 분석 - 식신·상관" },
+    { page: 21, type: "sipsin_3", title: "사주 원국의 십신(十神) 분석 - 편재·정재" },
+    { page: 22, type: "sipsin_4", title: "사주 원국의 십신(十神) 분석 - 편관·정관" },
+    { page: 23, type: "sipsin_5", title: "사주 원국의 십신(十神) 분석 - 편인·정인" },
+    { page: 24, type: "sinsal", title: "사주 속 길흉 신살(神殺) 분석" },
+    { page: 25, type: "gwiin", title: "내 인생의 귀인(貴인) 분석" },
+    { page: 26, type: "job_aptitude", title: "평생 직업 적성 처방" },
+    { page: 27, type: "wealth_wave", title: "재물 창고(財庫)와 시기별 재산 흐름 파동 그래프" },
+    { page: 28, type: "seoun_2026", title: "2026년 병오년(丙午年) 전체 세운 흐름" },
+    { page: 29, type: "seoun_quarterly", title: "2026년 분기별 상세 흐름 및 월별 대응 전술" },
+    { page: 30, type: "seoun_aspects", title: "2026년 분야별 상세 등급 및 행동 강령" },
+    { page: 31, type: "daeun_orbit", title: "평생 대운(大運) 흐름 총평 및 10년 대운 궤도 다이어그램" },
+    { page: 32, type: "daeun_roadmap_1", title: "대운 1기~2기 상세 로드맵" },
+    { page: 33, type: "daeun_roadmap_2", title: "대운 3기~4기 상세 로드맵" },
+    { page: 34, type: "warning_period", title: "평생 조심해야 할 흉한 시기 & 액운 소멸 방어 비책" },
+    { page: 35, type: "gaewoon_presc", title: "부족한 기운을 채우는 나만의 오행 개운법" },
+    { page: 36, type: "ten_year_seoun", title: "향후 10개년(2026~2035) 연도별 족집게 세운 운세" },
+    { page: 37, type: "fengshui_bless", title: "공간 풍수 인테리어 처방 및 지혜의 마지막 축원" }
   ];
 };
 
@@ -564,31 +566,43 @@ const renderPageContent = (page, ctx) => {
 
     case "metrics_detail_1":
       return (
-        <div className="space-y-6">
-          <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
-            🔍 8대 성향 수치 심층 풀이 (독립심 / 승부욕)
-          </h3>
-          <div className="space-y-5 text-xs text-[#2C2C2C] leading-relaxed">
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-3">
-              <h4 className="font-myeongjo text-sm font-bold text-[#5F7A68] flex items-center gap-1.5">
-                • 독립성 지표 ({metrics.scores.independence}점) 심층 진단
-              </h4>
-              <p className={`font-light font-traditional ${blurClass}`}>
-                귀하의 독립성 점수는 **{metrics.scores.independence}점**으로 매우 강한 자립심을 보여줍니다. 남 밑에서 지시받기보다 **본인이 의사결정의 주체가 될 때** 최고의 역량을 발휘합니다. 자수성가형 기질이 강해 스스로 일어서려는 의지가 큽니다. 다만 자존심이 너무 강해 타인의 진심 어린 조언을 간섭으로 오해해 튕겨내는 독단성을 주의해야 합니다.
-              </p>
-              <div className="bg-[#F9F8F6] p-2 rounded text-[10px] text-gray-500">
-                💡 <strong>독립성 활용 팁:</strong> 업무 시 상하관계의 의존보다, 나만의 프로젝트나 R&amp;D 연구 성과처럼 독자적으로 책임지는 영역을 확보할 때 몰입도가 몇 배나 증가합니다.
+        <div className="space-y-6 flex flex-col justify-between h-full">
+          <div>
+            <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2 mb-4">
+              🔍 8대 성향 수치 심층 풀이 (독립성 / 승부욕)
+            </h3>
+            <p className="text-xs text-[#5F5F5F] leading-relaxed mb-6 font-light">
+              나를 상징하는 8가지 성향 중 자아의 핵심이 되는 독립성과 목표 달성의 불꽃인 승부욕을 명리론과 현대 행동 심리학 관점에서 종합적으로 분석한 심층 진단 보고서입니다.
+            </p>
+            <div className="space-y-6 text-xs text-[#2C2C2C] leading-relaxed">
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-6 shadow-sm space-y-4">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <h4 className="font-myeongjo text-[14px] font-bold text-[#5F7A68]">
+                    • 독립성 지표 ({metrics.scores.independence}점) 심층 진단
+                  </h4>
+                  <span className="text-xs font-bold text-[#5F7A68] bg-[#5F7A68]/10 px-2.5 py-0.5 rounded-full">주체적 개척</span>
+                </div>
+                <p className={`font-light font-traditional text-justify leading-relaxed text-[#2C2C2C] ${blurClass}`}>
+                  귀하의 독립성 점수는 **{metrics.scores.independence}점**으로, 이는 타인의 원조에 기대지 않고 자신의 운명을 주도적으로 개척해 가려는 강인한 자립심과 자아 강도를 의미합니다. 사주 원국 내에 독립성을 관장하는 기운이 잘 조율되어 있어, 집단이나 조직의 획일화된 규칙에 무조건 순응하기보다는 본인이 직접 의사결정의 주체가 되어 주도적으로 판을 이끌어갈 때 지치지 않고 최고의 퍼포먼스를 발휘하게 됩니다. 역경 속에서도 흔들리지 않는 자수성가형 인물의 표본이라 할 수 있습니다. 다만, 자존심이 다소 강해 타인의 이성적이고 진심 어린 조언마저 귀찮은 간섭이나 침해로 오해하여 밀어내는 고집(독선)으로 발현될 수 있으니, 유연한 경청의 태도를 의식적으로 기르는 것이 개운의 핵심입니다.
+                </p>
+                <div className="bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/40 text-[11px] text-gray-600">
+                  📌 <strong>독립성 극대화 가이드라인:</strong> 의존적인 협업 구도보다는 나만의 고유 권한이 확보된 R&D, 독자 프로젝트, 혹은 1인 전담 업무처럼 책임 소재가 명확한 포지션에서 업무 생산성이 수 배 이상 폭발합니다. 중대한 결정 시에는 신뢰할 수 있는 멘토들의 조언을 최소 2개 이상 비교 검증하는 프로세스를 거치십시오.
+                </div>
               </div>
-            </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-3">
-              <h4 className="font-myeongjo text-sm font-bold text-red-700 flex items-center gap-1.5">
-                • 승부욕 지표 ({metrics.scores.competitiveness}점) 심층 진단
-              </h4>
-              <p className={`font-light font-traditional ${blurClass}`}>
-                승부욕 지표 **{metrics.scores.competitiveness}점**은 의욕적으로 목표를 달성해 내는 맹렬한 투지를 의미합니다. 경쟁자가 존재할 때 오히려 성취 속도가 빨라지며, 남들이 불가능하다고 말하는 안건에 도전해 뒤집을 때 짜릿함을 느낍니다. 다만, 패배나 실패를 겪었을 때 감정의 냉각 속도가 느려 욱하는 다혈질 성정을 보일 수 있으니 페이스 조절이 필수입니다.
-              </p>
-              <div className="bg-[#F9F8F6] p-2 rounded text-[10px] text-gray-500">
-                💡 <strong>승부욕 활용 팁:</strong> 영업이나 프로모션처럼 가시적인 정량 경쟁 구도가 형성된 곳에 본인을 배치하면 잠재 에너지가 120% 폭발하게 됩니다.
+
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-6 shadow-sm space-y-4">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <h4 className="font-myeongjo text-[14px] font-bold text-red-700">
+                    • 승부욕 지표 ({metrics.scores.competitiveness}점) 심층 진단
+                  </h4>
+                  <span className="text-xs font-bold text-red-700 bg-red-50 px-2.5 py-0.5 rounded-full">성과 창출</span>
+                </div>
+                <p className={`font-light font-traditional text-justify leading-relaxed text-[#2C2C2C] ${blurClass}`}>
+                  귀하의 승부욕 지표는 **{metrics.scores.competitiveness}점**으로 매우 뜨겁고 활기찬 목표 지향적 본능을 보여줍니다. 단순히 남을 이기려는 심리적 지배욕을 넘어, 장애물을 만나거나 남들이 포기하는 한계 상황일 때 승부욕이 자극되어 오히려 성취 속도와 에너지가 강력하게 활성화됩니다. 불리한 조건 속에서도 상황을 반전시켜 기필코 목표를 쟁취해 내는 돌파력이 우수합니다. 하지만 이 뜨거운 에너지는 감정의 조급증이나 작은 패배에도 크게 흔들리는 급격한 감정 냉각을 야기할 수 있습니다. 겉으로는 과열된 승부 본능을 유지하되, 내적으로는 냉철한 페이스 조절을 통해 장기 레이스에서 방전되지 않도록 제어 장치를 심어야 합니다.
+                </p>
+                <div className="bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/40 text-[11px] text-gray-600">
+                  📌 <strong>승부욕 극대화 가이드라인:</strong> 정량화된 실적 평가 시스템이 존재하거나 경쟁적 자극이 주어지는 환경에 자신을 배치하면 잠재능력이 120% 각성됩니다. 다만, 과열된 날카로움이 주변인과의 불필요한 마찰로 번지지 않도록 하루 일과 후 호흡을 가다듬는 휴식을 꼭 습관화하십시오.
+                </div>
               </div>
             </div>
           </div>
@@ -597,31 +611,133 @@ const renderPageContent = (page, ctx) => {
 
     case "metrics_detail_2":
       return (
-        <div className="space-y-6">
-          <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
-            🔍 8대 성향 수치 심층 풀이 (기회포착 / 사업감각)
-          </h3>
-          <div className="space-y-5 text-xs text-[#2C2C2C] leading-relaxed">
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-3">
-              <h4 className="font-myeongjo text-sm font-bold text-blue-700 flex items-center gap-1.5">
-                • 기회포착 지표 ({metrics.scores.opportunity}점) 심층 진단
-              </h4>
-              <p className={`font-light font-traditional ${blurClass}`}>
-                기회포착 **{metrics.scores.opportunity}점**은 시장과 환경의 미세한 변화를 읽어내어 나에게 이롭게 적용하는 직관력을 뜻합니다. 이 점수가 높을수록 돈의 흐름이나 계약의 유리한 조항을 포착하는 감각이 매우 발달합니다. 소위 '눈치가 백 단'인 사주로, 결정적인 거래 타이밍을 잘 맞춥니다.
-              </p>
-              <div className="bg-[#F9F8F6] p-2 rounded text-[10px] text-gray-500">
-                💡 <strong>기회포착 활용 팁:</strong> 신규 사업 계약이나 주식/부동산 등의 타이밍 판단 시 다른 사람의 뜬소문에 기대기보다 본인의 직관을 80% 이상 신뢰할 때 수익률이 높습니다.
+        <div className="space-y-6 flex flex-col justify-between h-full">
+          <div>
+            <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2 mb-4">
+              🔍 8대 성향 수치 심층 풀이 (기회포착 / 사업감각)
+            </h3>
+            <p className="text-xs text-[#5F5F5F] leading-relaxed mb-6 font-light">
+              내 운명의 재물적 흐름을 관장하는 기회포착 능력과 시장의 부가가치를 창출해내는 사업적 본능을 다각도로 분석하여 실제 자산 축적에 적용 가능한 전략적 해설을 담았습니다.
+            </p>
+            <div className="space-y-6 text-xs text-[#2C2C2C] leading-relaxed">
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-6 shadow-sm space-y-4">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <h4 className="font-myeongjo text-[14px] font-bold text-blue-700">
+                    • 기회포착 지표 ({metrics.scores.opportunity}점) 심층 진단
+                  </h4>
+                  <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full">직관적 안목</span>
+                </div>
+                <p className={`font-light font-traditional text-justify leading-relaxed text-[#2C2C2C] ${blurClass}`}>
+                  귀하의 기회포착 지표는 **{metrics.scores.opportunity}점**입니다. 이는 외부 시장의 트렌드 변화나 흐름 속에서 유무형의 가치와 기회를 남들보다 빠르게 인지해 내는 직관력과 안목의 강도를 의미합니다. 이 기운이 발달한 사람은 계약 구조상의 빈틈, 유망한 투자처, 혹은 사업적 제휴 관계에서 본인에게 유리한 결정적인 타이밍을 기막히게 맞추는 동물적 본능을 소유하고 있습니다. 위기를 기회로 치환하는 센스가 대단히 뛰어난 사주입니다. 다만, 단기적인 타이밍 싸움에만 몰두하면 거시적인 큰 판의 흐름을 놓칠 수 있으므로 성급한 진입보다는 관망과 검증을 병행하는 호흡의 정돈이 요구됩니다.
+                </p>
+                <div className="bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/40 text-[11px] text-gray-600">
+                  📌 <strong>기회포착 극대화 가이드라인:</strong> 시장 동향을 선점해야 하는 신규 기획, 트렌드 분석가, 투자 파트너십 조율 직무에서 활약할 때 이익을 최대화합니다. 결정을 내리기 직전, 단순한 본인의 촉에만 의존하기보다는 객관적 통계 데이터 검증 과정을 거쳐 기회포착의 정밀도를 200% 보강하십시오.
+                </div>
+              </div>
+
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-6 shadow-sm space-y-4">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <h4 className="font-myeongjo text-[14px] font-bold text-amber-700">
+                    • 사업감각 지표 ({metrics.scores.business}점) 심층 진단
+                  </h4>
+                  <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full">시스템 설계</span>
+                </div>
+                <p className={`font-light font-traditional text-justify leading-relaxed text-[#2C2C2C] ${blurClass}`}>
+                  귀하의 사업감각 지표는 **{metrics.scores.business}점**을 기록하고 있습니다. 이는 정해진 월급 체계의 안정적 울타리에 안주하기보다는, 유동적인 자본의 흐름을 설계하고 자원과 인력을 구조화하여 새로운 수익을 창출하려는 시스템 구축 본능입니다. 플랫폼 비즈니스나 중간 유통, 기술의 상용화 등 시장의 부가가치 구조를 머릿속으로 시뮬레이션하는 능력이 남다릅니다. 설령 지금 직장생활을 하고 계시더라도 마음 깊은 곳에서는 언제든 자신의 브랜드를 내걸고 독자적인 사업체를 경영하고 싶어 하는 불씨가 항상 불타고 있습니다. 다만 세밀한 재무 설계와 내실 관리 없이 확장성만 쫓아가면 유동성 위기를 맞이할 수 있으니 튼튼한 기초 체력이 우선입니다.
+                </p>
+                <div className="bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/40 text-[11px] text-gray-600">
+                  📌 <strong>사업감각 극대화 가이드라인:</strong> 나의 직접적인 육체적 노동력 투입을 배제하더라도 수익이 순환하도록 만드는 무형 자산(지적 재산권, 자동화 중개 시스템, 대리인 체제 등) 구축에 흥미를 가지고 체계적인 비즈니스 구조를 중점 설계해 나가야 합니다.
+                </div>
               </div>
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-3">
-              <h4 className="font-myeongjo text-sm font-bold text-amber-700 flex items-center gap-1.5">
-                • 사업감각 지표 ({metrics.scores.business}점) 심층 진단
-              </h4>
-              <p className={`font-light font-traditional ${blurClass}`}>
-                사업감각 **{metrics.scores.business}점**은 무에서 유를 창조하는 유동성 설계력입니다. 고정적인 월급에 만족하기 어려운 명식이며, 물건이나 서비스를 중개하여 중간 수수료나 시스템 소득을 설계하는 데 탁월한 두각을 보입니다. 직장생활을 하더라도 늘 마음 한구석에는 **자기 사업을 설계**하는 꿈이 가득 차 있을 가능성이 높습니다.
-              </p>
-              <div className="bg-[#F9F8F6] p-2 rounded text-[10px] text-gray-500">
-                💡 <strong>사업감각 활용 팁:</strong> 프랜차이즈, 지적 재산권(IP) 사용료 계약, 혹은 시스템 임대 등 본인의 노동을 투여하지 않고 돈이 돌도록 세팅하는 구조를 중점 공부하십시오.
+          </div>
+        </div>
+      );
+
+    case "metrics_detail_3":
+      return (
+        <div className="space-y-6 flex flex-col justify-between h-full">
+          <div>
+            <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2 mb-4">
+              🔍 8대 성향 수치 심층 풀이 (추진력 / 인내력)
+            </h3>
+            <p className="text-xs text-[#5F5F5F] leading-relaxed mb-6 font-light">
+              행동의 속도를 조절하는 돌파구인 추진력과 난관을 견뎌내어 마침내 결실을 얻어내는 우직한 인내력의 조화를 상세 진단합니다.
+            </p>
+            <div className="space-y-6 text-xs text-[#2C2C2C] leading-relaxed">
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-6 shadow-sm space-y-4">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <h4 className="font-myeongjo text-[14px] font-bold text-indigo-700">
+                    • 추진력 지표 ({metrics.scores.drive}점) 심층 진단
+                  </h4>
+                  <span className="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full">과감한 실행</span>
+                </div>
+                <p className={`font-light font-traditional text-justify leading-relaxed text-[#2C2C2C] ${blurClass}`}>
+                  귀하의 추진력 지표는 **{metrics.scores.drive}점**으로, 계획한 바를 즉각적이고 과감한 행동력으로 변환하는 리더십의 세기와 관계가 깊습니다. 머뭇거리는 모호함을 싫어하며 일단 부딪쳐 가며 문제점을 실시간으로 교정해 나가는 과감함이 특징입니다. 침체된 조직의 분위기를 쇄신하거나 완전히 새로운 영역의 프로젝트를 선두 지휘할 때 빛을 발하는 개척의 아이콘이 됩니다. 다만, 정밀한 사전 검토가 생략된 지나친 과속은 불필요한 비용 낭비나 예기치 않은 위험을 초래할 수 있으니 속도 조율이 필요합니다.
+                </p>
+                <div className="bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/40 text-[11px] text-gray-600">
+                  📌 <strong>추진력 극대화 가이드라인:</strong> 초기 스타트업 단계나, 시장이 급변하여 빠른 판단력과 과감한 실행이 생명인 기동 타격대 성격의 환경에서 가치가 무한히 확장됩니다. 결정을 내린 직후 최종 실행 개시 전에 리스크를 방어할 수 있는 신중한 기획자나 장치를 곁에 두십시오.
+                </div>
+              </div>
+
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-6 shadow-sm space-y-4">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <h4 className="font-myeongjo text-[14px] font-bold text-teal-700">
+                    • 인내력 지표 ({metrics.scores.patience}점) 심층 진단
+                  </h4>
+                  <span className="text-xs font-bold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full">대기만성</span>
+                </div>
+                <p className={`font-light font-traditional text-justify leading-relaxed text-[#2C2C2C] ${blurClass}`}>
+                  귀하의 인내력 지표는 **{metrics.scores.patience}점**으로, 이는 거센 시련과 방해 요소 속에서도 목표를 포기하지 않고 우직하게 밀고 나가는 지속성과 뚝심의 크기입니다. 세상의 빠른 유행 변화에 일희일비하여 방향을 바꾸지 않으며, 시간이 지날수록 본인의 진가를 더해가는 전형적인 대기만성형 자산 형성 사주의 버팀목입니다. 주변인들에게 신뢰감을 심어주는 뿌리 깊은 나무와 같습니다. 그러나 흐름이 다하여 정리해야 할 타이밍에도 단순한 자존심이나 집착으로 일을 무작정 붙잡고 있는 아집을 반드시 경계해야 실속을 챙깁니다.
+                </p>
+                <div className="bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/40 text-[11px] text-gray-600">
+                  📌 <strong>인내력 극대화 가이드라인:</strong> 중장기 연구 개발, 정교한 라이선스 취득을 필요로 하는 전문 자격 영역, 혹은 부동산 및 주식 장기 가치 투자가 필요한 구조에서 결국 압도적인 결실을 거두게 됩니다. 사업이나 투자 전 최악의 한계선(손절 라인)을 설정해 고집으로 인한 낭비를 예방하십시오.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+    case "metrics_detail_4":
+      return (
+        <div className="space-y-6 flex flex-col justify-between h-full">
+          <div>
+            <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2 mb-4">
+              🔍 8대 성향 수치 심층 풀이 (통찰력 / 대인협상)
+            </h3>
+            <p className="text-xs text-[#5F5F5F] leading-relaxed mb-6 font-light">
+              본질을 읽어 흐름의 맹점을 간파하는 지혜인 통찰력과, 인간관계의 흐름을 조율해 최고의 파트너십을 유도하는 협상력을 진단합니다.
+            </p>
+            <div className="space-y-6 text-xs text-[#2C2C2C] leading-relaxed">
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-6 shadow-sm space-y-4">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <h4 className="font-myeongjo text-[14px] font-bold text-purple-700">
+                    • 통찰력 지표 ({metrics.scores.insight}점) 심층 진단
+                  </h4>
+                  <span className="text-xs font-bold text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-full">본질 직시</span>
+                </div>
+                <p className={`font-light font-traditional text-justify leading-relaxed text-[#2C2C2C] ${blurClass}`}>
+                  귀하의 통찰력 지표는 **{metrics.scores.insight}점**을 나타냅니다. 이는 어지럽게 나열된 데이터와 현상의 겉모습에 속지 않고, 그 이면의 핵심 구조와 미래적 방향성을 꿰뚫는 분석적 지혜입니다. 학문, 문화/기획, 컨설팅, 고급 설계 영역에서 진가를 발휘하며, 복잡한 인과관계를 일목요연하게 풀어내는 지적 탁월성을 부여합니다. 상황 변화의 징후를 먼저 인지해 사전 경고하는 훌륭한 나침반 기질을 가지고 있습니다. 다만 생각이 꼬리를 물고 지나치게 깊어질 시 결정 장애에 빠져 현실적 기회를 실기할 수 있으니 주의하십시오.
+                </p>
+                <div className="bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/40 text-[11px] text-gray-600">
+                  📌 <strong>통찰력 극대화 가이드라인:</strong> 전략 기획부서, 리스크 분석 관리자, 미래 기술 트렌드 큐레이터 등 본질을 입체적으로 규정해내야 하는 특수 핵심 분야에서 핵심 책사 역할을 합니다. 본인의 머릿속 복잡한 통찰을 대중의 쉽고 실천적인 비즈니스 언어로 단순화해 전달하는 소통 연습을 해두면 성장이 배가됩니다.
+                </div>
+              </div>
+
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-6 shadow-sm space-y-4">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <h4 className="font-myeongjo text-[14px] font-bold text-pink-700">
+                    • 대인협상 지표 ({metrics.scores.negotiation}점) 심층 진단
+                  </h4>
+                  <span className="text-xs font-bold text-pink-700 bg-pink-50 px-2.5 py-0.5 rounded-full">공생의 지혜</span>
+                </div>
+                <p className={`font-light font-traditional text-justify leading-relaxed text-[#2C2C2C] ${blurClass}`}>
+                  귀하의 대인협상 점수는 **{metrics.scores.negotiation}점**입니다. 협상력은 대인관계 속에서 상대의 필요조건(Needs)과 성격 특성을 재빨리 캐치하여 피차 이로운 공생(Win-Win)의 결론을 도출해내는 탁월한 외교력과 감성 지능의 결정체입니다. 첨예하게 대립하는 갈등 상황에서 완충 작용과 매끄러운 중재를 담당하며, 상대를 내 편으로 만드는 언어적 소통 미학을 지니고 있습니다. 그러나 타인을 만족시키려는 과도한 배려심으로 인해, 정작 내가 가져와야 할 핵심 실익이나 보상을 은연중에 양보하는 성향이 있으므로 계약서 작성 시에는 칼같이 실리를 챙기는 단호함을 연마하십시오.
+                </p>
+                <div className="bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/40 text-[11px] text-gray-600">
+                  📌 <strong>대인협상 극대화 가이드라인:</strong> 핵심 영업 제휴, 분쟁 조정, 고객 관리 총괄, 대외 브랜드 파트너십 구축 직책에서 최고 가치 자원이 됩니다. 비즈니스 협상을 치르기 전 양보할 수 없는 협상 범위를 문서로 미리 확실히 고정해 둠으로써 인간적인 감정에 휘둘려 실속을 잃지 않도록 보완책을 세우십시오.
+                </div>
               </div>
             </div>
           </div>
@@ -630,51 +746,135 @@ const renderPageContent = (page, ctx) => {
 
     case "stem_detail":
       return (
-        <div className="space-y-6">
-          <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
-            🌟 나의 일간(日干) 심층 분석
-          </h3>
-          <div className="bg-[#F6F3EC] border border-[#E2DDD5] rounded-lg p-6 mb-6 shadow-sm">
-            <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] mb-3">
-              👑 {name}님의 태어난 날의 하늘 기운 — {baseEl} 일간
-            </h4>
-            <p className={`text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional ${blurClass}`} dangerouslySetInnerHTML={{
-              __html: baseEl === "목" ? "귀하는 우뚝 솟아오르는 푸른 나무(木)의 일간을 가졌습니다. 어떤 환경에서도 **타인의 지시나 강요를 거부하는 강한 독립성**을 지녔으며, 끊임없이 위로 자라나려는 성장 본능이 탁월합니다. 다만, 단단하지만 부러지기 쉬운 성질을 가졌으니 융통성을 키우는 것이 귀하의 운명을 열어주는 개운의 시작입니다." :
-                     baseEl === "화" ? "귀하는 온 세상을 밝게 비추는 불꽃(火)의 일간을 가졌습니다. 타오르는 기세처럼 **화끈하고 직설적이며 거짓 없는 솔직함**이 매력입니다. 주변을 장악하는 카리스마와 사교성이 좋지만 감정의 기복이 잦고 마무리의 인내심이 부족할 우려가 있으니 차분하게 안정을 도모해야 합니다." :
-                     baseEl === "토" ? "귀하는 만물을 포용하는 황색 대지(土)의 일간을 가졌습니다. 무엇이든 품어주고 기르는 포용력과 신뢰를 가져 대인관계가 원만하고 흔들림이 없습니다. 단점은 결단력이 무디고 환경 변화에 너무 둔감하여 결정적 기회를 놓칠 수 있으니 신속한 결단력을 보강하십시오." :
-                     baseEl === "금" ? "귀하는 서리 맞은 예리한 칼날과 바위(金)의 일간을 가졌습니다. 시비를 명확히 가리고 공사 구분이 뚜렷한 냉철함을 지녔습니다. 일처리가 완벽하고 강직하지만 차가운 칼날 같은 언어 표출이 타인에게 원치 않는 상처를 줄 수 있으니 의식적으로 따뜻하게 감싸 안는 훈련을 해야 합니다." :
-                     "귀하는 잔잔하게 흐르며 바다를 향하는 맑은 물(수)의 일간을 가졌습니다. 한없는 지혜와 통찰을 가졌으며, 장애물을 만나면 우회하는 유연성이 장점입니다. 겉은 평온하지만 속내를 전혀 알 수 없어 오해를 사거나 내적인 불안과 우울에 갇히기 쉬우니 감정을 밝게 표현하는 연습이 좋습니다."
-            }} />
-          </div>
-          <div className="border border-[#E2DDD5]/60 rounded-lg p-4 bg-white text-xs space-y-3 shadow-sm text-[#5F5F5F]">
-            <h4 className="font-bold text-[#1A1A1A] font-myeongjo">💡 {baseEl} 일간을 돕는 귀인(貴人) 인연 및 대인관계 조언</h4>
-            <p className={`font-light leading-relaxed ${blurClass}`}>
-              귀하의 {baseEl} 성정은 스스로에 대한 기준이 매우 깐깐하기 때문에, 대화가 잘 통하지 않는 무책임한 상대를 만나면 기운이 금방 고갈됩니다. 나를 적극적으로 수용하고 칭찬해 주는 <strong>화(火)나 목(木) 기운의 조력자</strong>와 가깝게 어울릴 때 자신감이 샘솟고 일이 쉽게 성사되며, 칼날처럼 날카로운 지적은 의식적으로 부드럽게 필터링해서 표현하는 대화법이 귀하의 평생 성공 지수를 결정짓는 비법입니다.
+        <div className="space-y-5 flex flex-col justify-between h-full">
+          <div>
+            <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2 mb-4">
+              🌟 나의 일간(日干) 심층 분석
+            </h3>
+            <p className="text-xs text-[#5F5F5F] leading-relaxed mb-5 font-light">
+              일간(日干)은 사주팔자 중에서 '나 자신'을 상징하는 가장 핵심적인 기운입니다. 하늘이 내려준 태생적 자아의 색깔이자 기질이며, 평생 인생을 이끄는 에너지의 근원입니다.
             </p>
+
+            {/* 일간 메인 진단 카드 */}
+            <div className="bg-gradient-to-br from-[#F6F3EC] to-[#EDE8DE] border-2 border-[#A3845B]/50 rounded-xl p-6 mb-5 shadow-md">
+              <div className="flex justify-between items-start mb-3">
+                <h4 className="font-myeongjo text-sm font-bold text-[#A3845B]">
+                  👑 {name}님의 태어난 날의 하늘 기운 — {baseEl} 일간
+                </h4>
+                <span className="text-[10px] bg-[#A3845B] text-white px-2 py-0.5 rounded-full font-bold shrink-0 ml-2">하늘 기운</span>
+              </div>
+              <p className={`text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional text-justify ${blurClass}`} dangerouslySetInnerHTML={{
+                __html: baseEl === "목" ? "귀하는 우뚝 솟아오르는 푸른 나무(木)의 일간을 가졌습니다. 어떤 환경에서도 <strong>타인의 지시나 강요를 거부하는 강한 독립성</strong>을 지녔으며, 끊임없이 위로 자라나려는 성장 본능이 탁월합니다. 봄의 새싹처럼 역경에도 굴하지 않고 반드시 위로 뻗어올라가는 불굴의 의지를 타고났으며, 창의적인 발상과 새로운 시작을 도모하는 도전 정신이 유달리 강합니다. 다만, 단단하지만 부러지기 쉬운 나무의 성질처럼, 지나친 자존심과 완고함이 때로는 스스로의 기회를 꺾어버릴 수 있으니 융통성을 키우는 것이 귀하의 운명을 열어주는 개운의 시작입니다." :
+                       baseEl === "화" ? "귀하는 온 세상을 밝게 비추는 불꽃(火)의 일간을 가졌습니다. 타오르는 기세처럼 <strong>화끈하고 직설적이며 거짓 없는 솔직함</strong>이 매력이며, 어두운 곳을 밝혀주는 태양처럼 주변인들에게 열정과 희망을 공급해주는 등불 같은 존재입니다. 사교적 끼와 리더십이 뛰어나 자연스럽게 무리의 중심으로 부상하지만 감정의 기복이 잦고 마무리의 인내심이 부족할 우려가 있으니 차분하게 안정을 도모해야 합니다. 불이 다 타고 나면 재만 남듯, 에너지 과잉 소진을 경계하십시오." :
+                       baseEl === "토" ? "귀하는 만물을 포용하는 황색 대지(土)의 일간을 가졌습니다. 무엇이든 품어주고 기르는 포용력과 신뢰를 가져 대인관계가 원만하고 흔들림이 없습니다. 대지가 만물을 자라게 하듯, 타인의 부탁과 의견을 경청하고 수용하는 능력이 탁월하여 많은 사람들의 사랑을 받습니다. 단점은 결단력이 무디고 환경 변화에 너무 둔감하여 결정적 기회를 놓칠 수 있으니 신속한 결단력을 의식적으로 보강하십시오. 주변 상황에 지나치게 의존하는 경향도 주의가 필요합니다." :
+                       baseEl === "금" ? "귀하는 서리 맞은 예리한 칼날과 바위(金)의 일간을 가졌습니다. 시비를 명확히 가리고 공사 구분이 뚜렷한 냉철함을 지녔습니다. 강인한 금속의 성질처럼 한 번 뜻을 정하면 어떤 어려움에도 흔들리지 않는 굳은 신념과 원칙이 귀하의 가장 큰 강점입니다. 일처리가 완벽하고 강직하지만 차가운 칼날 같은 언어 표출이 타인에게 원치 않는 상처를 줄 수 있으니, 의식적으로 따뜻하게 감싸 안는 훈련을 통해 냉정함에 온기를 더해야 합니다." :
+                       "귀하는 잔잔하게 흐르며 바다를 향하는 맑은 물(水)의 일간을 가졌습니다. 한없는 지혜와 통찰을 가졌으며, 어떤 장애물을 만나도 우회하는 유연성이 독보적인 장점입니다. 물이 만물을 적시고 생명을 키우듯, 지식과 지혜를 탐구하며 깊은 내면의 세계를 가진 학자 기질이 두드러집니다. 겉은 평온하지만 속내를 전혀 알 수 없어 오해를 사거나 내적인 불안과 우울에 갇히기 쉬우니 감정을 밝게 표현하는 연습과 적극적인 소통이 필요합니다."
+              }} />
+            </div>
+
+            {/* 일간별 강점 약점 분석 */}
+            <div className="grid grid-cols-2 gap-3 mb-5">
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-4 shadow-sm">
+                <h5 className="font-myeongjo text-xs font-bold text-emerald-700 mb-2">💪 {baseEl} 일간의 핵심 강점</h5>
+                <ul className={`text-[11px] text-[#2C2C2C] font-light space-y-1 leading-relaxed ${blurClass}`}>
+                  {baseEl === "목" && <><li>• 강한 독립심과 도전 의식</li><li>• 창의적이고 참신한 아이디어</li><li>• 어떤 역경도 버텨내는 생명력</li><li>• 새로운 분야 개척 능력</li></>}
+                  {baseEl === "화" && <><li>• 타오르는 열정과 카리스마</li><li>• 탁월한 표현력과 사교성</li><li>• 주변을 밝히는 리더십</li><li>• 직관적이고 빠른 판단력</li></>}
+                  {baseEl === "토" && <><li>• 뛰어난 포용력과 중재 능력</li><li>• 두텁고 믿음직한 신뢰감</li><li>• 착실하고 성실한 자산 관리</li><li>• 균형 있는 인간관계 유지</li></>}
+                  {baseEl === "금" && <><li>• 불굴의 원칙과 강인한 의지</li><li>• 완벽하고 빈틈없는 일처리</li><li>• 날카로운 판단력과 결단력</li><li>• 의리 있고 듬직한 신뢰</li></>}
+                  {baseEl === "수" && <><li>• 깊고 통찰력 있는 지혜</li><li>• 유연하고 현명한 문제 해결</li><li>• 탁월한 학습 능력과 전략적 사고</li><li>• 조용하지만 강력한 영향력</li></>}
+                </ul>
+              </div>
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-4 shadow-sm">
+                <h5 className="font-myeongjo text-xs font-bold text-red-700 mb-2">⚠️ {baseEl} 일간의 극복 과제</h5>
+                <ul className={`text-[11px] text-[#2C2C2C] font-light space-y-1 leading-relaxed ${blurClass}`}>
+                  {baseEl === "목" && <><li>• 고집과 독선으로 인한 갈등</li><li>• 타협을 거부하는 완고함</li><li>• 유연성 및 융통성 부족</li><li>• 지나친 자존심으로 인한 고립</li></>}
+                  {baseEl === "화" && <><li>• 급한 성격과 감정의 기복</li><li>• 시작은 화끈하나 마무리 약함</li><li>• 에너지 소진 후 급격한 침체</li><li>• 충동적인 결정으로 인한 후회</li></>}
+                  {baseEl === "토" && <><li>• 우유부단하고 느린 결단력</li><li>• 변화에 대한 둔감함과 저항</li><li>• 지나친 고집과 집착</li><li>• 수동적이고 소극적인 태도</li></>}
+                  {baseEl === "금" && <><li>• 냉정한 언어로 인한 상처</li><li>• 완벽주의로 인한 스트레스</li><li>• 타인의 감정에 대한 무감각</li><li>• 고집스럽고 융통성 부족</li></>}
+                  {baseEl === "수" && <><li>• 속내를 숨겨 생기는 오해</li><li>• 과도한 사색으로 인한 결단 지연</li><li>• 내적 불안과 고립감</li><li>• 소통 부재로 인한 관계 어려움</li></>}
+                </ul>
+              </div>
+            </div>
+
+            {/* 귀인 조언 */}
+            <div className="border border-[#E2DDD5]/60 rounded-xl p-4 bg-white shadow-sm">
+              <h4 className="font-bold text-xs text-[#1A1A1A] font-myeongjo mb-2">💡 {baseEl} 일간을 돕는 귀인(貴人) 인연 및 대인관계 핵심 조언</h4>
+              <p className={`text-[11px] font-light leading-relaxed text-[#2C2C2C] text-justify ${blurClass}`}>
+                귀하의 {baseEl} 성정은 나를 진심으로 인정하고 수용해주는 조력자와의 만남에서 최고의 에너지를 발산합니다.
+                {baseEl === "목" && " 나를 포용해주는 수(水) 기운의 선배나 멘토, 함께 성장을 도모하는 화(火) 기운의 동료와 어울릴 때 시너지가 극대화됩니다. 상대의 의견을 '나에 대한 간섭'이 아닌 '또 다른 관점의 선물'로 받아들이는 열린 마음을 훈련하십시오."}
+                {baseEl === "화" && " 나에게 차분함과 안정을 주는 수(水) 기운의 파트너, 든든한 기반을 제공하는 토(土) 기운의 조력자가 귀합니다. 열정을 잃지 않되, '마무리의 기술'을 기르는 것이 귀하의 인생 성취를 결정짓는 핵심입니다."}
+                {baseEl === "토" && " 나의 결단을 촉진해주는 목(木) 기운의 활동적 동반자, 새로운 시각을 열어주는 화(火) 기운의 파트너와의 관계에서 잠든 잠재력이 깨어납니다. 편안함에 안주하지 않고 변화를 받아들이는 용기가 귀하의 삶을 풍요롭게 합니다."}
+                {baseEl === "금" && " 나의 차가움을 녹여주는 화(火) 기운의 따뜻한 동료, 나를 부드럽게 다듬어주는 수(水) 기운의 지혜로운 멘토가 귀합니다. 완벽을 추구하되, '충분히 좋은 것'을 인정하는 너그러움이 인간관계의 온도를 높입니다."}
+                {baseEl === "수" && " 나의 내면을 밝혀주는 목(木) 기운의 창의적 동료, 따뜻한 활력을 불어넣는 화(火) 기운의 파트너와의 관계에서 진가를 발휘합니다. 속마음을 솔직하게 표현하는 용기를 기르고, 고립보다는 적극적인 소통을 선택하십시오."}
+              </p>
+            </div>
           </div>
         </div>
       );
 
     case "ilju_secret":
       return (
-        <div className="space-y-6">
-          <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
-            🔑 나의 일주(日柱)의 비밀 분석
-          </h3>
-          <p className="text-xs text-[#5F5F5F] leading-relaxed">
-            일주(日柱)는 태어난 날의 하늘과 땅 기운이 결합된 본질입니다. 명리학에서 '나 자신'을 정의할 때 가장 신뢰도 높고 구체적인 핵심 분석 영역입니다. 귀하의 일주가 가지는 운명적 특징은 다음과 같습니다.
-          </p>
-          <div className="bg-white border-2 border-[#A3845B]/40 rounded-lg p-6 mb-6 shadow-md">
-            <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] mb-3">
-              📍 {sajuInfo.day.stem}{sajuInfo.day.branch} ({sajuInfo.day.stemEl}{sajuInfo.day.branchEl}) 일주의 숙명
-            </h4>
-            <p className={`text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional whitespace-pre-line ${blurClass}`} dangerouslySetInnerHTML={{ __html: iljuSecret }} />
-          </div>
-          <div className="border border-[#E2DDD5]/60 rounded-lg p-4 bg-white text-xs space-y-3 shadow-sm text-[#5F5F5F]">
-            <h4 className="font-bold text-[#1A1A1A] font-myeongjo">💍 일주로 진단하는 평생 배우자 및 가정 성향</h4>
-            <p className={`font-light leading-relaxed ${blurClass}`}>
-              태어난 날의 지지(일지)는 나와 내 가장 가까운 영혼이 머무는 배우자의 안방을 상징합니다. 일지의 상생 관계상 귀하는 <strong>나를 무조건적으로 후원해주고 품어주는 어머니와 같은 헌신적인 동반자</strong>를 만날 때 마음에 온전한 안정이 찾아오고 재산 관리 또한 합리적으로 정착하게 됩니다. 서로 고집을 내세워 가르치려 하기보다는, 퇴근 후 가벼운 산책과 따뜻한 칭찬 한마디를 주고받는 대화 규칙을 세울 때 가정에 평화와 부가 영구히 마르지 않게 유지됩니다.
+        <div className="space-y-5 flex flex-col justify-between h-full">
+          <div>
+            <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2 mb-4">
+              🔑 나의 일주(日柱)의 비밀 분석
+            </h3>
+            <p className="text-xs text-[#5F5F5F] leading-relaxed mb-5 font-light">
+              일주(日柱)는 태어난 날의 하늘 기운(천간)과 땅 기운(지지)이 결합된 운명의 본질입니다. 명리학에서 '나 자신'을 정의할 때 가장 신뢰도 높고 구체적인 핵심 분석 영역으로, 귀하의 인생 전반에 걸쳐 성격·재물·건강·배우자 운을 관장합니다.
             </p>
+
+            {/* 일주 숙명 메인 카드 */}
+            <div className="bg-white border-2 border-[#A3845B]/50 rounded-xl p-6 mb-5 shadow-md">
+              <div className="flex justify-between items-center mb-4">
+                <h4 className="font-myeongjo text-sm font-bold text-[#A3845B]">
+                  📍 {sajuInfo.day.stem}{sajuInfo.day.branch} ({sajuInfo.day.stemEl}/{sajuInfo.day.branchEl}) 일주의 숙명
+                </h4>
+                <div className="flex gap-1">
+                  <span className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold font-myeongjo shadow ${getElementBarColor(sajuInfo.day.stemEl)}`}>{sajuInfo.day.stem}</span>
+                  <span className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold font-myeongjo shadow ${getElementBarColor(sajuInfo.day.branchEl)}`}>{sajuInfo.day.branch}</span>
+                </div>
+              </div>
+              <p className={`text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional text-justify whitespace-pre-line ${blurClass}`} dangerouslySetInnerHTML={{ __html: iljuSecret }} />
+            </div>
+
+            {/* 일주 4대 영역 분석 */}
+            <div className="grid grid-cols-2 gap-3 mb-5">
+              <div className="bg-[#F9F8F6] border border-[#E2DDD5] rounded-xl p-4 space-y-2">
+                <h5 className="font-myeongjo text-xs font-bold text-[#A3845B] border-b border-[#E2DDD5]/60 pb-1">💰 재물 운 성향</h5>
+                <p className={`text-[11px] text-[#2C2C2C] font-light leading-relaxed ${blurClass}`}>
+                  일지(日支)의 지장간 중 재성(財星)이 숨어있는지에 따라 재물과의 관계가 결정됩니다. 귀하의 일주는 꾸준한 노력과 전문성 축적을 통해 재물이 차곡차곡 쌓이는 <strong>누적형 자산 형성</strong>의 패턴을 가집니다. 한탕주의나 투기성 투자보다는, 검증된 방식의 장기적 자산 관리가 귀하의 재물운을 극대화합니다.
+                </p>
+              </div>
+              <div className="bg-[#F9F8F6] border border-[#E2DDD5] rounded-xl p-4 space-y-2">
+                <h5 className="font-myeongjo text-xs font-bold text-[#5F7A68] border-b border-[#E2DDD5]/60 pb-1">💍 배우자·가정 운</h5>
+                <p className={`text-[11px] text-[#2C2C2C] font-light leading-relaxed ${blurClass}`}>
+                  일지(日支)는 배우자의 자리입니다. 귀하의 일지는 <strong>나를 무조건적으로 후원하고 품어주는 헌신적 동반자</strong>와의 인연이 깊습니다. 서로 이끌고 밀어주는 관계에서 가정이 안정되며, 배우자와의 칭찬과 인정의 언어 교환이 가정 화목의 핵심 열쇠입니다.
+                </p>
+              </div>
+              <div className="bg-[#F9F8F6] border border-[#E2DDD5] rounded-xl p-4 space-y-2">
+                <h5 className="font-myeongjo text-xs font-bold text-red-700 border-b border-[#E2DDD5]/60 pb-1">⚕️ 건강 관리 포인트</h5>
+                <p className={`text-[11px] text-[#2C2C2C] font-light leading-relaxed ${blurClass}`}>
+                  일주의 오행 조합이 신체의 특정 장부와 연결됩니다. {sajuInfo.day.stemEl === "목" ? "목(木) 계열은 간·담낭과 눈·신경계를 관장하니 과로와 스트레스 관리, 규칙적인 수면 습관이 최우선 건강 과제입니다." : sajuInfo.day.stemEl === "화" ? "화(火) 계열은 심장·소장과 혈액순환계를 관장하니, 급격한 감정 흥분과 과도한 음주·커피를 절제하고 마음의 평온을 유지하는 것이 건강의 핵심입니다." : sajuInfo.day.stemEl === "토" ? "토(土) 계열은 비장·위와 소화기계를 관장하니, 규칙적인 식사와 담백한 식단 유지, 위장 건강 관리에 세심한 주의가 필요합니다." : sajuInfo.day.stemEl === "금" ? "금(金) 계열은 폐·대장과 호흡기계를 관장하니, 공기 질 관리와 금연·금주, 규칙적인 호흡 운동(요가, 명상)이 건강의 기본입니다." : "수(水) 계열은 신장·방광과 생식비뇨기계를 관장하니, 충분한 수분 섭취와 냉기 차단, 규칙적인 운동으로 신진대사를 활성화하는 것이 건강의 핵심입니다."}
+                </p>
+              </div>
+              <div className="bg-[#F9F8F6] border border-[#E2DDD5] rounded-xl p-4 space-y-2">
+                <h5 className="font-myeongjo text-xs font-bold text-indigo-700 border-b border-[#E2DDD5]/60 pb-1">🏆 최적 직업 방향</h5>
+                <p className={`text-[11px] text-[#2C2C2C] font-light leading-relaxed ${blurClass}`}>
+                  일주의 천간지지 조합은 타고난 직업 적성의 방향을 시사합니다. {sajuInfo.day.stemEl === "목" ? "목(木) 일간은 교육·출판·기획·의료·법조·환경 분야에서 탁월한 능력을 발휘합니다." : sajuInfo.day.stemEl === "화" ? "화(火) 일간은 언론·방송·예술·외교·마케팅·IT 분야에서 뛰어난 활약이 기대됩니다." : sajuInfo.day.stemEl === "토" ? "토(土) 일간은 금융·부동산·농업·건설·유통·관리 분야에서 안정적 성취를 이룹니다." : sajuInfo.day.stemEl === "금" ? "금(金) 일간은 군경·법조·금융·제조·정밀기계·의료 분야에서 빛을 발합니다." : "수(水) 일간은 학문·연구·전략·외교·해양·IT·철학 분야에서 두각을 나타냅니다."} 귀하의 핵심 역량을 가장 잘 살릴 수 있는 분야를 중심으로 전문성을 집중 개발하십시오.
+                </p>
+              </div>
+            </div>
+
+            {/* 일주 행운 조언 */}
+            <div className="border border-[#A3845B]/30 rounded-xl p-4 bg-gradient-to-r from-[#FAF7F0] to-[#F6F3EC] shadow-sm">
+              <h4 className="font-bold text-xs text-[#A3845B] font-myeongjo mb-2">✨ {sajuInfo.day.stem}{sajuInfo.day.branch} 일주를 위한 개운 행동 강령</h4>
+              <div className={`text-[11px] text-[#2C2C2C] font-light leading-relaxed space-y-1 ${blurClass}`}>
+                <p>① 매일 아침 감사 일기 3줄 쓰기 — 긍정의 주파수가 재물운을 부릅니다.</p>
+                <p>② 행운 방위인 <strong>{sajuInfo.day.stemEl === "목" || sajuInfo.day.stemEl === "화" ? "동쪽·남쪽" : sajuInfo.day.stemEl === "토" ? "중앙·남서쪽" : sajuInfo.day.stemEl === "금" ? "서쪽·북서쪽" : "북쪽·서쪽"}</strong>을 향해 중요 업무나 공부를 하면 집중력이 배가됩니다.</p>
+                <p>③ 행운 색상 <strong>{sajuInfo.day.stemEl === "목" ? "초록·청색" : sajuInfo.day.stemEl === "화" ? "붉은색·주황색" : sajuInfo.day.stemEl === "토" ? "황토색·베이지" : sajuInfo.day.stemEl === "금" ? "흰색·금색·회색" : "검정·짙은 남색"}</strong>을 활용해 에너지를 보강하십시오.</p>
+                <p>④ 중요한 결정은 <strong>봄·여름에 시작</strong>하고, 가을·겨울에 결실을 맺는 계절의 리듬에 맞추십시오.</p>
+              </div>
+            </div>
           </div>
         </div>
       );
@@ -1106,28 +1306,90 @@ const renderPageContent = (page, ctx) => {
 
     case "sipsin_1":
       return (
-        <div className="space-y-6">
-          <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
-            ☯️ 사주 원국의 십신(十神) 분석 - 비견·겁재
-          </h3>
-          <div className="space-y-4 text-xs text-[#2C2C2C] leading-relaxed font-traditional">
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2">
-              <strong className="text-[#A3845B] block">• 비견(比肩) - 내 안의 줏대와 독립적 주체성</strong>
-              <p className={`font-light ${blurClass}`}>
-                비견은 내 힘과 뚝심을 뜻합니다. 쉽게 말해 내 안의 단단한 줏대와 주체성입니다. 사주에 비견이 적당하면 남의 눈치를 보지 않고 자기 소신대로 사업이나 직장 생활을 주도할 뚝심이 생깁니다. 다만 너무 많으면 고집이 세져 타협하기 힘든 단점이 있습니다.
+        <div className="space-y-5 flex flex-col justify-between h-full">
+          <div>
+            <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2 mb-4">
+              ☯️ 사주 원국의 십신(十神) 분석 — 비견·겁재
+            </h3>
+
+            {/* 십신 분석 전체 안내 (19페이지에만 표시) */}
+            <div className="bg-gradient-to-br from-[#1C1613] to-[#2C2420] border border-[#A3845B]/50 rounded-xl p-5 mb-5 text-[#FAF7F0]">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-base">☯️</span>
+                <h4 className="font-myeongjo text-sm font-bold text-[#A3845B]">십신(十神) 분석이란 무엇인가?</h4>
+              </div>
+              <p className="text-[11px] leading-relaxed font-light mb-3 text-[#F0EAE0]">
+                십신(十神)이란 나의 일간(日干, 태어난 날의 천간)을 기준으로, 사주 여덟 글자에 나타나는 다른 7개 글자들이 나와 어떤 관계를 맺는지를 분류한 10가지 운명 에너지입니다. 마치 내가 주인공이고 나머지 등장인물들이 나와 어떤 역할 관계에 있는지를 분석하는 것과 같습니다.
               </p>
-              <p className="text-[10px] text-gray-500 font-sans border-t border-[#E2DDD5]/40 pt-1.5">
-                💼 <strong>비견의 재물 시너지:</strong> 독립성이 극대화되는 시기에는 남과의 동업 대신 1인 소규모 사업장이나 나만의 고유 브랜드 영업 등 <strong>'독립 지분제 비즈니스'</strong>를 펼쳐갈 때 재정 흐름이 가장 탄탄합니다.
-              </p>
+              <div className="grid grid-cols-2 gap-2 mb-3 text-[10px]">
+                <div className="bg-[#FAF7F0]/10 rounded-lg p-2.5">
+                  <p className="font-bold text-[#A3845B] mb-1">📌 왜 십신 분석을 하는가?</p>
+                  <p className="text-[#E8E0D0] font-light leading-relaxed">십신은 내 성격의 본질, 직업 적성, 재물 운, 인간관계 패턴, 건강의 위험 신호를 동시에 보여주는 사주 해석의 핵심 도구입니다. 단순한 성격 분석을 넘어, 언제 조심해야 하고 언제 적극적으로 나서야 하는지 구체적인 행동 지침을 제공합니다.</p>
+                </div>
+                <div className="bg-[#FAF7F0]/10 rounded-lg p-2.5">
+                  <p className="font-bold text-[#A3845B] mb-1">🔍 무엇을 집중해서 봐야 하는가?</p>
+                  <p className="text-[#E8E0D0] font-light leading-relaxed">각 십신의 ①강점(내 삶에 미치는 긍정 에너지) ②약점(잘못 발현될 때의 위험 신호) ③재물 시너지(어떤 방향으로 돈을 만드는가)를 중심으로 읽으시면 됩니다. 내 사주에 어떤 십신이 강하게 작용하는지 확인하십시오.</p>
+                </div>
+              </div>
+              <div className="bg-[#8B221E]/20 border border-[#8B221E]/40 rounded-lg p-3 text-[10px]">
+                <p className="font-bold text-[#F4A0A0] mb-1">⚠️ 이것만은 반드시 조심하십시오</p>
+                <p className="text-[#F0EAE0] font-light leading-relaxed">각 십신이 '과잉' 상태이거나 '충극(衝剋)'을 받을 때 문제가 발생합니다. 예를 들어 겁재 과다 → 동업 사기 위험, 상관 과다 → 직장 상사 갈등, 편관 과다 → 건강 악화 등입니다. 아래 각 페이지의 <strong className="text-[#F4A0A0]">'주의해야 할 행동 강령'</strong>을 반드시 확인하고 실생활에 적용하십시오.</p>
+              </div>
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2">
-              <strong className="text-red-700 block">• 겁재(劫財) - 내 재물을 빼앗는 경쟁자이자 강력한 돌파력</strong>
-              <p className={`font-light ${blurClass}`}>
-                겁재는 타인에게 지기 싫어하는 야망입니다. 경쟁에서 이기려는 본능이 뛰어나 스포츠나 치열한 비즈니스에서 돌파구를 마련하는 힘이 됩니다. 다만 겁재가 지나치면 지인에게 사기를 당하는 동업의 살이 될 수 있으니 금전 거래를 철저히 끊어야 합니다.
-              </p>
-              <p className="text-[10px] text-gray-500 font-sans border-t border-[#E2DDD5]/40 pt-1.5">
-                💼 <strong>겁재의 재물 시너지:</strong> 경쟁 구도를 내 성장의 동력으로 삼아야 합니다. 단, 계약 도장을 찍거나 자금을 섞는 <strong>'동업형 거래'</strong>는 평생의 화를 부르므로 투자 자금은 무조건 본인 명의로 독립 제어하십시오.
-              </p>
+
+            {/* 십신 10개 개요 미니맵 */}
+            <div className="bg-[#F9F8F6] border border-[#E2DDD5] rounded-xl p-4 mb-5">
+              <p className="text-[10px] font-bold text-[#A3845B] mb-3 text-center tracking-wider">[ 십신(十神) 10가지 전체 구성도 ]</p>
+              <div className="grid grid-cols-5 gap-1.5 text-[9px] text-center font-semibold">
+                {[
+                  { name: "비견", color: "bg-emerald-100 text-emerald-800", page: "19p" },
+                  { name: "겁재", color: "bg-red-100 text-red-800", page: "19p" },
+                  { name: "식신", color: "bg-green-100 text-green-800", page: "20p" },
+                  { name: "상관", color: "bg-amber-100 text-amber-800", page: "20p" },
+                  { name: "편재", color: "bg-yellow-100 text-yellow-800", page: "21p" },
+                  { name: "정재", color: "bg-teal-100 text-teal-800", page: "21p" },
+                  { name: "편관", color: "bg-rose-100 text-rose-800", page: "22p" },
+                  { name: "정관", color: "bg-blue-100 text-blue-800", page: "22p" },
+                  { name: "편인", color: "bg-purple-100 text-purple-800", page: "23p" },
+                  { name: "정인", color: "bg-orange-100 text-orange-800", page: "23p" },
+                ].map((s, i) => (
+                  <div key={i} className={`${s.color} rounded-lg py-1.5 px-1`}>
+                    <p className="font-myeongjo font-bold">{s.name}</p>
+                    <p className="opacity-60 text-[8px]">{s.page}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 비견·겁재 본문 */}
+            <div className="space-y-4 text-xs text-[#2C2C2C] leading-relaxed font-traditional">
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-3">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <strong className="text-[#5F7A68] text-[13px] font-myeongjo">• 비견(比肩) — 내 안의 줏대와 독립적 주체성</strong>
+                  <span className="text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">자아 독립</span>
+                </div>
+                <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
+                  비견(比肩)은 나와 오행이 같고 음양이 같은 에너지로, 사주에서 '나의 분신'과 같은 역할을 합니다. 쉽게 말해 내 안의 단단한 줏대와 주체성을 의미합니다. 비견이 적당하게 있으면 남의 눈치에 흔들리지 않고 자기 소신대로 결단을 내리며, 자수성가와 독립 창업에서 빛을 발합니다. 그러나 비견이 과도하면 자존심과 고집이 지나쳐 협력 관계가 무너지거나 주변 사람들과의 충돌이 잦아집니다. 형제나 동생뻘의 경쟁자에게 재물이 분산될 위험도 있습니다.
+                </p>
+                <div className="bg-[#F0F7F2] border border-emerald-200/60 rounded-lg p-3 text-[11px] space-y-1">
+                  <p><strong className="text-emerald-700">💪 강점 활용:</strong> 독자 브랜드 창업, 1인 기업, 독립 프리랜서 형태로 일할 때 비견의 에너지가 긍정적으로 폭발합니다.</p>
+                  <p><strong className="text-red-700">⚠️ 조심할 행동:</strong> 동업 계약과 지인 금전 거래는 원칙적으로 금지하십시오. 내 돈은 반드시 내 명의로만 관리해야 합니다.</p>
+                </div>
+              </div>
+
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-3">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <strong className="text-red-700 text-[13px] font-myeongjo">• 겁재(劫財) — 재물을 빼앗는 경쟁자이자 강력한 돌파력</strong>
+                  <span className="text-[9px] bg-red-100 text-red-800 px-2 py-0.5 rounded-full font-bold">승부 본능</span>
+                </div>
+                <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
+                  겁재(劫財)는 나와 오행이 같지만 음양이 다른 에너지로, '재물을 겁탈한다'는 의미를 내포합니다. 경쟁과 도전에서 맹렬하게 이기려는 야망의 기운입니다. 이 에너지가 긍정적으로 발현되면 스포츠, 치열한 비즈니스 경쟁, 영업 전선에서 압도적인 돌파력을 발휘합니다. 그러나 겁재가 지나치게 강할 때는 가장 신뢰하는 가까운 지인이나 형제에게 금전 사기를 당하거나 동업에서 배신을 맞이하는 '겁재의 흉함'이 발동될 수 있습니다.
+                </p>
+                <div className="bg-[#FFF5F5] border border-red-200/60 rounded-lg p-3 text-[11px] space-y-1">
+                  <p><strong className="text-red-700">💪 강점 활용:</strong> 경쟁이 치열한 영업, 스포츠 관련 직군, 입찰 경쟁에서 겁재의 승부 본능이 타인과의 차별적인 돌파구를 만들어냅니다.</p>
+                  <p><strong className="text-red-700">⚠️ 조심할 행동:</strong> 아는 사람과의 투자 합자, 금전 보증, 사업 동업은 절대적으로 금지합니다. 계약 자금은 반드시 본인 명의로만 독립 통제하십시오.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1135,28 +1397,43 @@ const renderPageContent = (page, ctx) => {
 
     case "sipsin_2":
       return (
-        <div className="space-y-6">
-          <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
-            ☯️ 사주 원국의 십신(十神) 분석 - 식신·상관
-          </h3>
-          <div className="space-y-4 text-xs text-[#2C2C2C] leading-relaxed font-traditional">
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2">
-              <strong className="text-[#5F7A68] block">• 식신(食神) - 평생 따르는 의식주와 창작의 재주</strong>
-              <p className={`font-light ${blurClass}`}>
-                식신은 내가 자발적으로 쏟는 재능이자 수려한 의식주의 복을 뜻합니다. 한 우물을 깊게 파는 장인정신과 창작력을 의미하며, 일생 동안 기본적인 의식주의 안정(먹을 복)이 따르는 복된 기운입니다.
-              </p>
-              <p className="text-[10px] text-gray-500 font-sans border-t border-[#E2DDD5]/40 pt-1.5">
-                💼 <strong>식신의 재물 시너지:</strong> 고도의 연구, 전문 학예 라이선스, 특수 기술 등 <strong>'시간이 지날수록 숙련도가 올라가는 가치 전문성'</strong>을 내세워 일할 때 평생 마르지 않는 연금형 재물 복을 형성합니다.
-              </p>
-            </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2">
-              <strong className="text-amber-700 block">• 상관(傷官) - 규칙을 파괴하는 창의적 표현력과 언변</strong>
-              <p className={`font-light ${blurClass}`}>
-                상관은 기존의 규범이나 권위에 얽매이지 않는 비판적 아이디어와 수려한 언변입니다. 예술, 마케팅, IT 혁신에 뛰어난 천재성을 발휘하나 직장 내에서 상사와의 마찰을 자주 유발하는 흠이 있습니다.
-              </p>
-              <p className="text-[10px] text-gray-500 font-sans border-t border-[#E2DDD5]/40 pt-1.5">
-                💼 <strong>상관의 재물 시너지:</strong> 지식 상품 판매, 대외 스피치, 마케팅 전략 등 나의 <strong>'말과 혁신 기획력'</strong> 자체를 현금화하는 중개/홍보 비즈니스에서 압도적인 단기 수익률을 획득하게 됩니다.
-              </p>
+        <div className="space-y-5 flex flex-col justify-between h-full">
+          <div>
+            <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2 mb-4">
+              ☯️ 사주 원국의 십신(十神) 분석 — 식신·상관
+            </h3>
+            <p className="text-xs text-[#5F5F5F] leading-relaxed mb-5 font-light bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]">
+              📖 <strong>식신·상관</strong>은 내가 세상에 에너지를 내뿜는 방식입니다. 내 재능이 세상 밖으로 흘러 나가 어떻게 돈과 명예로 환원되는지를 보여주는 <strong>'나의 표현력과 생산성'</strong>의 십신입니다. 재물을 만들어내는 원천 에너지이므로, 이 두 기운을 어떻게 활용하느냐가 평생 수입의 질과 양을 결정합니다.
+            </p>
+
+            <div className="space-y-4 text-xs text-[#2C2C2C] leading-relaxed font-traditional">
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-3">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <strong className="text-[#5F7A68] text-[13px] font-myeongjo">• 식신(食神) — 평생 따르는 의식주 복과 전문 장인 기질</strong>
+                  <span className="text-[9px] bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-bold">재능·복록</span>
+                </div>
+                <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
+                  식신(食神)은 '먹을 복'이라 불릴 만큼 평생 의식주가 풍족하게 따르는 복덩이 기운입니다. 한 분야를 깊게 파고드는 장인 기질이 탁월하며, 자신이 좋아하는 것을 꾸준히 갈고닦아 전문가가 되는 길에서 가장 큰 재물 복이 발동합니다. 식신이 강한 사람은 재치 있는 유머 감각과 넉넉한 여유가 있어 주변 사람들에게 편안함을 주며, 음식·요리·예술·연구·교육 분야에서 두각을 나타냅니다. 다만 지나치게 느긋해 추진력이 부족해질 수 있으니 자기 페이스를 지키되 마감 의식을 키우십시오.
+                </p>
+                <div className="bg-[#F0F7F2] border border-green-200/60 rounded-lg p-3 text-[11px] space-y-1">
+                  <p><strong className="text-green-700">💪 강점 활용:</strong> 특수 자격증, 전문 기술 라이선스, 독창적 콘텐츠 창작 등 '시간이 갈수록 숙련되는 전문성'이 평생 마르지 않는 연금형 수입을 만들어냅니다.</p>
+                  <p><strong className="text-amber-700">⚠️ 조심할 행동:</strong> 게으름과 안일함에 빠지지 않도록 구체적인 목표 일정을 세우고, 과식·비만으로 인한 건강 악화를 주의하십시오.</p>
+                </div>
+              </div>
+
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-3">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <strong className="text-amber-700 text-[13px] font-myeongjo">• 상관(傷官) — 권위를 뒤집는 창의적 표현력과 날카로운 언변</strong>
+                  <span className="text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold">혁신·언변</span>
+                </div>
+                <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
+                  상관(傷官)은 '관(官, 권위와 직위)'을 상하게 한다는 뜻으로, 기존의 규범과 권위에 의문을 제기하며 새로운 패러다임을 제시하는 혁신적 에너지입니다. 이 기운이 강하면 탁월한 언변과 비판적 사고력으로 남들이 보지 못하는 창의적 아이디어를 쏟아냅니다. 그러나 조직 내에서 상사나 윗사람과의 충돌을 자주 일으켜 직장 생활에 어려움을 겪을 수 있으며, 특히 남성의 경우 관운(직장운)을 해치고, 여성의 경우 배우자 운과 마찰이 생길 수 있으니 각별한 주의가 필요합니다.
+                </p>
+                <div className="bg-[#FFFBF0] border border-amber-200/60 rounded-lg p-3 text-[11px] space-y-1">
+                  <p><strong className="text-amber-700">💪 강점 활용:</strong> 마케팅·홍보·스피치·언론·IT혁신·예술·강연 등 나의 '말과 혁신 기획력'을 무기로 하는 분야에서 압도적인 단기 고수익을 창출합니다.</p>
+                  <p><strong className="text-red-700">⚠️ 조심할 행동:</strong> 직장에서 상사에 대한 직접적인 비판과 반박을 자제하고, 중요한 자리에서의 감정적 언행을 조율하십시오. 말 한마디가 운명을 바꿉니다.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1164,28 +1441,43 @@ const renderPageContent = (page, ctx) => {
 
     case "sipsin_3":
       return (
-        <div className="space-y-6">
-          <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
-            ☯️ 사주 원국의 십신(十神) 분석 - 편재·정재
-          </h3>
-          <div className="space-y-4 text-xs text-[#2C2C2C] leading-relaxed font-traditional">
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2">
-              <strong className="text-[#A3845B] block">• 편재(偏財) - 판을 키우는 대담한 모험적 재물</strong>
-              <p className={`font-light ${blurClass}`}>
-                편재는 한 번에 큰돈을 굴리려는 모험심과 무역, 사업, 유통을 통한 큰 단위의 현금 흐름을 의미합니다. 스케일이 크고 사업 수완이 뛰어나 대업을 이룰 수 있으나, 무리한 투기는 단번에 파산을 부르니 반드시 주의해야 합니다.
-              </p>
-              <p className="text-[10px] text-gray-500 font-sans border-t border-[#E2DDD5]/40 pt-1.5">
-                💼 <strong>편재의 재물 시너지:</strong> 유동성이 강한 시장 거래나 중간 유통, 사업 권리 체결 등 <strong>'스케일이 큰 프로젝트'</strong>에 자금을 유입시키는 전략이 대운의 도화선에서 거대한 일시불 부를 형성합니다.
-              </p>
-            </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2">
-              <strong className="text-[#5F7A68] block">• 정재(正財) - 고정적으로 꼬박꼬박 쌓이는 안정적 수입</strong>
-              <p className={`font-light ${blurClass}`}>
-                정재는 매월 안정적으로 입금되는 급여 형태의 수입이자 정밀한 자산 관리력입니다. 꼼꼼하게 장부를 기록하고 종잣돈을 모으는 안전지향형 재물 기운으로, 무리한 투자를 거부하고 착실하게 집안을 일으켜 세우는 힘이 됩니다.
-              </p>
-              <p className="text-[10px] text-gray-500 font-sans border-t border-[#E2DDD5]/40 pt-1.5">
-                💼 <strong>정재의 재물 시너지:</strong> 급여성 수입의 50% 이상을 꼬박꼬박 강제 부동산 청약이나 연금 등 <strong>'환금성이 느린 우량 안전 자산'</strong>에 묶어놓을 때 평생의 금전 기반이 붕괴하지 않고 단단히 고정됩니다.
-              </p>
+        <div className="space-y-5 flex flex-col justify-between h-full">
+          <div>
+            <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2 mb-4">
+              ☯️ 사주 원국의 십신(十神) 분석 — 편재·정재
+            </h3>
+            <p className="text-xs text-[#5F5F5F] leading-relaxed mb-5 font-light bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]">
+              📖 <strong>편재·정재</strong>는 사주에서 가장 직접적인 <strong>'돈과의 관계'</strong>를 보여주는 십신입니다. 어떤 방식으로 재물을 모으고 굴리는지, 재물로 인해 어떤 위험을 맞이하는지를 구체적으로 알려줍니다. 내 사주에 편재와 정재 중 무엇이 강한지를 확인하여 나만의 최적 재물 전략을 수립하십시오.
+            </p>
+
+            <div className="space-y-4 text-xs text-[#2C2C2C] leading-relaxed font-traditional">
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-3">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <strong className="text-[#A3845B] text-[13px] font-myeongjo">• 편재(偏財) — 판을 키우는 대담한 모험적 재물 기운</strong>
+                  <span className="text-[9px] bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full font-bold">사업·투자</span>
+                </div>
+                <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
+                  편재(偏財)는 정해진 틀 밖에서 크게 돈을 굴리려는 모험심 넘치는 재물 에너지입니다. 무역, 사업 확장, 주식, 부동산 투자 등 유동성이 강한 큰 단위의 현금 흐름을 다루는 능력이 뛰어나 대업을 이룰 수 있습니다. 편재가 강한 사람은 사교성이 풍부하고 스케일이 크며, 아버지와의 인연이 깊은 편입니다. 그러나 편재 과다 또는 충극 시에는 무리한 투기로 일시에 재산을 탕진하거나, 이성 관계로 인한 재물 손실이 발생하니 각별한 조심이 필요합니다.
+                </p>
+                <div className="bg-[#FFFDF0] border border-yellow-200/60 rounded-lg p-3 text-[11px] space-y-1">
+                  <p><strong className="text-yellow-700">💪 강점 활용:</strong> 중간 유통·사업 권리 계약·대형 프로젝트 입찰 등 '스케일이 큰 현금 흐름'을 설계하는 전략에서 대운의 흐름과 맞물려 거대한 자산을 형성합니다.</p>
+                  <p><strong className="text-red-700">⚠️ 조심할 행동:</strong> 레버리지 투기, 근거 없는 고수익 투자 광고, 이성 관계로 인한 금전 지출에 극도로 주의하십시오. 손절 라인을 반드시 사전에 설정하십시오.</p>
+                </div>
+              </div>
+
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-3">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <strong className="text-[#5F7A68] text-[13px] font-myeongjo">• 정재(正財) — 꼬박꼬박 쌓이는 안정적이고 성실한 수입</strong>
+                  <span className="text-[9px] bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full font-bold">안정·저축</span>
+                </div>
+                <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
+                  정재(正財)는 매월 안정적으로 입금되는 급여 형태의 수입이자 정밀한 자산 관리력을 의미합니다. 꼼꼼하게 장부를 기록하고 종잣돈을 모으는 안전지향형 재물 기운으로, 배우자와의 금전적 안정을 중시하며 착실하게 자산을 불려나갑니다. 부동산 청약, 적금, 연금 등 예측 가능한 안전 자산에 가치를 두며, 무리한 투기를 거부하는 성향이 강합니다. 다만 지나치게 보수적이면 성장 기회를 놓칠 수 있으니 작은 범위에서 투자 경험을 축적해 나가는 것이 좋습니다.
+                </p>
+                <div className="bg-[#F0FBF9] border border-teal-200/60 rounded-lg p-3 text-[11px] space-y-1">
+                  <p><strong className="text-teal-700">💪 강점 활용:</strong> 급여의 50% 이상을 부동산 청약·연금·우량 채권 등 '환금성이 느린 안전 자산'에 꾸준히 투입할 때 평생의 재정 기반이 흔들리지 않습니다.</p>
+                  <p><strong className="text-amber-700">⚠️ 조심할 행동:</strong> 지나친 절약과 인색함으로 주변 관계가 나빠지지 않도록 주의하십시오. 적정 수준의 사교 투자는 더 큰 재물을 부르는 씨앗입니다.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1193,28 +1485,43 @@ const renderPageContent = (page, ctx) => {
 
     case "sipsin_4":
       return (
-        <div className="space-y-6">
-          <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
-            ☯️ 사주 원국의 십신(十神) 분석 - 편관·정관
-          </h3>
-          <div className="space-y-4 text-xs text-[#2C2C2C] leading-relaxed font-traditional">
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2">
-              <strong className="text-red-700 block">• 편관(偏官) - 책임감과 카리스마가 담긴 명예</strong>
-              <p className={`font-light ${blurClass}`}>
-                편관은 특수한 명예, 난관을 극복해 내는 카리스마, 혹은 군경검이나 대형 조직에서의 권위를 뜻합니다. 강박적일 정도의 책임감으로 본인을 훈련시켜 출세하지만, 신체 건강에 해로울 수 있으니 적절한 휴식이 반드시 필요합니다.
-              </p>
-              <p className="text-[10px] text-gray-500 font-sans border-t border-[#E2DDD5]/40 pt-1.5">
-                💼 <strong>편관의 재물 시너지:</strong> 특임 부서 팀장, 고위 책임 계약자 등 나 자신의 <strong>'리더십과 가치 신인도'</strong>를 담보로 프로젝트 입찰을 따내는 특수 라이선스 사업에서 가장 큰 마진의 소득을 쟁취합니다.
-              </p>
-            </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2">
-              <strong className="text-[#5F7A68] block">• 정관(正官) - 공익적 신뢰와 안정적인 직위 권한</strong>
-              <p className={`font-light ${blurClass}`}>
-                정관은 공무원이나 대기업 사무직 등 가장 안전하고 예측 가능한 승진 운과 질서 순응 본능을 의미합니다. 주위에서 정직하다는 인정을 받으며 신분 보장을 누릴 운세입니다.
-              </p>
-              <p className="text-[10px] text-gray-500 font-sans border-t border-[#E2DDD5]/40 pt-1.5">
-                💼 <strong>정관의 재물 시너지:</strong> 회사 내 규범적인 성실도 평가를 통해 급여 상승을 유도하며, 국가 조달 계약이나 공인된 면허 획득 등 <strong>'신용 중심 거래'</strong>를 적극 결합할 때 자산 위험도가 제로가 됩니다.
-              </p>
+        <div className="space-y-5 flex flex-col justify-between h-full">
+          <div>
+            <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2 mb-4">
+              ☯️ 사주 원국의 십신(十神) 분석 — 편관·정관
+            </h3>
+            <p className="text-xs text-[#5F5F5F] leading-relaxed mb-5 font-light bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]">
+              📖 <strong>편관·정관</strong>은 사주에서 <strong>'명예·권위·직업 운'</strong>을 관장하는 십신입니다. 어떤 방식으로 사회적 지위를 얻고, 어떤 조직에서 두각을 나타내며, 어떤 명예 위기를 조심해야 하는지를 명확하게 보여줍니다. 직장·사업·대인관계에서 나의 권위가 어떻게 발현되는지를 확인하십시오.
+            </p>
+
+            <div className="space-y-4 text-xs text-[#2C2C2C] leading-relaxed font-traditional">
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-3">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <strong className="text-red-700 text-[13px] font-myeongjo">• 편관(偏官) — 강박적 책임감이 만들어내는 카리스마와 명예</strong>
+                  <span className="text-[9px] bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full font-bold">권위·카리스마</span>
+                </div>
+                <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
+                  편관(偏官)은 '칠살(七殺)'이라고도 불리며, 극단적인 책임감과 강인한 의지로 극한의 난관을 뚫고 일어서는 카리스마 에너지입니다. 군인·경찰·검사·소방관 등 특수 조직이나 혹독한 경쟁 환경에서 탁월한 성과를 발휘합니다. 남성의 경우 자녀와의 인연이 깊고, 여성의 경우 배우자 또는 남자 친구의 영향력을 강하게 받습니다. 편관이 과하면 과로와 스트레스로 인한 건강 문제, 구설과 관재(官災)를 조심해야 합니다.
+                </p>
+                <div className="bg-[#FFF5F5] border border-rose-200/60 rounded-lg p-3 text-[11px] space-y-1">
+                  <p><strong className="text-rose-700">💪 강점 활용:</strong> 특임 부서 팀장, 위기 관리 책임자, 특수 라이선스 사업자 등 '리더십과 강한 신뢰'를 담보로 하는 포지션에서 최고의 성과를 냅니다.</p>
+                  <p><strong className="text-red-700">⚠️ 조심할 행동:</strong> 지나친 과로와 야근을 줄이고, 구설과 법적 분쟁의 소지를 원천 차단하십시오. 강경한 태도보다는 유연한 협력을 의식적으로 연습하십시오.</p>
+                </div>
+              </div>
+
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-3">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <strong className="text-blue-700 text-[13px] font-myeongjo">• 정관(正官) — 공익적 신뢰와 안정적인 직위 권한</strong>
+                  <span className="text-[9px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">명예·승진</span>
+                </div>
+                <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
+                  정관(正官)은 공무원·대기업·공공기관 등에서 가장 안전하고 예측 가능한 승진 운과 질서 순응 본능을 나타내는 정정당당한 명예 에너지입니다. 주위에서 "저 사람은 믿을 수 있다"는 신뢰와 인정을 받으며 자연스럽게 지위가 올라갑니다. 여성의 경우 정관이 배우자의 자리를 뜻하며, 온화하고 사회적으로 안정적인 파트너를 만날 인연이 있습니다. 다만 너무 원칙만을 고집하면 변화에 적응하지 못하고 뒤처지는 위험이 있으니 시대 변화에 맞는 유연성도 함께 갖추십시오.
+                </p>
+                <div className="bg-[#F0F5FF] border border-blue-200/60 rounded-lg p-3 text-[11px] space-y-1">
+                  <p><strong className="text-blue-700">💪 강점 활용:</strong> 국가 조달 계약, 공인 면허 취득, 규범적 성실도 평가를 통한 급여 상승 등 '신용 중심 합법 거래'를 적극 결합할 때 자산 안정성이 극대화됩니다.</p>
+                  <p><strong className="text-amber-700">⚠️ 조심할 행동:</strong> 원칙과 규율에 지나치게 얽매여 창의적 기회를 놓치지 않도록 하십시오. 변화하는 환경에 유연하게 적응하는 연습이 필요합니다.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1222,28 +1529,51 @@ const renderPageContent = (page, ctx) => {
 
     case "sipsin_5":
       return (
-        <div className="space-y-6">
-          <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
-            ☯️ 사주 원국의 십신(十神) 분석 - 편인·정인
-          </h3>
-          <div className="space-y-4 text-xs text-[#2C2C2C] leading-relaxed font-traditional">
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2">
-              <strong className="text-purple-700 block">• 편인(偏印) - 독창적인 예술 직관과 남다른 기획력</strong>
-              <p className={`font-light ${blurClass}`}>
-                편인은 특수 기술, 비주류 학문, 혹은 고독한 철학적 예술 감성입니다. 호불호가 명확하나 자신이 꽂힌 전문 영역에서는 타의 추종을 불허하는 독자적 혜안을 펼쳐냅니다.
-              </p>
-              <p className="text-[10px] text-gray-500 font-sans border-t border-[#E2DDD5]/40 pt-1.5">
-                💼 <strong>편인의 재물 시너지:</strong> 특허 기술 등록, 심리/철학 상담 플랫폼 수수료, 마이너 감성의 예술 기획 등 <strong>'독창적인 나만의 무형 지식 재산권'</strong>을 다각도 유통할 때 압도적인 시스템 수동 소득이 창출됩니다.
-              </p>
-            </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2">
-              <strong className="text-[#A3845B] block">• 정인(正印) - 후원자의 조력과 문서상의 길함</strong>
-              <p className={`font-light ${blurClass}`}>
-                정인은 문서 계약의 길함, 부모님의 후원, 학업 정진 능력을 상징합니다. 남에게 도움을 받아 무난히 자리를 안착하며, 계약서 도장을 찍는 문서운에서 항상 강한 수혜를 받습니다.
-              </p>
-              <p className="text-[10px] text-gray-500 font-sans border-t border-[#E2DDD5]/40 pt-1.5">
-                💼 <strong>정인의 재물 시너지:</strong> 정부 지원금 획득, 유산 상속 계약의 길함, 혹은 부동산 분양 등 <strong>'정당하고 합법적인 권리 보증 계약'</strong>을 취득하여 자산을 문서화하는 전략이 최고 효율의 개운법입니다.
-              </p>
+        <div className="space-y-5 flex flex-col justify-between h-full">
+          <div>
+            <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2 mb-4">
+              ☯️ 사주 원국의 십신(十神) 분석 — 편인·정인
+            </h3>
+            <p className="text-xs text-[#5F5F5F] leading-relaxed mb-5 font-light bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]">
+              📖 <strong>편인·정인</strong>은 사주에서 <strong>'나를 키워주는 힘'</strong>을 나타내는 십신입니다. 학문적 역량, 부모·멘토·후원자의 도움, 문서 계약의 길흉을 관장합니다. 내가 어떤 방식으로 지식과 지혜를 습득하며, 어떤 후원을 받아 성장하고, 문서와 계약에서 어떤 행운 또는 위험이 따르는지를 알 수 있습니다.
+            </p>
+
+            <div className="space-y-4 text-xs text-[#2C2C2C] leading-relaxed font-traditional">
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-3">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <strong className="text-purple-700 text-[13px] font-myeongjo">• 편인(偏印) — 독창적인 예술 직관과 남다른 전문 기획력</strong>
+                  <span className="text-[9px] bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full font-bold">독창·영감</span>
+                </div>
+                <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
+                  편인(偏印)은 정통 학문보다는 특수 기술·비주류 학문·예술·철학·종교·심리학 등 독자적인 분야에서 깊은 통찰을 발휘하는 에너지입니다. 타의 추종을 불허하는 독창적인 아이디어와 예술적 감수성이 있으며, 호기심과 탐구 정신이 남다릅니다. 그러나 변덕스럽고 집중력이 쉽게 분산되는 단점이 있으며, 식신의 에너지를 억제하는 특성상 '밥을 빼앗긴다'는 상징처럼 수입의 단절이나 직업 변동이 잦을 수 있습니다. 특히 의식주를 생산하는 음식·요식업을 피하는 것이 좋습니다.
+                </p>
+                <div className="bg-[#F9F5FF] border border-purple-200/60 rounded-lg p-3 text-[11px] space-y-1">
+                  <p><strong className="text-purple-700">💪 강점 활용:</strong> 특허 기술 등록, 심리·철학 상담, 마이너 감성 예술 기획 등 '독창적인 무형 지식 재산권'을 다각도로 유통할 때 시스템 수동 소득이 창출됩니다.</p>
+                  <p><strong className="text-red-700">⚠️ 조심할 행동:</strong> 한 가지 일을 끝까지 완결짓지 않고 중간에 포기하는 습관을 반드시 고치십시오. 음식업·요식업 창업은 특히 주의하십시오.</p>
+                </div>
+              </div>
+
+              <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-3">
+                <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                  <strong className="text-[#A3845B] text-[13px] font-myeongjo">• 정인(正印) — 후원자의 조력과 문서·계약에서의 길함</strong>
+                  <span className="text-[9px] bg-orange-100 text-orange-800 px-2 py-0.5 rounded-full font-bold">후원·문서</span>
+                </div>
+                <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
+                  정인(正印)은 부모님의 따뜻한 후원, 스승과 멘토의 가르침, 문서 계약의 길함을 상징합니다. 이 기운이 강한 사람은 학문적 재능이 뛰어나고 꾸준한 자기 계발로 전문성을 쌓으며, 계약서와 문서에서 항상 유리한 결과를 얻는 행운이 따릅니다. 인성(人性)이 착하고 배려가 넘쳐 주변의 도움을 자연스럽게 받습니다. 그러나 과도한 정인은 지나치게 의존적이거나 게으름을 초래할 수 있으니, 스스로 주도적으로 움직이는 습관이 필요합니다. 여성의 경우 자녀 출산 후 일시적인 직업 공백이 생길 수 있습니다.
+                </p>
+                <div className="bg-[#FFF8F0] border border-orange-200/60 rounded-lg p-3 text-[11px] space-y-1">
+                  <p><strong className="text-orange-700">💪 강점 활용:</strong> 정부 지원금·보조금 신청, 유산 상속 계약, 부동산 분양 계약 등 '합법적이고 정당한 권리 계약'을 적극적으로 활용하면 자산이 탄탄하게 문서화됩니다.</p>
+                  <p><strong className="text-amber-700">⚠️ 조심할 행동:</strong> 의존성에서 벗어나 스스로 결정하고 실행하는 능동적 습관을 기르십시오. 과도한 공부에만 집착하고 실행을 미루는 함정을 피하십시오.</p>
+                </div>
+              </div>
+
+              {/* 십신 분석 마무리 메시지 */}
+              <div className="bg-gradient-to-r from-[#F6F3EC] to-[#EDE8DE] border border-[#A3845B]/30 rounded-xl p-4 text-center">
+                <p className="font-myeongjo text-xs font-bold text-[#A3845B] mb-1">🌟 십신 분석 종합 활용법</p>
+                <p className="text-[11px] text-[#5F5F5F] font-light leading-relaxed">
+                  위 10가지 십신은 고정된 운명이 아닙니다. <strong>각 기운의 강점을 극대화하고 약점을 의식적으로 보완하는 사람</strong>이 결국 운명의 주인이 됩니다. 19~23페이지의 분석을 통해 내 사주의 에너지 지도를 완성하고, 실생활에서 주의해야 할 행동 하나씩을 오늘부터 바꿔나가십시오.
+                </p>
+              </div>
             </div>
           </div>
         </div>
