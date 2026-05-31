@@ -3,6 +3,7 @@
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Script from "next/script";
 import { Scroll, Printer, ArrowLeft, Heart, Compass, Shield, Sparkles, DollarSign, CalendarDays, Award, CheckSquare, AlertCircle } from "lucide-react";
 
 // Simplified dynamic Sexagenary Cycle helper based on user input
@@ -128,7 +129,7 @@ const getDeficientPrescription = (elements) => {
 };
 
 
-// 사주 8대 성향 점수 및 운명 캐릭터 분석
+// 사주 8대 성향 점수 및 타고난 천명 유형 분석
 const getCharacterMetrics = (sajuInfo) => {
   const { elements, year, month, day, hour } = sajuInfo;
   
@@ -149,7 +150,7 @@ const getCharacterMetrics = (sajuInfo) => {
   const patience = Math.min(98, Math.max(50, 62 + to * 8 + geum * 4 - hwa * 4));
   const negotiation = Math.min(98, Math.max(50, 59 + su * 6 + hwa * 5 - mok * 3));
 
-  // 캐릭터 닉네임 및 희귀도 설정 (일간 기준)
+  // 천명 유형 및 희귀도 설정 (일간 기준)
   const dayStem = day.stem;
   const dayBranch = day.branch;
   const dayStemEl = day.stemEl;
@@ -220,7 +221,7 @@ const getIljuSecret = (dayStem, dayBranch) => {
   return iljuDatabase[ilju] || defaultDesc;
 };
 
-// 32페이지 구성안 메타데이터 생성기
+// 35페이지 구성안 메타데이터 생성기
 const getPagesConfiguration = (name, partnerName) => {
   return [
     { page: 1, type: "cover", title: "혜안당 정통 명리 보감 표지" },
@@ -232,29 +233,32 @@ const getPagesConfiguration = (name, partnerName) => {
     { page: 7, type: "metrics_detail_2", title: "8대 성향 수치 심층 풀이 (기회포착/사업감각)" },
     { page: 8, type: "stem_detail", title: "나의 일간(日干) 심층 분석" },
     { page: 9, type: "ilju_secret", title: "나의 일주(日柱)의 비밀 분석" },
-    { page: 10, type: "deficiency", title: "사주 속 결핍의 비밀 및 생존 본능 분석" },
-    { page: 11, type: "strength", title: "타고난 성향과 기질 총평" },
-    { page: 12, type: "weakness", title: "극복해야 할 치명적인 약점 분석" },
-    { page: 13, type: "worry_solution", title: "의뢰인 개별 고민 정밀 조율 솔루션" },
-    { page: 14, type: "sipsin_1", title: "사주 원국의 십신(十神) 분석 - 비견·겁재" },
-    { page: 15, type: "sipsin_2", title: "사주 원국의 십신(十神) 분석 - 식신·상관" },
-    { page: 16, type: "sipsin_3", title: "사주 원국의 십신(十神) 분석 - 편재·정재" },
-    { page: 17, type: "sipsin_4", title: "사주 원국의 십신(十神) 분석 - 편관·정관" },
-    { page: 18, type: "sipsin_5", title: "사주 원국의 십신(十神) 분석 - 편인·정인" },
-    { page: 19, type: "sinsal", title: "사주 속 길흉 신살(神殺) 분석" },
-    { page: 20, type: "gwiin", title: "내 인생의 귀인(貴人) 분석" },
-    { page: 21, type: "job_aptitude", title: "평생 직업 적성 처방" },
-    { page: 22, type: "wealth_wave", title: "재물 창고(財庫)와 시기별 재산 흐름 파동 그래프" },
-    { page: 23, type: "seoun_2026", title: "2026년 병오년(丙午年) 전체 세운 흐름" },
-    { page: 24, type: "seoun_quarterly", title: "2026년 분기별 상세 흐름 및 월별 대응 전술" },
-    { page: 25, type: "seoun_aspects", title: "2026년 분야별 상세 등급 및 행동 강령" },
-    { page: 26, type: "daeun_orbit", title: "평생 대운(大運) 흐름 총평 및 10년 대운 궤도 다이어그램" },
-    { page: 27, type: "daeun_roadmap_1", title: "대운 1기~2기 상세 로드맵" },
-    { page: 28, type: "daeun_roadmap_2", title: "대운 3기~4기 상세 로드맵" },
-    { page: 29, type: "warning_period", title: "평생 조심해야 할 흉한 시기 & 액운 소멸 방어 비책" },
-    { page: 30, type: "gaewoon_presc", title: "부족한 기운을 채우는 나만의 오행 개운법" },
-    { page: 31, type: "ten_year_seoun", title: "향후 10개년(2026~2035) 연도별 족집게 세운 운세" },
-    { page: 32, type: "fengshui_bless", title: "공간 풍수 인테리어 처방 및 지혜의 마지막 축원" }
+    { page: 10, type: "destiny_harmony", title: "여덟 글자의 운명 조화 및 마음가짐 처방" },
+    { page: 11, type: "inner_disposition", title: "타고난 기질 분석 및 3대 행동 강령" },
+    { page: 12, type: "lifestyle_strategy", title: "살아가는 방식 및 행운물 풍수 공간 처방" },
+    { page: 13, type: "deficiency", title: "사주 속 결핍의 비밀 및 생존 본능 분석" },
+    { page: 14, type: "strength", title: "타고난 성향과 기질 총평" },
+    { page: 15, type: "weakness", title: "극복해야 할 치명적인 약점 분석" },
+    { page: 16, type: "worry_solution", title: "의뢰인 개별 고민 정밀 조율 솔루션" },
+    { page: 17, type: "sipsin_1", title: "사주 원국의 십신(十神) 분석 - 비견·겁재" },
+    { page: 18, type: "sipsin_2", title: "사주 원국의 십신(十神) 분석 - 식신·상관" },
+    { page: 19, type: "sipsin_3", title: "사주 원국의 십신(十神) 분석 - 편재·정재" },
+    { page: 20, type: "sipsin_4", title: "사주 원국의 십신(十神) 분석 - 편관·정관" },
+    { page: 21, type: "sipsin_5", title: "사주 원국의 십신(十神) 분석 - 편인·정인" },
+    { page: 22, type: "sinsal", title: "사주 속 길흉 신살(神殺) 분석" },
+    { page: 23, type: "gwiin", title: "내 인생의 귀인(貴人) 분석" },
+    { page: 24, type: "job_aptitude", title: "평생 직업 적성 처방" },
+    { page: 25, type: "wealth_wave", title: "재물 창고(財庫)와 시기별 재산 흐름 파동 그래프" },
+    { page: 26, type: "seoun_2026", title: "2026년 병오년(丙午年) 전체 세운 흐름" },
+    { page: 27, type: "seoun_quarterly", title: "2026년 분기별 상세 흐름 및 월별 대응 전술" },
+    { page: 28, type: "seoun_aspects", title: "2026년 분야별 상세 등급 및 행동 강령" },
+    { page: 29, type: "daeun_orbit", title: "평생 대운(大運) 흐름 총평 및 10년 대운 궤도 다이어그램" },
+    { page: 30, type: "daeun_roadmap_1", title: "대운 1기~2기 상세 로드맵" },
+    { page: 31, type: "daeun_roadmap_2", title: "대운 3기~4기 상세 로드맵" },
+    { page: 32, type: "warning_period", title: "평생 조심해야 할 흉한 시기 & 액운 소멸 방어 비책" },
+    { page: 33, type: "gaewoon_presc", title: "부족한 기운을 채우는 나만의 오행 개운법" },
+    { page: 34, type: "ten_year_seoun", title: "향후 10개년(2026~2035) 연도별 족집게 세운 운세" },
+    { page: 35, type: "fengshui_bless", title: "공간 풍수 인테리어 처방 및 지혜의 마지막 축원" }
   ];
 };
 
@@ -300,7 +304,7 @@ const renderPageContent = (page, ctx) => {
             <div className="w-16 h-0.5 bg-[#A3845B]/40 mx-auto" />
           </div>
           <div className="my-auto py-12 space-y-6">
-            <h1 className="font-myeongjo text-4xl md:text-5xl font-extrabold text-[#1A1A1A] tracking-widest leading-tight">
+            <h1 className="font-myeongjo text-3xl md:text-4xl font-extrabold text-[#1A1A1A] tracking-wider leading-tight break-keep">
               평생 종합 사주팔자 보고서
             </h1>
             <p className="text-sm text-[#5F5F5F] tracking-wide font-light">
@@ -480,7 +484,7 @@ const renderPageContent = (page, ctx) => {
             ✨ 나의 타고난 천명 성향 유형 분석
           </h3>
           <div className="bg-gradient-to-br from-[#2D3A30] to-[#1E2620] border-4 border-[#A3845B] rounded-xl p-8 text-center text-[#FAF7F0] space-y-4 shadow-xl relative overflow-hidden">
-            <span className="text-[10px] tracking-[0.3em] text-[#A3845B] font-bold block">MY DESTINY CHARACTER</span>
+            <span className="text-[10px] tracking-[0.3em] text-[#A3845B] font-bold block">MY DESTINY TYPE</span>
             <h4 className="font-myeongjo text-2xl md:text-3xl font-extrabold text-[#A3845B] tracking-wider animate-pulse">
               "{metrics.nickname}"
             </h4>
@@ -489,14 +493,20 @@ const renderPageContent = (page, ctx) => {
             </div>
             <p className="text-xs md:text-sm leading-relaxed font-light font-traditional pt-4 border-t border-[#A3845B]/30 max-w-md mx-auto" dangerouslySetInnerHTML={{ __html: metrics.description }} />
           </div>
-          <div className="bg-[#F6F3EC] border border-[#E2DDD5] rounded-lg p-5 text-xs space-y-2 leading-relaxed text-[#5F5F5F]">
-            <h4 className="font-bold text-[#A3845B] font-myeongjo">💡 캐릭터가 시사하는 운명의 방향성</h4>
+          <div className="bg-[#F6F3EC] border border-[#E2DDD5] rounded-lg p-5 text-xs space-y-3 leading-relaxed text-[#5F5F5F]">
+            <h4 className="font-bold text-[#A3845B] font-myeongjo">💡 타고난 천명 성향이 시사하는 운명의 방향성</h4>
             <p className="font-light">
-              여기서 말하는 캐릭터와 희귀도는 타고난 운명적 본질을 현대적인 방식으로 알기 쉽게 구성한 분석입니다. 귀하의 사주는 평범하게 다수에 섞이기보다는 <strong>나만의 독자적인 전문 지식, 라이선스, 혹은 특수 기술</strong>을 벼려내어 독립적인 영역을 구축해야 가장 빠르고 단단하게 성공 가도에 안착하는 복된 명조입니다.
+              여기서 설명해 드리는 <strong>천명 성향(명조 유형)과 희귀도</strong>는 예로부터 전해 내려오는 전통 명리학의 심오한 간지 분석을 현대적인 관점에서 직관적으로 이해하실 수 있도록 재구성한 것입니다. 귀하의 사주가 보여주는 궁극적인 삶의 방향성은 단순히 다수가 걷는 보편적이고 평범한 길을 맹목적으로 따르는 것이 결코 아닙니다.
+            </p>
+            <p className="font-light">
+              오히려 귀하의 명조는 <strong>본인만이 지닌 고유한 전문 지식, 국가 공인 자격(라이선스), 혹은 아무나 흉내 낼 수 없는 특수한 기술적 역량</strong>을 갈고닦아 자신만의 단단하고 독립적인 영역을 선점해야 합니다. 조직에 종속되더라도 단순 대직자 역할에 머무르기보다는, 핵심적인 열쇠를 쥔 독보적인 전문가로 활동할 때 인생의 막힌 운이 비로소 시원하게 뚫리게 됩니다.
+            </p>
+            <p className="font-light">
+              남들의 속도에 휩쓸려 조급해하기보다 본인이 가장 잘할 수 있는 전문 분야를 묵묵히 개발하고 축적해 나가십시오. 이처럼 스스로가 하나의 브랜드가 되어 독립적인 영역을 개척하는 전략을 취할 때, 귀하의 사주가 품고 있는 재물과 명예의 그릇이 막힘없이 넓어지며 인생 후반기로 갈수록 더 크고 단단한 성공 가도에 안착하게 될 것입니다.
             </p>
           </div>
           <div className="border border-[#E2DDD5]/60 rounded-lg p-4 bg-white text-xs space-y-3 shadow-sm">
-            <h4 className="font-bold text-[#1A1A1A] font-myeongjo">🏆 나와 같은 캐릭터 성향의 역사적 성공 패턴</h4>
+            <h4 className="font-bold text-[#1A1A1A] font-myeongjo">🏆 나와 같은 천명 성향의 역사적 성공 패턴</h4>
             <div className="text-[#5F5F5F] leading-relaxed font-light space-y-1.5">
               <p>
                 • <strong>나무(木) 계열:</strong> 정주영 회장처럼 척박한 무에서 유를 일궈내는 불도저형 독립가 기질로, 남이 가지 않은 신규 시장의 선두주자로 설 때 극적인 성장을 보장받습니다.
@@ -668,6 +678,281 @@ const renderPageContent = (page, ctx) => {
           </div>
         </div>
       );
+
+    case "destiny_harmony": {
+      const harmonyData = getDestinyHarmonyData(sajuInfo);
+      return (
+        <div className="space-y-6">
+          <div className="flex justify-between items-center border-b border-[#E2DDD5] pb-3">
+            <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] flex items-center gap-1.5">
+              <span>☯️</span> 여덟 글자의 운명 조화 및 마음가짐 처방
+            </h3>
+            <span className="text-[10px] bg-[#A3845B]/10 text-[#A3845B] px-2.5 py-1 rounded font-bold">
+              조화도 지수: {harmonyData.rarity}
+            </span>
+          </div>
+
+          <p className="text-xs text-[#5F5F5F] leading-relaxed font-light">
+            {harmonyData.intro}
+          </p>
+
+          <div className="bg-[#F9F8F6] p-5 rounded-lg border border-[#E2DDD5] space-y-3 shadow-sm">
+            <h4 className="font-bold text-xs text-[#A3845B] tracking-wide uppercase">
+              💡 오행 과다 및 결핍 기류 진단
+            </h4>
+            <p className="text-xs leading-relaxed text-[#1A1A1A] font-medium">
+              {harmonyData.harmonyAnalysis}
+            </p>
+          </div>
+
+          {/* 마음가짐 리셋 처방 박스 */}
+          <div className="border-2 border-double border-[#A3845B]/40 bg-white rounded-lg p-6 relative overflow-hidden shadow-md">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-[#A3845B]/5 rounded-bl-full flex items-center justify-center pointer-events-none">
+              <span className="text-[10px] font-bold text-[#A3845B]/40 rotate-45 select-none">慧眼</span>
+            </div>
+            
+            <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] flex items-center gap-2 mb-3">
+              <span>✨</span> 나의 운명을 극복하는 [마음가짐 리셋 처방]
+            </h4>
+            
+            <div className="bg-[#F9F8F6]/75 border-l-4 border-[#A3845B] p-4 rounded-r">
+              <p className="font-myeongjo text-xs leading-relaxed text-[#3A3A3A] italic font-semibold">
+                &ldquo;{harmonyData.mindsetPrescription}&rdquo;
+              </p>
+            </div>
+            
+            <p className="text-[10px] text-[#7F7F7F] mt-3 font-light leading-relaxed">
+              * 명리 보감 팁: 생각의 궤도가 바뀔 때, 타고난 사주의 흐름도 순행하기 시작합니다. 부정적인 충동이 몰려올 때마다 이 선언을 마음에 새기십시오.
+            </p>
+          </div>
+
+          {/* 일간 뱃지 및 주변 오행 기류 */}
+          <div className="border border-[#E2DDD5]/70 rounded-lg p-5 bg-white shadow-sm space-y-4">
+            <h4 className="font-bold text-xs text-[#1A1A1A] font-myeongjo">
+              🔍 나의 일간(日干)을 둘러싼 오행 조화도
+            </h4>
+            <div className="flex flex-col md:flex-row items-center justify-around gap-4 py-2">
+              <div className="flex flex-col items-center">
+                <div className={`w-16 h-16 rounded-full flex flex-col items-center justify-center shadow-inner font-bold text-white text-lg ${getElementBarColor(harmonyData.dayStemEl)}`}>
+                  <span className="text-xl font-myeongjo">{harmonyData.dayStem}</span>
+                  <span className="text-[9px] opacity-90">{harmonyData.dayStemEl}</span>
+                </div>
+                <span className="text-[10px] text-[#A3845B] font-bold mt-2">나의 본질(일간)</span>
+              </div>
+              
+              <div className="flex-1 w-full text-xs space-y-2 text-[#5F5F5F]">
+                <div className="flex justify-between items-center border-b border-[#F2EDE5] pb-1">
+                  <span>목(木) 에너지 흐름</span>
+                  <span className="font-bold text-[#1A1A1A]">{sajuInfo?.elements?.목 || 0}개</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-[#F2EDE5] pb-1">
+                  <span>화(火) 에너지 흐름</span>
+                  <span className="font-bold text-[#1A1A1A]">{sajuInfo?.elements?.화 || 0}개</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-[#F2EDE5] pb-1">
+                  <span>토(土) 에너지 흐름</span>
+                  <span className="font-bold text-[#1A1A1A]">{sajuInfo?.elements?.토 || 0}개</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-[#F2EDE5] pb-1">
+                  <span>금(金) 에너지 흐름</span>
+                  <span className="font-bold text-[#1A1A1A]">{sajuInfo?.elements?.금 || 0}개</span>
+                </div>
+                <div className="flex justify-between items-center pb-1">
+                  <span>수(水) 에너지 흐름</span>
+                  <span className="font-bold text-[#1A1A1A]">{sajuInfo?.elements?.수 || 0}개</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    case "inner_disposition": {
+      const dispositionData = getInnerDispositionData(sajuInfo);
+      return (
+        <div className="space-y-6">
+          <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
+            ☯️ 타고난 기질 분석 및 3대 행동 강령
+          </h3>
+
+          {/* 6칸 만세력 기둥 블록 요약 카드 */}
+          <div className="bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5] shadow-inner space-y-2">
+            <span className="text-[10px] text-[#A3845B] font-bold block text-center">나의 삼주(三柱) 6칸 인생 에너지 코드</span>
+            <div className="grid grid-cols-3 gap-2 text-center text-xs">
+              <div className="bg-[#A3845B]/15 py-1.5 font-bold text-[#A3845B] rounded-t-md">일주 (日柱)</div>
+              <div className="bg-[#A3845B]/15 py-1.5 font-bold text-[#A3845B] rounded-t-md">월주 (月柱)</div>
+              <div className="bg-[#A3845B]/15 py-1.5 font-bold text-[#A3845B] rounded-t-md">연주 (年柱)</div>
+              
+              <div className={`py-4 rounded-lg font-bold text-base ${getElementColor(sajuInfo?.day?.stemEl)}`}>
+                <span className="block text-xl font-myeongjo">{sajuInfo?.day?.stem}</span>
+                <span className="text-[9px] opacity-75">{sajuInfo?.day?.stemEl}</span>
+              </div>
+              <div className={`py-4 rounded-lg font-bold text-base ${getElementColor(sajuInfo?.month?.stemEl)}`}>
+                <span className="block text-xl font-myeongjo">{sajuInfo?.month?.stem}</span>
+                <span className="text-[9px] opacity-75">{sajuInfo?.month?.stemEl}</span>
+              </div>
+              <div className={`py-4 rounded-lg font-bold text-base ${getElementColor(sajuInfo?.year?.stemEl)}`}>
+                <span className="block text-xl font-myeongjo">{sajuInfo?.year?.stem}</span>
+                <span className="text-[9px] opacity-75">{sajuInfo?.year?.stemEl}</span>
+              </div>
+              
+              <div className={`py-4 rounded-lg font-bold text-base ${getElementColor(sajuInfo?.day?.branchEl)}`}>
+                <span className="block text-xl font-myeongjo">{sajuInfo?.day?.branch}</span>
+                <span className="text-[9px] opacity-75">{sajuInfo?.day?.branchEl}</span>
+              </div>
+              <div className={`py-4 rounded-lg font-bold text-base ${getElementColor(sajuInfo?.month?.branchEl)}`}>
+                <span className="block text-xl font-myeongjo">{sajuInfo?.month?.branch}</span>
+                <span className="text-[9px] opacity-75">{sajuInfo?.month?.branchEl}</span>
+              </div>
+              <div className={`py-4 rounded-lg font-bold text-base ${getElementColor(sajuInfo?.year?.branchEl)}`}>
+                <span className="block text-xl font-myeongjo">{sajuInfo?.year?.branch}</span>
+                <span className="text-[9px] opacity-75">{sajuInfo?.year?.branchEl}</span>
+              </div>
+            </div>
+          </div>
+
+          <p className="text-xs text-[#5F5F5F] leading-relaxed font-light mt-4">
+            {dispositionData.dispositionSummary}
+          </p>
+
+          {/* 3대 행동 강령 */}
+          <div className="space-y-3 mt-4">
+            <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] border-b border-[#E2DDD5]/60 pb-1.5">
+              📋 [운의 궤도를 바꾸는 3대 행동 강령]
+            </h4>
+            <div className="grid gap-3">
+              {dispositionData.actionGuidelines.map((item, idx) => (
+                <div key={idx} className="flex gap-3 bg-white p-4 rounded-lg border border-[#E2DDD5]/70 shadow-sm">
+                  <div className="w-6 h-6 rounded-full bg-[#A3845B]/10 text-[#A3845B] flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">
+                    0{idx + 1}
+                  </div>
+                  <div className="space-y-1">
+                    <h5 className="font-bold text-xs text-[#1A1A1A]">{item.title}</h5>
+                    <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 비기 해설 (무료버전 잠금) */}
+          <div className="mt-4 border border-[#E2DDD5]/60 rounded-lg p-4 bg-[#FDFDFD] relative overflow-hidden">
+            <h4 className="font-myeongjo text-xs font-bold text-[#A3845B] mb-2 flex items-center gap-1.5">
+              🔒 혜안당 명리 비기 (일주의 심층 결합 비밀)
+            </h4>
+            
+            <div className={`${isFree ? "blur-[5px] select-none pointer-events-none" : ""} text-[11px] text-[#5F5F5F] leading-relaxed`}>
+              {dispositionData.secretKeys}
+            </div>
+            
+            {isFree && (
+              <div className="absolute inset-0 bg-[#F9F8F6]/60 flex flex-col items-center justify-center p-4 text-center">
+                <svg className="w-5 h-5 text-[#A3845B] mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                <span className="text-[10px] font-bold text-[#A3845B]">프리미엄 결제 후 비기 해설 전문 확인</span>
+                <button 
+                  onClick={handlePortonePayment} 
+                  className="mt-2 text-[9px] bg-[#A3845B] text-white px-2.5 py-1 rounded font-semibold hover:bg-[#8F724F] transition-colors"
+                >
+                  프리미엄 전환하기
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    case "lifestyle_strategy": {
+      const strategyData = getLifeStyleStrategyData(sajuInfo);
+      return (
+        <div className="space-y-6">
+          <div className="flex justify-between items-center border-b border-[#E2DDD5] pb-2">
+            <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] flex items-center gap-1.5">
+              <span>☯️</span> 살아가는 방식 및 행운물 풍수 공간 처방
+            </h3>
+            <span className="text-[10px] text-[#5F7A68] bg-[#5F7A68]/10 px-2.5 py-1 rounded font-bold">
+              {strategyData.wealthType}
+            </span>
+          </div>
+
+          <p className="text-xs text-[#5F5F5F] leading-relaxed font-light">
+            {strategyData.lifestyleIntro}
+          </p>
+
+          {/* 행운물 & 공간 풍수 배치 처방 카드 */}
+          <div className="border border-[#A3845B]/30 rounded-lg p-5 bg-[#F9F8F6] space-y-4 shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-[#A3845B]/5 rounded-bl-full flex items-center justify-end pr-4 pb-4 pointer-events-none">
+              <span className="text-[9px] font-bold text-[#A3845B]/30 tracking-widest uppercase rotate-45 select-none">FENGSHUI</span>
+            </div>
+            
+            <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] border-b border-[#E2DDD5] pb-2 flex items-center gap-1.5">
+              <span>🏡</span> [재물운 극대화 행운의 물건 &amp; 공간 오행/풍수 배치 처방]
+            </h4>
+
+            <div className="grid gap-3">
+              {Object.entries(strategyData.fengshui).map(([key, value]) => {
+                return (
+                  <div key={key} className="bg-white p-4 rounded border border-[#E2DDD5]/70 flex flex-col md:flex-row justify-between gap-3 relative">
+                    <div className="space-y-1 flex-1">
+                      <span className="text-[10px] bg-[#A3845B]/10 text-[#A3845B] px-2 py-0.5 rounded font-bold">
+                        {value.space}
+                      </span>
+                      <div className="pt-1.5 flex items-center gap-2">
+                        <span className="text-[11px] font-semibold text-[#1A1A1A]">추천 소품:</span>
+                        <span className={`text-[12px] font-extrabold text-[#A3845B] border-b border-[#A3845B]/30 pb-0.5 ${isFree ? "blur-[6px] select-none pointer-events-none" : ""}`}>
+                          {value.item}
+                        </span>
+                      </div>
+                      <p className={`text-[11px] text-[#5F5F5F] leading-relaxed font-light pt-1 ${isFree ? "blur-[5px] select-none pointer-events-none" : ""}`}>
+                        {value.desc}
+                      </p>
+                    </div>
+
+                    {isFree && (
+                      <div className="absolute inset-0 bg-[#F9F8F6]/40 flex items-center justify-center backdrop-blur-[0.5px]">
+                        <div className="bg-white/95 px-3 py-1.5 rounded border border-[#E2DDD5] shadow-md flex items-center gap-1.5 pointer-events-auto">
+                          <svg className="w-3.5 h-3.5 text-[#A3845B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                          </svg>
+                          <span className="text-[9px] font-bold text-[#A3845B]">결제 후 행운의 물품 및 풍수 비책 확인</span>
+                          <button 
+                            onClick={handlePortonePayment} 
+                            className="text-[8px] bg-[#A3845B] text-white px-1.5 py-0.5 rounded font-semibold hover:bg-[#8F724F] transition-colors"
+                          >
+                            잠금 해제
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 대운 전략 (무료버전 잠금) */}
+          <div className="border border-[#E2DDD5]/60 rounded-lg p-4 bg-white shadow-sm relative overflow-hidden">
+            <h4 className="font-myeongjo text-xs font-bold text-[#1A1A1A] mb-2 flex items-center gap-1.5">
+              🗝️ 대운 진입 장기 자산 전략 처방
+            </h4>
+            <p className={`text-[11px] text-[#5F5F5F] leading-relaxed font-light ${isFree ? "blur-[5px] select-none pointer-events-none" : ""}`}>
+              {strategyData.daeunStrategy}
+            </p>
+            
+            {isFree && (
+              <div className="absolute inset-0 bg-white/60 flex items-center justify-center p-3 text-center">
+                <span className="text-[10px] font-bold text-[#A3845B] flex items-center gap-1">
+                  🔒 프리미엄 대운 로드맵 전략 비공개 상태
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
 
     case "deficiency":
       return (
@@ -1425,6 +1710,8 @@ function ResultContent() {
   // Determine user's base element for 2026 compatibility
   const baseEl = sajuInfo.year.stemEl; // Representing birth year element
 
+
+
   // Check payment status on mount
   const [hasCheckedPayment, setHasCheckedPayment] = useState(false);
   useEffect(() => {
@@ -1478,24 +1765,20 @@ function ResultContent() {
   };
 
   const handlePortonePayment = () => {
-    if (typeof window === "undefined" || !window.IMP) {
-      alert("결제 모듈을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+    if (typeof window === "undefined") return;
+    
+    if (!window.IMP) {
+      alert("결제 모듈이 아직 로드되지 않았습니다. 인터넷 연결을 확인하시거나, 브라우저의 광고 차단 확장 프로그램(AdBlock 등)이 활성화되어 있다면 해제한 후 새로고침(F5)을 해주세요.");
       return;
     }
 
-    const IMP = window.IMP;
-    IMP.init("imp00000000"); // 포트원 테스트 식별코드
+    try {
+      const IMP = window.IMP;
+      const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
+      const pgCode = process.env.NEXT_PUBLIC_PORTONE_PG || "html5_inicis";
 
-    IMP.request_pay({
-      pg: "html5_inicis.INIpayTest",
-      pay_method: "card",
-      merchant_uid: `merchant_${new Date().getTime()}`,
-      name: `${name}님 정통 사주 풀이 보고서`,
-      amount: 34900,
-      buyer_name: name,
-    }, function (rsp) {
-      if (rsp.success) {
-        // 결제 성공 시 1.8초 동안 만세력 정밀 보조 빌드 애니메이션 시작
+      if (impCode === "imp00000000") {
+        alert("[개발자 테스트 안내] 테스트 가맹점 코드(imp00000000)가 감지되어 모의 결제 성공 시뮬레이션을 즉시 실행합니다.\n\n확인을 누르시면 로컬 스토리지에 결제완료(paid) 정보가 반영되고 34페이지 상세 보고서 잠금이 풀리게 됩니다.");
         setIsProcessing(true);
         setProgress(0);
         
@@ -1513,10 +1796,45 @@ function ResultContent() {
             setProgress(currentProgress);
           }
         }, 150);
-      } else {
-        alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
+        return;
       }
-    });
+      
+      IMP.init(impCode);
+
+      IMP.request_pay({
+        pg: pgCode,
+        pay_method: "card",
+        merchant_uid: `merchant_${new Date().getTime()}`,
+        name: `${name}님 정통 사주 풀이 보고서`,
+        amount: 34900,
+        buyer_name: name,
+      }, function (rsp) {
+        if (rsp.success) {
+          // 결제 성공 시 1.8초 동안 만세력 정밀 보조 빌드 애니메이션 시작
+          setIsProcessing(true);
+          setProgress(0);
+          
+          let currentProgress = 0;
+          const interval = setInterval(() => {
+            currentProgress += 10;
+            if (currentProgress >= 100) {
+              clearInterval(interval);
+              setTimeout(() => {
+                setIsProcessing(false);
+                setIsPaid(true);
+                updateLocalStorageOrderToPaid();
+              }, 300);
+            } else {
+              setProgress(currentProgress);
+            }
+          }, 150);
+        } else {
+          alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg} (가맹점코드: ${impCode}, PG: ${pgCode})`);
+        }
+      });
+    } catch (err) {
+      alert(`결제 모듈 실행 중 오류가 발생했습니다: ${err.message}`);
+    }
   };
 
   const renderLockOverlay = (sectionTitle) => {
@@ -1877,8 +2195,8 @@ function ResultContent() {
               </div>
 
               <p className="text-[11px] text-gray-300 font-light mb-6">
-                이 4가지로 총 27개 이야기.<br />
-                <strong>1개 이야기의 일부를 읽으셨습니다.</strong>
+                이 4가지로 총 34개 이야기.<br />
+                <strong>2개 이야기의 일부를 읽으셨습니다.</strong>
               </p>
 
               {/* 카운트다운 타이머 및 가격 */}
@@ -3300,6 +3618,41 @@ function ResultContent() {
 
   return (
     <div className="min-h-screen hyeandang-traditional-bg text-[#2C2C2C] py-10 px-4 md:py-16 print:bg-white print:py-0 print:px-0">
+      <Script 
+        src="https://cdn.iamport.kr/v1/iamport.js" 
+        strategy="afterInteractive"
+      />
+      {/* 결제 후 데이터 생성 중 로딩 애니메이션 오버레이 */}
+      {isProcessing && (
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-md flex flex-col items-center justify-center z-50 p-6 text-center select-none print:hidden">
+          <div className="border-2 border-[#A3845B] bg-[#F9F8F6] rounded-xl p-8 max-w-sm shadow-2xl space-y-6 relative">
+            <div className="absolute top-2 left-2 text-[#A3845B]/20 text-[10px]">卍</div>
+            <div className="absolute top-2 right-2 text-[#A3845B]/20 text-[10px]">卍</div>
+            <div className="absolute bottom-2 left-2 text-[#A3845B]/20 text-[10px]">卍</div>
+            <div className="absolute bottom-2 right-2 text-[#A3845B]/20 text-[10px]">卍</div>
+            
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#A3845B] border-t-transparent mx-auto"></div>
+            <div className="space-y-2">
+              <h4 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">
+                만세력 정밀 보조 데이터 빌드 중...
+              </h4>
+              <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                <div 
+                  className="bg-[#8B221E] h-2 rounded-full transition-all duration-150" 
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
+              <p className="text-[10px] text-gray-500 font-light">
+                {progress}% 완료
+              </p>
+            </div>
+            <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-traditional">
+              결제가 정상 승인되었습니다. 혜안당 명리 분석 시스템에서 귀하의 평생 사주 정밀 분석서를 작성하고 있습니다. 잠시만 기다려 주십시오.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-3xl mx-auto bg-[#F6F3EC] border-4 border-[#A3845B] rounded-lg p-6 md:p-12 shadow-md relative print:shadow-none print:border-none print:bg-white">
         
         {/* Decorative corner motifs */}
@@ -3339,7 +3692,7 @@ function ResultContent() {
 
           {/* Main Title */}
           <div className="text-center my-auto py-12 space-y-6">
-            <h1 className="font-myeongjo text-4xl md:text-5xl font-extrabold text-[#1A1A1A] tracking-widest leading-tight print:text-5xl">
+            <h1 className="font-myeongjo text-3xl md:text-4xl font-extrabold text-[#1A1A1A] tracking-wider leading-tight print:text-4xl break-keep">
               {type === "saju" && "평생 종합 사주팔자 보고서"}
               {type === "newyear" && "신년 운세 - 토정비결 보고서"}
               {type === "wealth" && "재물 및 비즈니스 운세 보고서"}
@@ -3457,3 +3810,315 @@ export default function ResultPage() {
     </Suspense>
   );
 }
+
+// ==========================================
+// [신설 헬퍼 함수] 10페이지: 여덟 글자의 운명 조화 및 마음가짐 처방 데이터 생성
+// ==========================================
+const getDestinyHarmonyData = (sajuInfo) => {
+  const dayStem = sajuInfo?.day?.stem || "甲";
+  const dayStemEl = sajuInfo?.day?.stemEl || "목";
+  const elements = sajuInfo?.elements || { 목: 0, 화: 0, 토: 0, 금: 0, 수: 0 };
+  
+  // 과다/결핍 오행 분석
+  let maxEl = "목";
+  let maxCount = -1;
+  let minEl = "수";
+  let minCount = 999;
+  
+  Object.entries(elements).forEach(([el, count]) => {
+    if (count > maxCount) {
+      maxCount = count;
+      maxEl = el;
+    }
+    if (count < minCount) {
+      minCount = count;
+      minEl = el;
+    }
+  });
+
+  const elNames = {
+    목: "목(木 - 나무)",
+    화: "화(火 - 불)",
+    토: "토(土 - 흙)",
+    금: "금(金 - 쇠)",
+    수: "수(水 - 물)"
+  };
+
+  const elProperties = {
+    목: {
+      excess: "추진력과 의욕이 넘치지만 자칫 시작만 하고 마무리가 약해질 수 있으며, 지나친 고집으로 타인과의 마찰을 빚기 쉽습니다.",
+      deficient: "새로운 시작에 대한 두려움이 생기기 쉽고, 자신감이 위축되거나 추진력이 부족하여 기회를 망설이다 놓칠 수 있습니다.",
+      mindset: "천천히 호흡하며 타인의 의견을 수용하고, 뿌리가 흔들리지 않는 거목처럼 차분하고 듬직하게 기다리는 여유를 갖추어야 합니다."
+    },
+    화: {
+      excess: "표현력과 열정이 넘쳐 화려하지만, 감정 기복이 심해지기 쉽고 성급한 결정으로 불꽃처럼 타올랐다 빠르게 식어버릴 수 있습니다.",
+      deficient: "스스로를 밖으로 드러내는 열정과 표현력이 다소 부족해 보일 수 있으며, 의욕이 쉽게 침체되거나 우울감에 빠질 수 있습니다.",
+      mindset: "조급한 불길을 잠재우고 내면의 냉철한 이성을 채워 넣어야 합니다. 순간의 감정 폭발을 억제하고 에너지를 한곳에 모으는 명상이 필요합니다."
+    },
+    토: {
+      excess: "포용력과 고집이 대단하여 굳건하지만, 고집이 지나쳐 변화를 거부하고 생각의 틀에 갇혀 고립되거나 게을러지기 쉽습니다.",
+      deficient: "기반이 흔들리는 불안감을 자주 느낄 수 있으며, 주거지나 직장이 자주 변동되는 등 삶의 안정성이 약해지기 쉽습니다.",
+      mindset: "어떠한 거센 풍파가 와도 흔들리지 않는 거대한 대지처럼 묵직하게 스스로의 자존감을 지켜내며, 열린 마음으로 변화를 받아들여야 합니다."
+    },
+    금: {
+      excess: "결단력과 맺고 끊음이 칼날 같으나, 지나치게 냉정하거나 비판적인 태도로 인해 주변 사람들에게 상처를 주고 고독해질 수 있습니다.",
+      deficient: "공과 사를 구분하고 결정을 내리는 결단력이 약해질 수 있으며, 맺고 끊지 못하는 유유부단함으로 인해 불필요한 고생을 자초할 수 있습니다.",
+      mindset: "날카로운 칼날 끝을 둥글게 갈아내는 유연한 자비심이 필요합니다. 완벽주의라는 굴레에서 벗어나 스스로에게 칭찬을 건네는 습관을 들여야 합니다."
+    },
+    수: {
+      excess: "생각과 지혜가 깊어 직관력이 매우 뛰어나지만, 생각이 지나치게 많아 우울감이나 불안감에 휩싸이기 쉽고 비밀이 많아질 수 있습니다. 조용히 정체되기 쉽습니다.",
+      deficient: "생각의 깊이와 침착함이 아쉬울 수 있고, 마음이 늘 분주하며 눈앞의 자극에 쉽게 휩쓸려 내적인 평정심을 잃기 쉽습니다.",
+      mindset: "끝없이 흘러내리는 맑은 샘물처럼, 멈추지 않는 지혜의 흐름을 믿고 어떤 고난도 유연하게 비껴가는 유수(流水)의 지혜를 내면화해야 합니다."
+    }
+  };
+
+  const excessDesc = elProperties[maxEl]?.excess || "";
+  const deficientDesc = elProperties[minEl]?.deficient || "";
+  const mindsetDesc = elProperties[dayStemEl]?.mindset || "균형 있는 마음가짐을 가져야 합니다.";
+
+  // 오행 순환 구조에 따른 희귀도 가상 매핑
+  let rarityScore = "98.7%";
+  if (maxCount >= 4) rarityScore = "99.4% (극희귀 쏠림형 구조)";
+  else if (minCount > 0) rarityScore = "97.5% (오행 구족 안정형 구조)";
+
+  return {
+    title: "여덟 글자의 운명 조화 및 마음가짐 처방",
+    intro: `귀하의 사주는 ${dayStem}일간을 중심으로 구성된 팔자이며, 전체 오행 분포 중 가장 강한 기운은 ${elNames[maxEl]}이고 가장 보완이 필요한 기운은 ${elNames[minEl]}입니다.`,
+    harmonyAnalysis: `강한 ${maxEl}의 기운으로 인해 ${excessDesc} 한편, ${minEl}의 기운이 상대적으로 약화되어 ${deficientDesc} 따라서 인생의 균형을 찾기 위해서는 이 치우쳐진 우주 에너지를 조화롭게 제어하는 내면의 태도가 필수적입니다.`,
+    mindsetPrescription: mindsetDesc,
+    rarity: rarityScore,
+    dayStem,
+    dayStemEl
+  };
+};
+
+// ==========================================
+// [신설 헬퍼 함수] 11페이지: 타고난 기질 분석 및 3대 행동 강령 데이터 생성
+// ==========================================
+const getInnerDispositionData = (sajuInfo) => {
+  const dayStem = sajuInfo?.day?.stem || "甲";
+  const dayStemEl = sajuInfo?.day?.stemEl || "목";
+
+  const guidelines = {
+    목: [
+      {
+        title: "신속한 시작보다는 마무리의 마일스톤 설계하기",
+        desc: "새로운 프로젝트를 기획하고 착수할 때, 시작에 쏟는 에너지의 30%를 최종 완성 단계를 점검하고 피드백하는 일정에 미리 배정해두십시오."
+      },
+      {
+        title: "의견 조율 시 3초 멈추고 경청하기",
+        desc: "강한 추진력과 주체성으로 인해 타인의 조언을 간섭으로 느끼기 쉽습니다. 대화 중 반론이 생기면 속으로 3초를 센 뒤 리액션하는 습관을 들이십시오."
+      },
+      {
+        title: "초록빛 식물과 아침 산책으로 생기 충전",
+        desc: "나무(木)의 솟구치는 기운이 침체될 때 슬럼프가 옵니다. 일주일에 2회 이상 나무가 우거진 곳을 걸으며 새벽이나 오전의 맑은 기운을 쐬십시오."
+      }
+    ],
+    화: [
+      {
+        title: "의사결정 전 24시간 숙고 필터링 적용",
+        desc: "감정이 고조되었을 때 즉흥적으로 약속하거나 투자하는 습관은 해롭습니다. 중요 결정은 반드시 하룻밤을 자고 난 후에 진행하십시오."
+      },
+      {
+        title: "따뜻한 칭찬과 경청을 통한 인맥 관리",
+        desc: "나의 화려한 화술로 좌중을 압도하기보다 상대방의 이야기를 적극적으로 이끌어내고 칭찬하여, 나를 돕는 우호적 세력을 견고히 하십시오."
+      },
+      {
+        title: "심호흡과 차분한 조명의 명상 시간 가지기",
+        desc: "넘치는 화(火) 기운을 다스리기 위해 침실 조명을 낮추고 하루 10분간 생각을 끄는 잔잔한 명상 또는 요가를 생활화하십시오."
+      }
+    ],
+    토: [
+      {
+        title: "변화를 거부하지 않고 주 1회 새로운 시도",
+        desc: "익숙함에 안주하면 운이 정체됩니다. 주 1회 가지 않던 길로 출근하거나 새로운 분야의 책을 읽으며 정체된 토(土) 기운을 순환시키십시오."
+      },
+      {
+        title: "타인과의 감정적 거리 유지 및 경계선 긋기",
+        desc: "넓은 포용력으로 타인의 짐을 짊어지다 지치기 쉽습니다. 나와 타인의 경계를 명확히 하고 거절하는 연습을 서서히 해나가야 합니다."
+      },
+      {
+        title: "가벼운 유산소 운동으로 무거운 기운 털어내기",
+        desc: "신체가 무거워지면 정신도 게을러지기 쉬운 오행입니다. 땀이 약간 날 정도의 달리기나 등산을 규칙적으로 하여 기운을 순환하십시오."
+      }
+    ],
+    금: [
+      {
+        title: "완벽의 잣대를 내려놓고 80% 룰 적용",
+        desc: "100% 완벽함을 추구하다 스스로를 옥죄고 타인을 다그치기 쉽습니다. 80%의 완성도에서 1차 실행을 하고 보완하는 융통성을 발휘하십시오."
+      },
+      {
+        title: "가까운 인연에게 따뜻한 지지 표현하기",
+        desc: "냉철한 피드백은 상대에게 비수가 될 수 있습니다. 지적이나 정답을 주기 전에 상대방의 감정에 먼저 공감하고 지지하는 따뜻한 말을 건네십시오."
+      },
+      {
+        title: "부드러운 실크나 면 소재 의류 활용",
+        desc: "차가운 날카로움을 중화하기 위해 일상 복장에 부드러운 파스텔톤 컬러나 촉감이 부드러운 의류를 믹스매치하여 인상을 유화시키십시오."
+      }
+    ],
+    수: [
+      {
+        title: "생각을 머릿속에 가두지 않고 매일 메모하기",
+        desc: "생각이 너무 깊어지면 행동이 정체됩니다. 매일 아침 오늘 실행할 핵심 업무 3가지를 화이트보드나 노트에 적어 시각화하고 즉시 착수하십시오."
+      },
+      {
+        title: "경계심을 풀고 속내를 털어놓을 멘토 확보",
+        desc: "혼자 고민을 안고 끙끙 앓다 보면 부정적 감정에 함몰되기 쉽습니다. 온전히 나를 지지해주는 신뢰할 수 있는 멘토나 상담 대상을 마련하십시오."
+      },
+      {
+        title: "반신욕이나 족욕을 통해 차가운 기운 순환",
+        desc: "수(水) 기운은 하체가 차가워지기 쉽습니다. 몸의 온도를 높여 기혈 순환을 돕고, 따뜻한 성질의 차를 자주 음용하십시오."
+      }
+    ]
+  };
+
+  const dispositionSummaries = {
+    목: `귀하의 기질은 대지를 뚫고 솟아오르는 새싹이자 하늘을 향해 뻗어가는 아름드리나무의 본질을 지녔습니다. 곧고 바른 성품으로 명예를 중시하며, 창조적인 아이디어와 개척 정신이 매우 뛰어납니다. 다만 자신의 뜻이 꺾이거나 강제적인 지시를 받을 때 심하게 좌절하거나 반발심을 가질 수 있는 기질적 약점을 지니고 있습니다.`,
+    화: `귀하의 기질은 세상을 환하게 비추는 태양이자 밤하늘을 수놓는 모닥불의 본질을 지녔습니다. 예의가 바르고 활력이 넘치며, 자신을 표현하고 대중을 이끄는 카리스마와 전달력이 대단히 훌륭합니다. 다만 흥분하기 쉽고 인내심이 부족해져 마무리가 다소 흐릿해지거나 감정에 휩쓸려 일을 그르칠 수 있는 약점이 있습니다.`,
+    토: `귀하의 기질은 만물을 포용하고 길러내는 넓은 대지이자 거대한 산맥의 본질을 지녔습니다. 신용과 신의를 인생의 최고 가치로 삼으며, 듬직하고 과묵하게 주변 사람들을 품어주는 훌륭한 중재자입니다. 하지만 지나치게 보수적이거나 고집이 강해 변화에 둔감하고, 속마음을 쉽게 드러내지 않아 스스로 병을 키울 수 있습니다.`,
+    금: `귀하의 기질은 날카로운 서릿발이자 가을의 결실을 거두는 예리한 칼날의 본질을 지녔습니다. 공과 사가 뚜렷하며, 정의롭고 한번 맺은 결단은 칼로 자르듯 확실하게 집행하는 실행력을 갖췄습니다. 하지만 인간관계에서 너무 융통성 없이 냉정하게 행동하여 의도치 않게 주변을 멀어지게 하는 차가움이 약점입니다.`,
+    수: `귀하의 기질은 온 세상을 유연하게 적시는 맑은 물이자 깊고 넓은 바다의 본질을 지녔습니다. 두뇌 회전이 매우 빠르고 지혜로우며, 임기응변과 대인 관계의 유연함이 돋보입니다. 하지만 생각이 꼬리에 꼬리를 물어 과도한 걱정과 우울감에 사로잡히기 쉽고, 겉으로는 웃으면서도 진짜 속마음은 꽁꽁 숨겨두는 경향이 있습니다.`
+  };
+
+  const actionGuidelines = guidelines[dayStemEl] || guidelines["목"];
+  const summary = dispositionSummaries[dayStemEl] || dispositionSummaries["목"];
+
+  return {
+    title: "타고난 기질 분석 및 3대 행동 강령",
+    dispositionSummary: summary,
+    actionGuidelines: actionGuidelines,
+    secretKeys: `귀하의 일간(${dayStem})이 주변 오행들과 맺고 있는 구조적 비기는 다음과 같습니다. 사주에 내재된 은밀한 내적 충동은 주위의 지지를 받을 때 폭발적인 성과를 내지만, 고립되었을 때는 극단적인 냉소주의로 빠질 위험이 있습니다. 따라서 행동 강령에 제시된 습관적 훈련을 통하여 감정 조율의 항상성을 유지하는 것이 타고난 큰 그릇을 채우는 열쇠가 될 것입니다.`
+  };
+};
+
+// ==========================================
+// [신설 헬퍼 함수] 12페이지: 살아가는 방식 및 행운물 풍수 공간 처방 데이터 생성
+// ==========================================
+const getLifeStyleStrategyData = (sajuInfo) => {
+  const dayStem = sajuInfo?.day?.stem || "甲";
+  const dayStemEl = sajuInfo?.day?.stemEl || "목";
+
+  // 일간 오행별 재물 획득 유형 및 행운의 아이템/풍수 매핑
+  const data = {
+    목: {
+      wealthType: "아이디어 창조형 및 미래 가치 투자형 재물운",
+      lifestyleIntro: "귀하는 머릿속의 기획과 지적 자산, 새로운 비즈니스 모델을 구상하여 무(無)에서 유(有)를 창조할 때 돈이 벌리는 유형입니다. 단순히 노동을 하거나 뻔한 루트로 자산을 굴리는 것은 맞지 않으며, 트렌드를 선점하는 투자나 교육, 창작, 기술 기반 자산 형성이 운을 극대화합니다.",
+      fengshui: {
+        bedroom: {
+          space: "침실 (Bedroom)",
+          item: "초록빛 아쿠아마린 스톤 소품",
+          desc: "침실 동쪽 테이블 위에 배치하여 나무의 성장을 돕는 수생목(水生木)의 원활한 순환 기류를 유도합니다."
+        },
+        desk: {
+          space: "책상 (Desk)",
+          item: "소형 대나무 수경재배 화분",
+          desc: "컴퓨터나 모니터 좌측에 두어 학문적 영감과 기획력을 자극하고, 눈의 피로를 막는 목(木) 에너지를 보강합니다."
+        },
+        livingroom: {
+          space: "거실 (Living Room)",
+          item: "부드러운 패브릭 소재의 하늘색 쿠션",
+          desc: "거실 소파에 배치하여 가족 간의 반목을 해소하고 외출 후 귀가했을 때 지친 목(木) 기운을 재충전합니다."
+        }
+      },
+      daeunStrategy: "향후 다가오는 대운 기류에서는 특히 귀하가 구상해 온 무형의 자산을 특허권, 저작권, 혹은 브랜드 형태로 규격화하여 권리소득(문서운)으로 전환하는 전략이 핵심입니다. 이를 위해 지속적으로 전문 자격을 갱신해 가십시오."
+    },
+    화: {
+      wealthType: "네트워크 확장형 및 플랫폼 마케팅형 재물운",
+      lifestyleIntro: "귀하는 수많은 사람들과의 연결망을 장악하고, 자신 혹은 회사의 매력을 널리 홍보하여 대중의 시선을 자본으로 치환하는 유형입니다. 브랜딩, 홍보, 예술, 방송, 다각적 소셜 미디어를 거점으로 삼아 활력을 전파할 때 돈의 흐름이 막힘없이 흘러들어오게 됩니다.",
+      fengshui: {
+        bedroom: {
+          space: "침실 (Bedroom)",
+          item: "은은한 우드 트레이와 아로마 디퓨저",
+          desc: "침대 주변 서쪽 협탁에 두어 불꽃처럼 타오르는 화(火) 기운을 은은하고 차분하게 정화하여 숙면과 건강운을 돕습니다."
+        },
+        desk: {
+          space: "책상 (Desk)",
+          item: "붉은색 가죽 데스크 매트",
+          desc: "책상 위 중앙이나 우측에 배치하여 즉각적인 의사결정력과 열정을 고취하고 나를 알리는 대외적 명예운을 높입니다."
+        },
+        livingroom: {
+          space: "거실 (Living Room)",
+          item: "노란색 도자기 화병 또는 도자기 오브제",
+          desc: "남쪽 창가 근처에 배치하여 강한 불길의 설기를 도와 황금빛 토(土) 재물 창고를 튼튼하게 채워줍니다."
+        }
+      },
+      daeunStrategy: "에너지가 밖으로 과도하게 확산되어 겉만 화려하고 실속이 줄어드는 시기가 올 수 있으므로, 대운의 흐름 속에서 유입된 자산은 반드시 즉시 실물 부동산이나 연금자산 등으로 묶어두는 강제적 잠금 장치가 반드시 병행되어야 합니다."
+    },
+    토: {
+      wealthType: "안정 자산 축적형 및 가치 평가 감정형 재물운",
+      lifestyleIntro: "귀하는 대지처럼 자산을 안전하게 보관하고, 저평가된 물건이나 부동산을 발굴하여 장기적으로 묵혀 가치를 올리는 자산 축적에 최적화된 유형입니다. 공격적인 단기 주식 매매보다는 안정적인 토지, 건물, 혹은 원자금 형태의 투자가 체질에 완벽히 부합합니다.",
+      fengshui: {
+        bedroom: {
+          space: "침실 (Bedroom)",
+          item: "천연 소금 램프",
+          desc: "침실 남동쪽 구석에 은은하게 켜두어 탁한 기운을 살균하고, 따뜻한 기운으로 토(土)의 토양을 비옥하게 가꿔줍니다."
+        },
+        desk: {
+          space: "책상 (Desk)",
+          item: "황동 재질의 펜꽂이",
+          desc: "책상 우측 모서리에 배치하여 토(土)의 기운이 금(金)이라는 알짜배기 결과물로 단단히 여물도록 촉진합니다."
+        },
+        livingroom: {
+          space: "거실 (Living Room)",
+          item: "베이지 톤의 극세사 러그",
+          desc: "거실 중앙 바닥에 넓게 펼쳐두어 기운의 무게 중심을 아래로 가라앉히고, 집안 전체에 안정감과 금전이 머물도록 돕습니다."
+        }
+      },
+      daeunStrategy: "묵직한 기운이 자칫 게으름이나 판단 지연으로 이어져 매수/매도 시기를 놓치기 쉬우므로, 신뢰할 수 있는 전문가나 대운 동반자와 정기적인 자산 진단을 약속해두는 정량적 관리가 재물 규모를 세 배로 늘려줄 것입니다."
+    },
+    금: {
+      wealthType: "시스템 통제형 및 냉철한 펀드매니저형 재물운",
+      lifestyleIntro: "귀하는 철저한 수치 계산과 데이터 기반의 리스크 통제를 통해 정밀하게 짜인 시스템에서 수익을 창출하는 유형입니다. 감정에 치우치지 않는 자산 배분 포트폴리오를 설계하거나, 구조화된 금융 상품, 약정이 확실한 채권 투자 등에서 두각을 나타냅니다.",
+      fengshui: {
+        bedroom: {
+          space: "침실 (Bedroom)",
+          item: "진한 남색빛 암막 커튼",
+          desc: "침실 창에 설치하여 밤사이 유입되는 불필요한 살기를 차단하고 금(金) 기운의 날카로움을 깊은 명상적 수면으로 안정시킵니다."
+        },
+        desk: {
+          space: "책상 (Desk)",
+          item: "검은색 대리석 마우스패드",
+          desc: "마우스 놓는 자리에 차가운 검정 돌(대리석) 소재를 활용하여 금생수(金生水)로 지혜로운 재테크 판단력을 극대화합니다."
+        },
+        livingroom: {
+          space: "거실 (Living Room)",
+          item: "스틸 프레임의 실버 액자",
+          desc: "현관을 들어섰을 때 마주하는 벽면에 걸어두어 외부의 나쁜 액운을 금의 기운으로 쳐내고 평온을 유지합니다."
+        }
+      },
+      daeunStrategy: "칼같이 차갑고 정확한 결정으로 단기 수익은 좋으나, 주변 사람들과의 이익 분배 과정에서 잡음이 생기면 큰 재물이 새어나갑니다. 나눌 몫을 명확히 명문화하고 기부 등 선행을 베풀어야 액운이 비껴갑니다."
+    },
+    수: {
+      wealthType: "정보 비대칭 유통형 및 지적 라이선스 재물운",
+      lifestyleIntro: "귀하는 다른 사람들이 알지 못하는 은밀한 정보나 깊이 있는 전문 지식을 가공하고 유통하여 중개 수수료나 로열티를 취득하는 유형입니다. 유통, 무역, 교육 컨설팅, 온라인 지식 콘텐츠 판매 등 흘러가는 물길처럼 경계가 없는 비즈니스에서 거부가 탄생합니다.",
+      fengshui: {
+        bedroom: {
+          space: "침실 (Bedroom)",
+          item: "순백의 백자 화병",
+          desc: "머리맡에 금(金)의 기운을 담은 흰 도자기를 두어 맑은 수(水) 에너지가 마르지 않도록 끊임없이 생조(生助)해 줍니다."
+        },
+        desk: {
+          space: "책상 (Desk)",
+          item: "유리 재질의 모래시계",
+          desc: "책상 정중앙에 두어 물 흐르듯 유연한 시간 관리 능력을 체화하고, 정보 가공 역량을 집중시킬 수 있게 돕습니다."
+        },
+        livingroom: {
+          space: "거실 (Living Room)",
+          item: "원형의 검은색 메탈 벽시계",
+          desc: "거실 북쪽 벽면에 걸어두어 수(水) 기운의 본래 방위인 북방의 에너지를 활성화하고, 재물운의 파동을 널리 퍼뜨립니다."
+        }
+      },
+      daeunStrategy: "기운이 너무 흘러 다니면 재물이 쌓이지 않고 모래알처럼 빠져나가기 쉽습니다. 대운의 길목에서는 반드시 등기 권리증이나 장기 적금 등 쉽게 현금화할 수 없는 단단한 문서 자산으로 잠가 두어야 안정적 말년이 보장됩니다."
+    }
+  };
+
+  const selected = data[dayStemEl] || data["목"];
+
+  return {
+    title: "살아가는 방식 및 행운물 풍수 공간 처방",
+    wealthType: selected.wealthType,
+    lifestyleIntro: selected.lifestyleIntro,
+    fengshui: selected.fengshui,
+    daeunStrategy: selected.daeunStrategy
+  };
+};

@@ -1,5 +1,4 @@
 import { Nanum_Myeongjo, Noto_Sans_KR } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 
 const myeongjo = Nanum_Myeongjo({
@@ -27,9 +26,7 @@ export default function RootLayout({ children }) {
       lang="ko"
       className={`${myeongjo.variable} ${gothic.variable} h-full antialiased`}
     >
-      <head>
-        <Script src="https://cdn.iamport.kr/v1/iamport.js" strategy="beforeInteractive" />
-      </head>
+      <head />
       <body className="min-h-full flex flex-col bg-background text-foreground font-gothic">
         {children}
       </body>

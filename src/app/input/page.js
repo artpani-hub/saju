@@ -665,7 +665,13 @@ function InputFormContent() {
 
     const IMP = window.IMP;
     const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
-    const pgChannel = process.env.NEXT_PUBLIC_PORTONE_PG || "kcp.T0000";
+    const pgChannel = process.env.NEXT_PUBLIC_PORTONE_PG || "html5_inicis";
+    if (impCode === "imp00000000") {
+      alert("[개발자 테스트 안내] 테스트 가맹점 코드(imp00000000)가 감지되어 모의 결제 성공 시뮬레이션을 즉시 실행합니다.\n\n확인을 누르시면 주문 정보가 관리자 페이지에 결제완료(paid) 상태로 즉시 등록되고 분석 화면으로 넘어갑니다.");
+      startAnalysis();
+      return;
+    }
+
     IMP.init(impCode);
 
     const base = activeProduct.price;
@@ -690,7 +696,7 @@ function InputFormContent() {
       if (rsp.success) {
         startAnalysis(); // 결제 완료 시 분석 진행
       } else {
-        alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
+        alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg} (가맹점코드: ${impCode}, PG: ${pgChannel})`);
       }
     });
   };

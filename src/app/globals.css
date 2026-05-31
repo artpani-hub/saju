@@ -200,6 +200,15 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
     break-before: page !important;
     margin-top: 0 !important;
   }
+
+  /* 인쇄 시 스크롤바 영역을 전체 노출하여 데이터 잘림 방지 */
+  .overflow-y-auto, 
+  .custom-scrollbar {
+    max-height: none !important;
+    overflow: visible !important;
+    overflow-y: visible !important;
+    padding-right: 0 !important;
+  }
 }
 
 /* ----------------------------------------------------
