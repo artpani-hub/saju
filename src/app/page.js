@@ -698,23 +698,37 @@ export default function Home() {
                 <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-2 font-light text-foreground-muted">
                   <div className="flex justify-between items-center">
                     <span className="flex items-center gap-1.5 text-foreground font-medium">✨ 고급 리포트 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span></span>
-                    <span className="font-semibold text-brass">30,000원</span>
+                    <div className="text-right">
+                      <span className="line-through text-foreground-muted/60 text-[10px] block">55,000원</span>
+                      <span className="font-bold text-brass">34,900원</span>
+                    </div>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="flex items-center gap-1.5 text-[#5F7A68] font-medium">👑 심화 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span></span>
-                    <span className="font-semibold text-[#5F7A68]">45,000원</span>
+                    <div className="text-right">
+                      <span className="line-through text-foreground-muted/60 text-[10px] block">70,000원</span>
+                      <span className="font-bold text-[#5F7A68]">49,900원</span>
+                    </div>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="flex items-center gap-1.5 font-medium text-gray-700">💬 문자메시지 요약</span>
-                    <span className="font-semibold text-gray-700">20,000원</span>
+                    <div className="text-right">
+                      <span className="line-through text-foreground-muted/60 text-[10px] block">35,000원</span>
+                      <span className="font-bold text-gray-700">14,900원</span>
+                    </div>
                   </div>
                 </div>
               </div>
               <div>
-                <div className="border-t border-border-custom pt-4 mb-4 flex items-baseline gap-1">
-                  <span className="text-xs text-foreground-muted">기본 요금</span>
-                  <span className="text-2xl font-bold text-foreground">30,000</span>
-                  <span className="text-xs text-foreground-muted">원~</span>
+                <div className="border-t border-border-custom pt-4 mb-4">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-xs text-foreground-muted line-through">55,000원~</span>
+                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">37% 할인</span>
+                  </div>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-2xl font-bold text-foreground">34,900</span>
+                    <span className="text-xs text-foreground-muted">원~</span>
+                  </div>
                 </div>
                 <Link
                   href="/input?product=saju"
@@ -739,23 +753,37 @@ export default function Home() {
                 <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-2 font-light text-foreground-muted">
                   <div className="flex justify-between items-center">
                     <span className="flex items-center gap-1.5 text-foreground font-medium">✨ 고급 리포트 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span></span>
-                    <span className="font-semibold text-brass">35,000원</span>
+                    <div className="text-right">
+                      <span className="line-through text-foreground-muted/60 text-[10px] block">55,000원</span>
+                      <span className="font-bold text-brass">34,900원</span>
+                    </div>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="flex items-center gap-1.5 text-[#5F7A68] font-medium">👑 심화 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span></span>
-                    <span className="font-semibold text-[#5F7A68]">50,000원</span>
+                    <div className="text-right">
+                      <span className="line-through text-foreground-muted/60 text-[10px] block">70,000원</span>
+                      <span className="font-bold text-[#5F7A68]">49,900원</span>
+                    </div>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="flex items-center gap-1.5 font-medium text-gray-700">💬 문자메시지용</span>
-                    <span className="font-semibold text-gray-700">25,000원</span>
+                    <div className="text-right">
+                      <span className="line-through text-foreground-muted/60 text-[10px] block">40,000원</span>
+                      <span className="font-bold text-gray-700">14,900원</span>
+                    </div>
                   </div>
                 </div>
               </div>
               <div>
-                <div className="border-t border-border-custom pt-4 mb-4 flex items-baseline gap-1">
-                  <span className="text-xs text-foreground-muted">기본 요금</span>
-                  <span className="text-2xl font-bold text-foreground">35,000</span>
-                  <span className="text-xs text-foreground-muted">원~</span>
+                <div className="border-t border-border-custom pt-4 mb-4">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-xs text-foreground-muted line-through">55,000원~</span>
+                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">37% 할인</span>
+                  </div>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-2xl font-bold text-foreground">34,900</span>
+                    <span className="text-xs text-foreground-muted">원~</span>
+                  </div>
                 </div>
                 <Link
                   href="/input?product=newyear"
@@ -780,19 +808,30 @@ export default function Home() {
                 <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-2 font-light text-foreground-muted">
                   <div className="flex justify-between items-center">
                     <span className="flex items-center gap-1.5 text-foreground font-medium">✨ 고급 리포트 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span></span>
-                    <span className="font-semibold text-brass">35,000원</span>
+                    <div className="text-right">
+                      <span className="line-through text-foreground-muted/60 text-[10px] block">36,900원</span>
+                      <span className="font-bold text-brass">29,900원</span>
+                    </div>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="flex items-center gap-1.5 font-medium text-gray-700">💬 문자메시지 요약</span>
-                    <span className="font-semibold text-gray-700">25,000원</span>
+                    <div className="text-right">
+                      <span className="line-through text-foreground-muted/60 text-[10px] block">25,000원</span>
+                      <span className="font-bold text-gray-700">9,900원</span>
+                    </div>
                   </div>
                 </div>
               </div>
               <div>
-                <div className="border-t border-border-custom pt-4 mb-4 flex items-baseline gap-1">
-                  <span className="text-xs text-foreground-muted">기본 요금</span>
-                  <span className="text-2xl font-bold text-foreground">35,000</span>
-                  <span className="text-xs text-foreground-muted">원~</span>
+                <div className="border-t border-border-custom pt-4 mb-4">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-xs text-foreground-muted line-through">36,900원~</span>
+                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">19% 할인</span>
+                  </div>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-2xl font-bold text-foreground">29,900</span>
+                    <span className="text-xs text-foreground-muted">원~</span>
+                  </div>
                 </div>
                 <Link
                   href="/input?product=tojeong"
@@ -814,9 +853,15 @@ export default function Home() {
                 </p>
               </div>
               <div>
-                <div className="border-t border-border-custom pt-4 mb-4 flex items-baseline gap-1">
-                  <span className="text-2xl font-bold text-foreground">20,000</span>
-                  <span className="text-xs text-foreground-muted">원</span>
+                <div className="border-t border-border-custom pt-4 mb-4">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-xs text-foreground-muted line-through">30,000원</span>
+                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">33% 할인</span>
+                  </div>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-2xl font-bold text-foreground">20,000</span>
+                    <span className="text-xs text-foreground-muted">원</span>
+                  </div>
                 </div>
                 <Link
                   href="/input?product=wealth"
@@ -838,9 +883,15 @@ export default function Home() {
                 </p>
               </div>
               <div>
-                <div className="border-t border-border-custom pt-4 mb-4 flex items-baseline gap-1">
-                  <span className="text-2xl font-bold text-foreground">10,000</span>
-                  <span className="text-xs text-foreground-muted">원</span>
+                <div className="border-t border-border-custom pt-4 mb-4">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-xs text-foreground-muted line-through">15,000원</span>
+                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">33% 할인</span>
+                  </div>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-2xl font-bold text-foreground">10,000</span>
+                    <span className="text-xs text-foreground-muted">원</span>
+                  </div>
                 </div>
                 <Link
                   href="/input?product=tarot"
@@ -865,9 +916,15 @@ export default function Home() {
                 </p>
               </div>
               <div>
-                <div className="border-t border-border-custom pt-4 mb-4 flex items-baseline gap-1">
-                  <span className="text-2xl font-bold text-foreground">30,000</span>
-                  <span className="text-xs text-foreground-muted">원</span>
+                <div className="border-t border-border-custom pt-4 mb-4">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-xs text-foreground-muted line-through">45,000원</span>
+                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">33% 할인</span>
+                  </div>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-2xl font-bold text-foreground">30,000</span>
+                    <span className="text-xs text-foreground-muted">원</span>
+                  </div>
                 </div>
                 <Link
                   href="/input?product=gunghap"
@@ -892,9 +949,15 @@ export default function Home() {
                 </p>
               </div>
               <div>
-                <div className="border-t border-border-custom pt-4 mb-4 flex items-baseline gap-1">
-                  <span className="text-2xl font-bold text-foreground">20,000</span>
-                  <span className="text-xs text-foreground-muted">원</span>
+                <div className="border-t border-border-custom pt-4 mb-4">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-xs text-foreground-muted line-through">30,000원</span>
+                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">33% 할인</span>
+                  </div>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-2xl font-bold text-foreground">20,000</span>
+                    <span className="text-xs text-foreground-muted">원</span>
+                  </div>
                 </div>
                 <Link
                   href="/input?product=dream"

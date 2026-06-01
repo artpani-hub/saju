@@ -12,18 +12,21 @@ const products = {
     title: "평생 종합 사주팔자",
     category: "사주팔자",
     price: 34900,
+    originalPrice: 55000,
     desc: "타고난 오행 분포, 대운의 흐름, 전반적인 라이프사이클 솔루션 제공",
   },
   newyear: {
     title: "신년운세",
     category: "시즌 한정",
     price: 34900,
+    originalPrice: 55000,
     desc: "한 해의 전체적인 기운과 방향성, 월별 상세 운세 가이드",
   },
   tojeong: {
     title: "토정비결",
     category: "시즌 한정",
-    price: 34900,
+    price: 29900,
+    originalPrice: 36900,
     desc: "조선 정통 토정 이지함의 비결로 풀어보는 한 해의 신수비결과 월별 지침",
   },
   wealth: {
@@ -1278,9 +1281,16 @@ function InputFormContent() {
                               <span className="text-[10px] text-foreground-muted block font-light">{value.category}</span>
                               <span className="text-sm font-bold text-foreground">{value.title}</span>
                             </div>
-                            <span className="text-sm font-bold text-brass">
-                              {value.price.toLocaleString()}원
-                            </span>
+                            <div className="text-right">
+                              {value.originalPrice && (
+                                <span className="text-[10px] text-foreground-muted line-through block">
+                                  {value.originalPrice.toLocaleString()}원
+                                </span>
+                              )}
+                              <span className="text-sm font-bold text-brass">
+                                {value.price.toLocaleString()}원
+                              </span>
+                            </div>
                           </button>
 
                           {/* Report Grade Selector inline under selected saju/newyear product */}
