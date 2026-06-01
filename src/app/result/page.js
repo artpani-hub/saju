@@ -2439,17 +2439,36 @@ const renderPageContent = (page, ctx) => {
             🛤️ [대운 로드맵] 대운 3기 ~ 4기 상세 분석
           </h3>
           <div className={`space-y-4 text-xs ${blurClass}`}>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2.5">
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-3">
               <strong className="text-[#8B221E] block">• 제 3기 대운 (35세 ~ 44세) : 인생 최대의 재물 폭발기 (용신 유입)</strong>
               <p className="text-[#5F5F5F] font-light leading-relaxed">
-                그동안 축적했던 기획력과 실력이 하나의 커다란 플랫폼/사업체/부동산으로 폭발하여 고도의 자산 가치 형성을 보장받습니다. 이때 적극적인 자산 이동을 지향해야 합니다.
+                그동안 축적했던 기획력과 실력이 하나의 커다란 플랫폼/사업체/부동산으로 폭발하여 고도의 자산 가치 형성을 보장받습니다. 
               </p>
+              <div className="border-t border-[#E2DDD5]/60 pt-2 space-y-1.5 text-[11px] text-[#666]">
+                <p>🎯 <strong>핵심 행동 가이드:</strong> 사주 내 용신 기운이 지탱하는 황금기입니다. 과감히 자기 브랜드를 론칭하거나 주도권을 쥔 비즈니스 확장을 시도하십시오. 단, 자금은 반드시 장기 부동산이나 문서 자산에 묶어 두어야 합니다.</p>
+                <p>⚠️ <strong>주의사항:</strong> 급격한 성장 속에서 만성 피로와 심혈관 과부하를 겪기 쉬우니 건강 조율이 필수적이며, 동업 계약이나 수익 분배는 반드시 서류로 철저히 서명해 두어야 뒤탈이 없습니다.</p>
+              </div>
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2.5">
+            
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-3">
               <strong className="text-[#A3845B] block">• 제 4기 대운 (45세 ~ 54세) : 안락한 자산 보존과 명예 완성</strong>
               <p className="text-[#5F5F5F] font-light leading-relaxed">
                 무리한 실무에서 한 발짝 물러서서 조력자, 고문, 수동적 임대/시스템 소득을 정비하고 가정을 따뜻하게 보살펴 평화로운 귀인의 삶을 향유하게 되는 안정적인 종착지입니다.
               </p>
+              <div className="border-t border-[#E2DDD5]/60 pt-2 space-y-1.5 text-[11px] text-[#666]">
+                <p>🎯 <strong>핵심 행동 가이드:</strong> 이 시기의 성공 공식은 '공격'이 아니라 '수성'입니다. 직접 발로 뛰는 노동 소득을 점차 줄이고 임대료, 라이선스, 지분 배당 등 시스템 소득(수동적 소득)의 구축에 주력하십시오.</p>
+                <p>⚠️ <strong>주의사항:</strong> 50대를 목전에 둔 시점에서의 무리한 투기성 모험이나 낯선 프랜차이즈 대형 창업은 평생 모은 재산을 한순간에 위태롭게 하니 수성적 자산 방어 태세를 유지해야 합니다.</p>
+              </div>
+            </div>
+
+            {/* 중장년 대운 터닝포인트 종합 처방 */}
+            <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-3">
+              <div>
+                <span className="font-bold text-[#A3845B] block mb-1 text-xs">💡 중장년 대운(35세~54세) 터닝포인트 종합 진단</span>
+                <p className={`text-[11px] text-[#5F5F5F] font-light leading-relaxed ${blurClass}`}>
+                  귀하의 인생 궤도에서 35세부터 54세까지의 20년은 **'성장의 결실과 자산 수성'**으로 이어지는 가장 중요한 황금 터닝포인트입니다. 30대 후반부터 40대 초반까지의 강력한 폭발력을 동력 삼아 부를 축적하고, 40대 후반부터는 이를 시스템 소득으로 정착시키는 2단계 자산 빌드업 전략이 일생의 부를 결정짓는 핵심 키입니다.
+                </p>
+              </div>
             </div>
           </div>
         </div>
