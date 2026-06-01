@@ -2871,7 +2871,7 @@ function ResultContent() {
             onClick={handlePortonePayment}
             className="w-full py-2.5 bg-[#8B221E] hover:bg-[#6D1B18] text-white rounded text-xs font-semibold shadow-md transition-all font-traditional"
           >
-            정통 사주 풀이로 잠금 해제 (34,900원)
+            정통 {typeParam === "tojeong" ? "토정비결" : (type === "newyear" ? "신년운세" : "사주 풀이")}로 잠금 해제 (34,900원)
           </button>
           <button
             type="button"
@@ -3296,9 +3296,9 @@ function ResultContent() {
 
     const elStats = `목(${sajuInfo.elements.목}개) | 화(${sajuInfo.elements.화}개) | 토(${sajuInfo.elements.토}개) | 금(${sajuInfo.elements.금}개) | 수(${sajuInfo.elements.수}개)`;
 
-    const smsText = `[혜안당 명리연구소] 2026 병오년 신년운세 요약
+    const smsText = `[혜안당 명리연구소] 2026 병오년 ${typeParam === "tojeong" ? "토정비결" : "신년운세"} 요약
 ──────────────────────────────
-본 문서는 ${name} 님의 2026년 토정비결 및 신년운세 요약본입니다.
+본 문서는 ${name} 님의 2026년 ${typeParam === "tojeong" ? "토정비결" : "신년운세"} 요약본입니다.
 
 ■ 1. 2026년 병오년(丙午年) 운세 기조
 - 세운 특징: 천지합화(天地合火) - 하늘과 대지가 거대한 불꽃으로 화합하는 역동적 한 해
@@ -3332,7 +3332,7 @@ function ResultContent() {
 
         <div className="space-y-4 text-left border border-dashed border-[#A3845B]/30 p-5 rounded-lg bg-[#F9F8F6]/80 max-h-[500px] overflow-y-auto custom-scrollbar">
           <h4 className="font-myeongjo text-sm font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2 text-center tracking-wider">
-            {name} 님의 2026년 신년운세 요약 보감
+            {name} 님의 2026년 {typeParam === "tojeong" ? "토정비결" : "신년운세"} 요약 보감
           </h4>
           
           <div className="space-y-4 text-xs text-[#2C2C2C] leading-relaxed">
@@ -3554,7 +3554,7 @@ function ResultContent() {
               <div className="grid grid-cols-2 gap-4 text-left">
                 <div>
                   <span className="text-[#A3845B] font-bold block mb-1">분석 상품</span>
-                  <span className="font-semibold text-gray-800">정통 토정비결</span>
+                  <span className="font-semibold text-gray-800">{typeParam === "tojeong" ? "정통 토정비결" : "정통 신년운세"}</span>
                 </div>
                 <div>
                   <span className="text-[#A3845B] font-bold block mb-1">리포트 등급</span>
@@ -4261,7 +4261,7 @@ function ResultContent() {
 
               {/* Page Header */}
               <div className="flex justify-between items-center border-b border-[#E2DDD5]/50 pb-2 mb-6 print:mb-8">
-                <span className="text-[10px] font-bold text-[#A3845B] tracking-wider font-myeongjo">慧眼堂 寶鑑 · 신년운세</span>
+                <span className="text-[10px] font-bold text-[#A3845B] tracking-wider font-myeongjo">慧眼堂 寶鑑 · {typeParam === "tojeong" ? "토정비결" : "신년운세"}</span>
                 <span className="text-[9px] text-gray-400 font-light font-traditional">{page.title}</span>
               </div>
 
@@ -4335,7 +4335,7 @@ function ResultContent() {
                   onClick={handlePortonePayment}
                   className="w-full py-4 bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] rounded font-bold text-sm shadow-xl transition-all tracking-widest cursor-pointer"
                 >
-                  {name}님 정통 신수비결 풀이 ({metrics.nickname}) →
+                  {name}님 정통 {typeParam === "tojeong" ? "토정비결" : "신수비결"} 풀이 ({metrics.nickname}) →
                 </button>
                 <button
                   type="button"
@@ -5489,7 +5489,7 @@ function ResultContent() {
           <div className="text-center my-auto py-12 space-y-6">
             <h1 className="font-myeongjo text-3xl md:text-4xl font-extrabold text-[#1A1A1A] tracking-wider leading-tight print:text-4xl break-keep">
               {type === "saju" && "평생 종합 사주팔자 보고서"}
-              {type === "newyear" && "신년 운세 - 토정비결 보고서"}
+              {type === "newyear" && (typeParam === "tojeong" ? "토정비결 보고서" : "신년운세 보고서")}
               {type === "wealth" && "재물 및 비즈니스 운세 보고서"}
               {type === "tarot" && "속마음 타로 심리 분석 보고서"}
               {type === "gunghap" && "연인 궁합 정밀 분석 보고서"}
@@ -5536,7 +5536,7 @@ function ResultContent() {
                 <span className="text-[10px] text-[#A3845B] font-semibold block">의뢰 구분 및 등급</span>
                 <span className="text-xs font-bold text-[#A3845B]">
                   {type === "saju" && `평생 종합 사주 (${reportGrade === "deep" ? "심화" : "고급"})`}
-                  {type === "newyear" && "신년 운세 / 토정비결"}
+                  {type === "newyear" && (typeParam === "tojeong" ? "토정비결" : "신년운세")}
                   {type === "wealth" && "재물 & 비즈니스운"}
                   {type === "tarot" && "속마음 퀵 타로"}
                   {type === "gunghap" && "연인 궁합 정밀 분석"}
@@ -5597,7 +5597,7 @@ function ResultContent() {
               onClick={handlePortonePayment}
               className="w-full bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] py-4 px-6 rounded-xl font-myeongjo font-bold text-xs sm:text-sm md:text-base flex items-center justify-between shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#A3845B]/20"
             >
-              <span>{name}님 정통 사주 풀이 ({metrics.nickname})</span>
+              <span>{name}님 정통 {typeParam === "tojeong" ? "토정비결" : (type === "newyear" ? "신년운세" : "사주 풀이")} ({metrics.nickname})</span>
               <span className="text-lg">➔</span>
             </button>
           </div>

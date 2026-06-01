@@ -15,10 +15,16 @@ const products = {
     desc: "타고난 오행 분포, 대운의 흐름, 전반적인 라이프사이클 솔루션 제공",
   },
   newyear: {
-    title: "신년 운세 / 토정비결",
+    title: "신년운세",
     category: "시즌 한정",
     price: 34900,
     desc: "한 해의 전체적인 기운과 방향성, 월별 상세 운세 가이드",
+  },
+  tojeong: {
+    title: "토정비결",
+    category: "시즌 한정",
+    price: 34900,
+    desc: "조선 정통 토정 이지함의 비결로 풀어보는 한 해의 신수비결과 월별 지침",
   },
   wealth: {
     title: "재물 & 비즈니스운",
@@ -336,6 +342,9 @@ function InputFormContent() {
     const prod = searchParams.get("product");
     if (prod && products[prod]) {
       setProductKey(prod);
+      if (prod === "tojeong" && reportGrade === "deep") {
+        setReportGrade("premium");
+      }
       if (prod === "wealth") {
         setFormData(prev => ({
           ...prev,
@@ -410,6 +419,9 @@ function InputFormContent() {
 
   const handleSelectProduct = (key) => {
     setProductKey(key);
+    if (key === "tojeong" && reportGrade === "deep") {
+      setReportGrade("premium");
+    }
     if (key === "wealth") {
       setFormData(prev => ({
         ...prev,
@@ -474,7 +486,7 @@ function InputFormContent() {
       const sajuGanji = `${formData.birthYear}년 ${formData.birthMonth}월 ${formData.birthDay}일 (${traditionalTime})`;
 
       const base = products[productKey]?.price || 30000;
-      const finalPrice = reportGrade === "free" ? 0 : ((productKey === "saju" || productKey === "newyear")
+      const finalPrice = reportGrade === "free" ? 0 : ((productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
         ? (reportGrade === "deep" 
           ? base + 15000 
           : reportGrade === "sms" 
@@ -676,7 +688,7 @@ function InputFormContent() {
     IMP.init(impCode);
 
     const base = activeProduct.price;
-    const finalPrice = (productKey === "saju" || productKey === "newyear")
+    const finalPrice = (productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
       ? (reportGrade === "deep" 
         ? base + 15000 
         : reportGrade === "sms" 
@@ -1250,7 +1262,7 @@ function InputFormContent() {
                   <div className="space-y-2.5 mb-6">
                     {Object.entries(products).map(([key, value]) => {
                       const isSelected = productKey === key;
-                      const showGradeSelector = isSelected && (key === "saju" || key === "newyear");
+                      const showGradeSelector = isSelected && (key === "saju" || key === "newyear" || key === "tojeong");
                       return (
                         <div key={key} className="space-y-2">
                           <button
@@ -1296,6 +1308,7 @@ function InputFormContent() {
                                   <span className="text-[10px] text-foreground-muted">추가금 없음</span>
                                 </button>
 
+                                {productKey !== "tojeong" && (
                                 <button
                                   type="button"
                                   onClick={() => setReportGrade("deep")}
@@ -1315,6 +1328,7 @@ function InputFormContent() {
                                   </div>
                                   <span className="text-[10px] font-bold text-[#5F7A68]">+15,000원</span>
                                 </button>
+                              )}
 
                                 <button
                                   type="button"
@@ -1352,7 +1366,7 @@ function InputFormContent() {
                     <p className="text-xs text-foreground-muted leading-relaxed font-light mb-2">
                       {productKey === "today"
                         ? "모바일 화면에 최적화된 맞춤형 오늘의 대길흉/오행 수호 비법 요약 문자 즉시 발송"
-                        : (productKey === "saju" || productKey === "newyear")
+                        : (productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
                         ? (reportGrade === "sms" 
                           ? "모바일 화면에 최적화된 핵심 한 줄 요약 및 핵심 개운 처방 문자 발송"
                           : reportGrade === "deep"
@@ -1363,7 +1377,7 @@ function InputFormContent() {
                     <ul className="text-[10px] text-foreground-muted space-y-1 font-light border-t border-border-custom/50 pt-2">
                       <li className="flex items-center gap-1">
                         <Check className="w-3 h-3 text-jade" />{" "}
-                        {productKey === "today" || ((productKey === "saju" || productKey === "newyear") && reportGrade === "sms")
+                        {productKey === "today" || ((productKey === "saju" || productKey === "newyear" || productKey === "tojeong") && reportGrade === "sms")
                           ? "모바일 알림톡/LMS로 즉시 발송" 
                           : "이메일로 HTML + PDF 발송"}
                       </li>
@@ -1376,7 +1390,7 @@ function InputFormContent() {
                   {/* Total invoice details */}
                   {(() => {
                     const base = activeProduct.price;
-                    const finalPrice = (productKey === "saju" || productKey === "newyear")
+                    const finalPrice = (productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
                       ? (reportGrade === "deep" 
                         ? base + 15000 
                         : reportGrade === "sms" 
@@ -1488,7 +1502,7 @@ function InputFormContent() {
                 </div>
                 {(() => {
                   const base = activeProduct.price;
-                  const finalPrice = (productKey === "saju" || productKey === "newyear")
+                  const finalPrice = (productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
                     ? (reportGrade === "deep" 
                       ? base + 15000 
                       : reportGrade === "sms" 
@@ -1500,7 +1514,7 @@ function InputFormContent() {
                       <div>
                         <span className="text-[10px] text-foreground-muted block">상품명</span>
                         <span className="text-sm text-foreground">
-                          {activeProduct.title} {(productKey === "saju" || productKey === "newyear") && `(${reportGrade === "premium" ? "고급 리포트" : reportGrade === "deep" ? "심화 리포트" : "문자 요약"})`}
+                          {activeProduct.title} {(productKey === "saju" || productKey === "newyear" || productKey === "tojeong") && `(${reportGrade === "premium" ? "고급 리포트" : reportGrade === "deep" ? "심화 리포트" : (productKey === "tojeong" ? "문자메시지요약" : "문자 요약")})`}
                         </span>
                       </div>
                       <div>
@@ -1680,13 +1694,13 @@ function InputFormContent() {
               <div className="flex justify-between text-xs">
                 <span className="text-foreground-muted">신청 상품</span>
                 <span className="font-semibold text-foreground">
-                  {activeProduct.title} {((productKey === "saju" || productKey === "newyear") && reportGrade !== "sms") && `(${reportGrade === "premium" ? "고급 리포트" : "심화 리포트"})`}
+                  {activeProduct.title} {((productKey === "saju" || productKey === "newyear" || productKey === "tojeong") && reportGrade !== "sms") && `(${reportGrade === "premium" ? "고급 리포트" : "심화 리포트"})`}
                 </span>
               </div>
               <div className="flex justify-between text-xs">
                 <span className="text-foreground-muted">수신 방식</span>
                 <span className="font-semibold text-foreground">
-                  {productKey === "today" || ((productKey === "saju" || productKey === "newyear") && reportGrade === "sms") ? `문자메시지 (${formData.phone})` : `이메일 (${formData.email})`}
+                  {productKey === "today" || ((productKey === "saju" || productKey === "newyear" || productKey === "tojeong") && reportGrade === "sms") ? `문자메시지 (${formData.phone})` : `이메일 (${formData.email})`}
                 </span>
               </div>
               <div className="flex justify-between text-xs border-t border-border-custom/40 pt-2 mt-2">
@@ -1701,7 +1715,7 @@ function InputFormContent() {
 
             <div className="flex flex-col gap-3">
               <Link
-                href={`/result?name=${encodeURIComponent(formData.name || "이지혜")}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendarType}&year=${formData.birthYear}&month=${formData.birthMonth}&day=${formData.birthDay}&hour=${encodeURIComponent(formData.birthHour)}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText || "오늘의 운세")}&cards=${selectedCards.join(",")}&partnerName=${encodeURIComponent(formData.partnerName)}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendarType}&partnerYear=${formData.partnerBirthYear}&partnerMonth=${formData.partnerBirthMonth}&partnerDay=${formData.partnerBirthDay}&partnerHour=${encodeURIComponent(formData.partnerBirthHour)}&reportGrade=${productKey === "today" ? "sms" : (productKey === "saju" || productKey === "newyear") ? reportGrade : "premium"}`}
+                href={`/result?name=${encodeURIComponent(formData.name || "이지혜")}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendarType}&year=${formData.birthYear}&month=${formData.birthMonth}&day=${formData.birthDay}&hour=${encodeURIComponent(formData.birthHour)}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText || "오늘의 운세")}&cards=${selectedCards.join(",")}&partnerName=${encodeURIComponent(formData.partnerName)}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendarType}&partnerYear=${formData.partnerBirthYear}&partnerMonth=${formData.partnerBirthMonth}&partnerDay=${formData.partnerBirthDay}&partnerHour=${encodeURIComponent(formData.partnerBirthHour)}&reportGrade=${productKey === "today" ? "sms" : (productKey === "saju" || productKey === "newyear" || productKey === "tojeong") ? reportGrade : "premium"}`}
                 className="w-full py-3 bg-jade text-background rounded font-semibold text-sm hover:bg-jade-dark transition-all block text-center"
               >
                 생성된 결과서 미리보기 (샘플)

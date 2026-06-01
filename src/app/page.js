@@ -726,13 +726,13 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Product Card 2 */}
+            {/* Product Card 2 - 신년운세 */}
             <div className="border border-border-custom bg-background rounded-lg p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
               <div>
                 <span className="text-xs font-semibold text-brass tracking-wider uppercase block mb-1">시즌 한정</span>
-                <h3 className="font-myeongjo text-xl font-bold text-foreground mb-2 group-hover:text-brass transition-colors">신년 운세 / 토정비결</h3>
+                <h3 className="font-myeongjo text-xl font-bold text-foreground mb-2 group-hover:text-brass transition-colors">신년운세</h3>
                 <p className="text-sm text-foreground-muted leading-relaxed mb-4 font-light">
-                  새해에 가장 많이 찾는 상품으로, 한 해의 총체적인 흐름, 월별 상세 운세와 나아갈 행동 지침 제안.
+                  새해에 가장 많이 찾는 상품으로, 한 해의 총체적인 흐름, 오행의 상생상극 융합 및 신수비결 분석.
                 </p>
 
                 {/* 등급별 요금 안내 박스 */}
@@ -744,6 +744,43 @@ export default function Home() {
                   <div className="flex justify-between items-center">
                     <span className="flex items-center gap-1.5 text-[#5F7A68] font-medium">👑 심화 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span></span>
                     <span className="font-semibold text-[#5F7A68]">50,000원</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="flex items-center gap-1.5 font-medium text-gray-700">💬 문자메시지용</span>
+                    <span className="font-semibold text-gray-700">25,000원</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="border-t border-border-custom pt-4 mb-4 flex items-baseline gap-1">
+                  <span className="text-xs text-foreground-muted">기본 요금</span>
+                  <span className="text-2xl font-bold text-foreground">35,000</span>
+                  <span className="text-xs text-foreground-muted">원~</span>
+                </div>
+                <Link
+                  href="/input?product=newyear"
+                  className="w-full inline-flex items-center justify-center gap-1 bg-background-secondary border border-border-custom text-foreground py-2 rounded text-sm font-medium hover:border-brass hover:text-brass transition-colors"
+                >
+                  신청하기
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Product Card 2-2 - 토정비결 */}
+            <div className="border border-border-custom bg-background rounded-lg p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+              <div>
+                <span className="text-xs font-semibold text-brass tracking-wider uppercase block mb-1">시즌 한정</span>
+                <h3 className="font-myeongjo text-xl font-bold text-foreground mb-2 group-hover:text-brass transition-colors">토정비결</h3>
+                <p className="text-sm text-foreground-muted leading-relaxed mb-4 font-light">
+                  조선 정통 토정 이지함 선생의 원본 해석에 따른 1년 신수비결과 생존 전략.
+                </p>
+
+                {/* 등급별 요금 안내 박스 */}
+                <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-2 font-light text-foreground-muted">
+                  <div className="flex justify-between items-center">
+                    <span className="flex items-center gap-1.5 text-foreground font-medium">✨ 고급 리포트 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span></span>
+                    <span className="font-semibold text-brass">35,000원</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="flex items-center gap-1.5 font-medium text-gray-700">💬 문자메시지 요약</span>
@@ -758,7 +795,7 @@ export default function Home() {
                   <span className="text-xs text-foreground-muted">원~</span>
                 </div>
                 <Link
-                  href="/input?product=newyear"
+                  href="/input?product=tojeong"
                   className="w-full inline-flex items-center justify-center gap-1 bg-background-secondary border border-border-custom text-foreground py-2 rounded text-sm font-medium hover:border-brass hover:text-brass transition-colors"
                 >
                   신청하기
