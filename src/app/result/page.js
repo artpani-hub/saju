@@ -3222,8 +3222,8 @@ function ResultContent() {
               {/* 카운트다운 타이머 및 가격 */}
               <div className="flex items-center justify-center gap-3 text-xs mb-6 bg-black/40 py-2.5 px-4 rounded-lg max-w-xs mx-auto">
                 <span className="text-red-500 font-bold">⏰ {timeLeft} · 단 1회 한정</span>
-                <span className="text-gray-400 line-through">54,600원</span>
-                <span className="text-white font-bold text-sm">34,900원</span>
+                <span className="text-gray-400 line-through whitespace-nowrap">54,600원</span>
+                <span className="text-white font-bold text-sm whitespace-nowrap">34,900원</span>
                 <span className="text-[#A3845B] font-bold">36%↓</span>
               </div>
 
@@ -3247,7 +3247,7 @@ function ResultContent() {
 
               <div className="mt-6 flex flex-col items-center justify-center gap-1.5 text-[10px] text-gray-400 font-sans">
                 <p>✓ 지금 14명이 본인의 정통 사주를 함께 펼쳐보고 있어요</p>
-                <p>✓ 누적 12,795명이 본인의 진짜 모습을 확인했습니다</p>
+                <p>✓ 누적 14,820명이 본인의 진짜 모습을 확인했습니다</p>
               </div>
             </div>
           </div>
