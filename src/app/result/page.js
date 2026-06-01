@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Script from "next/script";
 import { Scroll, Printer, ArrowLeft, Heart, Compass, Shield, Sparkles, DollarSign, CalendarDays, Award, CheckSquare, AlertCircle } from "lucide-react";
+import JobTable from "./components/JobTable";
+import { getJobMatches } from "./utils";
 
 // Simplified dynamic Sexagenary Cycle helper based on user input
 const getGanjiTable = (yearNum, monthNum, dayNum, hourString) => {
@@ -2170,7 +2172,36 @@ const renderPageContent = (page, ctx) => {
           </div>
         </div>
       );
-    }case "job_aptitude":
+    }case "job_aptitude": {
+      const jobMatches = getJobMatches(metrics, sajuInfo.elements);
+      const topMatches = jobMatches.slice(0, 4);
+
+      const elementAptitudeMap = {
+        "목": {
+          temperament: "새로운 시작을 주도하는 추진력과 기획력이 뛰어납니다. 남들이 보지 못하는 가능성을 발굴하여 키워내는 성장을 지향하며, 교육적 성향과 선한 영향력을 중시하는 기질이 강합니다.",
+          strategy: "기획자, 크리에이티브 디렉터, 교육 및 인재 육성, 바이오·친환경 산업 분야로 진출하는 것이 유리합니다. 수동적인 루틴 업무에 갇히기보다는 주도권을 쥐고 창의적인 씨앗을 뿌릴 수 있는 환경에서 큰 성공을 거둡니다."
+        },
+        "화": {
+          temperament: "뜨거운 열정과 뛰어난 표현력, 사람들을 집중시키는 에너지를 지녔습니다. 자신을 대외적으로 드러내고 트렌드를 선도하며, 직관적인 커뮤니케이션에 특화된 기질이 있습니다.",
+          strategy: "마케팅, 방송·미디어 콘텐츠 크리에이터, IT 개발 및 서비스 기획, 스타트업 창업, 홍보 분야가 최적입니다. 본인의 영향력을 브랜드화하거나 화려하게 가치를 입증할 수 있는 무대 중심의 비즈니스로 성공 방향을 잡으십시오."
+        },
+        "토": {
+          temperament: "안정감과 신뢰도, 뛰어난 중개력 및 수렴 능력을 가졌습니다. 모험적인 투기보다 묵직하게 사람들과 자원을 이어주고, 안정적으로 조율하는 신용가 기질이 돋보입니다.",
+          strategy: "부동산 기획/중개, 자산 자문, 교육 행정, 대형 플랫폼의 중개 서비스, 공공 인프라 관리 분야에서 대성합니다. 조급하게 성과를 내려 하기보다 오랜 기간 공신력을 쌓을 수 있는 시스템을 구축하는 방향이 성공 지름길입니다."
+        },
+        "금": {
+          temperament: "냉철한 판단력과 날카로운 실행력, 공사 구분이 확실한 결단력을 지녔습니다. 비효율을 참지 못하고 정교하고 정밀하게 프로세스를 통제하거나 평가하는 성향이 강합니다.",
+          strategy: "재무/회계 분석가, 법률·세무 상담사, 정밀 기술 연구, 컨설팅 전문가, 공적인 규격 관리 분야로 진출하십시오. 본인의 예리한 전문성으로 리스크를 통제하고 결과를 딱 떨어지게 만드는 결단성 있는 직무가 직업운의 성공 방향입니다."
+        },
+        "수": {
+          temperament: "깊은 지혜와 뛰어난 정보 수집력, 유연하게 판세를 읽는 통찰력을 소유했습니다. 보이지 않는 전략을 기획하고 문제를 깊이 파고들어 본질적인 해답을 찾아내는 전략가 기질이 풍부합니다.",
+          strategy: "데이터 사이언티스트, 시장 전략 애널리스트, R&D 심층 연구원, 전문 상담사, 글로벌 무역/외교 분야가 길합니다. 겉으로 드러나는 전선보다는 후방에서 빅데이터를 다루거나 큰 흐름의 설계를 주도하는 방향이 운을 틔웁니다."
+        }
+      };
+
+      const dayStemEl = sajuInfo?.day?.stemEl || "목";
+      const aptInfo = elementAptitudeMap[dayStemEl] || elementAptitudeMap["목"];
+
       return (
         <div className="space-y-6">
           <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
@@ -2193,8 +2224,35 @@ const renderPageContent = (page, ctx) => {
               </p>
             </div>
           </div>
+
+          {/* 사주 매칭 최적 직업 테이블 */}
+          <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-4">
+            <JobTable matches={topMatches} />
+          </div>
+
+          {/* 기질 및 직업운 성공 전략 가이드 */}
+          <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-4">
+            <div>
+              <span className="font-bold text-[#A3845B] block mb-1.5 flex items-center gap-1.5 text-xs">
+                🧠 나의 타고난 핵심 직업 기질 (어떤 기질이 있는가?)
+              </span>
+              <p className={`text-[11px] text-[#5F5F5F] font-light leading-relaxed ${blurClass}`}>
+                의뢰인님의 일간 기운은 <strong>{sajuInfo?.day?.stemEl}({sajuInfo?.day?.stem})</strong>에 기반하고 있습니다. 
+                이 사주적 특징에 비추어 볼 때, {aptInfo.temperament}
+              </p>
+            </div>
+            <div className="border-t border-[#E2DDD5]/70 pt-3">
+              <span className="font-bold text-[#5F7A68] block mb-1.5 flex items-center gap-1.5 text-xs">
+                🔑 직업운 성공 전략 (어느 쪽으로 방향을 잡아야 성공하는가?)
+              </span>
+              <p className={`text-[11px] text-[#5F5F5F] font-light leading-relaxed ${blurClass}`}>
+                성공적인 직업운을 열기 위해서는 <strong>{aptInfo.strategy}</strong>
+              </p>
+            </div>
+          </div>
         </div>
       );
+    }
 
     case "wealth_wave":
       return (
