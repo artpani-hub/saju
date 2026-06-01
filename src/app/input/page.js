@@ -490,7 +490,7 @@ function InputFormContent() {
         ? (reportGrade === "deep" 
           ? base + 15000 
           : reportGrade === "sms" 
-          ? Math.max(5000, base - 10000) 
+          ? Math.max(5000, base - 20000) 
           : base)
         : base);
 
@@ -692,7 +692,7 @@ function InputFormContent() {
       ? (reportGrade === "deep" 
         ? base + 15000 
         : reportGrade === "sms" 
-        ? Math.max(5000, base - 10000) 
+        ? Math.max(5000, base - 20000) 
         : base)
       : base;
 
@@ -1347,7 +1347,7 @@ function InputFormContent() {
                                       핵심 요약본 모바일 문자/카카오톡 전송
                                     </span>
                                   </div>
-                                  <span className="text-[10px] font-bold text-red-500">-10,000원</span>
+                                  <span className="text-[10px] font-bold text-red-500">-20,000원</span>
                                 </button>
                               </div>
                             </div>
@@ -1394,7 +1394,7 @@ function InputFormContent() {
                       ? (reportGrade === "deep" 
                         ? base + 15000 
                         : reportGrade === "sms" 
-                        ? Math.max(5000, base - 10000) 
+                        ? Math.max(5000, base - 20000) 
                         : base)
                       : base;
                     return (
