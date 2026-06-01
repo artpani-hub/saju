@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Compass, Sparkles, Mail, ArrowRight, Scroll, HelpCircle, Calendar, User, Phone, Clock, Heart, Coins, Activity } from "lucide-react";
+import { getCumulativeCount } from "../utils/counter";
 
 const ZODIAC_LIST = [
   { name: "쥐띠", hanja: "子", emoji: "🐭" },
@@ -133,6 +134,17 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState("free");
   const [selectedZodiacIndex, setSelectedZodiacIndex] = useState(null);
   const [zodiacFortune, setZodiacFortune] = useState(null);
+  const [cumulativeCount, setCumulativeCount] = useState(14820);
+
+  useEffect(() => {
+    setCumulativeCount(getCumulativeCount());
+    
+    const timer = setInterval(() => {
+      setCumulativeCount(getCumulativeCount());
+    }, 30000);
+    
+    return () => clearInterval(timer);
+  }, []);
   
   const [formData, setFormData] = useState({
     name: "",
@@ -273,7 +285,7 @@ export default function Home() {
               </div>
               <div className="w-px h-8 bg-border-custom/80" />
               <div>
-                <span className="text-brass text-lg md:text-xl font-bold font-myeongjo">14,820</span>
+                <span className="text-brass text-lg md:text-xl font-bold font-myeongjo">{cumulativeCount.toLocaleString()}</span>
                 <span className="text-[10px] text-foreground-muted block mt-0.5">누적 보감 발행</span>
               </div>
             </div>

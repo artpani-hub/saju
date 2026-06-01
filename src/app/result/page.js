@@ -7,6 +7,7 @@ import Script from "next/script";
 import { Scroll, Printer, ArrowLeft, Heart, Compass, Shield, Sparkles, DollarSign, CalendarDays, Award, CheckSquare, AlertCircle } from "lucide-react";
 import JobTable from "./components/JobTable";
 import { getJobMatches } from "./utils";
+import { getCumulativeCount } from "../../utils/counter";
 
 // Simplified dynamic Sexagenary Cycle helper based on user input
 const getGanjiTable = (yearNum, monthNum, dayNum, hourString) => {
@@ -2665,6 +2666,17 @@ function ResultContent() {
   const searchParams = useSearchParams();
   const [copied, setCopied] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
+  const [cumulativeCount, setCumulativeCount] = useState(14820);
+
+  useEffect(() => {
+    setCumulativeCount(getCumulativeCount());
+    
+    const timer = setInterval(() => {
+      setCumulativeCount(getCumulativeCount());
+    }, 30000);
+    
+    return () => clearInterval(timer);
+  }, []);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -3247,7 +3259,7 @@ function ResultContent() {
 
               <div className="mt-6 flex flex-col items-center justify-center gap-1.5 text-[10px] text-gray-400 font-sans">
                 <p>✓ 지금 14명이 본인의 정통 사주를 함께 펼쳐보고 있어요</p>
-                <p>✓ 누적 14,820명이 본인의 진짜 모습을 확인했습니다</p>
+                <p>✓ 누적 {cumulativeCount.toLocaleString()}명이 본인의 진짜 모습을 확인했습니다</p>
               </div>
             </div>
           </div>
