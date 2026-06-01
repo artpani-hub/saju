@@ -3140,8 +3140,12 @@ function ResultContent() {
       return () => clearInterval(timer);
     }, []);
 
-    // 무료 버전일지라도 32페이지 전체 윤곽 스크롤 노출
-    const activePages = pages;
+    // 고급 리포트(premium)일 때는 심화 전용 페이지(신년운세, 대운/용신, 고민심화) 제외
+    const activePages = reportGrade === "premium"
+      ? pages
+          .filter(p => !["seoun_2026", "seoun_quarterly", "seoun_aspects", "daeun_orbit", "daeun_roadmap_1", "daeun_roadmap_2", "warning_period", "worry_solution"].includes(p.type))
+          .map((p, idx) => ({ ...p, page: idx + 1 }))
+      : pages;
 
     return (
       <div className="space-y-12 print:space-y-0">
@@ -3197,7 +3201,7 @@ function ResultContent() {
             {/* Page Footer */}
             <div className="flex justify-between items-center border-t border-[#E2DDD5]/50 pt-3 mt-6 text-[9px] text-[#5F5F5F] print:text-xs">
               <span className="font-myeongjo font-light">慧眼堂 寶鑑 · 평생 사주팔자</span>
-              <span className="font-myeongjo font-bold">{page.page} / {pages.length}</span>
+              <span className="font-myeongjo font-bold">{page.page} / {activePages.length}</span>
             </div>
           </div>
         ))}
