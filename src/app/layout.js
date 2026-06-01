@@ -6,6 +6,7 @@ const myeongjo = Nanum_Myeongjo({
   subsets: ["latin"],
   variable: "--font-myeongjo",
   display: "swap",
+  preload: false,
 });
 
 const gothic = Noto_Sans_KR({
@@ -13,6 +14,7 @@ const gothic = Noto_Sans_KR({
   subsets: ["latin"],
   variable: "--font-gothic",
   display: "swap",
+  preload: false,
 });
 
 export const metadata = {
