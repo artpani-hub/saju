@@ -2304,6 +2304,24 @@ const renderPageContent = (page, ctx) => {
               귀하의 {baseEl} 일간에게 병오년의 타오르는 불꽃은 **재능의 표현(식상) 혹은 치열한 경쟁(비겁)**의 과열을 의미합니다. 기획력이 극대화되고 의욕이 하늘을 찌르나, 감정이 지나치게 가열되어 충동적 퇴사나 대인 다툼의 구설이 생기기 쉬우니 반드시 **'이성적 감속'**이 평생의 화를 피하는 처방이 됩니다.
             </p>
           </div>
+
+          {/* 병오년 총운 및 성공 액션 가이드 추가 */}
+          <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-3">
+            <div>
+              <span className="font-bold text-[#A3845B] block mb-1 text-xs">📊 2026년 병오년 총운 및 핵심 키워드</span>
+              <p className={`text-[11px] text-[#5F5F5F] font-light leading-relaxed ${blurClass}`}>
+                올해의 핵심 키워드는 <strong>"천지합화(天地合化), 열정의 분출, 관계의 변곡점, 과열 경계"</strong>입니다. 내면의 아이디어가 세상 밖으로 분출되는 매우 동적이고 활기찬 기운이 들어옵니다. 무언가 새로운 것을 창조하거나 적극적으로 어필하기에 좋은 시기이지만, 브레이크가 약한 엔진처럼 과속하여 리스크를 초래할 수 있으니 완급 조절을 최우선 삼으십시오.
+              </p>
+            </div>
+            <div className="border-t border-[#E2DDD5]/70 pt-2.5">
+              <span className="font-bold text-[#5F7A68] block mb-1 text-xs">🔑 성공적인 한 해를 위한 3대 개운(開運) 플랜</span>
+              <p className={`text-[11px] text-[#5F5F5F] font-light leading-relaxed ${blurClass}`}>
+                ① <strong>의사결정의 이성적 감속</strong>: 기획력과 의욕이 넘쳐 성급한 이직이나 신규 투자를 감행하기 쉽습니다. 중요한 계약은 최소 일주일의 냉각기를 가진 후 최종 결론을 내리십시오.<br />
+                ② <strong>대인관계 구설수 원천 차단</strong>: 욱하는 뜨거운 열기가 말실수나 다툼으로 번질 수 있습니다. 의견 대립 시 10초간 침묵하는 습관으로 인덕(人德)의 손상을 예방하십시오.<br />
+                ③ <strong>수(水) 기운을 통한 마인드 컨트롤</strong>: 병오년의 지나친 화(火) 기운을 다스리기 위해 차분한 독서, 물가로의 여행, 야간 명상 등을 통해 차갑고 깊은 수(水) 에너지를 의식적으로 일상에 채워 넣으십시오.
+              </p>
+            </div>
+          </div>
         </div>
       );
 
