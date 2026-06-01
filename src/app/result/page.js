@@ -75,6 +75,117 @@ const getGanjiTable = (yearNum, monthNum, dayNum, hourString) => {
   };
 };
 
+// 일간을 기준으로 사주 7개 글자의 십신 및 출현 개수를 계산하는 헬퍼 함수
+const getSipsinList = (sajuInfo) => {
+  if (!sajuInfo) return { sipsins: [], counts: {} };
+
+  const StemsInfo = {
+    "甲": { el: "목", polarity: "+" },
+    "乙": { el: "목", polarity: "-" },
+    "丙": { el: "화", polarity: "+" },
+    "丁": { el: "화", polarity: "-" },
+    "戊": { el: "토", polarity: "+" },
+    "己": { el: "토", polarity: "-" },
+    "庚": { el: "금", polarity: "+" },
+    "辛": { el: "금", polarity: "-" },
+    "壬": { el: "수", polarity: "+" },
+    "癸": { el: "수", polarity: "-" }
+  };
+  const BranchesInfo = {
+    "寅": { el: "목", polarity: "+" },
+    "卯": { el: "목", polarity: "-" },
+    "巳": { el: "화", polarity: "+" }, // 체음용양
+    "午": { el: "화", polarity: "-" }, // 체양용음
+    "辰": { el: "토", polarity: "+" },
+    "戌": { el: "토", polarity: "+" },
+    "丑": { el: "토", polarity: "-" },
+    "未": { el: "토", polarity: "-" },
+    "申": { el: "금", polarity: "+" },
+    "酉": { el: "금", polarity: "-" },
+    "亥": { el: "수", polarity: "+" }, // 체음용양
+    "子": { el: "수", polarity: "-" }  // 체양용음
+  };
+
+  const dayStem = sajuInfo.day.stem;
+  
+  const getSingleSipsin = (targetChar, isBranch) => {
+    const dayInfo = StemsInfo[dayStem];
+    const targetInfo = isBranch ? BranchesInfo[targetChar] : StemsInfo[targetChar];
+    if (!dayInfo || !targetInfo) return "";
+
+    const meEl = dayInfo.el;
+    const youEl = targetInfo.el;
+    const samePolarity = dayInfo.polarity === targetInfo.polarity;
+
+    // 비겁 (동일 오행)
+    if (meEl === youEl) {
+      return samePolarity ? "비견" : "겁재";
+    }
+
+    // 식상 (내가 생함)
+    const isGenerating = (me, you) => {
+      return (
+        (me === "목" && you === "화") ||
+        (me === "화" && you === "토") ||
+        (me === "토" && you === "금") ||
+        (me === "금" && you === "수") ||
+        (me === "수" && you === "목")
+      );
+    };
+    if (isGenerating(meEl, youEl)) {
+      return samePolarity ? "식신" : "상관";
+    }
+
+    // 재성 (내가 극함)
+    const isControlling = (me, you) => {
+      return (
+        (me === "목" && you === "토") ||
+        (me === "화" && you === "금") ||
+        (me === "토" && you === "수") ||
+        (me === "금" && you === "목") ||
+        (me === "수" && you === "화")
+      );
+    };
+    if (isControlling(meEl, youEl)) {
+      return samePolarity ? "편재" : "정재";
+    }
+
+    // 관성 (나를 극함)
+    if (isControlling(youEl, meEl)) {
+      return samePolarity ? "편관" : "정관";
+    }
+
+    // 인성 (나를 생함)
+    if (isGenerating(youEl, meEl)) {
+      return samePolarity ? "편인" : "정인";
+    }
+
+    return "";
+  };
+
+  const sipsins = [
+    { pos: "연간", name: getSingleSipsin(sajuInfo.year.stem, false) },
+    { pos: "연지", name: getSingleSipsin(sajuInfo.year.branch, true) },
+    { pos: "월간", name: getSingleSipsin(sajuInfo.month.stem, false) },
+    { pos: "월지", name: getSingleSipsin(sajuInfo.month.branch, true) },
+    { pos: "일지", name: getSingleSipsin(sajuInfo.day.branch, true) },
+    { pos: "시간", name: getSingleSipsin(sajuInfo.hour.stem, false) },
+    { pos: "시지", name: getSingleSipsin(sajuInfo.hour.branch, true) }
+  ];
+
+  const counts = {
+    "비견": 0, "겁재": 0, "식신": 0, "상관": 0,
+    "편재": 0, "정재": 0, "편관": 0, "정관": 0,
+    "편인": 0, "정인": 0
+  };
+
+  sipsins.forEach(s => {
+    if (s.name) counts[s.name]++;
+  });
+
+  return { sipsins, counts };
+};
+
 // Elements Prescription Database
 const getDeficientPrescription = (elements) => {
   const prescriptions = {
@@ -296,6 +407,42 @@ const renderPageContent = (page, ctx) => {
   } = ctx;
 
   const blurClass = isFree ? "blur-[5px] select-none pointer-events-none" : "";
+
+  const sipsinData = getSipsinList(sajuInfo);
+  const { counts: sipsinCounts, sipsins: sipsinItems } = sipsinData;
+
+  const bigeobCount = (sipsinCounts["비견"] || 0) + (sipsinCounts["겁재"] || 0);
+  const sibsangCount = (sipsinCounts["식신"] || 0) + (sipsinCounts["상관"] || 0);
+  const jaeseongCount = (sipsinCounts["편재"] || 0) + (sipsinCounts["정재"] || 0);
+  const gwanseongCount = (sipsinCounts["편관"] || 0) + (sipsinCounts["정관"] || 0);
+  const inseongCount = (sipsinCounts["편인"] || 0) + (sipsinCounts["정인"] || 0);
+
+  const groupCounts = {
+    "비겁(비견·겁재)": bigeobCount,
+    "식상(식신·상관)": sibsangCount,
+    "재성(편재·정재)": jaeseongCount,
+    "관성(편관·정관)": gwanseongCount,
+    "인성(편인·정인)": inseongCount
+  };
+
+  let dominantGroup = "비겁(비견·겁재)";
+  let maxCount = -1;
+  Object.entries(groupCounts).forEach(([group, count]) => {
+    if (count > maxCount) {
+      maxCount = count;
+      dominantGroup = group;
+    }
+  });
+
+  const dominantDescriptions = {
+    "비겁(비견·겁재)": "귀하의 사주 원국에서 가장 강하게 작용하는 기운은 **비겁(비견·겁재)**입니다. 이는 강한 주체성과 독립심, 타협하지 않는 뚝심을 삶의 기본 바탕으로 삼는 성향을 나타냅니다. 1인 창업이나 전문 독립직무에서 가장 큰 성공을 거두는 반면, 고집이 지나쳐 인간관계나 금전 배분에서 생길 수 있는 불필요한 마찰을 조심해야 합니다.",
+    "식상(식신·상관)": "귀하의 사주 원국에서 가장 강하게 작용하는 기운은 **식상(식신·상관)**입니다. 이는 뛰어난 창의성, 풍부한 감수성, 자신의 재능을 아낌없이 세상에 표현해내는 에너지를 뜻합니다. 자신만의 아이디어나 전문 장인 기질을 무기로 지식재산권을 형성할 때 평생 수입의 질이 높아집니다. 단, 직장에서의 권위적인 갈등을 조율하고 성급한 말 실수를 의식적으로 제어할 필요가 있습니다.",
+    "재성(편재·정재)": "귀하의 사주 원국에서 가장 강하게 작용하는 기운은 **재성(편재·정재)**입니다. 이는 매우 뛰어난 현실 감각과 기회 포착력, 결과 중심의 행동 지향성을 뜻합니다. 끊임없이 자산을 설계하고 성과를 수치로 관리하는 지혜가 뛰어나며, 투자를 하든 직장 생활을 하든 철저히 실리를 확실하게 챙깁니다. 다만, 사소한 단기 득실에 과하게 얽매여 큰 인맥이나 장기적 평판을 잃지 않도록 해야 합니다.",
+    "관성(편관·정관)": "귀하의 사주 원국에서 가장 강하게 작용하는 기운은 **관성(편관·정관)**입니다. 이는 조직과 규율 속에서 자신의 가치와 신용을 증명하려는 책임감과 명예 지향 에너지를 뜻합니다. 타인의 신뢰를 얻어 직위가 자연스레 올라가며, 공신력 있는 라이선스나 공익적 시스템을 결합할 때 자산 안정성이 극대화됩니다. 다만, 완벽주의로 인한 과도한 스트레스와 강박증을 관리해야 합니다.",
+    "인성(편인·정인)": "귀하의 사주 원국에서 가장 강하게 작용하는 기운은 **인성(편인·정인)**입니다. 이는 지식을 습득하고 학문적 역량을 연마하며, 타인의 조력과 계약서·문서의 길함을 받아들이는 수용 에너지입니다. 남다른 직관력과 무형 지식 자산을 가공하는 능력이 탁월하지만, 행동으로 실천하지 않고 생각에만 갇혀버리는 '생각의 감옥'과 안일함에 빠지는 함정을 극도 경계해야 합니다."
+  };
+
+  const dominantDesc = dominantDescriptions[dominantGroup];
 
   switch (page.type) {
     case "cover":
@@ -1337,25 +1484,49 @@ const renderPageContent = (page, ctx) => {
               </div>
             </div>
 
-            {/* 십신 10개 개요 미니맵 */}
+            {/* 나의 주도 기운 분석 및 처방 */}
+            <div className="bg-[#FAF8F5] border-2 border-[#A3845B] rounded-xl p-5 mb-5 space-y-3 shadow-sm">
+              <div className="flex items-center gap-2 border-b border-[#E2DDD5] pb-2">
+                <span className="text-xl">🌟</span>
+                <h4 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">
+                  {name}님의 사주 주도 기운: <span className="text-[#A3845B]">{dominantGroup}</span>
+                </h4>
+              </div>
+              <p className={`text-xs text-[#2C2C2C] leading-relaxed font-light ${blurClass}`} dangerouslySetInnerHTML={{ __html: dominantDesc.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+              <div className="bg-[#F3EFE6] rounded-lg p-3 text-[10px] text-[#5F5F5F]">
+                <strong className="text-[#1A1A1A] block mb-1">📊 나의 5대 십신 에너지 분포:</strong>
+                <div className="flex gap-4 flex-wrap mt-1">
+                  <span>비겁 (비견·겁재): <strong className="text-[#A3845B]">{bigeobCount}개</strong></span>
+                  <span>식상 (식신·상관): <strong className="text-[#A3845B]">{sibsangCount}개</strong></span>
+                  <span>재성 (편재·정재): <strong className="text-[#A3845B]">{jaeseongCount}개</strong></span>
+                  <span>관성 (편관·정관): <strong className="text-[#A3845B]">{gwanseongCount}개</strong></span>
+                  <span>인성 (편인·정인): <strong className="text-[#A3845B]">{inseongCount}개</strong></span>
+                </div>
+              </div>
+            </div>
+
+            {/* 십신 10개 개요 미니맵 겸 보유 현황판 */}
             <div className="bg-[#F9F8F6] border border-[#E2DDD5] rounded-xl p-4 mb-5">
-              <p className="text-[10px] font-bold text-[#A3845B] mb-3 text-center tracking-wider">[ 십신(十神) 10가지 전체 구성도 ]</p>
+              <p className="text-[10px] font-bold text-[#A3845B] mb-3 text-center tracking-wider">
+                [ 혜안당 분석: {name}님의 사주 속 십신(十神) 보유 현황 ]
+              </p>
               <div className="grid grid-cols-5 gap-1.5 text-[9px] text-center font-semibold">
                 {[
-                  { name: "비견", color: "bg-emerald-100 text-emerald-800", page: "19p" },
-                  { name: "겁재", color: "bg-red-100 text-red-800", page: "19p" },
-                  { name: "식신", color: "bg-green-100 text-green-800", page: "20p" },
-                  { name: "상관", color: "bg-amber-100 text-amber-800", page: "20p" },
-                  { name: "편재", color: "bg-yellow-100 text-yellow-800", page: "21p" },
-                  { name: "정재", color: "bg-teal-100 text-teal-800", page: "21p" },
-                  { name: "편관", color: "bg-rose-100 text-rose-800", page: "22p" },
-                  { name: "정관", color: "bg-blue-100 text-blue-800", page: "22p" },
-                  { name: "편인", color: "bg-purple-100 text-purple-800", page: "23p" },
-                  { name: "정인", color: "bg-orange-100 text-orange-800", page: "23p" },
+                  { name: "비견", color: "bg-emerald-100 text-emerald-800", page: "19p", count: sipsinCounts["비견"] || 0 },
+                  { name: "겁재", color: "bg-red-100 text-red-800", page: "19p", count: sipsinCounts["겁재"] || 0 },
+                  { name: "식신", color: "bg-green-100 text-green-800", page: "20p", count: sipsinCounts["식신"] || 0 },
+                  { name: "상관", color: "bg-amber-100 text-amber-800", page: "20p", count: sipsinCounts["상관"] || 0 },
+                  { name: "편재", color: "bg-yellow-100 text-yellow-800", page: "21p", count: sipsinCounts["편재"] || 0 },
+                  { name: "정재", color: "bg-teal-100 text-teal-800", page: "21p", count: sipsinCounts["정재"] || 0 },
+                  { name: "편관", color: "bg-rose-100 text-rose-800", page: "22p", count: sipsinCounts["편관"] || 0 },
+                  { name: "정관", color: "bg-blue-100 text-blue-800", page: "22p", count: sipsinCounts["정관"] || 0 },
+                  { name: "편인", color: "bg-purple-100 text-purple-800", page: "23p", count: sipsinCounts["편인"] || 0 },
+                  { name: "정인", color: "bg-orange-100 text-orange-800", page: "23p", count: sipsinCounts["정인"] || 0 },
                 ].map((s, i) => (
-                  <div key={i} className={`${s.color} rounded-lg py-1.5 px-1`}>
-                    <p className="font-myeongjo font-bold">{s.name}</p>
-                    <p className="opacity-60 text-[8px]">{s.page}</p>
+                  <div key={i} className={`${s.color} rounded-lg py-1.5 px-1 relative ${s.count > 0 ? 'ring-2 ring-[#A3845B]/60 font-black scale-[1.03] transition-all' : 'opacity-40'}`}>
+                    <p className="font-myeongjo">{s.name}</p>
+                    <p className="text-[10px] text-[#1A1A1A] mt-0.5 font-bold">{s.count}개</p>
+                    <p className="opacity-60 text-[8px] mt-0.5">{s.page}</p>
                   </div>
                 ))}
               </div>
@@ -1368,12 +1539,26 @@ const renderPageContent = (page, ctx) => {
                   <strong className="text-[#5F7A68] text-[13px] font-myeongjo">• 비견(比肩) — 내 안의 줏대와 독립적 주체성</strong>
                   <span className="text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">자아 독립</span>
                 </div>
+                {/* 내 사주에서의 작용 현황 */}
+                <div className="bg-[#F6F5F2] rounded-lg p-2.5 text-[10px] text-[#5F5F5F]">
+                  🎯 <strong>내 사주 작용 현황:</strong>{" "}
+                  {sipsinCounts["비견"] > 0 ? (
+                    <span>
+                      사주 원국에 <strong>비견이 {sipsinCounts["비견"]}개</strong> 존재합니다. 타인에게 의지하지 않고 본인만의 소신과 자립심으로 삶을 개척해 나가는 능력이 강하게 작용하고 있습니다.
+                    </span>
+                  ) : (
+                    <span>
+                      사주 원국에 <strong>비견이 없습니다.</strong> 남의 의견에 귀가 얇아지거나 주체적으로 소신을 밀어붙이는 힘이 다소 아쉬울 수 있으니 자립심을 의식적으로 기르는 것이 좋습니다.
+                    </span>
+                  )}
+                </div>
                 <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
                   비견(比肩)은 나와 오행이 같고 음양이 같은 에너지로, 사주에서 '나의 분신'과 같은 역할을 합니다. 쉽게 말해 내 안의 단단한 줏대와 주체성을 의미합니다. 비견이 적당하게 있으면 남의 눈치에 흔들리지 않고 자기 소신대로 결단을 내리며, 자수성가와 독립 창업에서 빛을 발합니다. 그러나 비견이 과도하면 자존심과 고집이 지나쳐 협력 관계가 무너지거나 주변 사람들과의 충돌이 잦아집니다. 형제나 동생뻘의 경쟁자에게 재물이 분산될 위험도 있습니다.
                 </p>
                 <div className="bg-[#F0F7F2] border border-emerald-200/60 rounded-lg p-3 text-[11px] space-y-1">
                   <p><strong className="text-emerald-700">💪 강점 활용:</strong> 독자 브랜드 창업, 1인 기업, 독립 프리랜서 형태로 일할 때 비견의 에너지가 긍정적으로 폭발합니다.</p>
                   <p><strong className="text-red-700">⚠️ 조심할 행동:</strong> 동업 계약과 지인 금전 거래는 원칙적으로 금지하십시오. 내 돈은 반드시 내 명의로만 관리해야 합니다.</p>
+                  <p><strong className="text-emerald-700">💰 재물 시너지:</strong> 독립적인 능력으로 스스로 파이프라인을 구축하여 중간 수수료나 분배 없이 순수 본인만의 지분으로 자산을 형성할 때 시너지가 극대화됩니다.</p>
                 </div>
               </div>
 
@@ -1382,12 +1567,26 @@ const renderPageContent = (page, ctx) => {
                   <strong className="text-red-700 text-[13px] font-myeongjo">• 겁재(劫財) — 재물을 빼앗는 경쟁자이자 강력한 돌파력</strong>
                   <span className="text-[9px] bg-red-100 text-red-800 px-2 py-0.5 rounded-full font-bold">승부 본능</span>
                 </div>
+                {/* 내 사주에서의 작용 현황 */}
+                <div className="bg-[#F6F5F2] rounded-lg p-2.5 text-[10px] text-[#5F5F5F]">
+                  🎯 <strong>내 사주 작용 현황:</strong>{" "}
+                  {sipsinCounts["겁재"] > 0 ? (
+                    <span>
+                      사주 원국에 <strong>겁재가 {sipsinCounts["겁재"]}개</strong> 존재합니다. 경쟁 상황에서 지기 싫어하는 강인한 승부 본능과 남다른 기회 돌파력이 내재되어 있어 경쟁 사회에서 추진력을 발휘합니다.
+                    </span>
+                  ) : (
+                    <span>
+                      사주 원국에 <strong>겁재가 없습니다.</strong> 불필요한 재물 쟁탈 리스크가 낮고 안정적인 환경을 선호하지만, 경쟁을 뚫고 지나가야 하는 난관에서 승부욕을 조금 더 발휘할 필요가 있습니다.
+                    </span>
+                  )}
+                </div>
                 <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
                   겁재(劫財)는 나와 오행이 같지만 음양이 다른 에너지로, '재물을 겁탈한다'는 의미를 내포합니다. 경쟁과 도전에서 맹렬하게 이기려는 야망의 기운입니다. 이 에너지가 긍정적으로 발현되면 스포츠, 치열한 비즈니스 경쟁, 영업 전선에서 압도적인 돌파력을 발휘합니다. 그러나 겁재가 지나치게 강할 때는 가장 신뢰하는 가까운 지인이나 형제에게 금전 사기를 당하거나 동업에서 배신을 맞이하는 '겁재의 흉함'이 발동될 수 있습니다.
                 </p>
                 <div className="bg-[#FFF5F5] border border-red-200/60 rounded-lg p-3 text-[11px] space-y-1">
                   <p><strong className="text-red-700">💪 강점 활용:</strong> 경쟁이 치열한 영업, 스포츠 관련 직군, 입찰 경쟁에서 겁재의 승부 본능이 타인과의 차별적인 돌파구를 만들어냅니다.</p>
                   <p><strong className="text-red-700">⚠️ 조심할 행동:</strong> 아는 사람과의 투자 합자, 금전 보증, 사업 동업은 절대적으로 금지합니다. 계약 자금은 반드시 본인 명의로만 독립 통제하십시오.</p>
+                  <p><strong className="text-red-700">💰 재물 시너지:</strong> 치열한 입찰전이나 권리 분석 등 남들이 쉽게 진입하지 못하는 경쟁 시장에 베팅하여 단숨에 시장 지분과 고수익권을 탈환하는 투자 방식으로 자산을 증식합니다.</p>
                 </div>
               </div>
             </div>
@@ -1412,12 +1611,26 @@ const renderPageContent = (page, ctx) => {
                   <strong className="text-[#5F7A68] text-[13px] font-myeongjo">• 식신(食神) — 평생 따르는 의식주 복과 전문 장인 기질</strong>
                   <span className="text-[9px] bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-bold">재능·복록</span>
                 </div>
+                {/* 내 사주에서의 작용 현황 */}
+                <div className="bg-[#F6F5F2] rounded-lg p-2.5 text-[10px] text-[#5F5F5F]">
+                  🎯 <strong>내 사주 작용 현황:</strong>{" "}
+                  {sipsinCounts["식신"] > 0 ? (
+                    <span>
+                      사주 원국에 <strong>식신이 {sipsinCounts["식신"]}개</strong> 존재합니다. 깊은 탐구정신과 한 분야에 전문성을 길러내는 장인 기질이 안정적으로 발현되어 묵묵히 본인의 복록을 쌓아갑니다.
+                    </span>
+                  ) : (
+                    <span>
+                      사주 원국에 <strong>식신이 없습니다.</strong> 한 가지 분야에 오랜 끈기로 전문성을 키우거나 스스로의 루틴을 세우는 데 노력이 필요합니다.
+                    </span>
+                  )}
+                </div>
                 <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
                   식신(食神)은 '먹을 복'이라 불릴 만큼 평생 의식주가 풍족하게 따르는 복덩이 기운입니다. 한 분야를 깊게 파고드는 장인 기질이 탁월하며, 자신이 좋아하는 것을 꾸준히 갈고닦아 전문가가 되는 길에서 가장 큰 재물 복이 발동합니다. 식신이 강한 사람은 재치 있는 유머 감각과 넉넉한 여유가 있어 주변 사람들에게 편안함을 주며, 음식·요리·예술·연구·교육 분야에서 두각을 나타냅니다. 다만 지나치게 느긋해 추진력이 부족해질 수 있으니 자기 페이스를 지키되 마감 의식을 키우십시오.
                 </p>
                 <div className="bg-[#F0F7F2] border border-green-200/60 rounded-lg p-3 text-[11px] space-y-1">
                   <p><strong className="text-green-700">💪 강점 활용:</strong> 특수 자격증, 전문 기술 라이선스, 독창적 콘텐츠 창작 등 '시간이 갈수록 숙련되는 전문성'이 평생 마르지 않는 연금형 수입을 만들어냅니다.</p>
                   <p><strong className="text-amber-700">⚠️ 조심할 행동:</strong> 게으름과 안일함에 빠지지 않도록 구체적인 목표 일정을 세우고, 과식·비만으로 인한 건강 악화를 주의하십시오.</p>
+                  <p><strong className="text-green-700">💰 재물 시너지:</strong> 자신의 고유한 기술이나 지적 재산을 활용하여 장기적인 특허, 상표권, 저작권료 등 안정적인 무형 자산 파이프라인을 설계하면 큰 재물적 시너지를 발휘합니다.</p>
                 </div>
               </div>
 
@@ -1426,12 +1639,26 @@ const renderPageContent = (page, ctx) => {
                   <strong className="text-amber-700 text-[13px] font-myeongjo">• 상관(傷官) — 권위를 뒤집는 창의적 표현력과 날카로운 언변</strong>
                   <span className="text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold">혁신·언변</span>
                 </div>
+                {/* 내 사주에서의 작용 현황 */}
+                <div className="bg-[#F6F5F2] rounded-lg p-2.5 text-[10px] text-[#5F5F5F]">
+                  🎯 <strong>내 사주 작용 현황:</strong>{" "}
+                  {sipsinCounts["상관"] > 0 ? (
+                    <span>
+                      사주 원국에 <strong>상관이 {sipsinCounts["상관"]}개</strong> 존재합니다. 임기응변과 언변이 수려하며, 타인과 구별되는 독창적인 아이디어와 개성으로 대중의 시선을 사로잡는 에너지가 돋보입니다.
+                    </span>
+                  ) : (
+                    <span>
+                      사주 원국에 <strong>상관이 없습니다.</strong> 톡톡 튀는 변칙적 아이디어 표출이나 임기응변, 타인 앞에서의 적극적인 매력 발산보다는 얌전하고 규범적인 소통을 주로 사용하는 성향입니다.
+                    </span>
+                  )}
+                </div>
                 <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
                   상관(傷官)은 '관(官, 권위와 직위)'을 상하게 한다는 뜻으로, 기존의 규범과 권위에 의문을 제기하며 새로운 패러다임을 제시하는 혁신적 에너지입니다. 이 기운이 강하면 탁월한 언변과 비판적 사고력으로 남들이 보지 못하는 창의적 아이디어를 쏟아냅니다. 그러나 조직 내에서 상사나 윗사람과의 충돌을 자주 일으켜 직장 생활에 어려움을 겪을 수 있으며, 특히 남성의 경우 관운(직장운)을 해치고, 여성의 경우 배우자 운과 마찰이 생길 수 있으니 각별한 주의가 필요합니다.
                 </p>
                 <div className="bg-[#FFFBF0] border border-amber-200/60 rounded-lg p-3 text-[11px] space-y-1">
                   <p><strong className="text-amber-700">💪 강점 활용:</strong> 마케팅·홍보·스피치·언론·IT혁신·예술·강연 등 나의 '말과 혁신 기획력'을 무기로 하는 분야에서 압도적인 단기 고수익을 창출합니다.</p>
                   <p><strong className="text-red-700">⚠️ 조심할 행동:</strong> 직장에서 상사에 대한 직접적인 비판과 반박을 자제하고, 중요한 자리에서의 감정적 언행을 조율하십시오. 말 한마디가 운명을 바꿉니다.</p>
+                  <p><strong className="text-amber-700">💰 재물 시너지:</strong> 트렌디한 시장 변화에 가장 먼저 편승하여 단기 프로젝트나 아이디어 기획, 마케팅 수수료, 트래픽 유입 기반 비즈니스를 통해 폭발적인 자산 레버리지를 누릴 수 있습니다.</p>
                 </div>
               </div>
             </div>
@@ -1456,12 +1683,26 @@ const renderPageContent = (page, ctx) => {
                   <strong className="text-[#A3845B] text-[13px] font-myeongjo">• 편재(偏財) — 판을 키우는 대담한 모험적 재물 기운</strong>
                   <span className="text-[9px] bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full font-bold">사업·투자</span>
                 </div>
+                {/* 내 사주에서의 작용 현황 */}
+                <div className="bg-[#F6F5F2] rounded-lg p-2.5 text-[10px] text-[#5F5F5F]">
+                  🎯 <strong>내 사주 작용 현황:</strong>{" "}
+                  {sipsinCounts["편재"] > 0 ? (
+                    <span>
+                      사주 원국에 <strong>편재가 {sipsinCounts["편재"]}개</strong> 존재합니다. 시장 판세를 읽는 투자 직관이 뛰어나며 일확천금이나 큰 단위의 현금 흐름을 다루는 사업가적 기질이 내재되어 있습니다.
+                    </span>
+                  ) : (
+                    <span>
+                      사주 원국에 <strong>편재가 없습니다.</strong> 투기성 투자나 공격적인 사업 확장보다는 리스크가 적고 안정적인 고정 수익을 관리하는 데 집중하는 명조입니다.
+                    </span>
+                  )}
+                </div>
                 <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
                   편재(偏財)는 정해진 틀 밖에서 크게 돈을 굴리려는 모험심 넘치는 재물 에너지입니다. 무역, 사업 확장, 주식, 부동산 투자 등 유동성이 강한 큰 단위의 현금 흐름을 다루는 능력이 뛰어나 대업을 이룰 수 있습니다. 편재가 강한 사람은 사교성이 풍부하고 스케일이 크며, 아버지와의 인연이 깊은 편입니다. 그러나 편재 과다 또는 충극 시에는 무리한 투기로 일시에 재산을 탕진하거나, 이성 관계로 인한 재물 손실이 발생하니 각별한 조심이 필요합니다.
                 </p>
                 <div className="bg-[#FFFDF0] border border-yellow-200/60 rounded-lg p-3 text-[11px] space-y-1">
                   <p><strong className="text-yellow-700">💪 강점 활용:</strong> 중간 유통·사업 권리 계약·대형 프로젝트 입찰 등 '스케일이 큰 현금 흐름'을 설계하는 전략에서 대운의 흐름과 맞물려 거대한 자산을 형성합니다.</p>
                   <p><strong className="text-red-700">⚠️ 조심할 행동:</strong> 레버리지 투기, 근거 없는 고수익 투자 광고, 이성 관계로 인한 금전 지출에 극도로 주의하십시오. 손절 라인을 반드시 사전에 설정하십시오.</p>
+                  <p><strong className="text-yellow-700">💰 재물 시너지:</strong> 부동산 갭투자, 지분 투자, 인수합병(M&A) 등 큰 자본의 순환 구조를 활용하거나 시장의 저평가된 틈새 자산을 찾아 재판매(시세차익)하는 방식으로 극적인 재물 성장 이룹니다.</p>
                 </div>
               </div>
 
@@ -1470,12 +1711,26 @@ const renderPageContent = (page, ctx) => {
                   <strong className="text-[#5F7A68] text-[13px] font-myeongjo">• 정재(正財) — 꼬박꼬박 쌓이는 안정적이고 성실한 수입</strong>
                   <span className="text-[9px] bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full font-bold">안정·저축</span>
                 </div>
+                {/* 내 사주에서의 작용 현황 */}
+                <div className="bg-[#F6F5F2] rounded-lg p-2.5 text-[10px] text-[#5F5F5F]">
+                  🎯 <strong>내 사주 작용 현황:</strong>{" "}
+                  {sipsinCounts["정재"] > 0 ? (
+                    <span>
+                      사주 원국에 <strong>정재가 {sipsinCounts["정재"]}개</strong> 존재합니다. 수입과 지출의 균형을 치밀하게 조율하는 자산 관리 능력이 돋보이며 성실하게 종잣돈을 불려나가는 안정형 재물 기운이 내재되어 있습니다.
+                    </span>
+                  ) : (
+                    <span>
+                      사주 원국에 <strong>정재가 없습니다.</strong> 꼼꼼한 저축이나 정기적이고 일정한 흐름의 자산 통제보다는 다소 즉흥적인 지출이나 스케일이 큰 거래에 이끌리기 쉬우니 주의해야 합니다.
+                    </span>
+                  )}
+                </div>
                 <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
                   정재(正財)는 매월 안정적으로 입금되는 급여 형태의 수입이자 정밀한 자산 관리력을 의미합니다. 꼼꼼하게 장부를 기록하고 종잣돈을 모으는 안전지향형 재물 기운으로, 배우자와의 금전적 안정을 중시하며 착실하게 자산을 불려나갑니다. 부동산 청약, 적금, 연금 등 예측 가능한 안전 자산에 가치를 두며, 무리한 투기를 거부하는 성향이 강합니다. 다만 지나치게 보수적이면 성장 기회를 놓칠 수 있으니 작은 범위에서 투자 경험을 축적해 나가는 것이 좋습니다.
                 </p>
                 <div className="bg-[#F0FBF9] border border-teal-200/60 rounded-lg p-3 text-[11px] space-y-1">
                   <p><strong className="text-teal-700">💪 강점 활용:</strong> 급여의 50% 이상을 부동산 청약·연금·우량 채권 등 '환금성이 느린 안전 자산'에 꾸준히 투입할 때 평생의 재정 기반이 흔들리지 않습니다.</p>
                   <p><strong className="text-amber-700">⚠️ 조심할 행동:</strong> 지나친 절약과 인색함으로 주변 관계가 나빠지지 않도록 주의하십시오. 적정 수준의 사교 투자는 더 큰 재물을 부르는 씨앗입니다.</p>
+                  <p><strong className="text-teal-700">💰 재물 시너지:</strong> 근면하게 모은 시드머니를 공복 없이 월세가 들어오는 우량 상가나 채권 배당 등 다달이 확정적인 현금흐름이 나오는 시스템에 락업(Lock-up)할 때 최고의 자산 시너지를 냅니다.</p>
                 </div>
               </div>
             </div>
@@ -1500,12 +1755,26 @@ const renderPageContent = (page, ctx) => {
                   <strong className="text-red-700 text-[13px] font-myeongjo">• 편관(偏官) — 강박적 책임감이 만들어내는 카리스마와 명예</strong>
                   <span className="text-[9px] bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full font-bold">권위·카리스마</span>
                 </div>
+                {/* 내 사주에서의 작용 현황 */}
+                <div className="bg-[#F6F5F2] rounded-lg p-2.5 text-[10px] text-[#5F5F5F]">
+                  🎯 <strong>내 사주 작용 현황:</strong>{" "}
+                  {sipsinCounts["편관"] > 0 ? (
+                    <span>
+                      사주 원국에 <strong>편관이 {sipsinCounts["편관"]}개</strong> 존재합니다. 극한의 극복 의지와 리더십이 뛰어나 어려운 환경에서 위기를 관리하는 카리스마 능력이 내재되어 있습니다.
+                    </span>
+                  ) : (
+                    <span>
+                      사주 원국에 <strong>편관이 없습니다.</strong> 무거운 압박감이나 강박적인 스트레스를 이고 살아가기보다는 비교적 규칙적이고 유연하며 스트레스가 적은 환경을 추구하는 사주입니다.
+                    </span>
+                  )}
+                </div>
                 <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
                   편관(偏官)은 '칠살(七殺)'이라고도 불리며, 극단적인 책임감과 강인한 의지로 극한의 난관을 뚫고 일어서는 카리스마 에너지입니다. 군인·경찰·검사·소방관 등 특수 조직이나 혹독한 경쟁 환경에서 탁월한 성과를 발휘합니다. 남성의 경우 자녀와의 인연이 깊고, 여성의 경우 배우자 또는 남자 친구의 영향력을 강하게 받습니다. 편관이 과하면 과로와 스트레스로 인한 건강 문제, 구설과 관재(官災)를 조심해야 합니다.
                 </p>
                 <div className="bg-[#FFF5F5] border border-rose-200/60 rounded-lg p-3 text-[11px] space-y-1">
                   <p><strong className="text-rose-700">💪 강점 활용:</strong> 특임 부서 팀장, 위기 관리 책임자, 특수 라이선스 사업자 등 '리더십과 강한 신뢰'를 담보로 하는 포지션에서 최고의 성과를 냅니다.</p>
                   <p><strong className="text-red-700">⚠️ 조심할 행동:</strong> 지나친 과로와 야근을 줄이고, 구설과 법적 분쟁의 소지를 원천 차단하십시오. 강경한 태도보다는 유연한 협력을 의식적으로 연습하십시오.</p>
+                  <p><strong className="text-rose-700">💰 재물 시너지:</strong> 정부 주도 사업 참여나 대기업 1차 협력업체 등록 등 높은 진입장벽을 가진 특권 라이선스나 공신력 있는 기관의 보장을 통해 리스크 없이 큰 자산권을 유지하는 형태로 재물을 불립니다.</p>
                 </div>
               </div>
 
@@ -1514,12 +1783,26 @@ const renderPageContent = (page, ctx) => {
                   <strong className="text-blue-700 text-[13px] font-myeongjo">• 정관(正官) — 공익적 신뢰와 안정적인 직위 권한</strong>
                   <span className="text-[9px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">명예·승진</span>
                 </div>
+                {/* 내 사주에서의 작용 현황 */}
+                <div className="bg-[#F6F5F2] rounded-lg p-2.5 text-[10px] text-[#5F5F5F]">
+                  🎯 <strong>내 사주 작용 현황:</strong>{" "}
+                  {sipsinCounts["정관"] > 0 ? (
+                    <span>
+                      사주 원국에 <strong>정관이 {sipsinCounts["정관"]}개</strong> 존재합니다. 조직 내에서 모범적이고 합리적인 규칙을 잘 준수하여 주변인들의 두터운 신용과 명예를 얻는 기운이 활발히 작동하고 있습니다.
+                    </span>
+                  ) : (
+                    <span>
+                      사주 원국에 <strong>정관이 없습니다.</strong> 정해진 조직의 획일적인 틀에 구애받기보다 자유롭고 창의적인 주체성을 가진 행동을 더욱 선호하는 경향이 있습니다.
+                    </span>
+                  )}
+                </div>
                 <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
                   정관(正官)은 공무원·대기업·공공기관 등에서 가장 안전하고 예측 가능한 승진 운과 질서 순응 본능을 나타내는 정정당당한 명예 에너지입니다. 주위에서 "저 사람은 믿을 수 있다"는 신뢰와 인정을 받으며 자연스럽게 지위가 올라갑니다. 여성의 경우 정관이 배우자의 자리를 뜻하며, 온화하고 사회적으로 안정적인 파트너를 만날 인연이 있습니다. 다만 너무 원칙만을 고집하면 변화에 적응하지 못하고 뒤처지는 위험이 있으니 시대 변화에 맞는 유연성도 함께 갖추십시오.
                 </p>
                 <div className="bg-[#F0F5FF] border border-blue-200/60 rounded-lg p-3 text-[11px] space-y-1">
                   <p><strong className="text-blue-700">💪 강점 활용:</strong> 국가 조달 계약, 공인 면허 취득, 규범적 성실도 평가를 통한 급여 상승 등 '신용 중심 합법 거래'를 적극 결합할 때 자산 안정성이 극대화됩니다.</p>
                   <p><strong className="text-amber-700">⚠️ 조심할 행동:</strong> 원칙과 규율에 지나치게 얽매여 창의적 기회를 놓치지 않도록 하십시오. 변화하는 환경에 유연하게 적응하는 연습이 필요합니다.</p>
+                  <p><strong className="text-blue-700">💰 재물 시너지:</strong> 대기업 사내 연봉 극대화, 정기적 이자 및 배당 소득, 혹은 공공기관 연계 프로젝트 등 법적 보호와 시스템 안전성이 100% 확보된 루트를 통해서만 자산을 관리할 때 손실 없이 복리로 우상향합니다.</p>
                 </div>
               </div>
             </div>
@@ -1544,12 +1827,26 @@ const renderPageContent = (page, ctx) => {
                   <strong className="text-purple-700 text-[13px] font-myeongjo">• 편인(偏印) — 독창적인 예술 직관과 남다른 전문 기획력</strong>
                   <span className="text-[9px] bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full font-bold">독창·영감</span>
                 </div>
+                {/* 내 사주에서의 작용 현황 */}
+                <div className="bg-[#F6F5F2] rounded-lg p-2.5 text-[10px] text-[#5F5F5F]">
+                  🎯 <strong>내 사주 작용 현황:</strong>{" "}
+                  {sipsinCounts["편인"] > 0 ? (
+                    <span>
+                      사주 원국에 <strong>편인이 {sipsinCounts["편인"]}개</strong> 존재합니다. 정형화되지 않은 독창적인 영감과 비주류 전문성에 재능이 있어 뛰어난 기획과 설계를 보입니다.
+                    </span>
+                  ) : (
+                    <span>
+                      사주 원국에 <strong>편인이 없습니다.</strong> 매니아적이거나 파격적인 예술적 영감 추구보다는 상식적이고 예측 가능하며 정통 학문적 접근에 더 익숙한 편입니다.
+                    </span>
+                  )}
+                </div>
                 <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
                   편인(偏印)은 정통 학문보다는 특수 기술·비주류 학문·예술·철학·종교·심리학 등 독자적인 분야에서 깊은 통찰을 발휘하는 에너지입니다. 타의 추종을 불허하는 독창적인 아이디어와 예술적 감수성이 있으며, 호기심과 탐구 정신이 남다릅니다. 그러나 변덕스럽고 집중력이 쉽게 분산되는 단점이 있으며, 식신의 에너지를 억제하는 특성상 '밥을 빼앗긴다'는 상징처럼 수입의 단절이나 직업 변동이 잦을 수 있습니다. 특히 의식주를 생산하는 음식·요식업을 피하는 것이 좋습니다.
                 </p>
                 <div className="bg-[#F9F5FF] border border-purple-200/60 rounded-lg p-3 text-[11px] space-y-1">
                   <p><strong className="text-purple-700">💪 강점 활용:</strong> 특허 기술 등록, 심리·철학 상담, 마이너 감성 예술 기획 등 '독창적인 무형 지식 재산권'을 다각도로 유통할 때 시스템 수동 소득이 창출됩니다.</p>
                   <p><strong className="text-red-700">⚠️ 조심할 행동:</strong> 한 가지 일을 끝까지 완결짓지 않고 중간에 포기하는 습관을 반드시 고치십시오. 음식업·요식업 창업은 특히 주의하십시오.</p>
+                  <p><strong className="text-purple-700">💰 재물 시너지:</strong> 대중적이지 않지만 매니아층이 견고한 틈새 시장의 정보 독점, 무형 자산의 판권(라이선스) 계약, 종교·학술적 특허 등 고유 정보 가치를 판매하여 희소성 높은 재물을 벌어들입니다.</p>
                 </div>
               </div>
 
@@ -1558,12 +1855,26 @@ const renderPageContent = (page, ctx) => {
                   <strong className="text-[#A3845B] text-[13px] font-myeongjo">• 정인(正印) — 후원자의 조력과 문서·계약에서의 길함</strong>
                   <span className="text-[9px] bg-orange-100 text-orange-800 px-2 py-0.5 rounded-full font-bold">후원·문서</span>
                 </div>
+                {/* 내 사주에서의 작용 현황 */}
+                <div className="bg-[#F6F5F2] rounded-lg p-2.5 text-[10px] text-[#5F5F5F]">
+                  🎯 <strong>내 사주 작용 현황:</strong>{" "}
+                  {sipsinCounts["정인"] > 0 ? (
+                    <span>
+                      사주 원국에 <strong>정인이 {sipsinCounts["정인"]}개</strong> 존재합니다. 부모의 따뜻한 조력이나 문서 및 계약상의 길함이 따르며, 착실하게 배우고 지혜를 확장해 나가는 성품이 내재되어 있습니다.
+                    </span>
+                  ) : (
+                    <span>
+                      사주 원국에 <strong>정인이 없습니다.</strong> 타인의 지극히 자상한 후원이나 유산 등의 조건 없는 조력을 기대하기보다, 순수하게 본인의 피땀 어린 노력과 능력으로 일어설 필요가 있습니다.
+                    </span>
+                  )}
+                </div>
                 <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
                   정인(正印)은 부모님의 따뜻한 후원, 스승과 멘토의 가르침, 문서 계약의 길함을 상징합니다. 이 기운이 강한 사람은 학문적 재능이 뛰어나고 꾸준한 자기 계발로 전문성을 쌓으며, 계약서와 문서에서 항상 유리한 결과를 얻는 행운이 따릅니다. 인성(人性)이 착하고 배려가 넘쳐 주변의 도움을 자연스럽게 받습니다. 그러나 과도한 정인은 지나치게 의존적이거나 게으름을 초래할 수 있으니, 스스로 주도적으로 움직이는 습관이 필요합니다. 여성의 경우 자녀 출산 후 일시적인 직업 공백이 생길 수 있습니다.
                 </p>
                 <div className="bg-[#FFF8F0] border border-orange-200/60 rounded-lg p-3 text-[11px] space-y-1">
                   <p><strong className="text-orange-700">💪 강점 활용:</strong> 정부 지원금·보조금 신청, 유산 상속 계약, 부동산 분양 계약 등 '합법적이고 정당한 권리 계약'을 적극적으로 활용하면 자산이 탄탄하게 문서화됩니다.</p>
                   <p><strong className="text-amber-700">⚠️ 조심할 행동:</strong> 의존성에서 벗어나 스스로 결정하고 실행하는 능동적 습관을 기르십시오. 과도한 공부에만 집착하고 실행을 미루는 함정을 피하십시오.</p>
+                  <p><strong className="text-orange-700">💰 재물 시너지:</strong> 멘토나 부모의 상속 재원, 공신력 있는 문서화된 권리(부동산 등기, 건물 계약, 학위 기반 라이선스)를 통해 내 손실 리스크가 없는 우량 자산을 영구 등재하여 지키고 불립니다.</p>
                 </div>
               </div>
 
