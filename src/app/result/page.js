@@ -444,6 +444,17 @@ const renderPageContent = (page, ctx) => {
 
   const dominantDesc = dominantDescriptions[dominantGroup];
 
+  // 신살(도화, 역마, 화개) 계산
+  const branches = [
+    sajuInfo.year.branch,
+    sajuInfo.month.branch,
+    sajuInfo.day.branch,
+    sajuInfo.hour.branch
+  ];
+  const dowhaCount = branches.filter(b => ["子", "午", "卯", "酉"].includes(b)).length;
+  const yeokmaCount = branches.filter(b => ["寅", "申", "巳", "亥"].includes(b)).length;
+  const hwagaeCount = branches.filter(b => ["辰", "戌", "丑", "未"].includes(b)).length;
+
   switch (page.type) {
     case "cover":
       return (
@@ -1896,17 +1907,121 @@ const renderPageContent = (page, ctx) => {
           <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
             💀 사주 속 길흉 신살(神殺) 분석
           </h3>
-          <div className="space-y-4 text-xs text-[#5F5F5F] leading-relaxed">
-            {[
-              { name: "🌸 도화살 (桃花煞) - 대중을 사로잡는 강력한 매력", desc: "이 살이 적당하면 남다른 매력과 수려한 미적 감각으로 연예, 영업, 정치, 브랜딩 분야에서 큰돈을 벌어들이는 무기가 됩니다. 다만 음주나 이성 구설을 부를 수 있으니 공사 구분을 철저히 지키십시오." },
-              { name: "🐎 역마살 (驛馬煞) - 활동 반경을 넓히는 에너지", desc: "해외 유학, 무역, 출장이 잦은 직무, 혹은 잦은 거주지 이동을 자극하는 에너지입니다. 한자리에 가만히 고여 있기보다 계속해서 움직이고 활발히 세상을 다닐 때 오히려 막혔던 재물 운이 순환합니다." },
-              { name: "📿 화개살 (華蓋煞) - 사색과 학예의 예술 기운", desc: "종교, 철학, 심리학, 예술 분야에 깊은 통찰력을 심어주는 격조 높은 살입니다. 홀로 사색하며 마음을 정비할 때 최고의 지혜를 길러내나, 자칫 세상사 귀찮음에 빠져 방 안에 갇히는 기류를 경계해야 합니다." }
-            ].map((sal, idx) => (
-              <div key={idx} className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2">
-                <strong className="text-[#1A1A1A] block">{sal.name}</strong>
-                <p className={`font-light ${blurClass}`}>{sal.desc}</p>
+          <p className="text-xs text-[#5F5F5F] leading-relaxed">
+            신살(神殺)이란 사주 여덟 글자의 지지(땅의 기운) 조합에 따라 내 삶에 강력하게 발동하는 특별한 재능이자 운명적 기류입니다. 긍정적인 쓰임새를 뜻하는 '신(神)'과 살아가며 주의해야 할 흉한 기운인 '살(殺)'이 동시에 내재되어 있어, 나의 분포와 대처 요령을 정확하게 아는 것이 개운의 핵심입니다.
+          </p>
+
+          <div className="space-y-5 text-xs text-[#2C2C2C] leading-relaxed font-traditional">
+            {/* 도화살 카드 */}
+            <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-3">
+              <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                <strong className="text-red-700 text-[13px] font-myeongjo">🌸 도화살 (桃花煞) — 대중을 사로잡는 강력한 매력</strong>
+                <span className={`text-[9px] px-2.5 py-0.5 rounded-full font-bold ${dowhaCount > 0 ? 'bg-red-100 text-red-800 ring-1 ring-red-200' : 'bg-gray-100 text-gray-400'}`}>
+                  보유 {dowhaCount}개
+                </span>
               </div>
-            ))}
+              <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
+                도화살(桃花煞)은 복숭아꽃 향기에 이끌리듯 사람들을 내 주변으로 끌어당기는 치명적 매력의 에너지입니다. 이 살이 긍정적으로 작용하면 남다른 스타성과 탁월한 미적 감각으로 엔터테인먼트, 브랜딩, 영업, 마케팅, 정치 등 타인의 주목을 받아야 하는 모든 비즈니스에서 독보적인 무기가 됩니다. 다만, 음주나 이성 관계에서의 구설수를 부를 수 있어 공사 구분을 철저히 지키는 자제력이 요구됩니다.
+              </p>
+              
+              {/* 내 사주에서의 작용 현황 */}
+              <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-lg p-3 space-y-2">
+                <div>
+                  <span className="font-bold text-[#A3845B] block mb-1">🎯 내 사주 작용 현황:</span>
+                  <p className={`text-[11px] text-[#5F5F5F] font-light ${blurClass}`}>
+                    {dowhaCount > 0 ? (
+                      `의뢰인님의 사주 지지에는 도화살에 해당하는 글자(자/오/묘/유)가 ${dowhaCount}개 존재합니다. 남들의 시선을 자연스럽게 이끄는 훌륭한 매력과 대중 친화적인 기운이 강력하게 작동하고 있으므로 남들 앞에 자신을 드러낼 때 귀인의 도움을 얻거나 재물 기회를 포착하는 속도가 매우 빠릅니다.`
+                    ) : (
+                      "의뢰인님의 사주 지지에는 도화살에 해당하는 글자(자/오/묘/유)가 없습니다. 억지로 대중 앞에 나서 튀려고 하기보다, 탄탄한 전문성이나 정직함 및 진정성을 먼저 구축하여 사람들의 신뢰를 얻어가는 것이 훨씬 유리합니다."
+                    )}
+                  </p>
+                </div>
+                <div className="border-t border-[#E2DDD5]/70 pt-1.5">
+                  <span className="font-bold text-[#A3845B] block mb-1">🔑 무엇을 해야 하는가? (행동 처방):</span>
+                  <p className={`text-[11px] text-[#5F5F5F] font-light ${blurClass}`}>
+                    {dowhaCount > 0 ? (
+                      "개인 SNS나 블로그 등 본인만의 개성 넘치는 브랜딩 채널을 하나 이상 개설하여 포트폴리오와 가치를 적극 공유하십시오. 또한 면접이나 미팅 등 중요한 비즈니스 계약 자리에서는 무채색보다는 나를 돋보이게 하는 포인트 있는 복장이나 연출로 첫인상 시선을 완전히 장악하는 전략이 유용합니다."
+                    ) : (
+                      "겉포장이나 일시적인 이미지 메이킹에 힘쓰기보다, 객관적으로 증명할 수 있는 전문 자격이나 실적 포트폴리오를 서류화하여 명확히 제시하십시오. 대신, 대외적 커뮤니케이션을 보완하기 위해 항상 밝은 얼굴빛과 깔끔하고 호감도 높은 단정한 비즈니스 웨어 스타일링을 신경 쓰셔야 합니다."
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 역마살 카드 */}
+            <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-3">
+              <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                <strong className="text-amber-700 text-[13px] font-myeongjo">🐎 역마살 (驛馬煞) — 활동 반경을 넓히는 에너지</strong>
+                <span className={`text-[9px] px-2.5 py-0.5 rounded-full font-bold ${yeokmaCount > 0 ? 'bg-amber-100 text-amber-800 ring-1 ring-amber-200' : 'bg-gray-100 text-gray-400'}`}>
+                  보유 {yeokmaCount}개
+                </span>
+              </div>
+              <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
+                역마살(驛馬煞)은 한곳에 머무르지 않고 부지런히 움직이며 새로운 지평을 개척해 나가는 역동적인 기운입니다. 해외 유학, 글로벌 무역, 출장이 잦은 전문 직종, 혹은 이사나 부서 이동을 자극하는 변동의 기틀이 됩니다. 정체되어 있거나 한자리에 고여 있으면 재물과 정신이 동시에 답답해지며, 밖으로 나가 활발히 세상을 돌아다니고 다양한 인프라를 만날 때 막혔던 대운이 시원하게 순환합니다.
+              </p>
+              
+              {/* 내 사주에서의 작용 현황 */}
+              <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-lg p-3 space-y-2">
+                <div>
+                  <span className="font-bold text-[#A3845B] block mb-1">🎯 내 사주 작용 현황:</span>
+                  <p className={`text-[11px] text-[#5F5F5F] font-light ${blurClass}`}>
+                    {yeokmaCount > 0 ? (
+                      `의뢰인님의 사주 지지에는 역마살에 해당하는 글자(인/신/사/해)가 ${yeokmaCount}개 존재합니다. 활동 반경이 국내외로 매우 넓고, 스스로 개척하여 판도를 바꾸는 강력한 실행력과 임기응변 능력을 갖추고 있어 정적인 일보다는 끊임없이 환경에 변화를 주는 구조에서 운이 가장 발복합니다.`
+                    ) : (
+                      "의뢰인님의 사주 지지에는 역마살에 해당하는 글자(인/신/사/해)가 없습니다. 잦은 이동이나 급격한 거주/직무 변화는 오히려 심신을 피로하게 하므로, 한 지역이나 안정된 고정 근무지에서 오랜 기간 뿌리를 내리고 숙련도를 키워가는 것이 재정 안정에 훨씬 적합합니다."
+                    )}
+                  </p>
+                </div>
+                <div className="border-t border-[#E2DDD5]/70 pt-1.5">
+                  <span className="font-bold text-[#A3845B] block mb-1">🔑 무엇을 해야 하는가? (행동 처방):</span>
+                  <p className={`text-[11px] text-[#5F5F5F] font-light ${blurClass}`}>
+                    {yeokmaCount > 0 ? (
+                      "업무나 사업을 구상할 때 재택이나 고정 내근보다는 외부 파트너 미팅, 지역 출장, 해외 세미나 참석 등 내가 능동적으로 이동할 수 있는 환경을 설계하십시오. 재정이나 사업 흐름이 정체되었을 때는 사무실 책상 구조를 전면 재배치하거나 주거 공간 인테리어를 과감히 바꿔 에너지를 이동시켜 개운해야 합니다."
+                    ) : (
+                      "안정적인 일과 루틴을 보장해주는 확실한 주거 및 작업실 공간을 평화롭게 세팅하십시오. 무리하게 타지로 이동하여 기회를 엿보기보다는, 온라인망을 통한 비대면 네트워킹을 활용하고 내 거점을 중심으로 자산을 수성하는 전략이 리스크를 피하는 지름길입니다."
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 화개살 카드 */}
+            <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-3">
+              <div className="flex justify-between items-center border-b border-[#E2DDD5]/60 pb-2">
+                <strong className="text-purple-700 text-[13px] font-myeongjo">📿 화개살 (華蓋煞) — 사색과 학예의 예술 기운</strong>
+                <span className={`text-[9px] px-2.5 py-0.5 rounded-full font-bold ${hwagaeCount > 0 ? 'bg-purple-100 text-purple-800 ring-1 ring-purple-200' : 'bg-gray-100 text-gray-400'}`}>
+                  보유 {hwagaeCount}개
+                </span>
+              </div>
+              <p className={`font-light text-justify leading-relaxed ${blurClass}`}>
+                화개살(華蓋煞)은 '빛나는 지혜와 학예를 덮어 보관한다'는 뜻으로 종교, 철학, 심리학, 그리고 깊은 내면의 사색과 예술 분야에 압도적인 정신적 천재성을 불어넣는 격조 높은 기운입니다. 고요히 침잠하며 홀로 생각에 몰두할 때 세상의 이치와 지혜를 관통해 내며, 타인의 마음에 깊이 공감하는 정신적 멘토나 상담가 자질을 부여합니다. 다만 고독감이 짙어져 방 안에 갇히는 침체기를 경계해야 합니다.
+              </p>
+              
+              {/* 내 사주에서의 작용 현황 */}
+              <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-lg p-3 space-y-2">
+                <div>
+                  <span className="font-bold text-[#A3845B] block mb-1">🎯 내 사주 작용 현황:</span>
+                  <p className={`text-[11px] text-[#5F5F5F] font-light ${blurClass}`}>
+                    {hwagaeCount > 0 ? (
+                      `의뢰인님의 사주 지지에는 화개살에 해당하는 글자(진/술/축/미)가 ${hwagaeCount}개 존재합니다. 복잡하고 눈에 보이는 현실 너머의 본질을 꿰뚫는 사색적 능력과 창작·문화예술에 깊은 안목이 있습니다. 타인의 지식이나 노하우를 그대로 답습하기보다 스스로 연구하여 독자적인 통찰을 끌어낼 때 재물이 화개 창고에 쌓이게 됩니다.`
+                    ) : (
+                      "의뢰인님의 사주 지지에는 화개살에 해당하는 글자(진/술/축/미)가 없습니다. 생각에만 갇혀 우울감이나 고독에 허우적대는 일이 거의 없고, 현실적이며 행동주의적 사고를 좋아하지만 고유한 정신적 깊이나 영감을 얻는 인문학 독서 등에는 의식적인 할애가 보완되어야 합니다."
+                    )}
+                  </p>
+                </div>
+                <div className="border-t border-[#E2DDD5]/70 pt-1.5">
+                  <span className="font-bold text-[#A3845B] block mb-1">🔑 무엇을 해야 하는가? (행동 처방):</span>
+                  <p className={`text-[11px] text-[#5F5F5F] font-light ${blurClass}`}>
+                    {hwagaeCount > 0 ? (
+                      "소란스럽고 바쁜 일과 중에도 매일 최소 30분은 온전히 혼자 서재나 조용한 공간에서 독서, 글쓰기, 명상을 하는 '고독 리추얼'을 구축하십시오. 그리고 머릿속에 떠오른 복잡한 통찰과 영감을 그냥 휘발시키지 말고 반드시 에세이, 책, 예술적 콘텐츠, 지적 기획서 등 무형의 문서 자산으로 승화시켜 남겨두는 훈련이 필수적입니다."
+                    ) : (
+                      "생각의 지평을 넓히고 리스크를 사전에 예견하기 위해 동양 철학, 심리학, 역사와 같은 인문 교양 서적을 한 달에 한 권 이상 읽는 습관을 들이십시오. 또한 스스로 방안에 앉아 생각만 깊이 하기보다, 실제 미술 전시회, 음악회, 철학 강연 등에 수시로 참여해 풍부한 예술 영감을 외부로부터 의식적으로 수혈하는 것이 성공을 앞당깁니다."
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       );
