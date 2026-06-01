@@ -561,6 +561,33 @@ const renderPageContent = (page, ctx) => {
               태어난 시간(시지: <strong>{sajuInfo.hour.branch}</strong>)부터 태어난 해(연간: <strong>{sajuInfo.year.stem}</strong>)까지의 상생 기운을 분석하면, 귀하의 사주는 스스로의 뿌리를 굳건히 지탱하려는 주체성이 매우 강합니다. 남의 지시에 쉽게 흔들리기보다는, 스스로 목표를 정하고 <strong>자기 주도적인 리더십</strong>으로 삶을 이끌어갈 때 가장 큰 잠재력이 발현되는 훌륭한 구성입니다.
             </p>
           </div>
+
+          {/* 의뢰인님의 사주 명조 구성 상세 진단 */}
+          <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-3">
+            <h4 className="font-bold text-[#A3845B] text-xs font-myeongjo">📝 {name}님의 사주팔자 명조 구성 요약</h4>
+            <div className={`text-[11px] text-[#5F5F5F] font-light leading-relaxed ${blurClass}`}>
+              의뢰인님의 사주는 <strong>{sajuInfo.year.stemEl}{sajuInfo.year.branchEl}의 해</strong>, 
+              <strong>{sajuInfo.month.stemEl}{sajuInfo.month.branchEl}의 달</strong>, 
+              <strong>{sajuInfo.day.stemEl}{sajuInfo.day.branchEl}의 날</strong>, 
+              <strong>{sajuInfo.hour.stemEl}{sajuInfo.hour.branchEl}의 시간</strong>에 태어난 
+              간지 조합으로 이루어져 있습니다.
+              <br />
+              이 명조의 핵심 주체는 일주의 천간인 <strong>'{sajuInfo.day.stem}'({sajuInfo.day.stemEl}의 기운)</strong>입니다. 
+              {sajuInfo.day.stemEl === "목" ? (
+                "위로 뻗어가는 목(木)의 강한 추진력과 생명력이 삶의 중심 원동력입니다. 기획이나 새로운 시작을 이끄는 역량이 강합니다."
+              ) : sajuInfo.day.stemEl === "화" ? (
+                "세상을 밝게 비추고 넓게 소통하는 화(火)의 열정이 중심 기운입니다. 나를 표현하고 남들과 어울리는 대외적 무대에 적합합니다."
+              ) : sajuInfo.day.stemEl === "토" ? (
+                "안정적으로 자원을 품고 조율하는 토(土)의 묵직한 중용과 신뢰가 중심 기운입니다. 중개하고 안정화하는 실력이 탁월합니다."
+              ) : sajuInfo.day.stemEl === "금" ? (
+                "비효율을 정리하고 칼같이 결단하는 금(金)의 기상이 중심 기운입니다. 통제하고 정확하게 결과를 내는 역할에 탁월합니다."
+              ) : (
+                "깊이 사고하고 흘러가며 지혜를 전달하는 수(水)의 유연함이 중심 기운입니다. 후방에서 전략을 수립하고 통찰을 발휘하기 좋습니다."
+              )}
+              <br />
+              또한 태어난 계절의 기운(월지)인 <strong>{sajuInfo.month.branch} ({sajuInfo.month.branchEl}의 계절)</strong>의 속성을 강하게 수혈받아, 삶의 직업적 환경에서 {sajuInfo.month.branchEl === "목" ? "교육, 창조, 기획" : sajuInfo.month.branchEl === "화" ? "트렌드, IT, 미디어, 표현" : sajuInfo.month.branchEl === "토" ? "중개, 중용, 인프라, 부동산" : sajuInfo.month.branchEl === "금" ? "재무, 기술, 정밀 분석, 결단" : "연구, 전략, 정보 다루기, 심리"} 관련 역량을 발휘하는 데 매우 최적화되어 있습니다.
+            </div>
+          </div>
           <div className="border border-[#E2DDD5]/60 rounded-lg p-4 bg-white text-xs space-y-3 shadow-sm">
             <h4 className="font-bold text-[#1A1A1A] font-myeongjo">🔍 사주(四柱) 네 기둥이 상징하는 평생의 운명 주기</h4>
             <div className="grid grid-cols-2 gap-3 text-[#5F5F5F]">
