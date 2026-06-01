@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Compass, Sparkles, Mail, ArrowRight, Scroll, HelpCircle, Calendar, User, Phone, Clock, Heart, Coins, Activity } from "lucide-react";
-import { getCumulativeCount } from "../utils/counter";
+import { getCumulativeCount, getTodayCount, getActiveUsers } from "../utils/counter";
 
 const ZODIAC_LIST = [
   { name: "쥐띠", hanja: "子", emoji: "🐭" },
@@ -135,13 +135,19 @@ export default function Home() {
   const [selectedZodiacIndex, setSelectedZodiacIndex] = useState(null);
   const [zodiacFortune, setZodiacFortune] = useState(null);
   const [cumulativeCount, setCumulativeCount] = useState(14820);
+  const [todayCount, setTodayCount] = useState(412);
+  const [activeUsers, setActiveUsers] = useState(18);
 
   useEffect(() => {
     setCumulativeCount(getCumulativeCount());
+    setTodayCount(getTodayCount());
+    setActiveUsers(getActiveUsers());
     
     const timer = setInterval(() => {
       setCumulativeCount(getCumulativeCount());
-    }, 30000);
+      setTodayCount(getTodayCount());
+      setActiveUsers(getActiveUsers());
+    }, 10000);
     
     return () => clearInterval(timer);
   }, []);
@@ -275,12 +281,12 @@ export default function Home() {
             {/* 누적 수치 */}
             <div className="flex justify-center items-center gap-8 md:gap-16 text-center">
               <div>
-                <span className="text-brass text-lg md:text-xl font-bold font-myeongjo">18</span>
+                <span className="text-brass text-lg md:text-xl font-bold font-myeongjo">{activeUsers}</span>
                 <span className="text-[10px] text-foreground-muted block mt-0.5">지금 열람 중</span>
               </div>
               <div className="w-px h-8 bg-border-custom/80" />
               <div>
-                <span className="text-brass text-lg md:text-xl font-bold font-myeongjo">412</span>
+                <span className="text-brass text-lg md:text-xl font-bold font-myeongjo">{todayCount.toLocaleString()}</span>
                 <span className="text-[10px] text-foreground-muted block mt-0.5">오늘 발행</span>
               </div>
               <div className="w-px h-8 bg-border-custom/80" />
