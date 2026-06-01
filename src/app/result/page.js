@@ -2715,6 +2715,8 @@ function ResultContent() {
   const sajuInfo = getGanjiTable(year, month, day, hour);
   const partnerSajuInfo = getGanjiTable(partnerYear, partnerMonth, partnerDay, partnerHour);
   const prescriptions = getDeficientPrescription(sajuInfo.elements);
+  const metrics = getCharacterMetrics(sajuInfo);
+  const isFree = reportGrade === "free" && !isPaid;
 
   // Determine user's base element for 2026 compatibility
   const baseEl = sajuInfo.year.stemEl; // Representing birth year element
@@ -4685,7 +4687,7 @@ function ResultContent() {
         </div>
       )}
 
-      <div className="max-w-3xl mx-auto bg-[#F6F3EC] border-4 border-[#A3845B] rounded-lg p-6 md:p-12 shadow-md relative print:shadow-none print:border-none print:bg-white">
+      <div className={`max-w-3xl mx-auto bg-[#F6F3EC] border-4 border-[#A3845B] rounded-lg p-6 md:p-12 shadow-md relative print:shadow-none print:border-none print:bg-white ${isFree ? "pb-24 md:pb-32" : ""}`}>
         
         {/* Decorative corner motifs */}
         <div className="absolute top-4 left-4 text-[#A3845B]/30 font-myeongjo text-sm print:hidden">卍</div>
@@ -4825,6 +4827,20 @@ function ResultContent() {
             본 문서의 지적 재산권은 혜안당에 있으며, 무단 배포 및 도용을 금지합니다.
           </p>
         </div>
+
+        {/* 하단 고정 결제 CTA 플로팅 바 (isFree 일 때 노출) */}
+        {isFree && (
+          <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
+            <button
+              type="button"
+              onClick={handlePortonePayment}
+              className="w-full bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] py-4 px-6 rounded-xl font-myeongjo font-bold text-xs sm:text-sm md:text-base flex items-center justify-between shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#A3845B]/20"
+            >
+              <span>{name}님 정통 사주 풀이 ({metrics.nickname})</span>
+              <span className="text-lg">➔</span>
+            </button>
+          </div>
+        )}
 
       </div>
     </div>
