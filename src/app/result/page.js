@@ -2026,18 +2026,104 @@ const renderPageContent = (page, ctx) => {
         </div>
       );
 
-    case "gwiin":
+    case "gwiin": {
+      const gwiinMap = {
+        "甲": {
+          animals: ["소띠(丑)", "양띠(未)"],
+          directions: ["중앙·남서쪽", "중앙·북동쪽"],
+          places: ["부동산, 금융 분야, 안정적인 비즈니스 협상 테이블, 세미나장"],
+          years: ["2027(정미)", "2033(계축)"],
+          months: ["양력 1월(소의 달)", "양력 7월(양의 달)"],
+          description: "당신의 생각을 현실로 구현해주고 든든한 토대를 만들어 줄 묵직한 조력자입니다."
+        },
+        "戊": {
+          animals: ["소띠(丑)", "양띠(未)"],
+          directions: ["중앙·남서쪽", "중앙·북동쪽"],
+          places: ["부동산, 공공기관, 대형 학술 세미나, 중개 비즈니스 현장"],
+          years: ["2027(정미)", "2033(계축)"],
+          months: ["양력 1월(소의 달)", "양력 7월(양의 달)"],
+          description: "당신의 폭넓은 아이디어를 다듬어 가시적인 성과와 문서 자산으로 안착시켜줄 실무자형 조력자입니다."
+        },
+        "庚": {
+          animals: ["소띠(丑)", "양띠(未)"],
+          directions: ["중앙·남서쪽", "중앙·북동쪽"],
+          places: ["금융 설계 세션, 공공 인프라 사업, 오래된 단골 거래처, 학계 전문가 모임"],
+          years: ["2027(정미)", "2033(계축)"],
+          months: ["양력 1월(소의 달)", "양력 7월(양의 달)"],
+          description: "당신의 날카로운 추진력을 너그럽게 품어주고, 불필요한 마찰을 줄여줄 멘토형 조력자입니다."
+        },
+        "乙": {
+          animals: ["쥐띠(子)", "원숭이띠(申)"],
+          directions: ["북쪽", "서쪽·북서쪽"],
+          places: ["학문 연구실, 도서관, IT 및 기술 개발 세미나, 단호한 의사결정이 이루어지는 비즈니스 현장"],
+          years: ["2028(무신)", "2032(임자)"],
+          months: ["양력 8월(원숭이의 달)", "양력 12월(쥐의 달)"],
+          description: "당신의 부드러운 상상력과 유연함에 명확한 뼈대와 실리적인 지식을 더해 줄 스마트한 파트너입니다."
+        },
+        "己": {
+          animals: ["쥐띠(子)", "원숭이띠(申)"],
+          directions: ["북쪽", "서쪽·북서쪽"],
+          places: ["지식 콘텐츠 창작 공간, 밤 시간대의 네트워킹 모임, 전문 자격증 취득 교육 기관, 법률/세무 상담소"],
+          years: ["2028(무신)", "2032(임자)"],
+          months: ["양력 8월(원숭이의 달)", "양력 12월(쥐의 달)"],
+          description: "당신의 꼼꼼함과 신뢰를 자산화하도록 돕고, 큰 무대의 기회를 연계해 줄 지혜로운 조력자입니다."
+        },
+        "丙": {
+          animals: ["돼지띠(亥)", "닭띠(酉)"],
+          directions: ["북쪽", "서쪽"],
+          places: ["공공 세미나, 해외 비즈니스 포럼, 물가나 항만 근처의 컨퍼런스, 정밀 분석 및 자산 유통 마켓"],
+          years: ["2029(기유)", "2031(신해)"],
+          months: ["양력 9월(닭의 달)", "양력 11월(돼지의 달)"],
+          description: "당신의 뜨거운 열정과 비전이 흩어지지 않도록 냉철한 시스템과 정교한 분석을 제공해 줄 핵심 브레인입니다."
+        },
+        "丁": {
+          animals: ["돼지띠(亥)", "닭띠(酉)"],
+          directions: ["북쪽", "서쪽"],
+          places: ["전문 지식 보관소, 야간 스터디 모임, 금융 자산 운용사, 해외 무역 및 유통 박람회"],
+          years: ["2029(기유)", "2031(신해)"],
+          months: ["양력 9월(닭의 달)", "양력 11월(돼지의 달)"],
+          description: "당신의 섬세한 감수성과 아이디어가 재물이나 공적인 명예로 인정받도록 돕는 수호자형 조력자입니다."
+        },
+        "辛": {
+          animals: ["호랑이띠(寅)", "말띠(午)"],
+          directions: ["동쪽", "남쪽"],
+          places: ["신규 프로젝트 기획 단상, 교육 기관, 스타트업 네트워킹, 미디어 및 디자인 쇼룸, 트렌디한 도심 카페"],
+          years: ["2026(병오 - 올해!)", "2034(갑인)"],
+          months: ["양력 2월(호랑이의 달)", "양력 6월(말의 달)"],
+          description: "당신의 차갑고 정교한 능력을 널리 홍보하고 세상에 꺼내줄 열정적이고 에너제틱한 마케팅형 조력자입니다."
+        },
+        "壬": {
+          animals: ["뱀띠(巳)", "토끼띠(卯)"],
+          directions: ["남쪽", "동쪽"],
+          places: ["IT/방송 미디어 스튜디오, 문화 예술 전시회, 기획 및 아이디어 브레인스토밍 룸, 디자인 교육 아카데미"],
+          years: ["2035(을묘)", "2037(정사)"],
+          months: ["양력 3월(토끼의 달)", "양력 5월(뱀의 달)"],
+          description: "당신의 깊은 생각과 지혜가 실천적인 흐름과 돈이 되는 아이디어로 표현되도록 돕는 생동감 넘치는 파트너입니다."
+        },
+        "癸": {
+          animals: ["뱀띠(巳)", "토끼띠(卯)"],
+          directions: ["남쪽", "동쪽"],
+          places: ["화려한 번화가의 컨퍼런스, 마케팅 협업 미팅, 스타트업 아이디어 발표회, 출판 및 교육 센터"],
+          years: ["2035(을묘)", "2037(정사)"],
+          months: ["양력 3월(토끼의 달)", "양력 5월(뱀의 달)"],
+          description: "당신의 조용하고 예리한 영감을 대중에게 친근하게 전달하고, 넓은 시장을 연결해 줄 실천가형 파트너입니다."
+        }
+      };
+
+      const ilgan = sajuInfo?.day?.stem || "甲";
+      const gwiinInfo = gwiinMap[ilgan] || gwiinMap["甲"];
+
       return (
         <div className="space-y-6">
           <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
-            👼 내 인생의 귀인(貴人) 분석
+            👼 내 인생의 귀인(貴인) 분석
           </h3>
           <p className="text-xs text-[#5F5F5F] leading-relaxed">
             인생의 가장 위험한 순간에 뜻밖의 인맥이나 기적 같은 기회로 위기를 모면하게 돕는 귀한 신성의 축복입니다.
           </p>
           <div className="space-y-4 text-xs text-[#2C2C2C] leading-relaxed font-traditional">
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-2">
-              <strong className="text-[#A3845B] block">• 천을귀인 (天乙貴人) - 가장 존귀한 절대 수호자</strong>
+              <strong className="text-[#A3845B] block">• 천을귀인 (天乙貴인) - 가장 존귀한 절대 수호자</strong>
               <p className={`font-light ${blurClass}`}>
                 사고나 배신의 극단적 낭떠러지 앞에서도 귀신같이 손을 내밀어주는 인물이 나타나 삶을 구원합니다. 이 기운이 있으면 매사에 품격을 유지하게 되며, 타인에게 베푼 작은 선행이 훗날 몇 배로 커진 귀인의 은혜로 부메랑이 되어 돌아옵니다.
               </p>
@@ -2048,11 +2134,43 @@ const renderPageContent = (page, ctx) => {
                 초년에 크고 작은 방황이나 풍파가 있더라도, 중년 이후부터 자산 기반을 착실히 마련할 수 있도록 대운에서 수호해 주는 복입니다. 무리한 단타만 피하면 중말년은 반드시 부유하고 부러울 것 없는 명의를 소유하게 될 흐름입니다.
               </p>
             </div>
+
+            {/* 내 사주 맞춤 귀인 매칭 & 찾아오는 시기와 장소 */}
+            <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-4">
+              <div>
+                <span className="font-bold text-[#A3845B] block mb-1.5 flex items-center gap-1.5 text-xs">
+                  👤 내 사주에 맞는 귀인은 누구인가?
+                </span>
+                <p className={`text-[11px] text-[#5F5F5F] font-light leading-relaxed ${blurClass}`}>
+                  의뢰인님의 일간은 <strong>{sajuInfo?.day?.stem} ({sajuInfo?.day?.stemEl}의 기운)</strong>입니다. 
+                  사주학적으로 귀하의 인생을 돕는 최고의 절대 귀인인 천을귀인은 <strong>{gwiinInfo.animals.join(" 및 ")}</strong>입니다.
+                  <br />
+                  <span className="text-[#8B221E] font-medium block mt-1">{gwiinInfo.description}</span>
+                </p>
+              </div>
+              <div className="border-t border-[#E2DDD5]/70 pt-3">
+                <span className="font-bold text-[#5F7A68] block mb-1.5 flex items-center gap-1.5 text-xs">
+                  📍 귀인이 찾아오는 장소와 환경 (어디서?)
+                </span>
+                <p className={`text-[11px] text-[#5F5F5F] font-light leading-relaxed ${blurClass}`}>
+                  귀인의 기운은 주로 <strong>{gwiinInfo.directions.join(" 및 ")}</strong> 방위에서 활성화됩니다.
+                  특히 <strong>{gwiinInfo.places.join(", ")}</strong>와 같은 환경에서 당신의 가치를 알아보고 손을 내밀어줄 인연과 연결될 가능성이 매우 높습니다.
+                </p>
+              </div>
+              <div className="border-t border-[#E2DDD5]/70 pt-3">
+                <span className="font-bold text-[#A3845B] block mb-1.5 flex items-center gap-1.5 text-xs">
+                  📅 귀인 운이 발동하는 시기 (언제쯤?)
+                </span>
+                <p className={`text-[11px] text-[#5F5F5F] font-light leading-relaxed ${blurClass}`}>
+                  세운(해의 운세) 기준으로는 가장 가까운 귀인의 해인 <strong>{gwiinInfo.years.join("년 또는 ")}년</strong>에 일생일대의 중요한 협력이나 기회를 제안받기 쉽습니다. 
+                  또한 월별 운세로는 매년 <strong>{gwiinInfo.months.join("월 및 ")}월</strong> 즈음에 인맥을 통한 귀인의 도움이 강하게 작용하니, 이 시기에는 열린 마음으로 다양한 네트워킹에 참여해 보시기 바랍니다.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       );
-
-    case "job_aptitude":
+    }case "job_aptitude":
       return (
         <div className="space-y-6">
           <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
