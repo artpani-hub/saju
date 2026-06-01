@@ -290,15 +290,14 @@ export default function Home() {
               </div>
             </div>
 
-            {/* 실시간 리스트 (세로 무한 롤링 Ticker) */}
-            <div className="bg-background-secondary/35 border border-border-custom/50 rounded-xl p-4.5 text-left space-y-3 overflow-hidden relative h-[145px]">
+            {/* 실시간 리스트 (수동 스크롤 리스트) */}
+            <div className="bg-background-secondary/35 border border-border-custom/50 rounded-xl p-4.5 text-left space-y-3 relative h-[155px]">
               <div className="flex items-center gap-1.5 text-[10px] font-semibold text-jade border-b border-border-custom/30 pb-2 bg-[#F9F8F6]/10 z-10 relative">
                 <span className="w-1.5 h-1.5 rounded-full bg-jade animate-pulse" />
                 지금 보감을 열람 중인 분들
               </div>
-              <div className="relative h-[85px] overflow-hidden">
-                <div className="space-y-2.5 animate-scroll-vertical absolute w-full">
-                  {/* 루프를 위해 데이터를 두 번 중복 배치 */}
+              <div className="h-[95px] overflow-y-auto pr-1">
+                <div className="space-y-2.5 w-full">
                   {[
                     { name: "김O현", title: "단비 머금은 푸른 대나무", rarity: "12.5%" },
                     { name: "박O아", title: "태산을 비추는 밤하늘의 등불", rarity: "18.2%" },
@@ -307,16 +306,15 @@ export default function Home() {
                     { name: "송O우", title: "포근한 이불 속 공상가", rarity: "28.2%" },
                     { name: "홍O은", title: "구름 위의 산책자", rarity: "26.2%" },
                     { name: "송O린", title: "아침 안개 속 정원사", rarity: "28.5%" },
-                    { name: "류O호", title: "구름 위의 산책자", rarity: "37.7%" },
-                    // 중복 배치
-                    { name: "김O현", title: "단비 머금은 푸른 대나무", rarity: "12.5%" },
-                    { name: "박O아", title: "태산을 비추는 밤하늘의 등불", rarity: "18.2%" },
-                    { name: "정O우", title: "안개 낀 강물 위의 돛배", rarity: "22.1%" },
-                    { name: "이O은", title: "계곡물에 씻긴 눈부신 보석", rarity: "6.4%" },
-                    { name: "송O우", title: "포근한 이불 속 공상가", rarity: "28.2%" },
-                    { name: "홍O은", title: "구름 위의 산책자", rarity: "26.2%" },
-                    { name: "송O린", title: "아침 안개 속 정원사", rarity: "28.5%" },
-                    { name: "류O호", title: "구름 위의 산책자", rarity: "37.7%" }
+                    { name: "류O호", title: "광야를 수호하는 은빛 사자", rarity: "37.7%" },
+                    { name: "최O원", title: "어둠을 가르는 푸른 깃털", rarity: "15.4%" },
+                    { name: "강O호", title: "천년의 안개를 비추는 거목", rarity: "9.2%" },
+                    { name: "임O서", title: "새벽 이슬 머금은 붉은 장미", rarity: "21.0%" },
+                    { name: "윤O빈", title: "맑은 시냇가의 영롱한 조약돌", rarity: "14.3%" },
+                    { name: "조O진", title: "대지를 품어 안은 황금빛 언덕", rarity: "17.8%" },
+                    { name: "배O우", title: "거친 파도를 가르는 돛단배", rarity: "24.5%" },
+                    { name: "고O아", title: "밤하늘을 수놓는 별무리", rarity: "11.1%" },
+                    { name: "신O민", title: "서리 내린 강가의 흰 두루미", rarity: "8.7%" }
                   ].map((item, idx) => (
                     <div key={idx} className="flex justify-between items-center text-xs font-traditional py-1 border-b border-border-custom/10 last:border-b-0">
                       <div className="flex items-center gap-3">
