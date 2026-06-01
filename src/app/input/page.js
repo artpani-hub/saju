@@ -3,6 +3,7 @@
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import Script from "next/script";
 import { ArrowLeft, Check, Sparkles, AlertCircle, Calendar, Clock, User, Phone, Mail, Scroll, ShieldCheck, Heart } from "lucide-react";
 
 // Product information dictionary
@@ -720,6 +721,10 @@ function InputFormContent() {
 
   return (
     <div className="flex flex-col min-h-screen hyeandang-traditional-bg">
+      <Script 
+        src="https://cdn.iamport.kr/v1/iamport.js" 
+        strategy="afterInteractive"
+      />
       {/* Header */}
       <header className="border-b border-border-custom bg-background/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
