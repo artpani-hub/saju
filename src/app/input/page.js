@@ -1375,13 +1375,13 @@ function InputFormContent() {
                                 <button
                                   type="button"
                                   onClick={() => setGunghapType("compatibility")}
-                                  className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+                                  className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center gap-3 ${
                                     gunghapType === "compatibility"
                                       ? "border-brass bg-brass/10"
                                       : "border-border-custom bg-background hover:bg-background-secondary/20"
                                   }`}
                                 >
-                                  <div>
+                                  <div className="flex-1 min-w-0">
                                     <span className="text-[11px] font-bold text-foreground flex items-center gap-1">
                                       💕 궁합 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span>
                                     </span>
@@ -1389,19 +1389,19 @@ function InputFormContent() {
                                       두 사람의 오행 상성, 성격/가치관 궁합, 백년해로 지수
                                     </span>
                                   </div>
-                                  <span className="text-[10px] font-bold text-brass">30,000원</span>
+                                  <span className="text-[10px] font-bold text-brass whitespace-nowrap flex-shrink-0 text-right">30,000원</span>
                                 </button>
 
                                 <button
                                   type="button"
                                   onClick={() => setGunghapType("deep_compatibility")}
-                                  className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+                                  className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center gap-3 ${
                                     gunghapType === "deep_compatibility"
                                       ? "border-[#C2185B] bg-[#C2185B]/10"
                                       : "border-border-custom bg-background hover:bg-background-secondary/20"
                                   }`}
                                 >
-                                  <div>
+                                  <div className="flex-1 min-w-0">
                                     <span className="text-[11px] font-bold text-[#C2185B] flex items-center gap-1">
                                       🔥 속궁합 <span className="text-[8px] bg-[#C2185B]/15 text-[#C2185B] px-1.5 py-0.5 rounded font-normal">인기</span>
                                     </span>
@@ -1409,19 +1409,19 @@ function InputFormContent() {
                                       신체적 교감, 정서적 밀착도, 잠자리 궁합 상세 분석
                                     </span>
                                   </div>
-                                  <span className="text-[10px] font-bold text-[#C2185B]">30,000원</span>
+                                  <span className="text-[10px] font-bold text-[#C2185B] whitespace-nowrap flex-shrink-0 text-right">30,000원</span>
                                 </button>
 
                                 <button
                                   type="button"
                                   onClick={() => setGunghapType("reunion")}
-                                  className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+                                  className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center gap-3 ${
                                     gunghapType === "reunion"
                                       ? "border-[#5F7A68] bg-[#5F7A68]/10"
                                       : "border-border-custom bg-background hover:bg-background-secondary/20"
                                   }`}
                                 >
-                                  <div>
+                                  <div className="flex-1 min-w-0">
                                     <span className="text-[11px] font-bold text-[#5F7A68] flex items-center gap-1">
                                       🌿 재회운
                                     </span>
@@ -1429,7 +1429,7 @@ function InputFormContent() {
                                       헤어진 연인과의 재회 가능성, 재결합 시기 및 조언
                                     </span>
                                   </div>
-                                  <span className="text-[10px] font-bold text-[#5F7A68]">30,000원</span>
+                                  <span className="text-[10px] font-bold text-[#5F7A68] whitespace-nowrap flex-shrink-0 text-right">30,000원</span>
                                 </button>
                               </div>
                             </div>
