@@ -5287,25 +5287,105 @@ function ResultContent() {
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p className="text-justify font-light text-gray-600">
-                2026년 메마르고 건조해지기 쉬운 의뢰인 {name}님의 사주 오행 배치를 보정하고 수호해 줄 3가지 정밀 추천 소품 리스트입니다.
+                2026년 병오년은 사주 내의 화(火) 기운이 극도에 달하여 주변의 물 기운이 쉽게 증발하고 금속 기운이 녹아내리는 성향을 보입니다. 이러한 오행의 격렬한 쏠림을 보정하고 부족한 기운을 자연스럽게 보완하기 위해 일상에서 늘 지니거나 공간에 배치해야 할 3대 수호 아이템입니다. 파동 에너지를 결합한 풍수 인테리어 소품을 가까이 두어 가택의 탁기를 털어내고 재물과 신용을 수호하십시오.
               </p>
 
-              {/* 소품 카드 그리드 */}
-              <div className="grid grid-cols-3 gap-3">
-                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3.5 rounded-xl text-center shadow-inner">
+              {/* 시각화: 소품 기류 활성화 게이지 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 수호 소품 에너지 보정 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>재물운 수호 & 누수 방어율</span>
+                      <span className="text-[#8A6F4C]">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>액난 차단 & 가택 평화도</span>
+                      <span className="text-[#8A6F4C]">85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 pt-1">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>심리적 안정 및 집중 보정률</span>
+                      <span className="text-[#8A6F4C]">80%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "80%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>대외 평판 & 신뢰 상승률</span>
+                      <span className="text-[#8A6F4C]">85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 수호 소품 처방 조견표 */}
+              <span className="font-bold text-xs text-[#8A6F4C] block pt-2">🔑 수호 소품 처방 조견표</span>
+              <div className="border border-[#E2DDD5] rounded-xl overflow-hidden shadow-sm">
+                <table className="w-full text-[9px] text-left border-collapse">
+                  <thead>
+                    <tr className="bg-[#FAF7F0] text-[#8A6F4C] font-bold border-b border-[#E2DDD5]">
+                      <th className="p-2">소품 항목</th>
+                      <th className="p-2 text-center">관련 오행</th>
+                      <th className="p-2 text-center">배치/사용 위치</th>
+                      <th className="p-2">기류 개선 효과</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-gray-600 font-light">
+                    <tr className="border-b border-[#E2DDD5]/40">
+                      <td className="p-2 font-semibold text-gray-800">💼 블랙 가죽 지갑</td>
+                      <td className="p-2 text-center text-[#8A6F4C] font-bold">수(水)</td>
+                      <td className="p-2 text-center">가방 내부 (북쪽 보관)</td>
+                      <td className="p-2">물 기운을 모아 화기로 인한 재물 누수 방어</td>
+                    </tr>
+                    <tr className="border-b border-[#E2DDD5]/40">
+                      <td className="p-2 font-semibold text-gray-800">🔔 황동제 미니 종</td>
+                      <td className="p-2 text-center text-[#8A6F4C] font-bold">금(金)</td>
+                      <td className="p-2 text-center">현관문 안쪽 고리</td>
+                      <td className="p-2">청명한 쇳소리 파동으로 외부 나쁜 탁기를 중화</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 font-semibold text-gray-800">💍 실버 메탈 링/주얼리</td>
+                      <td className="p-2 text-center text-[#8A6F4C] font-bold">금(金)</td>
+                      <td className="p-2 text-center">왼손 검지 또는 약지</td>
+                      <td className="p-2">금의 카리스마를 보해 직무 협상 및 대외 신뢰 제고</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* 3열 디테일 카드 */}
+              <div className="grid grid-cols-3 gap-3 pt-2">
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-center shadow-inner">
                   <span className="text-xl block mb-1">🐈</span>
-                  <span className="font-bold text-[#A3845B] text-[10px] block">검은색 가죽 지갑</span>
-                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">수(水)의 기류를 머금어 재물 누수를 방어</p>
+                  <span className="font-bold text-[#A3845B] text-[10px] block">검은 가죽 지갑</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">수(水)의 기류를 머금어 지출 통제와 금전 수성을 유도합니다.</p>
                 </div>
-                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3.5 rounded-xl text-center shadow-inner">
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-center shadow-inner">
                   <span className="text-xl block mb-1">🔔</span>
-                  <span className="font-bold text-[#A3845B] text-[10px] block">황동제 미니 종</span>
-                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">청명한 쇳소리로 현관 액운을 털어냄</p>
+                  <span className="font-bold text-[#A3845B] text-[10px] block">황동제 종</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">문을 여닫을 때의 종소리가 집안 내부로 번영의 울림을 전합니다.</p>
                 </div>
-                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3.5 rounded-xl text-center shadow-inner">
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-center shadow-inner">
                   <span className="text-xl block mb-1">💍</span>
-                  <span className="font-bold text-[#A3845B] text-[10px] block">실버 메탈 주얼리</span>
-                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">금(金)의 기질로 업무 성과와 신뢰 상승</p>
+                  <span className="font-bold text-[#A3845B] text-[10px] block">실버 주얼리</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">강건한 결단 기운을 보하여 구설수로부터 나를 수호합니다.</p>
                 </div>
               </div>
             </div>
