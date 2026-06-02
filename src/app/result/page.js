@@ -2692,7 +2692,8 @@ function ResultContent() {
   // Parsing inputs
   const name = searchParams.get("name") || "이지혜";
   const gender = searchParams.get("gender") === "male" ? "남성" : "여성";
-  const type = searchParams.get("type") || "saju"; // saju, newyear, wealth, tarot, gunghap
+  const typeParam = searchParams.get("type") || "saju"; // saju, newyear, tojeong, wealth, tarot, gunghap
+  const type = typeParam === "tojeong" ? "newyear" : typeParam;
   const calendar = searchParams.get("calendar") || "solar";
   const year = parseInt(searchParams.get("year")) || 1995;
   const month = parseInt(searchParams.get("month")) || 8;
