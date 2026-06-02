@@ -4374,349 +4374,710 @@ function ResultContent() {
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">신년 재물 및 사업운</span>
+              <span className="text-xs text-[#8A6F4C] font-bold block">신년 재물 및 사업운 (新年 財物運)</span>
               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2026년 금전 팽창 기회와 리스크 예방</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                병오년의 급격한 화기 팽창은 돈을 불러오는 자석 역할도 하지만, 땔감이 타버리면 재로 변하듯 한순간의 자산 누수를 동반합니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                병오년의 급격한 화기(火氣) 팽창은 돈을 끌어당기는 일시적인 자석 역할을 하지만, 나무 땔감이 순식간에 활활 타버리고 한 줌의 재로 변하듯 과도한 팽창 뒤에 동반되는 급작스러운 자산 누수를 철저히 조율해야 합니다. 공격적인 투자보다는 단단한 방어를 무기로 삼는 한 해가 되어야 합니다.
               </p>
-              <p className="font-semibold text-gray-800">
-                ★ 2026년 재물 수호 안전 수칙:
-              </p>
-              <ul className="space-y-2 pl-4 list-disc text-gray-600">
-                <li><strong>투기성 주식·코인 제한:</strong> 올해 유입되는 기운은 변동 속도가 매우 빨라, 순간적인 욕심으로 진입한 투자는 상반기(음력 5~6월)에 큰 물림이나 손실로 귀착될 확률이 80% 이상입니다.</li>
-                <li><strong>동업 및 보증 차단:</strong> 강한 불의 충돌로 인해 지인이나 비즈니스 파트너 간의 수익 분배 대립이 심화되므로, 절대 공동 투자는 거두십시오.</li>
-              </ul>
+
+              {/* 시각화: 재물 흐름 지수 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 신년 재물 운세 입출 기류</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>자산 획득 기회지수</span>
+                      <span className="text-[#8A6F4C]">80%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "80%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-red-500">
+                      <span>일시적 자산 누수 위험</span>
+                      <span className="text-red-700">70%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-red-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-red-400 rounded-full" style={{ width: "70%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 재물 수호 수칙 카드 */}
+              <div className="border border-[#E2DDD5] rounded-xl p-4 bg-[#FAF7F0]/30 text-justify space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">🛡️ 2026년 재물 수호 안전 수칙</span>
+                <ul className="space-y-2.5 text-[10px] text-gray-600 font-light">
+                  <li>• <strong>투기성 고위험 자산 진입 금지:</strong> 올해의 기류는 변동 속도가 상상을 초월하여 뇌동 매매에 취약합니다. 상반기(음력 4~6월)에 순간적인 욕심으로 진입한 투자는 큰 손실로 이어질 확률이 높으니 보수적으로 가십시오.</li>
+                  <li>• <strong>공동 투자 및 보증 절대 금지:</strong> 사주 내 비견/겁재가 세운의 화기를 만나면 동업자 간의 불화와 수익 분배 갈등이 촉발됩니다. 돈도 잃고 사람도 잃을 운이니 독자적 운영이나 현금 수성에 매진하십시오.</li>
+                  <li>• <strong>재물 수렴 골든타임 활용:</strong> 음력 8월(계유월)은 금(金) 기운이 극에 달해 가장 유리한 재무 성과나 보상 합의가 가능하므로, 계약 도장은 이 시기에 찍는 것이 가장 길합니다.</li>
+                </ul>
+              </div>
             </div>
           </div>,
           "신년 재물 및 사업운"
-        );
+        )
 
       case "ny_career_fortune":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">신년 직장 및 커리어</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">승진, 이직 및 직장 내 생존 전략</h2>
-              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+              <span className="text-xs text-[#5F7A68] font-bold block">신년 직장 및 커리어 (新年 職務運)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">조직 내 입지와 책임감의 시험대</h2>
+              <div className="w-16 h-0.5 bg-[#5F7A68]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                직장 생활과 경력 설계 면에서는 내 권리를 주장하려는 강한 욕구가 솟구쳐, 기존 상사나 회사 규율에 저항하려는 심리가 짙어집니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2026년은 명예와 조직운을 상징하는 관성(官星) 기류가 세운의 격렬한 불꽃 기운과 조우하는 해입니다. 무조건적인 확장이나 홧김에 하는 이직은 극약 처방이 될 수 있으며, 현재 조직에서 내 가치를 확실히 입증하고 기반을 닦는 뚝심이 더 크게 인정받는 해가 될 것입니다.
               </p>
-              <div className="bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 space-y-2">
-                <span className="font-bold text-[#A3845B] block">• 최적의 이동 타이밍</span>
-                <p className="text-gray-600 text-[11px]">
-                  성급하게 봄이나 여름에 사직서를 내면 공백기가 길어집니다. 가장 안정적인 이직처 결정과 연봉 협상의 도장은 가을철인 <strong>음력 7~9월 사이</strong>에 찍는 것이 귀하에게 가장 유리한 문서를 보장합니다.
+
+              {/* 시각화: 커리어 상승 지수 */}
+              <div className="bg-[#F6FAF7] border border-emerald-100 rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#5F7A68] block">📊 신년 커리어 역량 기류</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#5F7A68]">
+                      <span>업무 책임감 & 직무 전문성</span>
+                      <span className="text-[#5F7A68]">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-emerald-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#5F7A68] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#5F7A68]">
+                      <span>조직 내 조화 및 소통성</span>
+                      <span className="text-[#5F7A68]">80%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-emerald-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#5F7A68] rounded-full" style={{ width: "80%" }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 pt-1">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-gray-500">
+                      <span>상반기 성급한 이직 변동성</span>
+                      <span className="text-gray-600">75%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-gray-400 rounded-full" style={{ width: "75%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 커리어 전략 카드 */}
+              <div className="border border-emerald-100 rounded-xl p-4 bg-[#F6FAF7]/50 text-justify space-y-3">
+                <span className="font-bold text-xs text-[#5F7A68] block">💡 커리어 조율 개운 비방</span>
+                <p className="text-[10px] text-gray-500 leading-relaxed font-light">
+                  상반기(음력 4~6월)에는 내부 정비와 핵심 문서 관리에 전념하십시오. 만약 부서 이동이나 이력서 제출 등 적극적인 커리어 변동을 원한다면, 금(金) 기운의 조력이 본격화되는 <strong>하반기(음력 7월 이후)</strong>에 실행해야 후회 없는 완벽한 결정을 이끌어낼 수 있습니다.
                 </p>
               </div>
             </div>
           </div>,
-          "신년 직장 및 커리어 운세"
-        );
+          "신년 직장 및 커리어"
+        )
 
       case "ny_love_fortune":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">신년 연애 및 가정운</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">새로운 인연과 가정 화평 주파수</h2>
-              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+              <span className="text-xs text-[#B26E8D] font-bold block">신년 연애 및 가정운 (新年 愛情運)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">뜨거운 열기 속에서 필요한 차분한 포용력</h2>
+              <div className="w-16 h-0.5 bg-[#B26E8D]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                솔로이신 분들에게는 한여름 불꽃처럼 타오르는 급작스러운 이성운이 찾아옵니다. 다만 첫눈에 반해 속도를 내다가 가을철에 급격히 식어버리는 단기 인연의 피로가 보입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                병오년의 강렬한 화기는 열정적이고 급격한 인연의 끌림을 선사하기도 하지만, 과열된 감정 탓에 사소한 단어 하나가 큰 싸움으로 불타오르는 감정의 화재를 유발하기 쉽습니다. 상대방을 향한 비판보다는 차분하게 한 걸음 물러나 경청하는 여유가 가정을 지키는 최고의 방책입니다.
               </p>
-              <div className="border-t border-gray-100 pt-3">
-                <strong className="block text-gray-800 font-semibold mb-1">■ 부부 및 연인 간 갈등 조율법:</strong>
-                <p className="text-gray-600">
-                  올해는 서로의 조급증 때문에 사소한 말 한마디가 큰 싸움(이혼/이별 기류)으로 번지기 쉽습니다. 대화 시 상대방의 말이 끝나고 속으로 '그럴 수 있지'를 세 번 외치고 대답을 시작하십시오.
-                </p>
+
+              {/* 시각화: 관계 조화도 */}
+              <div className="bg-[#FCF6F9] border border-pink-100 rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#B26E8D] block">📊 신년 관계 및 가정 주파수</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#B26E8D]">
+                      <span>가정 및 관계 안정도</span>
+                      <span className="text-[#B26E8D]">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-pink-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#B26E8D] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#B26E8D]">
+                      <span>소통 및 경청 원활도</span>
+                      <span className="text-[#B26E8D]">85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-pink-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#B26E8D] rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 소통 가이드 */}
+              <div className="border border-pink-100 rounded-xl p-4 bg-[#FCF6F9]/50 text-justify space-y-3">
+                <span className="font-bold text-xs text-[#B26E8D] block">❤️ 혜안당 애정 개운 솔루션</span>
+                <ul className="space-y-2 text-[10px] text-gray-600 font-light">
+                  <li>• <strong>솔로:</strong> 대외적인 모임이나 사교 활동 시 화려한 차림보다는 네이비/차콜 계열의 이성적 매력을 드러낼 때 안정적이고 품격 있는 상대가 매칭됩니다.</li>
+                  <li>• <strong>기혼/커플:</strong> 음력 5월과 11월의 감정 대립 국면에서 10초만 눈을 감고 미소를 지으십시오. 화기가 가라앉은 뒤 차분하게 이성적으로 대화하는 것이 좋습니다.</li>
+                </ul>
               </div>
             </div>
           </div>,
           "신년 연애 및 가정운"
-        );
+        )
 
       case "ny_study_fortune":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">신년 학업 및 시험운</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">자격증 취득 및 합격을 돕는 집중력 처방</h2>
+              <span className="text-xs text-[#A3845B] font-bold block">신년 학업 및 시험운 (新年 學업運)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">집중력 과부하를 이기는 차분한 독기</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                공부와 시험은 차분히 엉덩이를 붙이고 인내하는 문서(인성)의 힘이 지배해야 합니다. 하지만 올해는 주변 환경이 시끄럽고 잡념이 많이 끼어 집중이 분산되기 쉽습니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                올해는 화 기운의 강한 상열감(머리로 열이 오르는 현상)으로 인해 평소보다 집중력이 쉽게 흐트러지거나 불안감, 조급증이 유발되기 쉬운 학업 기류입니다. 엉덩이를 무겁게 하고 차분하게 루틴을 유지하는 정신 수양이 시험 합격의 당락을 가르는 해가 될 것입니다.
               </p>
-              <div className="bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 space-y-2">
-                <span className="font-bold text-[#A3845B] block">• 집중력을 돕는 풍수 배치</span>
-                <p className="text-gray-600 text-[11px]">
-                  공부방 책상은 벽을 등지고 <strong>서쪽이나 북쪽 방향</strong>을 바라보도록 정비하십시오. 책상에 어두운 청색 필기구나 스탠드를 켜두면 날뛰는 화기를 억제하여 뇌파를 안정시키고 암기력을 배가시킵니다.
+
+              {/* 시각화: 학업 지수 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 신년 학업 & 합격 에너지</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>공식 시험 합격운</span>
+                      <span className="text-[#8A6F4C]">85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>두뇌 집중력 유지도</span>
+                      <span className="text-[#8A6F4C]">80%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "80%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 공부 개운 팁 */}
+              <div className="border border-[#E2DDD5] rounded-xl p-4 bg-[#FAF7F0]/30 text-justify space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📚 집중력 강화를 위한 학습 환경 비책</span>
+                <p className="text-[10px] text-gray-500 leading-relaxed font-light">
+                  공부나 자격증 대비 시 책상은 반드시 차가운 수(水)의 안정감이 감도는 <strong>북쪽</strong>을 향해 배치하십시오. 또한 책상 위에 화려한 장식이나 붉은색 필기구는 피하고, 푸른색 계열의 소품이나 스틸 프레임 스탠드를 배치하면 상열감을 내리고 오랫동안 집중하는 데 탁월한 효과가 있습니다.
                 </p>
               </div>
             </div>
           </div>,
-          "신년 학업 및 시험운"
-        );
+          "신년 학업 및 시험운 처방"
+        )
 
       case "ny_gossip_defense":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">신년 구설/시비수 방어</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">관재구설과 오해의 흉살 원천 차단법</h2>
+              <span className="text-xs text-[#8B221E] font-bold block">구설 및 시비 예방 (口舌 防禦)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">언행의 빗장을 걸어 잠가 액운을 피하는 법</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                병오년은 드러나지 않던 숨은 갈등이 수면 위로 급히 튀어나오는 해입니다. 특히 온라인상에서의 거친 댓글, 단체 대화방에서의 섣부른 한마디가 꼬투리가 되어 경찰조사나 시비에 얽힐 리스크가 있습니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2026년은 세운의 강력한 화기가 말(言)을 제어하는 이성 필터를 녹이기 쉽습니다. 평소라면 그냥 넘어갈 가벼운 농담이나 조언이 타인의 시기와 오해를 사서 큰 송사나 마찰(구설수)로 증폭될 소지가 다분합니다. 올해는 침묵이 최고의 은혜이며 보석입니다.
               </p>
-              <div className="bg-red-50/50 border border-red-100 p-4 rounded-lg space-y-2 text-red-900 font-semibold">
-                <span className="block text-red-800">• 구설 소멸 3대 철칙</span>
-                <p className="text-[11px] font-normal text-red-800/80 leading-relaxed">
-                  1. SNS나 카카오톡 등 텍스트 전송 전 3초간 머무른 후 전송하십시오.<br />
-                  2. 남의 험담이나 뜬소문을 전파하지 마십시오. 반드시 내 입을 거쳐 커다란 부메랑이 됩니다.<br />
-                  3. 관공서와의 공문 처리나 계약서 작성 시 대행 수수료를 아끼지 말고 법률 전문가나 행정사의 서명을 징구하십시오.
-                </p>
+
+              {/* 시각화: 구설 노출도 */}
+              <div className="bg-red-50/20 border border-red-100 rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-red-900 block">📊 구설 및 마찰 노출 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-red-700">
+                      <span>대인관계 마찰 위험도</span>
+                      <span className="text-red-700">85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-red-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-red-500 rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-gray-500">
+                      <span>섭섭함 & 감정 조율도</span>
+                      <span className="text-gray-600">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#8A6F4C] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 구설 예방 강령 카드 */}
+              <div className="border border-red-100 rounded-xl p-4 bg-red-50/10 text-justify space-y-3">
+                <span className="font-bold text-xs text-red-950 block">🧭 혜안당 구설 예방 3대 강령</span>
+                <ul className="space-y-2 text-[10px] text-red-900 font-light">
+                  <li>• <strong>1단계 (10분 보류):</strong> 단체 채팅방이나 회의석상에서 화가 나거나 불만이 끓어오를 때는 즉각 의견을 개진하지 말고, 최소 10분간 심호흡을 하며 자리를 피하십시오.</li>
+                  <li>• <strong>2단계 (소셜 미디어 차단):</strong> 홧김에 적는 SNS 글이나 메신저 하소연이 캡처되어 내 등에 칼이 되어 돌아올 수 있으니 사적인 속마음 표출은 극구 제한하십시오.</li>
+                  <li>• <strong>3단계 (음력 5월 극도 경계):</strong> 자오충과 오오자형이 겹치는 한여름에는 계약이나 구두 확답 시 반드시 두 번 확인하고 서면 기록을 남겨야 안전합니다.</li>
+                </ul>
               </div>
             </div>
           </div>,
-          "구설 및 시비수 예방 수칙"
-        );
+          "신년 구설 및 시비수 예방 수칙"
+        )
 
       case "ny_sinsal_active":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#8B221E] font-bold block">신년 신살 분석 [심화]</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">올해 영향력을 강력 행사하는 3대 신살 작동</h2>
+              <span className="text-xs text-[#8A6F4C] font-bold block">신년 3대 신살 (新年 神煞)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">나의 삶을 변화시킬 핵심 신살 분석</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                의뢰인 {name}님의 원국 글자들과 2026년 병오년(午火)의 역학적 조합으로 발현되는 강력한 신살 분석서입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                명리학적 신살(神煞)은 나의 무의식적 행동 경향과 우주의 자기장 융합을 뜻합니다. 올해 {name}님의 사주 기틀과 병오년이 만나 활성화되는 대표적인 3대 신살의 세부 에너지 지표입니다.
               </p>
-              <div className="space-y-3 mt-2">
-                <div className="bg-[#FAF7F0] p-3 rounded border border-amber-100">
-                  <span className="font-bold text-[#A3845B] block">1. 오화(午火) 도화살 (桃花煞)의 발흥</span>
-                  <p className="text-[11px] text-gray-600 mt-0.5">
-                    나를 은연중에 알리고 시선을 끄는 매력의 기운입니다. 면접이나 영업 활동에서는 대길하나, 비밀스러운 이성 스캔들에 얽히면 명예가 훼손되니 선을 분명히 그으십시오.
+
+              {/* 시각화: 신살 작동도 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 3대 신살 활성화 게이지</span>
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-semibold text-gray-700">도화살 (인기·매력)</span>
+                    <div className="text-xs font-bold text-[#A3845B]">85%</div>
+                    <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B]" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-semibold text-gray-700">역마살 (이동·변화)</span>
+                    <div className="text-xs font-bold text-[#A3845B]">70%</div>
+                    <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B]" style={{ width: "70%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-semibold text-gray-700">화개살 (예술·학문)</span>
+                    <div className="text-xs font-bold text-[#A3845B]">80%</div>
+                    <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B]" style={{ width: "80%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 신살 상세 정보 */}
+              <div className="space-y-3 pt-2">
+                <div className="border-b border-[#E2DDD5]/50 pb-2">
+                  <span className="font-bold text-[#A3845B] text-[11px]">✨ 도화살 활성 (인기/신용의 골든키):</span>
+                  <p className="text-[10px] text-gray-500 mt-1 font-light leading-relaxed">
+                    타인에게 나를 노출하고 신뢰감을 주는 힘이 강해집니다. 영업, 마케팅, 연봉 협상 등 타인을 설득하는 안건에서 최상의 무기로 작용합니다.
                   </p>
                 </div>
-                <div className="bg-[#FAF7F0] p-3 rounded border border-amber-100">
-                  <span className="font-bold text-[#A3845B] block">2. 역마살 (驛馬煞)의 동조</span>
-                  <p className="text-[11px] text-gray-600 mt-0.5">
-                    몸을 바쁘게 움직이거나 해외 출장, 장거리 이사 운세입니다. 움직일수록 새로운 정보를 얻어 재물 팽창의 기틀을 마련할 수 있는 역동적인 자극제입니다.
+                <div>
+                  <span className="font-bold text-[#8A6F4C] text-[11px]">🕯️ 화개살 유입 (독창성과 지혜의 시간):</span>
+                  <p className="text-[10px] text-gray-500 mt-1 font-light leading-relaxed">
+                    내면의 지혜와 예술적 감각이 최고조로 영글어갑니다. 아이디어를 문서나 기획서, 자격증 취득으로 가공해 무형의 가치로 축적하는 데 탁월합니다.
                   </p>
                 </div>
               </div>
             </div>
           </div>,
-          "신년 3대 신살 작동 현황"
-        );
+          "신년 3대 신살 작동 현황 분석"
+        )
 
       case "ny_gwiin_harmony":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">신년 귀인 조화</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">올해 나를 도울 수호 귀인 분석</h2>
-              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+              <span className="text-xs text-[#5F7A68] font-bold block">인연 및 귀인 조화 (貴人 支助)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">나의 평판과 상생을 이끌 귀인 인연</h2>
+              <div className="w-16 h-0.5 bg-[#5F7A68]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                인생의 굽이길에서 나에게 실질적인 금전적 도움이나 정신적 이정표를 제시할 올해의 하늘이 내린 귀인의 속성입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                병오년의 강렬한 화기를 다스리기 위해 나에게 등대가 되어줄 귀인의 성향과 나이대, 그리고 방향에 관한 정밀 분석 조견표입니다.
               </p>
-              
-              <div className="bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 space-y-2">
-                <p><strong>• 수호 귀인의 띠:</strong> <span className="font-bold text-[#A3845B]">범띠(寅生) 및 개띠(戌生)</span></p>
-                <p className="text-gray-600 text-[11px]">
-                  이 두 띠의 기운을 가진 인물이 올해 귀하의 조급함을 눌러주고 안전한 거래를 유도하는 훌륭한 파트너나 조력자 역할을 톡톡히 해냅니다.
-                </p>
-                <p className="border-t border-gray-200/60 pt-2 text-gray-600 text-[11px]">
-                  <strong>• 귀인을 조우할 최적의 장소:</strong> 대형 지식 도서관, 자연림이 우거진 공원, 또는 신뢰도 높은 전통 명리학 학회.
-                </p>
+
+              {/* 귀인 인포그래픽 테이블 */}
+              <div className="border border-emerald-100 rounded-xl overflow-hidden shadow-sm">
+                <table className="w-full text-[10px] text-left border-collapse">
+                  <thead>
+                    <tr className="bg-emerald-50 text-emerald-800 font-bold border-b border-emerald-100">
+                      <th className="p-2.5">귀인 유형</th>
+                      <th className="p-2.5">핵심 띠 & 상성</th>
+                      <th className="p-2.5">도움의 성격</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-gray-600 font-light">
+                    <tr className="border-b border-emerald-100/50">
+                      <td className="p-2.5 font-semibold text-emerald-950">🤝 동료/협력 귀인</td>
+                      <td className="p-2.5">말띠, 개띠 (삼합 조화)</td>
+                      <td className="p-2.5">업무의 분산과 프로젝트 성과 가속화</td>
+                    </tr>
+                    <tr className="border-b border-emerald-100/50">
+                      <td className="p-2.5 font-semibold text-emerald-950">👑 직장 상사 귀인</td>
+                      <td className="p-2.5">양띠 (오미육합 상생)</td>
+                      <td className="p-2.5">부서 갈등 조율 및 연봉 상승 추천</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2.5 font-semibold text-emerald-950">🗺️ 방위 및 공간</td>
+                      <td className="p-2.5">북쪽 (수 기운 충만)</td>
+                      <td className="p-2.5">계약서 조율 및 사무용 책상 배치 권장</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="bg-emerald-50/30 p-3 rounded-lg border border-emerald-100 text-[10px] text-emerald-900 leading-relaxed font-light">
+                💡 <strong>귀인 유인책:</strong> 올해 나에게 부족한 기운인 메탈 시계나 실버 주얼리를 매치하고, 북쪽에서 전달되는 조언에 마음의 빗장을 열 때 귀인의 협조가 극대화됩니다.
               </div>
             </div>
           </div>,
-          "신년 인연 및 귀인 조화"
-        );
+          "신년 인연 및 귀인 조화 분석"
+        )
 
       case "ny_warning_period":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-red-600 font-bold block">치명적인 액난 경보 [심화]</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">올해 특히 조심해야 할 흉한 시기와 비책</h2>
+              <span className="text-xs text-[#8B221E] font-bold block">치명적 액난 경보 (厄難 警報)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">올해 가장 주의해야 할 3대 경고 기간</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <div className="bg-red-50 border border-red-200 p-4 rounded-lg space-y-2">
-                <span className="font-bold text-red-700 block">⚠️ 음력 5월(甲午) 및 음력 11월(庚子) 조심</span>
-                <p className="text-[11px] text-gray-600 leading-relaxed">
-                  음력 5월은 세운의 강력한 화기와 중첩되는 오오자형(午午自刑)의 기운이 극도에 달해 뇌동투자를 하거나 홧김에 큰 사직서를 던지기 쉽습니다. 음력 11월은 강한 물과 불이 정면 충돌하는 자오충(子午沖)의 시기이므로 계약 취소나 갑작스러운 사고수를 극도로 피하셔야 안전합니다.
-                </p>
-              </div>
-              <p className="text-[11px] text-gray-500 font-medium">
-                * 이 두 달만큼은 중대 결정을 내리지 말고 주말마다 등산이나 차분한 가벼운 족욕 등으로 열기를 씻어내는 조신함을 보전하십시오.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                세운의 화기가 극대화되거나 충돌하여 안전사고, 금전 사기, 부부 마찰이 강하게 예측되는 시기를 짚어드립니다. 이 시기에는 사소한 일도 보수적으로 처리하고 소나기는 무조건 피해 가는 지혜를 발휘해야 합니다.
               </p>
+
+              {/* 시각화: 액난 위험도 */}
+              <div className="bg-red-50/20 border border-red-100 rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-red-950 block">📊 월별 액난 및 충돌 위험 지표</span>
+                <div className="space-y-2 text-[9px] font-semibold text-red-700">
+                  <div className="space-y-1">
+                    <div className="flex justify-between">
+                      <span>🔥 음력 5월 (갑오월: 오오자형 극대화)</span>
+                      <span>95%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-red-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-red-500" style={{ width: "95%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between">
+                      <span>🌊 음력 11월 (경자월: 자오충 대립)</span>
+                      <span>85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-red-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-red-400" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 액난 방어 카드 */}
+              <div className="border border-red-100 rounded-xl p-4 bg-red-50/10 text-justify space-y-2">
+                <span className="font-bold text-xs text-red-950 block">🛡️ 액막이 및 안전 방어 비책</span>
+                <ul className="space-y-1 text-[10px] text-red-900 font-light">
+                  <li>• 음력 5월에는 무조건 투자를 유예하고 사직서 제출 등 충동적 결정을 보류하십시오.</li>
+                  <li>• 음력 11월에는 장거리 야간 운전을 자제하고, 계약 서명 시 세무 검토를 두 번 하십시오.</li>
+                </ul>
+              </div>
             </div>
           </div>,
-          "치명적 액난 경보 및 비책"
-        );
+          "치명적인 액난 경보 및 방어 비책"
+        )
 
       case "ny_worry_solution":
-        const decodedWorry = worryText ? decodeURIComponent(worryText) : "";
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">개인 고민 맞춤 솔루션 [심화]</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">{name}님 개별 질문 세운 처방</h2>
+              <span className="text-xs text-[#8A6F4C] font-bold block">고민 해결 솔루션 (苦悶 解決)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">의뢰인의 현실적인 고민에 대한 정밀 비책</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <div className="bg-[#FAF7F0] p-4 rounded border border-amber-100">
-                <span className="font-bold text-[#8B221E] block mb-1">Q. 의뢰하신 고민: "{decodedWorry || "신년 인생 설계 방안"}"</span>
-                <p className="text-[11px] text-gray-600 mt-2">
-                  병오년의 급격한 화(火) 기류 하에서 질문하신 안건은 감정의 급속한 팽창력 때문에 실수가 빚어지기 쉽습니다. 억지로 결론을 내리려고 스스로를 다그치기보다, 9월 가을 문턱 이전까지는 현상을 안정적으로 통제하는 것이 길합니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                의뢰인 {name}님이 입력하신 신년 안건에 대한 명리 연구소의 정밀 분석 및 대안 실행 로드맵입니다. 조급증을 내려놓을 때 비로소 올바른 이정표가 보이기 시작합니다.
+              </p>
+
+              {/* 시각화: 해결 성공률 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-2 text-center">
+                <span className="font-bold text-[11px] text-[#8A6F4C] block mb-1">🎯 고민 해결 성사 가능성 지수</span>
+                <div className="text-2xl font-bold text-[#A3845B]">85%</div>
+                <p className="text-[9px] text-gray-400 font-light">단, 음력 8월(가을철) 이전까지는 무리한 변경을 금하고 현상을 수성할 때 기준입니다.</p>
+              </div>
+
+              {/* 고민 극복 실천 카드 */}
+              <div className="border border-[#E2DDD5] rounded-xl p-4 bg-[#FAF7F0]/30 text-justify space-y-2">
+                <span className="font-bold text-xs text-[#8A6F4C] block">🧭 단계별 개운 실천 행동 강령</span>
+                <p className="text-[10px] text-gray-500 font-light leading-relaxed">
+                  {worryText ? `질문하신 [${worryText}] 안건 해결을 위해,` : ""} 먼저 내 생각의 감옥(과다 인성)을 해제하고, 음력 7월에 불어오는 선선한 금 기운을 기점으로 자금 설계 및 문서 검토를 단행하십시오. 충동적인 계약이나 결정만 피하면 원하는 결실의 85% 이상을 쟁취하게 됩니다.
                 </p>
               </div>
             </div>
           </div>,
-          "개인 고민 맞춤 솔루션"
-        );
+          "고민 해결 맞춤형 솔루션"
+        )
 
       case "ny_roadmap_2027":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">향후 세운 로드맵 [심화]</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2027년 정미년(丁未年) 세운 예비 분석</h2>
+              <span className="text-xs text-[#A3845B] font-bold block">2027 정미년(丁未年) 세운</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2027년 정미년(丁未年) 미래 기류 로드맵</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                병오년의 맹렬한 불꽃 기운이 지지의 미토(未土)를 만나 서서히 열기가 대지에 고정되는 <strong>정미년(丁未年)</strong>입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2027년 정미년(丁未年)은 하늘의 촛불 정화(丁火)와 땅의 뜨겁고 건조한 흙 미토(未土)가 만나는 해입니다. 2026년 병오년의 맹렬한 불꽃 기운이 미토 속에 서서히 가두어지며 안정세를 찾아가는 과도기적 정리 및 정착의 해가 될 것입니다.
               </p>
-              <p>
-                올해의 급박함이 가라앉고 실질적인 거래 관계나 부동산 등 문서 형태의 결실이 차곡차곡 안착하게 되는 시기이므로, 2026년에 뿌린 씨앗의 결실을 2027년에 알차게 수확할 준비를 하십시오.
-              </p>
+
+              {/* 기류 예측 지수 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 정미년 기류 예측 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>자산 안정도 & 굳히기</span>
+                      <span className="text-[#8A6F4C]">80%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "80%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>커리어 변동성 조율</span>
+                      <span className="text-[#8A6F4C]">65%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "65%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>,
-          "2027년 정미년 예비 분석"
-        );
+          "2027년 정미년(丁未年) 세운 로드맵"
+        )
 
       case "ny_roadmap_2028":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">향후 세운 로드맵 [심화]</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2028년 무신년(戊申年) 세운 예비 분석</h2>
+              <span className="text-xs text-[#A3845B] font-bold block">2028 무신년(戊申年) 세운</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2028년 무신년(戊申年) 미래 기류 로드맵</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                하늘의 두터운 흙(戊土)과 지상의 맑은 쇠붙이(申金)가 유입되는 대단히 이성적이고 현실적인 <strong>무신년(戊申年)</strong>입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2028년 무신년(戊申年)은 거대한 흙 무토(戊土)와 단단한 가을 금속 신금(申金)이 결합하여 강렬한 토생금(土生金)의 상생 기류를 연출합니다. 병오년에 지핀 불씨가 마침내 단단한 철광석을 제련하여 황금 무기로 변모시키는 실질적 재물 번창의 해입니다.
               </p>
-              <p>
-                지난 2년간의 뜨거웠던 열풍이 차갑게 식으면서 철저한 계산과 금융 구조 개혁이 큰 성과를 거두는 시기입니다. 2028년은 인생의 탄탄한 자산 파이프라인을 다지는 대길한 해가 될 것입니다.
-              </p>
+
+              {/* 기류 예측 지수 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 무신년 기류 예측 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>문서 및 계약 성취도</span>
+                      <span className="text-[#8A6F4C]">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>실질적 재물 팽창 지수</span>
+                      <span className="text-[#8A6F4C]">85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>,
-          "2028년 무신년 예비 분석"
-        );
+          "2028년 무신년(戊申年) 세운 로드맵"
+        )
 
       case "ny_roadmap_2029":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">향후 세운 로드맵 [심화]</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2029년 기유년(己酉年) 세운 예비 분석</h2>
+              <span className="text-xs text-[#A3845B] font-bold block">2029 기유년(己酉年) 세운</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2029년 기유년(己酉年) 미래 기류 로드맵</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                순수한 금(金)의 기운이 지지를 관통하는 굳건한 결실의 주기인 <strong>기유년(己酉年)</strong>입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2029년 기유년(己酉年)은 하늘의 전원 흙 기토(己土)와 땅의 순수한 보석 유금(酉金)이 만나 금 기운이 최고조에 달하는 풍성한 결실의 해입니다. 지난 3년간 설계하고 투자했던 가치들이 명확한 현금 흐름과 명예로 귀결되는 인생의 은혜로운 수확기입니다.
               </p>
-              <p>
-                학업적 쾌거, 국가 자격증 최종 취득, 공신력 있는 기관과의 정식 장기 계약 등 문서운과 사회적 성취가 확실하게 정점에 달합니다.
-              </p>
+
+              {/* 기류 예측 지수 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 기유년 기류 예측 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>재물 수확 완성도</span>
+                      <span className="text-[#8A6F4C]">95%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "95%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>가정 및 생활 안착률</span>
+                      <span className="text-[#8A6F4C]">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>,
-          "2029년 기유년 예비 분석"
-        );
+          "2029년 기유년(己酉年) 세운 로드맵"
+        )
 
       case "ny_action_rules":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">신년 개운 실천</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">일생에서 당장 실천할 3대 개운 행동</h2>
+              <span className="text-xs text-[#8A6F4C] font-bold block">신년 실천 행동 강령 (新年 行動綱領)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">운명의 흐름을 바꾸는 3대 실천 개운 강령</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <div className="space-y-3">
-                <p><strong>1. 침묵과 경청 훈련:</strong> 갈등 순간 10초간 심호흡을 거치고 논평하여 성급한 구설수를 소멸시키십시오.</p>
-                <p><strong>2. 물(水) 에너지 보충:</strong> 텀블러를 상시 소지하고 차가운 음용수를 수시 음용하여 마르는 기질을 정화하십시오.</p>
-                <p><strong>3. 매주 숲 걷기:</strong> 푸른 나무(木)의 청색 에너지를 마시며 조급한 뇌파를 맑게 진정시키는 휴식을 누리십시오.</p>
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                명리학적 흐름을 인위적으로 통제하고 이로운 개운 주파수를 유도하기 위해 일상에서 매일 실천해야 할 3대 행동 규칙입니다.
+              </p>
+
+              {/* 강령 카드화 */}
+              <div className="space-y-3.5">
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-4 rounded-xl shadow-sm text-justify">
+                  <span className="font-bold text-[#8A6F4C] text-[11px] block mb-1">⚖️ 1. 의사결정의 10분 지연화</span>
+                  <p className="text-[10px] text-gray-500 font-light leading-relaxed">
+                    상반기의 강렬한 불꽃 기운은 성급한 판단과 말실수를 유발합니다. 이메일 전송, 계약 확인, 감정 섞인 대화 시 반드시 10분간의 생각 정리를 거친 후 전달하십시오.
+                  </p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-4 rounded-xl shadow-sm text-justify">
+                  <span className="font-bold text-[#8A6F4C] text-[11px] block mb-1">🌊 2. 차가운 음용수(水) 습관화</span>
+                  <p className="text-[10px] text-gray-500 font-light leading-relaxed">
+                    상열감을 다스리기 위해 매일 오전 미지근한 물 1L 이상을 규칙적으로 섭취하고 반신욕이나 족욕을 생활화하십시오. 체내의 열기를 아래로 내려주는 개운 비결입니다.
+                  </p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-4 rounded-xl shadow-sm text-justify">
+                  <span className="font-bold text-[#8A6F4C] text-[11px] block mb-1">🪙 3. 금(金) 기운의 외적 튜닝</span>
+                  <p className="text-[10px] text-gray-500 font-light leading-relaxed">
+                    메탈 소재의 안경테, 스틸 시계, 실버 계열 주얼리를 항시 착용하여 대외적인 신뢰도를 구축하고 구설을 방어하는 보호 주파수를 유지하십시오.
+                  </p>
+                </div>
               </div>
             </div>
           </div>,
-          "신년 개운 실천 강령"
-        );
+          "신년 개운 실천 3대 행동 강령"
+        )
 
       case "ny_fengshui_interior":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-red-600 font-bold block">신년 공간 풍수 [심화]</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">집안 및 사무실 행운 방위 배치 처방</h2>
-              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+              <span className="text-xs text-[#5F7A68] font-bold block">공간 풍수 처방 (空間 風水)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">사주 기운을 보완하는 공간 리디자인 처방</h2>
+              <div className="w-16 h-0.5 bg-[#5F7A68]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                병오년의 타오르는 불꽃 열기를 정화하고 신선한 운기를 불러들이는 인테리어 비책입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                내가 하루의 1/3 이상 머무는 주거 및 사무 공간을 오행 상생 배치를 통해 액운을 막고 재물 기류를 순환시키는 풍수 조견표입니다.
               </p>
-              <div className="bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 space-y-2">
-                <p><strong>• 남동쪽 수기 공급:</strong> 거실이나 사무실의 남동쪽 코너에 소형 수경식물이나 투명한 유리그릇에 맑은 물을 담아 보관하십시오. 이는 유입되는 살기를 차단하는 훌륭한 여과제입니다.</p>
-                <p><strong>• 서북쪽 금고 정비:</strong> 자산과 도장, 통장 등의 실물 자산은 서북쪽 서랍에 깊숙이 수납하여 차가운 금의 결속력으로 묶어두는 것이 지출을 억제합니다.</p>
+
+              {/* 풍수 조견표 */}
+              <div className="border border-emerald-100 rounded-xl overflow-hidden shadow-sm">
+                <table className="w-full text-[10px] text-left border-collapse">
+                  <thead>
+                    <tr className="bg-emerald-50 text-emerald-800 font-bold border-b border-emerald-100">
+                      <th className="p-2.5">대상 공간</th>
+                      <th className="p-2.5">풍수 처방 및 배치</th>
+                      <th className="p-2.5">개운 기대 효과</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-gray-600 font-light">
+                    <tr className="border-b border-emerald-100/50">
+                      <td className="p-2.5 font-semibold text-emerald-950">🛏️ 침실 (수면실)</td>
+                      <td className="p-2.5">북쪽으로 베개 배치, 네이비 베개 커버</td>
+                      <td className="p-2.5">수면 중 상열감 진정 및 뇌 기능 안녕</td>
+                    </tr>
+                    <tr className="border-b border-emerald-100/50">
+                      <td className="p-2.5 font-semibold text-emerald-950">🖥️ 업무 책상 (사무실)</td>
+                      <td className="p-2.5">책상 우측에 스틸 문종 또는 금속 펜꽂이</td>
+                      <td className="p-2.5">업무 중 고도의 집중력 및 아이디어 계약 활성화</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2.5 font-semibold text-emerald-950">🚪 현관 (출입구)</td>
+                      <td className="p-2.5">붉은색 소품 배제, 청결하고 밝은 매트 배치</td>
+                      <td className="p-2.5">외부의 나쁜 살기(殺氣) 방어 및 재물운 보존</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>,
           "신년 공간 풍수 인테리어 처방"
-        );
+        )
 
       case "ny_lucky_items":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">행운의 아이템</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">기운 보완 신년 추천 수호 소품</h2>
+              <span className="text-xs text-[#A3845B] font-bold block">행운의 수호 소품 (吉祥 物品)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">사주 결핍을 보완하는 3대 수호 아이템</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                내 사주 원국의 약점을 채워줄 신년 수호 소품 가이드입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2026년 메마르고 건조해지기 쉬운 의뢰인 {name}님의 사주 오행 배치를 보정하고 수호해 줄 3가지 정밀 추천 소품 리스트입니다.
               </p>
-              <div className="grid grid-cols-2 gap-3 text-center">
-                <div className="bg-[#FAF7F0] p-3.5 rounded border border-[#E2DDD5]/60">
-                  <span className="font-bold text-[#A3845B] block text-[11px] mb-1">검은색 천연 가죽 지갑</span>
-                  <p className="text-[10px] text-gray-500 font-light leading-relaxed">수(水)의 안정적인 고정 기류를 자극하여 재물이 흩어지는 누수 방지</p>
+
+              {/* 소품 카드 그리드 */}
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3.5 rounded-xl text-center shadow-inner">
+                  <span className="text-xl block mb-1">🐈</span>
+                  <span className="font-bold text-[#A3845B] text-[10px] block">검은색 가죽 지갑</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">수(水)의 기류를 머금어 재물 누수를 방어</p>
                 </div>
-                <div className="bg-[#FAF7F0] p-3.5 rounded border border-[#E2DDD5]/60">
-                  <span className="font-bold text-[#A3845B] block text-[11px] mb-1">금속 황동제 문종/오브제</span>
-                  <p className="text-[10px] text-gray-500 font-light leading-relaxed">현관 입구에 배치하여 청명한 소리로 액운을 털어내고 신선한 결실 기운 환기</p>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3.5 rounded-xl text-center shadow-inner">
+                  <span className="text-xl block mb-1">🔔</span>
+                  <span className="font-bold text-[#A3845B] text-[10px] block">황동제 미니 종</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">청명한 쇳소리로 현관 액운을 털어냄</p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3.5 rounded-xl text-center shadow-inner">
+                  <span className="text-xl block mb-1">💍</span>
+                  <span className="font-bold text-[#A3845B] text-[10px] block">실버 메탈 주얼리</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">금(金)의 기질로 업무 성과와 신뢰 상승</p>
                 </div>
               </div>
             </div>
           </div>,
-          "행운의 아이템 매칭 처방"
-        );
-
+          "신년 추천 수호 소품 리스트"
+        )
 
       case "ny_intro_saju":
         return wrapLock(
@@ -5032,17 +5393,69 @@ function ResultContent() {
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">겨울철 기류 전략</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">음력 10월~12월 계절별 행동 전략</h2>
-              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+              <span className="text-xs text-[#2A4B7C] font-bold block">겨울철 기류 전략 (음력 10~12월)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">에너지의 수렴, 차분한 갈무리와 내일의 준비</h2>
+              <div className="w-16 h-0.5 bg-[#2A4B7C]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                겨울은 해자축(亥子丑) 수(水)의 기운이 도래하여 병오년의 잔열을 차분하게 정리하고 차세대 운세로 교대하는 재충전기입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                겨울철(음력 10월~12월)은 해자축(亥子丑) 수(水)의 기운이 도래하여 병오년의 뜨거운 잔열을 잠재우고 내실을 다지는 수렴과 응축의 시기입니다. 외부적인 활동과 무리한 투자는 가급적 멈추고, 자산을 갈무리하며 체력과 정신을 보존해야 하는 정밀한 리밸런싱 타임입니다.
               </p>
-              <p>
-                자금을 안정적으로 갈무리하고 무리한 투자에서 손을 떼며 내실을 다질 때입니다. 차기 연도인 2027년 정미년(丁未年)의 흐름을 미리 설계하고 건강을 회복하기에 최상의 적기입니다.
-              </p>
+
+              {/* 시각화: 겨울철 기류 지수 */}
+              <div className="bg-[#FAFBFD] border border-blue-100 rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#2A4B7C] block">📊 겨울철 기류 안녕 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#2A4B7C]">
+                      <span>자금 및 자산 안정도</span>
+                      <span className="text-[#2A4B7C]">85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-blue-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#2A4B7C] rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#2A4B7C]">
+                      <span>정신적·육체적 재충전 효율</span>
+                      <span className="text-[#2A4B7C]">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-blue-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#2A4B7C] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 pt-1">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-red-500">
+                      <span>무리한 투자 위험 노출도</span>
+                      <span className="text-red-700">20%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-red-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-red-400 rounded-full" style={{ width: "20%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-gray-500">
+                      <span>차기 대운 기류 안착률</span>
+                      <span className="text-gray-700">80%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-gray-500 rounded-full" style={{ width: "80%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 실천 가이드 */}
+              <div className="border border-blue-100 rounded-xl p-4 bg-[#FAFBFD]/50 text-justify space-y-2">
+                <span className="font-bold text-xs text-[#2A4B7C] block">🧭 겨울철 3대 생존 가이드</span>
+                <ul className="space-y-1.5 text-[10px] text-gray-600 font-light">
+                  <li>• <strong>음력 10월 (을해월):</strong> 자산 수성에 만전을 기할 시기입니다. 겉보기만 그럴싸한 지인의 동업 제안이나 신규 투자를 단호히 거절하십시오.</li>
+                  <li>• <strong>음력 11월 (병자월):</strong> 자오충(子午沖)의 수화 마찰 기류가 강해집니다. 주거지 이전이나 급작스러운 계약은 피하고, 심장과 신장 건강을 회복하십시오.</li>
+                  <li>• <strong>음력 12월 (정축월):</strong> 2026년의 전체적인 성과와 자산을 안전하게 정산하고, 2027년 정미년(丁未年)의 새로운 세운 로드맵을 기획하기 좋은 갈무리 적기입니다.</li>
+                </ul>
+              </div>
             </div>
           </div>,
           "겨울철 계절적 세부 기운과 전략"
@@ -5052,142 +5465,208 @@ function ResultContent() {
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">재무 포트폴리오</span>
+              <span className="text-xs text-[#8A6F4C] font-bold block">재무 포트폴리오 (財務 指針)</span>
               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">오행 성향 맞춤형 신년 재테크 조언</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                의뢰인 {name}님의 사주 오행 배치를 토대로 제안하는 2026년 경제 활동의 맥락과 방향성입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                의뢰인 {name}님의 사주 오행 밸런스를 토대로 제안하는 2026년 최상의 자산 방어 및 투자 포트폴리오 비중 조율 제안서입니다.
               </p>
-              <div className="border-l-4 border-[#8B221E] pl-4 py-1">
-                <h4 className="font-semibold text-gray-800">성장주보다는 가치주, 공격보다는 방어</h4>
+
+              {/* 시각화: 자산 포트폴리오 비중 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 제안 자산 구성 비율</span>
+                <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden flex text-[8px] font-bold text-white text-center leading-4">
+                  <div className="bg-[#8A6F4C]" style={{ width: "60%" }}>안전자산 60%</div>
+                  <div className="bg-[#A3845B]" style={{ width: "40%" }}>배당/채권 40%</div>
+                </div>
+                <p className="text-[9px] text-gray-400 font-light leading-snug">
+                  * 무리한 성장주 레버리지 투자는 70% 이상의 손실 확률을 가지므로 금지하며, 원금 보장형 예적금이나 미국 단기 채권 ETF에 60% 이상 집중하십시오.
+                </p>
               </div>
-              <p>
-                올해는 화기 과잉으로 주식 시장이나 부동산 시장의 급등락이 심화될 것입니다. 공격적인 레버리지 투자는 손재수를 강하게 부르므로 예적금 비율을 높이고 채권, 금과 같은 안전자산에 분산 배치하는 것이 자산 방어에 큰 도움이 됩니다.
-              </p>
             </div>
           </div>,
           "오행별 추천 투자 스타일 및 재무 가이드"
-        );
+        )
 
       case "ny_career_detailed":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">이직 및 승진</span>
+              <span className="text-xs text-[#5F7A68] font-bold block">이직 및 승진 타이밍 (職務 變動)</span>
               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">신년 직무 및 신분 변화 타이밍 가이드</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                의뢰인 {name}님의 올해 승진, 이직, 시험 통과 등 명예/커리어 운세의 구체적인 핵심 기간을 짚어드립니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                의뢰인 {name}님의 승진, 이직, 시험 통과 등 커리어 기류의 월별 흐름을 한눈에 보기 쉽게 구조화한 골든타임 맵핑입니다.
               </p>
-              <div className="space-y-2 bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60">
-                <p><strong>• 골든 타임 (승진/영전):</strong> 음력 8월(금 기운의 조력)</p>
-                <p><strong>• 예방 타임 (좌천/마찰):</strong> 음력 5월(불의 과잉으로 상사와의 마찰 주의)</p>
+
+              {/* 시각화: 커리어 캘린더 */}
+              <div className="border border-emerald-100 rounded-xl overflow-hidden shadow-sm">
+                <div className="bg-emerald-50 text-emerald-800 font-bold p-2.5 text-[10px] border-b border-emerald-100 flex justify-between">
+                  <span>📅 월별 커리어 로드맵</span>
+                  <span>음력 기준</span>
+                </div>
+                <div className="p-3 text-[10px] space-y-2.5 bg-[#F6FAF7]/40 text-gray-600 font-light">
+                  <p><strong>• 골든 타임 (승진/이직 성공):</strong> 음력 8월 (금 기운이 강하게 조력하여 상사 귀인의 협조를 받기 수월한 최고의 골든타임)</p>
+                  <p><strong>• 액티브 타임 (평소 관리):</strong> 음력 1월, 7월, 9월 (사무실 재배치 및 공부 루틴 형성)</p>
+                  <p className="text-red-600"><strong>• 경고 타임 (마찰 주의):</strong> 음력 5월 (불의 과다 팽창으로 부하/상사와의 갈등 유발되니 언행 신중 요망)</p>
+                </div>
               </div>
-              <p>
-                상반기에는 내부 조직 정비에 주력하고, 제안 수락이나 이력서 제출 등 적극적인 구직 활동은 하반기(음력 7월 이후)에 실행해야 후회 없는 결정을 이끌어낼 수 있습니다.
-              </p>
             </div>
           </div>,
           "이직 및 승진 상세 타이밍 가이드"
-        );
+        )
 
       case "ny_social_life":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">대인관계 조율</span>
+              <span className="text-xs text-[#5F7A68] font-bold block">대인관계 조율 (人脈 關係)</span>
               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">신년 인맥 관리 및 대인관계 조율</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                병오년은 대인관계의 리셋 현상이 자주 일어나는 기류를 가집니다. 올해 나에게 등대가 되어줄 귀인의 띠와 경계해야 할 띠에 관한 정보입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                병오년은 대인관계의 불필요한 리셋 기류가 불어옵니다. 귀하를 도울 상생의 귀인 띠와 갈등을 유발할 주의해야 할 인연을 짚어드립니다.
               </p>
+
+              {/* 인연 매칭 인포그래픽 */}
               <div className="grid grid-cols-2 gap-4 pt-2">
-                <div className="bg-emerald-50/50 p-3 rounded border border-emerald-100">
-                  <span className="font-bold text-emerald-800">👍 올해의 귀인 (띠):</span>
-                  <p className="text-[11px] text-emerald-950 mt-1"><strong>말띠, 양띠, 개띠</strong>가 나에게 결정적인 경제적·정신적 조언을 건네는 파트너입니다.</p>
+                <div className="bg-emerald-50/50 p-3.5 rounded-xl border border-emerald-100 text-justify">
+                  <span className="font-bold text-emerald-800 text-[11px] block mb-1">👍 올해의 귀인 (띠):</span>
+                  <span className="text-[10px] font-semibold text-emerald-950">말띠, 양띠, 개띠</span>
+                  <p className="text-[9px] text-emerald-900 mt-1 font-light leading-relaxed">나에게 정신적 안정감과 실질적인 업무적 기회를 가져다주는 상생 파트너입니다.</p>
                 </div>
-                <div className="bg-rose-50/50 p-3 rounded border border-rose-100">
-                  <span className="font-bold text-rose-800">⚠️ 경계해야 할 상대:</span>
-                  <p className="text-[11px] text-rose-950 mt-1"><strong>쥐띠</strong>와는 사소한 이권 문제로 큰 다툼이 날 수 있으니 문서 계약 시 두 번 검토하십시오.</p>
+                <div className="bg-rose-50/50 p-3.5 rounded-xl border border-rose-100 text-justify">
+                  <span className="font-bold text-rose-800 text-[11px] block mb-1">⚠️ 주의해야 할 상대:</span>
+                  <span className="text-[10px] font-semibold text-rose-950">쥐띠 (자오충 충돌)</span>
+                  <p className="text-[9px] text-rose-900 mt-1 font-light leading-relaxed">계약이나 돈거래 시 오해로 큰 마찰이 생길 소지가 강하니 공과 사를 명확히 선을 그으십시오.</p>
                 </div>
               </div>
             </div>
           </div>,
           "신년 인맥 관리 및 대인관계 조율"
-        );
+        )
 
       case "ny_roadmap_2030":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">2030 경술년(庚戌年)</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2030년 경술년(庚戌年) 세운 로드맵</h2>
+              <span className="text-xs text-[#A3845B] font-bold block">2030 경술년(庚戌年) 세운</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2030년 경술년(庚戌年) 미래 기류 로드맵</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                2030년 경술년(庚戌年)은 천간에 강건한 금(金) 기운과 지지에 뜨거운 화기를 품은 술토(戌土)가 들어오는 해입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2030년 경술년(庚戌年)은 강건한 금(金) 기운과 땅속의 온기를 지닌 술토(戌土)가 만나 명리학적으로 쇠를 담금질하여 마침내 보검으로 승화시키는 해입니다. 2026년부터 차곡차곡 모아둔 자산이나 실력이 명예로운 독립과 권위 획득으로 귀결될 것입니다.
               </p>
-              <p>
-                쇠를 담금질하여 마침내 보검으로 완성하는 중대한 결실의 해가 됩니다. 2026년부터 차근차근 다져온 커리어나 투자 자산이 이 시기에 비로소 명확한 현금 흐름으로 환원되어 경제적 독립의 기틀을 다지게 될 것입니다.
-              </p>
+
+              {/* 기류 예측 지수 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 경술년 기류 예측 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>명예 및 사회적 권위 획득</span>
+                      <span className="text-[#8A6F4C]">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>장기 부동산 문서 취득</span>
+                      <span className="text-[#8A6F4C]">85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>,
           "2030년 경술년(庚戌年) 세운 로드맵"
-        );
+        )
 
       case "ny_roadmap_2031":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">2031 신해년(辛亥年)</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2031년 신해년(辛亥年) 세운 로드맵</h2>
+              <span className="text-xs text-[#A3845B] font-bold block">2031 신해년(辛亥年) 세운</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2031년 신해년(辛亥年) 미래 기류 로드맵</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                2031년 신해년(辛亥年)은 하늘에 반짝이는 보석인 신금(辛金)과 땅에 유유히 흐르는 큰 물 해수(亥水)가 결합한 금수상생(金水相生)의 해입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2031년 신해년(辛亥年)은 맑은 보석 신금(辛金)과 큰 바다 해수(亥水)가 만나 차가운 금수상생(金水相生)을 형성합니다. 지난 5년간의 맹렬한 도전과 열정이 드디어 완벽한 내적 평화, 평온한 일상, 그리고 가정이 주는 따뜻한 쉼으로 승화되는 은혜로운 해입니다.
               </p>
-              <p>
-                명리학적으로 만물이 정화되고 평온함을 얻는 해이며, 의뢰인 {name}님에게도 지난 5년간의 거친 풍파와 열정이 평화로운 일상과 가정의 안락함으로 치환되는 은혜로운 보상의 해가 될 것입니다.
-              </p>
+
+              {/* 기류 예측 지수 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 신해년 기류 예측 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>생활 및 마인드 안정도</span>
+                      <span className="text-[#8A6F4C]">95%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "95%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>가정 안락성 및 복록</span>
+                      <span className="text-[#8A6F4C]">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>,
           "2031년 신해년(辛亥年) 세운 로드맵"
-        );
+        )
 
       case "ny_lucky_fashion":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">패션 스타일링</span>
+              <span className="text-xs text-[#A3845B] font-bold block">패션 스타일링 (吉慶 衣裝)</span>
               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">나의 사주 기운을 보완하는 외적 연출법</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                옷차림과 컬러 배치는 가장 쉽고 즉각적으로 나의 기적 주파수를 바꾸는 실천법입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                옷차림과 컬러 배치는 가장 손쉽고 즉각적으로 내 주변의 개운 에너지를 자극하는 행동 풍수 실천법입니다.
               </p>
-              <div className="space-y-3 pt-2">
-                <div>
-                  <span className="font-bold text-[#5F7A68]">👔 추천 의상 스타일:</span>
-                  <p className="text-gray-500 mt-1">지나치게 화려한 원색 패턴은 피하고 네이비, 차콜, 화이트 톤의 깔끔하고 정돈된 미니멀 클래식 룩을 지향하십시오. 내적인 이성과 카리스마를 전달하는 데 유리합니다.</p>
+
+              {/* 스타일 팁 카드 */}
+              <div className="space-y-3">
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-4 rounded-xl shadow-sm text-justify">
+                  <span className="font-bold text-[#5F7A68] text-[11px] block mb-1">👔 추천 룩: 미니멀 클래식 코디</span>
+                  <p className="text-[10px] text-gray-500 font-light leading-relaxed">
+                    지나치게 화려하거나 붉은 계열의 의상은 피하십시오. 네이비, 차콜, 화이트 등 정돈된 미니멀 클래식 룩을 매치할 때, 내적인 카리스마와 지혜로운 설득력을 전달하기가 가장 수월합니다.
+                  </p>
                 </div>
-                <div>
-                  <span className="font-bold text-[#A3845B]">💍 액세서리 팁:</span>
-                  <p className="text-gray-500 mt-1">심플한 스틸이나 실버 계열의 주얼리, 정갈한 안경테를 매치하면 타인에게 신뢰감을 높이고 나쁜 구설을 방어하는 보호 효과를 가집니다.</p>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-4 rounded-xl shadow-sm text-justify">
+                  <span className="font-bold text-[#A3845B] text-[11px] block mb-1">💍 액세서리: 메탈 및 실버 포인트</span>
+                  <p className="text-[10px] text-gray-500 font-light leading-relaxed">
+                    심플한 스틸 시계나 실버 주얼리, 정갈한 메탈 안경테를 활용하여 내적인 금 기운을 튜닝하십시오. 타인에게 신뢰감을 전달하고 불필요한 구설을 차단하는 강력한 보호 펜스가 됩니다.
+                  </p>
                 </div>
               </div>
             </div>
           </div>,
           "신년 패션 메이크업 스타일링 가이드"
-        );
+        )
 
       case "ny_diet_presc":
         return wrapLock(
@@ -5448,17 +5927,69 @@ function ResultContent() {
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">겨울철 기류 전략</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">음력 10월~12월 계절별 행동 전략</h2>
-              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+              <span className="text-xs text-[#2A4B7C] font-bold block">겨울철 기류 전략 (음력 10~12월)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">에너지의 수렴, 차분한 갈무리와 내일의 준비</h2>
+              <div className="w-16 h-0.5 bg-[#2A4B7C]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                겨울은 해자축(亥子丑) 수(水)의 기운이 도래하여 병오년의 잔열을 차분하게 정리하고 차세대 운세로 교대하는 재충전기입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                겨울철(음력 10월~12월)은 해자축(亥子丑) 수(水)의 기운이 도래하여 병오년의 뜨거운 잔열을 잠재우고 내실을 다지는 수렴과 응축의 시기입니다. 외부적인 활동과 무리한 투자는 가급적 멈추고, 자산을 갈무리하며 체력과 정신을 보존해야 하는 정밀한 리밸런싱 타임입니다.
               </p>
-              <p>
-                자금을 안정적으로 갈무리하고 무리한 투자에서 손을 떼며 내실을 다질 때입니다. 차기 연도인 2027년 정미년(丁未年)의 흐름을 미리 설계하고 건강을 회복하기에 최상의 적기입니다.
-              </p>
+
+              {/* 시각화: 겨울철 기류 지수 */}
+              <div className="bg-[#FAFBFD] border border-blue-100 rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#2A4B7C] block">📊 겨울철 기류 안녕 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#2A4B7C]">
+                      <span>자금 및 자산 안정도</span>
+                      <span className="text-[#2A4B7C]">85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-blue-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#2A4B7C] rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#2A4B7C]">
+                      <span>정신적·육체적 재충전 효율</span>
+                      <span className="text-[#2A4B7C]">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-blue-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#2A4B7C] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 pt-1">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-red-500">
+                      <span>무리한 투자 위험 노출도</span>
+                      <span className="text-red-700">20%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-red-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-red-400 rounded-full" style={{ width: "20%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-gray-500">
+                      <span>차기 대운 기류 안착률</span>
+                      <span className="text-gray-700">80%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-gray-500 rounded-full" style={{ width: "80%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 실천 가이드 */}
+              <div className="border border-blue-100 rounded-xl p-4 bg-[#FAFBFD]/50 text-justify space-y-2">
+                <span className="font-bold text-xs text-[#2A4B7C] block">🧭 겨울철 3대 생존 가이드</span>
+                <ul className="space-y-1.5 text-[10px] text-gray-600 font-light">
+                  <li>• <strong>음력 10월 (을해월):</strong> 자산 수성에 만전을 기할 시기입니다. 겉보기만 그럴싸한 지인의 동업 제안이나 신규 투자를 단호히 거절하십시오.</li>
+                  <li>• <strong>음력 11월 (병자월):</strong> 자오충(子午沖)의 수화 마찰 기류가 강해집니다. 주거지 이전이나 급작스러운 계약은 피하고, 심장과 신장 건강을 회복하십시오.</li>
+                  <li>• <strong>음력 12월 (정축월):</strong> 2026년의 전체적인 성과와 자산을 안전하게 정산하고, 2027년 정미년(丁未年)의 새로운 세운 로드맵을 기획하기 좋은 갈무리 적기입니다.</li>
+                </ul>
+              </div>
             </div>
           </div>,
           "겨울철 계절적 세부 기운과 전략"
@@ -5468,145 +5999,208 @@ function ResultContent() {
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">재무 포트폴리오</span>
+              <span className="text-xs text-[#8A6F4C] font-bold block">재무 포트폴리오 (財務 指針)</span>
               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">오행 성향 맞춤형 신년 재테크 조언</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                의뢰인 {name}님의 사주 오행 배치를 토대로 제안하는 2026년 경제 활동의 맥락과 방향성입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                의뢰인 {name}님의 사주 오행 밸런스를 토대로 제안하는 2026년 최상의 자산 방어 및 투자 포트폴리오 비중 조율 제안서입니다.
               </p>
-              <div className="border-l-4 border-[#8B221E] pl-4 py-1">
-                <h4 className="font-semibold text-gray-800">성장주보다는 가치주, 공격보다는 방어</h4>
+
+              {/* 시각화: 자산 포트폴리오 비중 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 제안 자산 구성 비율</span>
+                <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden flex text-[8px] font-bold text-white text-center leading-4">
+                  <div className="bg-[#8A6F4C]" style={{ width: "60%" }}>안전자산 60%</div>
+                  <div className="bg-[#A3845B]" style={{ width: "40%" }}>배당/채권 40%</div>
+                </div>
+                <p className="text-[9px] text-gray-400 font-light leading-snug">
+                  * 무리한 성장주 레버리지 투자는 70% 이상의 손실 확률을 가지므로 금지하며, 원금 보장형 예적금이나 미국 단기 채권 ETF에 60% 이상 집중하십시오.
+                </p>
               </div>
-              <p>
-                올해는 화기 과잉으로 주식 시장이나 부동산 시장의 급등락이 심화될 것입니다. 공격적인 레버리지 투자는 손재수를 강하게 부르므로 예적금 비율을 높이고 채권, 금과 같은 안전자산에 분산 배치하는 것이 자산 방어에 큰 도움이 됩니다.
-              </p>
-              <p>
-                특히 나만의 수호 오행인 수(水)와 금(金) 기운을 금융 비즈니스와 매치시켜 보십시오. 단기적 투기를 차단하고 배당이 꾸준하게 들어오는 월배당 리츠나 대형 지수 ETF 위주로 포트폴리오를 재구성하는 것이 이번 세운의 흔들림을 극복하고 자산을 안전하게 2배 이상 키울 비결입니다.
-              </p>
             </div>
           </div>,
           "오행별 추천 투자 스타일 및 재무 가이드"
-        );
+        )
 
       case "ny_career_detailed":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">이직 및 승진</span>
+              <span className="text-xs text-[#5F7A68] font-bold block">이직 및 승진 타이밍 (職務 變동)</span>
               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">신년 직무 및 신분 변화 타이밍 가이드</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                의뢰인 {name}님의 올해 승진, 이직, 시험 통과 등 명예/커리어 운세의 구체적인 핵심 기간을 짚어드립니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                의뢰인 {name}님의 승진, 이직, 시험 통과 등 커리어 기류의 월별 흐름을 한눈에 보기 쉽게 구조화한 골든타임 맵핑입니다.
               </p>
-              <div className="space-y-2 bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60">
-                <p><strong>• 골든 타임 (승진/영전/합격):</strong> 음력 8월(정유월)과 음력 10월(기해월)에 내 신분이 상승하는 귀중한 기회가 들어옵니다.</p>
-                <p><strong>• 예방 타임 (조직 갈등/구설):</strong> 음력 5월(갑오월)은 극단적인 화기 중첩으로 인해 감정적 한계를 느끼거나 돌발 사직서를 충동적으로 내던질 위험이 있으니 극히 유의하십시오.</p>
+
+              {/* 시각화: 커리어 캘린더 */}
+              <div className="border border-emerald-100 rounded-xl overflow-hidden shadow-sm">
+                <div className="bg-emerald-50 text-emerald-800 font-bold p-2.5 text-[10px] border-b border-emerald-100 flex justify-between">
+                  <span>📅 월별 커리어 로드맵</span>
+                  <span>음력 기준</span>
+                </div>
+                <div className="p-3 text-[10px] space-y-2.5 bg-[#F6FAF7]/40 text-gray-600 font-light">
+                  <p><strong>• 골든 타임 (승진/이직 성공):</strong> 음력 8월 (금 기운이 강하게 조력하여 상사 귀인의 협조를 받기 수월한 최고의 골든타임)</p>
+                  <p><strong>• 액티브 타임 (평소 관리):</strong> 음력 1월, 7월, 9월 (사무실 재배치 및 공부 루틴 형성)</p>
+                  <p className="text-red-600"><strong>• 경고 타임 (마찰 주의):</strong> 음력 5월 (불의 과다 팽창으로 부하/상사와의 갈등 유발되니 언행 신중 요망)</p>
+                </div>
               </div>
-              <p>
-                상반기에는 내부 조직 정비에 주력하고, 제안 수락이나 이력서 제출 등 적극적인 구직 활동은 하반기(음력 7월 이후)에 실행해야 후회 없는 결정을 이끌어낼 수 있습니다.
-              </p>
             </div>
           </div>,
           "이직 및 승진 상세 타이밍 가이드"
-        );
+        )
 
       case "ny_social_life":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">대인관계 조율</span>
+              <span className="text-xs text-[#5F7A68] font-bold block">대인관계 조율 (人脈 關係)</span>
               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">신년 인맥 관리 및 대인관계 조율</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                병오년은 대인관계의 리셋 현상이 자주 일어나는 기류를 가집니다. 올해 나에게 등대가 되어줄 귀인의 띠와 경계해야 할 띠에 관한 정보입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                병오년은 대인관계의 불필요한 리셋 기류가 불어옵니다. 귀하를 도울 상생의 귀인 띠와 갈등을 유발할 주의해야 할 인연을 짚어드립니다.
               </p>
+
+              {/* 인연 매칭 인포그래픽 */}
               <div className="grid grid-cols-2 gap-4 pt-2">
-                <div className="bg-emerald-50/50 p-3 rounded border border-emerald-100">
-                  <span className="font-bold text-emerald-800">👍 올해의 귀인 (띠):</span>
-                  <p className="text-[11px] text-emerald-950 mt-1"><strong>말띠, 양띠, 개띠</strong>가 나에게 결정적인 경제적·정신적 조언을 건네는 파트너입니다. 이들의 묵직한 조율력이 불의 날카로움을 제어합니다.</p>
+                <div className="bg-emerald-50/50 p-3.5 rounded-xl border border-emerald-100 text-justify">
+                  <span className="font-bold text-emerald-800 text-[11px] block mb-1">👍 올해의 귀인 (띠):</span>
+                  <span className="text-[10px] font-semibold text-emerald-950">말띠, 양띠, 개띠</span>
+                  <p className="text-[9px] text-emerald-900 mt-1 font-light leading-relaxed">나에게 정신적 안정감과 실질적인 업무적 기회를 가져다주는 상생 파트너입니다.</p>
                 </div>
-                <div className="bg-rose-50/50 p-3 rounded border border-rose-100">
-                  <span className="font-bold text-rose-800">⚠️ 경계해야 할 상대:</span>
-                  <p className="text-[11px] text-rose-950 mt-1"><strong>쥐띠</strong>와는 사소한 이권 문제로 큰 다툼이 날 수 있으니 문서 계약 시 두 번 검토하고 불필요한 사교모임을 최소화하십시오.</p>
+                <div className="bg-rose-50/50 p-3.5 rounded-xl border border-rose-100 text-justify">
+                  <span className="font-bold text-rose-800 text-[11px] block mb-1">⚠️ 주의해야 할 상대:</span>
+                  <span className="text-[10px] font-semibold text-rose-950">쥐띠 (자오충 충돌)</span>
+                  <p className="text-[9px] text-rose-900 mt-1 font-light leading-relaxed">계약이나 돈거래 시 오해로 큰 마찰이 생길 소지가 강하니 공과 사를 명확히 선을 그으십시오.</p>
                 </div>
               </div>
             </div>
           </div>,
           "신년 인맥 관리 및 대인관계 조율"
-        );
+        )
 
       case "ny_roadmap_2030":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">2030 경술년(庚戌年)</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2030년 경술년(庚戌年) 세운 로드맵</h2>
+              <span className="text-xs text-[#A3845B] font-bold block">2030 경술년(庚戌年) 세운</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2030년 경술년(庚戌年) 미래 기류 로드맵</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                2030년 경술년(庚戌年)은 천간에 강건한 금(金) 기운과 지지에 뜨거운 화기를 품은 술토(戌土)가 들어오는 해입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2030년 경술년(庚戌年)은 강건한 금(金) 기운과 땅속의 온기를 지닌 술토(戌土)가 만나 명리학적으로 쇠를 담금질하여 마침내 보검으로 승화시키는 해입니다. 2026년부터 차곡차곡 모아둔 자산이나 실력이 명예로운 독립과 권위 획득으로 귀결될 것입니다.
               </p>
-              <p>
-                쇠를 담금질하여 마침내 보검으로 완성하는 중대한 결실의 해가 됩니다. 2026년부터 차근차근 다져온 커리어나 투자 자산이 이 시기에 비로소 명확한 현금 흐름으로 환원되어 경제적 독립의 기틀을 다지게 될 것입니다.
-              </p>
+
+              {/* 기류 예측 지수 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 경술년 기류 예측 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>명예 및 사회적 권위 획득</span>
+                      <span className="text-[#8A6F4C]">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>장기 부동산 문서 취득</span>
+                      <span className="text-[#8A6F4C]">85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>,
           "2030년 경술년(庚戌年) 세운 로드맵"
-        );
+        )
 
       case "ny_roadmap_2031":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">2031 신해년(辛亥年)</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2031년 신해년(辛亥年) 세운 로드맵</h2>
+              <span className="text-xs text-[#A3845B] font-bold block">2031 신해년(辛亥年) 세운</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2031년 신해년(辛亥年) 미래 기류 로드맵</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                2031년 신해년(辛亥年)은 하늘에 반짝이는 보석인 신금(辛金)과 땅에 유유히 흐르는 큰 물 해수(亥水)가 결합한 금수상생(金水相生)의 해입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2031년 신해년(辛亥年)은 맑은 보석 신금(辛金)과 큰 바다 해수(亥水)가 만나 차가운 금수상생(金水相生)을 형성합니다. 지난 5년간의 맹렬한 도전과 열정이 드디어 완벽한 내적 평화, 평온한 일상, 그리고 가정이 주는 따뜻한 쉼으로 승화되는 은혜로운 해입니다.
               </p>
-              <p>
-                명리학적으로 만물이 정화되고 평온함을 얻는 해이며, 의뢰인 {name}님에게도 지난 5년간의 거친 풍파와 열정이 평화로운 일상과 가정의 안락함으로 치환되는 은혜로운 보상의 해가 될 것입니다.
-              </p>
+
+              {/* 기류 예측 지수 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 신해년 기류 예측 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>생활 및 마인드 안정도</span>
+                      <span className="text-[#8A6F4C]">95%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "95%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>가정 안락성 및 복록</span>
+                      <span className="text-[#8A6F4C]">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>,
           "2031년 신해년(辛亥年) 세운 로드맵"
-        );
+        )
 
       case "ny_lucky_fashion":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">패션 스타일링</span>
+              <span className="text-xs text-[#A3845B] font-bold block">패션 스타일링 (吉慶 衣裝)</span>
               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">나의 사주 기운을 보완하는 외적 연출법</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                옷차림과 컬러 배치는 가장 쉽고 즉각적으로 나의 기적 주파수를 바꾸는 실천법입니다. 외적 연출을 통해 내면의 품격과 운을 극대화해 보십시오.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                옷차림과 컬러 배치는 가장 손쉽고 즉각적으로 내 주변의 개운 에너지를 자극하는 행동 풍수 실천법입니다.
               </p>
-              <div className="space-y-3 pt-2">
-                <div>
-                  <span className="font-bold text-[#5F7A68]">👔 추천 의상 스타일:</span>
-                  <p className="text-gray-500 mt-1">지나치게 화려한 원색 패턴은 피하고 네이비, 차콜, 화이트 톤의 깔끔하고 정돈된 미니멀 클래식 룩을 지향하십시오. 내적인 이성과 카리스마를 전달하여 구설을 방어하는 데 유리합니다.</p>
+
+              {/* 스타일 팁 카드 */}
+              <div className="space-y-3">
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-4 rounded-xl shadow-sm text-justify">
+                  <span className="font-bold text-[#5F7A68] text-[11px] block mb-1">👔 추천 룩: 미니멀 클래식 코디</span>
+                  <p className="text-[10px] text-gray-500 font-light leading-relaxed">
+                    지나치게 화려하거나 붉은 계열의 의상은 피하십시오. 네이비, 차콜, 화이트 등 정돈된 미니멀 클래식 룩을 매치할 때, 내적인 카리스마와 지혜로운 설득력을 전달하기가 가장 수월합니다.
+                  </p>
                 </div>
-                <div>
-                  <span className="font-bold text-[#A3845B]">💍 액세서리 팁:</span>
-                  <p className="text-gray-500 mt-1">심플한 스틸이나 실버 계열의 주얼리, 정갈한 금속 안경테를 매치하면 타인에게 정돈된 신뢰감을 대폭 높여 비즈니스적 딜을 성사시키는 데 결정적인 도움을 줍니다.</p>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-4 rounded-xl shadow-sm text-justify">
+                  <span className="font-bold text-[#A3845B] text-[11px] block mb-1">💍 액세서리: 메탈 및 실버 포인트</span>
+                  <p className="text-[10px] text-gray-500 font-light leading-relaxed">
+                    심플한 스틸 시계나 실버 주얼리, 정갈한 메탈 안경테를 활용하여 내적인 금 기운을 튜닝하십시오. 타인에게 신뢰감을 전달하고 불필요한 구설을 차단하는 강력한 보호 펜스가 됩니다.
+                  </p>
                 </div>
               </div>
             </div>
           </div>,
           "신년 패션 메이크업 스타일링 가이드"
-        );
+        )
 
       case "ny_diet_presc":
         return wrapLock(
