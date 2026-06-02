@@ -252,6 +252,7 @@ function InputFormContent() {
   // Selected product state
   const [productKey, setProductKey] = useState("saju");
   const [reportGrade, setReportGrade] = useState("premium"); // premium, deep, sms
+  const [gunghapType, setGunghapType] = useState("compatibility"); // compatibility, deep_compatibility, reunion
   const [formData, setFormData] = useState({
     name: "",
     gender: "female",
@@ -313,6 +314,7 @@ function InputFormContent() {
                 partnerMonth: formData.partnerBirthMonth || "08",
                 partnerDay: formData.partnerBirthDay || "25",
                 partnerHour: formData.partnerBirthHour || "unknown",
+                gunghapType: gunghapType || "compatibility",
                 reportGrade: "free"
               });
               router.push(`/result?${queryParams.toString()}`);
@@ -497,12 +499,13 @@ function InputFormContent() {
           : base)
         : base);
 
+      const gunghapLabel = productKey === "gunghap" ? (gunghapType === "deep_compatibility" ? " (속궁합)" : gunghapType === "reunion" ? " (재회운)" : " (궁합)") : "";
       const newOrder = {
         id: orderId,
         name: formData.name || "홍길동",
         email: formData.email || "today_sms@hyeandang.com",
         phone: formData.phone || "010-0000-0000",
-        productName: `${products[productKey]?.title || "맞춤 사주"}${reportGrade === "free" ? " (무료 체험판)" : ""}`,
+        productName: `${products[productKey]?.title || "맞춤 사주"}${gunghapLabel}${reportGrade === "free" ? " (무료 체험판)" : ""}`,
         amount: finalPrice,
         status: reportGrade === "free" ? "free" : "paid",
         sajuGanji: sajuGanji,
@@ -1266,6 +1269,7 @@ function InputFormContent() {
                     {Object.entries(products).map(([key, value]) => {
                       const isSelected = productKey === key;
                       const showGradeSelector = isSelected && (key === "saju" || key === "newyear" || key === "tojeong");
+                      const showGunghapSelector = isSelected && key === "gunghap";
                       return (
                         <div key={key} className="space-y-2">
                           <button
@@ -1358,6 +1362,74 @@ function InputFormContent() {
                                     </span>
                                   </div>
                                   <span className="text-[10px] font-bold text-red-500">-20,000원</span>
+                                </button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Gunghap Category Selector */}
+                          {showGunghapSelector && (
+                            <div className="p-3.5 bg-background-secondary/40 border border-border-custom/50 rounded-lg space-y-2.5 mt-1.5 transition-all">
+                              <span className="text-[10px] font-semibold text-foreground block tracking-wider">궁합 유형 선택</span>
+                              <div className="space-y-2">
+                                <button
+                                  type="button"
+                                  onClick={() => setGunghapType("compatibility")}
+                                  className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+                                    gunghapType === "compatibility"
+                                      ? "border-brass bg-brass/10"
+                                      : "border-border-custom bg-background hover:bg-background-secondary/20"
+                                  }`}
+                                >
+                                  <div>
+                                    <span className="text-[11px] font-bold text-foreground flex items-center gap-1">
+                                      💕 궁합 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span>
+                                    </span>
+                                    <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
+                                      두 사람의 오행 상성, 성격/가치관 궁합, 백년해로 지수
+                                    </span>
+                                  </div>
+                                  <span className="text-[10px] font-bold text-brass">30,000원</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => setGunghapType("deep_compatibility")}
+                                  className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+                                    gunghapType === "deep_compatibility"
+                                      ? "border-[#C2185B] bg-[#C2185B]/10"
+                                      : "border-border-custom bg-background hover:bg-background-secondary/20"
+                                  }`}
+                                >
+                                  <div>
+                                    <span className="text-[11px] font-bold text-[#C2185B] flex items-center gap-1">
+                                      🔥 속궁합 <span className="text-[8px] bg-[#C2185B]/15 text-[#C2185B] px-1.5 py-0.5 rounded font-normal">인기</span>
+                                    </span>
+                                    <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
+                                      신체적 교감, 정서적 밀착도, 잠자리 궁합 상세 분석
+                                    </span>
+                                  </div>
+                                  <span className="text-[10px] font-bold text-[#C2185B]">30,000원</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => setGunghapType("reunion")}
+                                  className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+                                    gunghapType === "reunion"
+                                      ? "border-[#5F7A68] bg-[#5F7A68]/10"
+                                      : "border-border-custom bg-background hover:bg-background-secondary/20"
+                                  }`}
+                                >
+                                  <div>
+                                    <span className="text-[11px] font-bold text-[#5F7A68] flex items-center gap-1">
+                                      🌿 재회운
+                                    </span>
+                                    <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
+                                      헤어진 연인과의 재회 가능성, 재결합 시기 및 조언
+                                    </span>
+                                  </div>
+                                  <span className="text-[10px] font-bold text-[#5F7A68]">30,000원</span>
                                 </button>
                               </div>
                             </div>

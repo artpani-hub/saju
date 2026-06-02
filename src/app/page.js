@@ -911,9 +911,25 @@ export default function Home() {
               <div>
                 <span className="text-xs font-semibold text-brass tracking-wider uppercase block mb-1">연인 궁합</span>
                 <h3 className="font-myeongjo text-xl font-bold text-foreground mb-2 group-hover:text-brass transition-colors">연인 궁합</h3>
-                <p className="text-sm text-foreground-muted leading-relaxed mb-6 font-light">
+                <p className="text-sm text-foreground-muted leading-relaxed mb-4 font-light">
                   두 사람의 타고난 오행 분포 조화, 속궁합/정서적 궁합, 백년해로 타이밍 및 관계 유지 솔루션 제공.
                 </p>
+
+                {/* 카테고리별 요금 안내 박스 */}
+                <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-2 font-light text-foreground-muted">
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="flex items-center gap-1.5 text-foreground font-medium whitespace-nowrap">💕 궁합 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span></span>
+                    <span className="font-semibold text-brass whitespace-nowrap flex-shrink-0">30,000원</span>
+                  </div>
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="flex items-center gap-1.5 text-[#C2185B] font-medium whitespace-nowrap">🔥 속궁합 <span className="text-[8px] bg-[#C2185B]/15 text-[#C2185B] px-1.5 py-0.5 rounded font-normal">인기</span></span>
+                    <span className="font-semibold text-[#C2185B] whitespace-nowrap flex-shrink-0">30,000원</span>
+                  </div>
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="flex items-center gap-1.5 text-[#5F7A68] font-medium whitespace-nowrap">🌿 재회운</span>
+                    <span className="font-semibold text-[#5F7A68] whitespace-nowrap flex-shrink-0">30,000원</span>
+                  </div>
+                </div>
               </div>
               <div>
                 <div className="border-t border-border-custom pt-4 mb-4">
