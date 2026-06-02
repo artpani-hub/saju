@@ -5471,7 +5471,7 @@ function ResultContent() {
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p className="text-justify font-light text-gray-600">
-                의뢰인 {name}님의 사주 오행 밸런스를 토대로 제안하는 2026년 최상의 자산 방어 및 투자 포트폴리오 비중 조율 제안서입니다.
+                의뢰인 {name}님의 사주 오행 밸런스를 토대로 제안하는 2026년 최상의 자산 방어 및 투자 포트폴리오 비중 조율 제안서입니다. 화(火)의 팽창이 극에 달해 물이 쉽게 메마르고 쇳가루가 휘날리는 흐름 속에서 내 자산을 지켜내고 증식하기 위한 오행 처방입니다.
               </p>
 
               {/* 시각화: 자산 포트폴리오 비중 */}
@@ -5479,11 +5479,65 @@ function ResultContent() {
                 <span className="font-bold text-xs text-[#8A6F4C] block">📊 제안 자산 구성 비율</span>
                 <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden flex text-[8px] font-bold text-white text-center leading-4">
                   <div className="bg-[#8A6F4C]" style={{ width: "60%" }}>안전자산 60%</div>
-                  <div className="bg-[#A3845B]" style={{ width: "40%" }}>배당/채권 40%</div>
+                  <div className="bg-[#A3845B]" style={{ width: "30%" }}>배당/채권 30%</div>
+                  <div className="bg-[#5F7A68]" style={{ width: "10%" }}>우량가치주 10%</div>
                 </div>
                 <p className="text-[9px] text-gray-400 font-light leading-snug">
                   * 무리한 성장주 레버리지 투자는 70% 이상의 손실 확률을 가지므로 금지하며, 원금 보장형 예적금이나 미국 단기 채권 ETF에 60% 이상 집중하십시오.
                 </p>
+              </div>
+
+              {/* 추가: 오행 맞춤형 3대 투자 원칙 카드 */}
+              <div className="grid grid-cols-3 gap-3 pt-2">
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3.5 rounded-xl text-center shadow-inner">
+                  <span className="text-xl block mb-1">🌊</span>
+                  <span className="font-bold text-[#8A6F4C] text-[10px] block">수(水) 기운: 수성</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">예적금과 금 실물에 60%를 배분하여 원금을 굳건히 지킴</p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3.5 rounded-xl text-center shadow-inner">
+                  <span className="text-xl block mb-1">🪙</span>
+                  <span className="font-bold text-[#8A6F4C] text-[10px] block">금(金) 기운: 흐름</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">미국 단기 채권 및 월배당 리츠 30%로 안정적 이자 획득</p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3.5 rounded-xl text-center shadow-inner">
+                  <span className="text-xl block mb-1">🌲</span>
+                  <span className="font-bold text-[#8A6F4C] text-[10px] block">목(木) 기운: 성장</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">글로벌 지수 ETF 및 대형 우량 가치주 10%로 방어적 투자</p>
+                </div>
+              </div>
+
+              {/* 추가: 포트폴리오 자산 배분 조견표 */}
+              <div className="border border-[#E2DDD5] rounded-xl overflow-hidden shadow-sm pt-2">
+                <table className="w-full text-[9px] text-left border-collapse">
+                  <thead>
+                    <tr className="bg-[#FAF7F0] text-[#8A6F4C] font-bold border-b border-[#E2DDD5]">
+                      <th className="p-2">자산 분류</th>
+                      <th className="p-2">추천 오행</th>
+                      <th className="p-2">권장 비중</th>
+                      <th className="p-2">투자 실행 가이드</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-gray-600 font-light">
+                    <tr className="border-b border-[#E2DDD5]/40">
+                      <td className="p-2 font-semibold text-gray-800">🔒 안전성 보존 자산</td>
+                      <td className="p-2 text-center">수(水) / 토(土)</td>
+                      <td className="p-2 text-center font-bold text-[#8A6F4C]">60%</td>
+                      <td className="p-2">고금리 정기 예적금, 금(Gold) 현물 수성</td>
+                    </tr>
+                    <tr className="border-b border-[#E2DDD5]/40">
+                      <td className="p-2 font-semibold text-gray-800">💵 고정 배당 자산</td>
+                      <td className="p-2 text-center">금(金)</td>
+                      <td className="p-2 text-center font-bold text-[#8A6F4C]">30%</td>
+                      <td className="p-2">월배당 인컴형 리츠, 미국 하이일드/단기채 ETF</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 font-semibold text-gray-800">📈 우량 가치 자산</td>
+                      <td className="p-2 text-center">목(木)</td>
+                      <td className="p-2 text-center font-bold text-[#8A6F4C]">10%</td>
+                      <td className="p-2">글로벌 지수 추종 ETF, 초우량 빅테크 가치 분할매수</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>,
@@ -6005,7 +6059,7 @@ function ResultContent() {
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p className="text-justify font-light text-gray-600">
-                의뢰인 {name}님의 사주 오행 밸런스를 토대로 제안하는 2026년 최상의 자산 방어 및 투자 포트폴리오 비중 조율 제안서입니다.
+                의뢰인 {name}님의 사주 오행 밸런스를 토대로 제안하는 2026년 최상의 자산 방어 및 투자 포트폴리오 비중 조율 제안서입니다. 화(火)의 팽창이 극에 달해 물이 쉽게 메마르고 쇳가루가 휘날리는 흐름 속에서 내 자산을 지켜내고 증식하기 위한 오행 처방입니다.
               </p>
 
               {/* 시각화: 자산 포트폴리오 비중 */}
@@ -6013,11 +6067,65 @@ function ResultContent() {
                 <span className="font-bold text-xs text-[#8A6F4C] block">📊 제안 자산 구성 비율</span>
                 <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden flex text-[8px] font-bold text-white text-center leading-4">
                   <div className="bg-[#8A6F4C]" style={{ width: "60%" }}>안전자산 60%</div>
-                  <div className="bg-[#A3845B]" style={{ width: "40%" }}>배당/채권 40%</div>
+                  <div className="bg-[#A3845B]" style={{ width: "30%" }}>배당/채권 30%</div>
+                  <div className="bg-[#5F7A68]" style={{ width: "10%" }}>우량가치주 10%</div>
                 </div>
                 <p className="text-[9px] text-gray-400 font-light leading-snug">
                   * 무리한 성장주 레버리지 투자는 70% 이상의 손실 확률을 가지므로 금지하며, 원금 보장형 예적금이나 미국 단기 채권 ETF에 60% 이상 집중하십시오.
                 </p>
+              </div>
+
+              {/* 추가: 오행 맞춤형 3대 투자 원칙 카드 */}
+              <div className="grid grid-cols-3 gap-3 pt-2">
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3.5 rounded-xl text-center shadow-inner">
+                  <span className="text-xl block mb-1">🌊</span>
+                  <span className="font-bold text-[#8A6F4C] text-[10px] block">수(水) 기운: 수성</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">예적금과 금 실물에 60%를 배분하여 원금을 굳건히 지킴</p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3.5 rounded-xl text-center shadow-inner">
+                  <span className="text-xl block mb-1">🪙</span>
+                  <span className="font-bold text-[#8A6F4C] text-[10px] block">금(金) 기운: 흐름</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">미국 단기 채권 및 월배당 리츠 30%로 안정적 이자 획득</p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3.5 rounded-xl text-center shadow-inner">
+                  <span className="text-xl block mb-1">🌲</span>
+                  <span className="font-bold text-[#8A6F4C] text-[10px] block">목(木) 기운: 성장</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">글로벌 지수 ETF 및 대형 우량 가치주 10%로 방어적 투자</p>
+                </div>
+              </div>
+
+              {/* 추가: 포트폴리오 자산 배분 조견표 */}
+              <div className="border border-[#E2DDD5] rounded-xl overflow-hidden shadow-sm pt-2">
+                <table className="w-full text-[9px] text-left border-collapse">
+                  <thead>
+                    <tr className="bg-[#FAF7F0] text-[#8A6F4C] font-bold border-b border-[#E2DDD5]">
+                      <th className="p-2">자산 분류</th>
+                      <th className="p-2">추천 오행</th>
+                      <th className="p-2">권장 비중</th>
+                      <th className="p-2">투자 실행 가이드</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-gray-600 font-light">
+                    <tr className="border-b border-[#E2DDD5]/40">
+                      <td className="p-2 font-semibold text-gray-800">🔒 안전성 보존 자산</td>
+                      <td className="p-2 text-center">수(水) / 토(土)</td>
+                      <td className="p-2 text-center font-bold text-[#8A6F4C]">60%</td>
+                      <td className="p-2">고금리 정기 예적금, 금(Gold) 현물 수성</td>
+                    </tr>
+                    <tr className="border-b border-[#E2DDD5]/40">
+                      <td className="p-2 font-semibold text-gray-800">💵 고정 배당 자산</td>
+                      <td className="p-2 text-center">금(金)</td>
+                      <td className="p-2 text-center font-bold text-[#8A6F4C]">30%</td>
+                      <td className="p-2">월배당 인컴형 리츠, 미국 하이일드/단기채 ETF</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 font-semibold text-gray-800">📈 우량 가치 자산</td>
+                      <td className="p-2 text-center">목(木)</td>
+                      <td className="p-2 text-center font-bold text-[#8A6F4C]">10%</td>
+                      <td className="p-2">글로벌 지수 추종 ETF, 초우량 빅테크 가치 분할매수</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>,
