@@ -3723,18 +3723,65 @@ function ResultContent() {
         );
       case "ny_stem_harmony":
         let stemHarmonyDesc = "";
+        let relationGraph = null;
         const dayStemEl = sajuInfo.day.stemEl;
         const dayStem = sajuInfo.day.stem;
+        
         if (dayStemEl === "목") {
-          stemHarmonyDesc = `의뢰인 {name}님은 청량한 나무(木)의 일간({dayStem}) 기질을 품고 계십니다. 나무가 병오년의 불꽃(火)을 만나면 자신의 잎과 꽃을 흐드러지게 피워내는 '식상(食傷)'의 작용이 일어납니다. 올해는 창의적인 아이디어가 번뜩이고 표현 능력이 극대화되어 나의 매력과 실력을 세상에 널리 알릴 최고의 기회입니다. 다만, 내 수분이 빠르게 고갈되므로 감정적 번아웃과 불만족(욱하는 감정)을 슬기롭게 다스려야 합니다.`;
+          stemHarmonyDesc = `의뢰인 ${name}님은 청량한 나무(木)의 일간(${dayStem}) 기질을 품고 계십니다. 나무가 병오년의 불꽃(화)을 만나면 자신의 잎과 꽃을 흐드러지게 피워내는 '식상(食傷)'의 작용이 일어납니다. 올해는 창의적인 아이디어가 번뜩이고 표현 능력이 극대화되어 나의 매력과 실력을 세상에 널리 알릴 최고의 기회입니다. 다만, 내 수분이 빠르게 고갈되므로 감정적 번아웃 and 불만족(욱하는 감정)을 슬기롭게 다스려야 합니다.`;
+          relationGraph = (
+            <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
+              <div className="px-3 py-1 bg-[#5F7A68] text-white rounded font-bold text-xs shadow-sm">나 (${dayStem}木)</div>
+              <span className="text-[#A3845B] font-bold text-sm">➔</span>
+              <div className="px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded text-[9px] font-semibold">목생화 (식상·발산)</div>
+              <span className="text-[#A3845B] font-bold text-sm">➔</span>
+              <div className="px-3 py-1 bg-red-600 text-white rounded font-bold text-xs shadow-sm">병오년 (丙火)</div>
+            </div>
+          );
         } else if (dayStemEl === "화") {
-          stemHarmonyDesc = `의뢰인 {name}님은 태양 혹은 횃불(火)의 일간({dayStem}) 기질을 지니셨습니다. 내 기운과 동일한 병오년의 거대한 불꽃(火)을 조우하여 '비겁(比劫)'이 극에 달하는 주체적인 해가 됩니다. 자신감과 독립심이 극대화되어 신규 사업, 창업, 혹은 강력한 자립을 도모하려는 에너지가 솟구칩니다. 다만, 강한 자존심끼리 마주쳐 동료, 배우자와 대립하거나 자만으로 손재수를 입기 쉬우니 한 걸음 양보가 운을 살리는 지름길입니다.`;
+          stemHarmonyDesc = `의뢰인 ${name}님은 태양 혹은 횃불(화)의 일간(${dayStem}) 기질을 지니셨습니다. 내 기운과 동일한 병오년의 거대한 불꽃(화)을 조우하여 '비겁(比劫)'이 극에 달하는 주체적인 해가 됩니다. 자신감과 독립심이 극대화되어 신규 사업, 창업, 혹은 강력한 자립을 도모하려는 에너지가 솟구칩니다. 다만, 강한 자존심끼리 마주쳐 동료, 배우자와 대립하거나 자만으로 손재수를 입기 쉬우니 한 걸음 양보가 운을 살리는 지름길입니다.`;
+          relationGraph = (
+            <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
+              <div className="px-3 py-1 bg-red-500 text-white rounded font-bold text-xs shadow-sm">나 (${dayStem}火)</div>
+              <span className="text-[#A3845B] font-bold text-sm">➔</span>
+              <div className="px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded text-[9px] font-semibold">비겁중중 (경쟁·자립)</div>
+              <span className="text-[#A3845B] font-bold text-sm">➔</span>
+              <div className="px-3 py-1 bg-red-600 text-white rounded font-bold text-xs shadow-sm">병오년 (丙火)</div>
+            </div>
+          );
         } else if (dayStemEl === "토") {
-          stemHarmonyDesc = `의뢰인 {name}님은 넉넉한 대지(土)의 일간({dayStem}) 기질을 소유하고 계십니다. 불꽃(火)이 흙을 다정하게 익혀주고 단단히 다져주는 '인성(印星)'의 대단히 길한 기류가 도래합니다. 공부, 학업, 국가 고시, 자격증 취득 등 문서상의 경사가 따르며, 나를 후원해 주는 조력자나 은인(귀인)의 등장이 강력하게 보장되는 은혜롭고 든든한 한 해가 될 것입니다.`;
+          stemHarmonyDesc = `의뢰인 ${name}님은 넉넉한 대지(토)의 일간(${dayStem}) 기질을 소유하고 계십니다. 불꽃(화)이 흙을 다정하게 익혀주고 단단히 다져주는 '인성(印星)'의 대단히 길한 기류가 도래합니다. 공부, 학업, 국가 고시, 자격증 취득 등 문서상의 경사가 따르며, 나를 후원해 주는 조력자나 은인(귀인)의 등장이 강력하게 보장되는 은혜롭고 든든한 한 해가 될 것입니다.`;
+          relationGraph = (
+            <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
+              <div className="px-3 py-1 bg-[#A3845B] text-white rounded font-bold text-xs shadow-sm">나 (${dayStem}土)</div>
+              <span className="text-[#A3845B] font-bold text-sm">⇠</span>
+              <div className="px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded text-[9px] font-semibold">화생토 (인성·후원)</div>
+              <span className="text-[#A3845B] font-bold text-sm">⇠</span>
+              <div className="px-3 py-1 bg-red-600 text-white rounded font-bold text-xs shadow-sm">병오년 (丙火)</div>
+            </div>
+          );
         } else if (dayStemEl === "금") {
-          stemHarmonyDesc = `의뢰인 {name}님은 단단한 바위나 보석(金)의 일간({dayStem}) 기질을 타고나셨습니다. 맹렬한 불꽃(火)이 쇠붙이를 제련하고 쓸모 있는 도구로 다듬는 강력한 '관성(官星)'의 해를 지납니다. 직장에서 중책을 맡아 공적 위상이 올라가거나 승진 및 영전의 기회를 얻게 됩니다. 다만 압박감과 책임감이 극에 달해 뼈, 호흡기 계통 건강 관리 및 상사와의 충돌 조절에 만전을 기해야 합니다.`;
+          stemHarmonyDesc = `의뢰인 ${name}님은 단단한 바위나 보석(금)의 일간(${dayStem}) 기질을 타고나셨습니다. 맹렬한 불꽃(화)이 쇠붙이를 제련하고 쓸모 있는 도구로 다듬는 강력한 '관성(官星)'의 해를 지납니다. 직장에서 중책을 맡아 공적 위상이 올라가거나 승진 및 영전의 기회를 얻게 됩니다. 다만 압박감과 책임감이 극에 달해 뼈, 호흡기 계통 건강 관리 및 상사와의 충돌 조절에 만전을 기해야 합니다.`;
+          relationGraph = (
+            <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
+              <div className="px-3 py-1 bg-gray-400 text-gray-900 rounded font-bold text-xs shadow-sm">나 (${dayStem}金)</div>
+              <span className="text-[#A3845B] font-bold text-sm">⇠</span>
+              <div className="px-2 py-0.5 bg-red-100 text-red-950 border border-red-300 rounded text-[9px] font-semibold">화극금 (관성·제련)</div>
+              <span className="text-[#A3845B] font-bold text-sm">⇠</span>
+              <div className="px-3 py-1 bg-red-600 text-white rounded font-bold text-xs shadow-sm">병오년 (丙火)</div>
+            </div>
+          );
         } else {
-          stemHarmonyDesc = `의뢰인 {name}님은 깊고 차가운 물(水)의 일간({dayStem}) 기질을 지니고 태어나셨습니다. 차가운 물줄기가 2026년 병오년의 거대한 화기(火)를 통제하고 가두는 '재성(財星)'의 해가 열립니다. 막혔던 현금 흐름이 트이고 뜻밖의 투자 소득, 연봉 협상 타결, 횡재수 등 경제적 기회가 요동칩니다. 다만 불을 끄느라 내 수분이 소모되므로 건강을 챙기며 에너지를 완급 조절하십시오.`;
+          stemHarmonyDesc = `의뢰인 ${name}님은 깊고 차가운 물(수)의 일간(${dayStem}) 기질을 지니고 태어나셨습니다. 차가운 물줄기가 2026년 병오년의 거대한 화기(화)를 통제하고 가두는 '재성(財星)'의 해가 열립니다. 막혔던 현금 흐름이 트이고 투자 소득, 연봉 협상 타결, 횡재수 등 경제적 기회가 요동칩니다. 다만 불을 끄느라 내 수분이 소모되므로 건강을 챙기며 에너지를 완급 조절하십시오.`;
+          relationGraph = (
+            <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
+              <div className="px-3 py-1 bg-gray-800 text-white rounded font-bold text-xs shadow-sm">나 (${dayStem}水)</div>
+              <span className="text-[#A3845B] font-bold text-sm">➔</span>
+              <div className="px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded text-[9px] font-semibold">수극화 (재성·획득)</div>
+              <span className="text-[#A3845B] font-bold text-sm">➔</span>
+              <div className="px-3 py-1 bg-red-600 text-white rounded font-bold text-xs shadow-sm">병오년 (丙火)</div>
+            </div>
+          );
         }
 
         return wrapLock(
@@ -3748,7 +3795,10 @@ function ResultContent() {
               <div className="bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 text-center font-bold text-sm text-[#A3845B]">
                 {name}님의 일간: {dayStem} ({dayStemEl}의 기운)
               </div>
-              <p>
+              
+              {relationGraph}
+
+              <p className="mt-4">
                 {stemHarmonyDesc}
               </p>
             </div>
@@ -3760,36 +3810,43 @@ function ResultContent() {
         const ilju = sajuInfo.day.stem + sajuInfo.day.branch;
         const dayBranch = sajuInfo.day.branch;
         let relationDesc = "";
+        let statusBadge = <span className="bg-blue-100 text-blue-800 border border-blue-200 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">완만한 조화 (평온)</span>;
         
         if (dayBranch === "子") {
           relationDesc = "2026년 오화(午火) 세운은 귀하의 일지 자수(子水)와 격렬히 부딪치는 자오충(子午沖)을 유발합니다. 이는 집터, 근무지 이동, 혹은 부부 관계의 급격한 지각변동을 뜻합니다. 흔들림을 두려워하기보다 고여있던 나쁜 습관을 털어내는 계기로 삼으십시오.";
+          statusBadge = <span className="bg-red-100 text-red-800 border border-red-200 text-[10px] font-bold px-2 py-0.5 rounded animate-pulse shadow-sm">⚠️ 격렬한 변화 (충살)</span>;
         } else if (dayBranch === "午") {
           relationDesc = "2026년 오화(午火)는 내 일지의 오화와 겹쳐 스스로를 옭아매는 오오자형(午午自刑)을 일으킵니다. 감정 기복이 심해져 섣부른 말이나 행동으로 일을 그르치기 쉬우니 계약 체결 시에는 반드시 타인의 피드백을 한 번 더 거치십시오.";
+          statusBadge = <span className="bg-orange-100 text-orange-800 border border-orange-200 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">⚠️ 스스로 단속 (자형)</span>;
         } else if (dayBranch === "未" || dayBranch === "寅" || dayBranch === "戌") {
           relationDesc = "2026년 세운의 오화(午火)는 내 일지와 따뜻한 합(午未 육합, 寅午戌 삼합)을 이루어 평화롭고 조화로운 기류를 형성합니다. 대인관계의 오해가 눈 녹듯 풀리고 귀인의 적극적인 협력을 받아 편안하게 안정을 얻을 수 있는 대길한 흐름입니다.";
+          statusBadge = <span className="bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">★ 대길한 화합 (지합)</span>;
         } else if (dayBranch === "丑") {
-          relationDesc = "올해는 지지 간 오축원진(午丑怨嗔) 및 귀문(鬼門)이 작동하여 가까운 지인이나 배우자 사이에 사소한 서운함으로 원망이 쌓일 수 있습니다. 오해는 즉시 부드럽게 풀고, 명상이나 숲 걷기 등으로 마음을 다스려야 합니다.";
-        } else {
-          relationDesc = "2026년 세운의 오화(午火)는 귀하의 일지 기둥과 무난하게 융합하며 평온한 상생의 흐름을 보입니다. 특별한 살의 충돌 없이, 내가 계획한 성실한 일상의 틀을 안정적으로 지켜내며 한 해 농사의 결실을 향해 우직하게 나아가는 안정기입니다.";
+          relationDesc = "2026년 오화(午火)는 내 일지 축토(丑土)와 만나며 서로 은근히 밀어내고 원망하게 만드는 축오원진(丑午怨嗔) 및 귀문관살 기류를 생성합니다. 예민함과 심리적 불안정이 높아져 가까운 이의 말 한마디에 큰 상처를 입거나 오해를 하기 쉽습니다. 상대방을 비난하기 전에 한 템포 호흡을 고르고 이성적으로 팩트를 점검하십시오.";
+          statusBadge = <span className="bg-purple-100 text-purple-800 border border-purple-200 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">⚠️ 감정 오해 (원진)</span>;
         }
 
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-red-600 font-bold block">일주(日柱)와의 융합 [심화]</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">일주와 세운의 합충형파해 연쇄 진단</h2>
+              <span className="text-xs text-[#A3845B] font-bold block">일주(日柱) 지합·충 진단</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">일주와 세운의 형·충·회·합 정밀 진단</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <div className="bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 text-center font-bold text-sm text-[#A3845B]">
-                {name}님의 일주: {ilju} ({sajuInfo.day.stemEl}·{sajuInfo.day.branchEl})
+              <div className="flex justify-between items-center bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 text-sm font-bold text-[#8B221E]">
+                <span>귀하의 타고난 일주: {ilju}일주</span>
+                {statusBadge}
               </div>
+              <p className="mt-4">
+                일지는 사주에서 <strong>나의 개인적인 안식처, 침실, 그리고 배우자 궁</strong>을 상징합니다. 1년의 기류를 지배하는 세운의 지지(오화)가 내 안식처의 글자와 어떤 관계를 맺느냐에 따라 실질적인 신체 컨디션과 가정생활의 평화 지수가 좌우됩니다.
+              </p>
               <p>
                 {relationDesc}
               </p>
             </div>
           </div>,
-          "일주 합충형파해 심화 진단"
+          "일주와 세운의 합·충·형·파·해 진단"
         );
 
       case "ny_elements_balance":
@@ -3802,7 +3859,7 @@ function ResultContent() {
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs text-gray-700 font-traditional">
               <p className="leading-relaxed font-light">
-                의뢰인 {name}님의 사주 원국에 2026년 병오년의 <strong>강렬한 불(火) 기운 2개</strong>가 유입되었을 때의 종합 오행 저울 분포 상태입니다.
+                의뢰인 {name}님의 타고난 사주 원국 8글자에 2026년 병오년의 <strong>강렬한 불(火) 기운 2개</strong>가 유입되었을 때의 종합 오행 저울 분포 상태입니다. 오행의 치우침 정도에 따라 한 해의 운명적 컨디션이 요동치게 됩니다.
               </p>
               
               <div className="space-y-3 bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60">
@@ -3811,13 +3868,13 @@ function ResultContent() {
                   const percentage = (nyCount / 10) * 100;
                   return (
                     <div key={el} className="flex items-center gap-3 text-xs">
-                      <span className={`w-16 text-center py-0.5 rounded font-bold text-[10px] {getElementColor(el)}`}>
+                      <span className={`w-16 text-center py-0.5 rounded font-bold text-[10px] ${getElementColor(el)}`}>
                         {el} ({nyCount}개)
                       </span>
                       <div className="flex-1 h-2.5 bg-gray-200 rounded-full overflow-hidden">
                         <div 
-                          className={`h-full transition-all duration-500 {getElementBarColor(el)}`} 
-                          style={{ width: `{percentage}%` }}
+                          className={`h-full transition-all duration-500 ${getElementBarColor(el)}`} 
+                          style={{ width: `${percentage}%` }}
                         />
                       </div>
                       <span className="w-8 text-right font-semibold text-gray-500">{Math.round(percentage)}%</span>
@@ -3828,49 +3885,109 @@ function ResultContent() {
 
               <p className="leading-relaxed font-light border-t border-[#E2DDD5]/60 pt-3">
                 {sajuInfo.elements.화 + 2 >= 4 ? (
-                  <span className="text-red-700 font-bold block mb-1">⚠️ [경보] 화(火) 기운의 비대화로 인한 건조/과열 상태</span>
+                  <span className="text-red-700 font-bold block mb-1 flex items-center gap-1">⚠️ [경보] 화(火) 기운의 비대화로 인한 건조/과열 상태</span>
                 ) : (
-                  <span className="text-gray-800 font-bold block mb-1">✓ [안정] 적절한 화기 조율 상태</span>
+                  <span className="text-gray-800 font-bold block mb-1 flex items-center gap-1">✓ [안정] 적절한 화기 조율 상태</span>
                 )}
-                올해는 화(火) 기운이 세상을 뒤덮으며 상대적으로 <strong>수(水)와 금(金)의 기운이 증발하거나 쇠약해지는 부작용</strong>이 나타나기 쉽습니다. 인위적으로 물과 쇠의 기운을 수혈하여 팽창력을 조절해야 길합니다.
+                올해 세상은 거대한 화염으로 뒤덮여, 상대적으로 <strong>수(水)와 금(金)의 기운이 극단적으로 증발하거나 쇠약해지는 약화 상태</strong>가 발생하기 쉽습니다. 사주 균형이 무너지면 심리적으로 성급해지고 체력이 쉽게 고갈되므로, 일상생활 속에서 인위적으로 물과 금속의 차갑고 안정적인 에너지를 수혈하여 기류의 과열을 방어해 주는 처방이 필수적입니다.
               </p>
             </div>
           </div>,
           "신년 오행 과잉/결핍 진단"
         );
 
-      case "ny_health_presc":
+      case "ny_elements_supplement":
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">신년 건강 처방</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">세운 기류 변화에 따른 취약 장부 진단</h2>
+              <span className="text-xs text-[#A3845B] font-bold block">오행 보완 비책</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">부족한 오행을 채우는 생활 습관</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p>
-                2026년은 명리학적으로 극심한 조열(燥熱)함이 장부를 위협하는 형상입니다. 특히 의뢰인 {name}님의 사주 분포상 다음 영역의 면역력 저하와 질환 발생에 주의해야 합니다.
+                오행의 조화는 단순히 학설에 머무는 것이 아니라, 내가 머무는 공간, 만나는 물질, 일상적인 습관을 통해 즉각적으로 조율될 수 있습니다. 2026년 병오년의 과열된 불꽃을 다스리기 위한 최고의 생활 개운 전략을 제안합니다.
               </p>
               
-              <div className="space-y-3 mt-4">
-                <div className="bg-red-50/50 border border-red-100 p-3.5 rounded-lg">
-                  <strong className="block text-red-800 text-xs mb-1">■ 심혈관계 및 상열감 (火 과다 작용)</strong>
-                  <p className="text-[11px] text-gray-600">
-                    체내 압력이 올라 고혈압, 만성 두통, 눈의 피로, 피부 발진 등이 빈발하기 쉬운 한 해입니다. 분노 조절 실패나 성급함으로 인한 급성 스트레스 누적을 막으십시오.
-                  </p>
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="border border-[#E2DDD5] bg-[#FAF7F0] p-4 rounded-lg shadow-sm">
+                  <div className="font-bold text-[#5F7A68] text-xs mb-2 border-b border-[#5F7A68]/20 pb-1.5 flex items-center gap-1">🌊 수(水) 기운 생활 밀착 처방</div>
+                  <ul className="space-y-1.5 text-[10px] text-gray-500 font-light">
+                    <li>• <strong>진시(07~09시):</strong> 시원한 공복 냉수 음미</li>
+                    <li>• <strong>해시(21~23시):</strong> 머리를 식히는 정갈한 반신욕</li>
+                    <li>• <strong>풍수방향:</strong> 집안 북쪽에 바다 일러스트 부착</li>
+                  </ul>
                 </div>
-                <div className="bg-blue-50/50 border border-blue-100 p-3.5 rounded-lg">
-                  <strong className="block text-blue-800 text-xs mb-1">■ 신장, 방광 및 생식기 계통 (水 마름 작용)</strong>
-                  <p className="text-[11px] text-gray-600">
-                    불기운에 의해 수분이 증발하므로 신장 결석, 비뇨기계 질환, 생식기 계통의 호르몬 불균형이 올 위험이 큽니다. 하루 최소 1.5리터의 맑은 음용수를 자주 보충해 주는 규칙이 필수적입니다.
-                  </p>
+                <div className="border border-[#E2DDD5] bg-[#FAF7F0] p-4 rounded-lg shadow-sm">
+                  <div className="font-bold text-[#A3845B] text-xs mb-2 border-b border-[#A3845B]/20 pb-1.5 flex items-center gap-1">🪙 금(金) 기운 생활 밀착 처방</div>
+                  <ul className="space-y-1.5 text-[10px] text-gray-500 font-light">
+                    <li>• <strong>사시(09~11시):</strong> 펜으로 중요 스케줄 수기 기록</li>
+                    <li>• <strong>신시(15~17시):</strong> 메탈 시계 확인하며 완급 조율</li>
+                    <li>• <strong>풍수방향:</strong> 서재 서쪽에 정돈된 금속 스탠드 배치</li>
+                  </ul>
                 </div>
               </div>
             </div>
           </div>,
-          "세운 변화 건강 처방"
+          "부족한 오행을 채우는 일상 개운법"
         );
 
+      case "ny_health_presc":
+        return wrapLock(
+          <div className="space-y-6 py-4">
+            <div className="text-center space-y-2 mb-8">
+              <span className="text-xs text-[#A3845B] font-bold block">건강 수호 보감</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">세운 기류 변화에 따른 신년 건강 처방</h2>
+              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+            </div>
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p>
+                황제내경(黃帝內經)의 운기학에 따르면, 2026년 병오년은 강력한 불의 세력이 기승을 부려 우리 신체 내부의 <strong>심장(심혈관계), 소장, 그리고 안구 부위의 열감을 자극</strong>하고, 상대적으로 호흡기계(폐, 기관지) 및 신장(신묘계)을 건조하게 메말리는 한 해가 됩니다.
+              </p>
+              
+              <div className="space-y-3 bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 my-4 text-[10px] shadow-sm">
+                <div className="flex justify-between items-center border-b border-gray-200/50 pb-1.5">
+                  <span className="font-semibold text-gray-700 flex items-center gap-1">❤️ 심혈관계 (심장/혈압)</span>
+                  <div className="flex gap-0.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+                    <span className="ml-1 text-[8px] font-bold text-red-500">과열 (80%)</span>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-200/50 pb-1.5">
+                  <span className="font-semibold text-gray-700 flex items-center gap-1">🤍 호흡기계 (폐/기관지)</span>
+                  <div className="flex gap-0.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+                    <span className="ml-1 text-[8px] font-bold text-yellow-600">건조 (60%)</span>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-gray-700 flex items-center gap-1">🖤 비뇨기계 (신장/비뇨)</span>
+                  <div className="flex gap-0.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+                    <span className="ml-1 text-[8px] font-bold text-blue-500">쇠약 (40%)</span>
+                  </div>
+                </div>
+              </div>
+
+              <p className="mt-4">
+                특히 평소에 열이 많거나 땀을 많이 흘리는 체질의 경우 신체 수분이 고갈되어 만성 피로와 피부 건조증, 두통 및 안구건조증이 깊어지기 쉽습니다. 스트레스가 극에 달하면 자율신경계가 과열되어 불면증이나 가슴 두근거림 증상이 발현될 우려가 높으므로 한 템포 쉬어가는 이완법이 강력하게 요구됩니다.
+              </p>
+            </div>
+          </div>,
+          "신년 건강 처방"
+        );
       case "ny_lucky_secrets":
         const luckyColor = prescriptions[0]?.color || "밝은 계열";
         const luckyDir = prescriptions[0]?.direction || "북쪽";
