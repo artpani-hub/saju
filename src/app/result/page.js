@@ -5240,37 +5240,106 @@ function ResultContent() {
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p className="text-justify font-light text-gray-600">
-                내가 하루의 1/3 이상 머무는 주거 및 사무 공간을 오행 상생 배치를 통해 액운을 막고 재물 기류를 순환시키는 풍수 조견표입니다.
+                인간은 자신이 하루의 3분의 1 이상 머무는 주거 및 사무 공간의 전자기적 기류와 끊임없이 교감합니다. 2026년 병오년은 강렬한 불(火)의 팽창이 가득 찬 시기이므로, 실내 공간 곳곳에 숨겨진 오행을 조율하여 집안의 액운을 차단하고 맑은 재물 에너지를 순환시켜야 합니다. 부족한 수(水) 기운과 금(金) 기운을 가구 배치 및 소품 튜닝을 통해 보완하고 정서적 평안을 확보하십시오.
               </p>
 
-              {/* 풍수 조견표 */}
+              {/* 시각화: 풍수 기류 활성화 게이지 */}
+              <div className="bg-[#F6FAF7] border border-emerald-100 rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#5F7A68] block">📊 신년 가택 풍수 기류 안정 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#5F7A68]">
+                      <span>주거 환경 정서 안정도</span>
+                      <span className="text-[#5F7A68]">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-emerald-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#5F7A68] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#5F7A68]">
+                      <span>사무 공간 집중 효율도</span>
+                      <span className="text-[#5F7A68]">80%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-emerald-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#5F7A68] rounded-full" style={{ width: "80%" }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 pt-1">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#5F7A68]">
+                      <span>현관문 외부 탁기 차단율</span>
+                      <span className="text-[#5F7A68]">85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-emerald-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#5F7A68] rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#5F7A68]">
+                      <span>가택 재물 창고 활성화</span>
+                      <span className="text-[#5F7A68]">85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-emerald-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#5F7A68] rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 개선된 풍수 조견표 */}
+              <span className="font-bold text-xs text-[#5F7A68] block pt-2">🔑 공간별 상세 풍수 가이드</span>
               <div className="border border-emerald-100 rounded-xl overflow-hidden shadow-sm">
-                <table className="w-full text-[10px] text-left border-collapse">
+                <table className="w-full text-[9px] text-left border-collapse">
                   <thead>
                     <tr className="bg-emerald-50 text-emerald-800 font-bold border-b border-emerald-100">
-                      <th className="p-2.5">대상 공간</th>
-                      <th className="p-2.5">풍수 처방 및 배치</th>
-                      <th className="p-2.5">개운 기대 효과</th>
+                      <th className="p-2">대상 공간</th>
+                      <th className="p-2 text-center">풍수 처방 및 배치</th>
+                      <th className="p-2 text-center">권장 컬러</th>
+                      <th className="p-2">풍수 조율 및 개운 효과</th>
                     </tr>
                   </thead>
                   <tbody className="text-gray-600 font-light">
                     <tr className="border-b border-emerald-100/50">
-                      <td className="p-2.5 font-semibold text-emerald-950">🛏️ 침실 (수면실)</td>
-                      <td className="p-2.5">북쪽으로 베개 배치, 네이비 베개 커버</td>
-                      <td className="p-2.5">수면 중 상열감 진정 및 뇌 기능 안녕</td>
+                      <td className="p-2 font-semibold text-emerald-950">🛏️ 침실 (수면방)</td>
+                      <td className="p-2 text-center">북쪽 배개 배치</td>
+                      <td className="p-2 text-center">네이비, 딥그레이</td>
+                      <td className="p-2">뇌의 상열감을 내리고 깊은 숙면과 면역력을 회복함</td>
                     </tr>
                     <tr className="border-b border-emerald-100/50">
-                      <td className="p-2.5 font-semibold text-emerald-950">🖥️ 업무 책상 (사무실)</td>
-                      <td className="p-2.5">책상 우측에 스틸 문종 또는 금속 펜꽂이</td>
-                      <td className="p-2.5">업무 중 고도의 집중력 및 아이디어 계약 활성화</td>
+                      <td className="p-2 font-semibold text-emerald-950">🖥️ 업무 책상 (사재)</td>
+                      <td className="p-2 text-center">우측 메탈 펜꽂이 배치</td>
+                      <td className="p-2 text-center">실버, 화이트</td>
+                      <td className="p-2">금(金)의 기류를 활성화해 고도의 판단력과 아이디어 제고</td>
                     </tr>
                     <tr>
-                      <td className="p-2.5 font-semibold text-emerald-950">🚪 현관 (출입구)</td>
-                      <td className="p-2.5">붉은색 소품 배제, 청결하고 밝은 매트 배치</td>
-                      <td className="p-2.5">외부의 나쁜 살기(殺氣) 방어 및 재물운 보존</td>
+                      <td className="p-2 font-semibold text-emerald-950">🚪 현관 (출입구)</td>
+                      <td className="p-2 text-center">종 배치, 청결 매트</td>
+                      <td className="p-2 text-center">베이지, 그린</td>
+                      <td className="p-2">외부의 탁기와 마찰 살기를 맑은 소리로 방어하고 재물 흡수</td>
                     </tr>
                   </tbody>
                 </table>
+              </div>
+
+              {/* 3열 수칙 카드 */}
+              <div className="grid grid-cols-3 gap-3 pt-2">
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-center shadow-inner">
+                  <span className="text-xl block mb-1">🚪</span>
+                  <span className="font-bold text-[#5F7A68] text-[10px] block">현관 정돈</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">출입구에 쓰레기 및 신발 방치를 금해 운기 순환을 기름</p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-center shadow-inner">
+                  <span className="text-xl block mb-1">🛌</span>
+                  <span className="font-bold text-[#5F7A68] text-[10px] block">침실 안온</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">창문 쪽에 식물을 두어 외부의 과도한 빛 기류를 차단함</p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-center shadow-inner">
+                  <span className="text-xl block mb-1">🖥️</span>
+                  <span className="font-bold text-[#5F7A68] text-[10px] block">서재 메탈화</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">스틸 안경이나 조명 등 쇠의 기운을 학습 공간에 도입</p>
+                </div>
               </div>
             </div>
           </div>,
