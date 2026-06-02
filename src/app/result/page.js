@@ -3601,7 +3601,7 @@ function ResultContent() {
                 동양 역학의 최고 정수인 삼재(三才) 사상에서는 우리의 한 해 성패를 결정짓는 요소를 세 가지로 나눕니다. 첫째는 하늘의 때를 선제적으로 읽어내는 <strong>천시(天時)</strong>이고, 둘째는 내가 딛고 서 있는 대지와 가구, 인테리어 등 공간적 에너지를 조율하는 <strong>지리(地理)</strong>이며, 셋째는 닥쳐올 운명을 알고 나 스스로의 감정을 통제하여 결단력 있게 행동하는 <strong>인화(人和)</strong>입니다. 이 세 가지가 하나로 결합할 때 비로소 위대한 도약과 운명의 전환이 보장됩니다.
               </p>
               <p>
-                본 혜안당 정통 신수비결은 2026년 병오년(丙午年)에 우리를 찾아올 거대한 태양과 용광로의 불꽃 기운을 정밀 진단하여, 의뢰인 ${name}님이 어느 시기에 돛을 활짝 펼쳐 공격적으로 전진하고, 어느 시기에 닻을 내린 채 내실을 기하며 자산을 수호해야 하는지를 천간지지의 역학적 조합으로 풀어낸 고품격 명조 비방서입니다.
+                본 혜안당 정통 신수비결은 2026년 병오년(丙午年)에 우리를 찾아올 거대한 태양과 용광로의 불꽃 기운을 정밀 진단하여, 의뢰인 {name}님이 어느 시기에 돛을 활짝 펼쳐 공격적으로 전진하고, 어느 시기에 닻을 내린 채 내실을 기하며 자산을 수호해야 하는지를 천간지지의 역학적 조합으로 풀어낸 고품격 명조 비방서입니다.
               </p>
               <p className="bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 text-amber-900 font-semibold text-center leading-relaxed">
                 "우매한 자는 닥쳐올 길흉에 일희일비하지만, 지혜로운 자는 다가올 흐름을 미리 파악해 스스로의 기운을 튜닝한다(趨吉避凶)."
@@ -3623,39 +3623,39 @@ function ResultContent() {
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p>
-                의뢰인 ${name}님이 탄생하는 그 순간, 우주 공간을 채웠던 여덟 글자의 명조(命造: 사주 원국) 배치입니다. 명리학에서 사주 원국은 평생에 걸쳐 귀하를 구성하는 <strong>정신적 뼈대이자 유전적인 기질의 기본형</strong>을 상징합니다.
+                의뢰인 {name}님이 탄생하는 그 순간, 우주 공간을 채웠던 여덟 글자의 명조(命造: 사주 원국) 배치입니다. 명리학에서 사주 원국은 평생에 걸쳐 귀하를 구성하는 <strong>정신적 뼈대이자 유전적인 기질의 기본형</strong>을 상징합니다.
               </p>
               
               <div className="grid grid-cols-4 gap-2 text-center font-bold">
                 <div className="bg-[#FAF7F0] p-2.5 rounded border border-[#E2DDD5]/50">
                   <div className="text-[10px] text-gray-400">시주(時柱)</div>
-                  <div className="text-sm text-[#A3845B] mt-1.5">${sajuInfo.hour.stem}${sajuInfo.hour.branch}</div>
-                  <div className="text-[9px] text-gray-500 font-light mt-0.5">${sajuInfo.hour.stemEl}/${sajuInfo.hour.branchEl}</div>
+                  <div className="text-sm text-[#A3845B] mt-1.5">{sajuInfo.hour.stem}{sajuInfo.hour.branch}</div>
+                  <div className="text-[9px] text-gray-500 font-light mt-0.5">{sajuInfo.hour.stemEl}/{sajuInfo.hour.branchEl}</div>
                   <div className="text-[8px] text-gray-400 mt-1.5 font-normal border-t border-gray-200/60 pt-1">노년·자식운</div>
                 </div>
                 <div className="bg-[#FAF7F0] p-2.5 rounded border border-[#E2DDD5]/50 border-2 border-brass">
                   <div className="text-[10px] text-brass">일주(日柱)</div>
-                  <div className="text-sm text-brass mt-1.5">${sajuInfo.day.stem}${sajuInfo.day.branch}</div>
-                  <div className="text-[9px] text-brass font-light mt-0.5">${sajuInfo.day.stemEl}/${sajuInfo.day.branchEl}</div>
+                  <div className="text-sm text-brass mt-1.5">{sajuInfo.day.stem}{sajuInfo.day.branch}</div>
+                  <div className="text-[9px] text-brass font-light mt-0.5">{sajuInfo.day.stemEl}/{sajuInfo.day.branchEl}</div>
                   <div className="text-[8px] text-brass mt-1.5 font-normal border-t border-brass/20 pt-1">중년·배우자궁</div>
                 </div>
                 <div className="bg-[#FAF7F0] p-2.5 rounded border border-[#E2DDD5]/50">
                   <div className="text-[10px] text-gray-400">월주(月柱)</div>
-                  <div className="text-sm text-[#A3845B] mt-1.5">${sajuInfo.month.stem}${sajuInfo.month.branch}</div>
-                  <div className="text-[9px] text-gray-500 font-light mt-0.5">${sajuInfo.month.stemEl}/${sajuInfo.month.branchEl}</div>
+                  <div className="text-sm text-[#A3845B] mt-1.5">{sajuInfo.month.stem}{sajuInfo.month.branch}</div>
+                  <div className="text-[9px] text-gray-500 font-light mt-0.5">{sajuInfo.month.stemEl}/{sajuInfo.month.branchEl}</div>
                   <div className="text-[8px] text-gray-400 mt-1.5 font-normal border-t border-gray-200/60 pt-1">청년·사회운</div>
                 </div>
                 <div className="bg-[#FAF7F0] p-2.5 rounded border border-[#E2DDD5]/50">
                   <div className="text-[10px] text-gray-400">년주(年柱)</div>
-                  <div className="text-sm text-[#A3845B] mt-1.5">${sajuInfo.year.stem}${sajuInfo.year.branch}</div>
-                  <div className="text-[9px] text-gray-500 font-light mt-0.5">${sajuInfo.year.stemEl}/${sajuInfo.year.branchEl}</div>
+                  <div className="text-sm text-[#A3845B] mt-1.5">{sajuInfo.year.stem}{sajuInfo.year.branch}</div>
+                  <div className="text-[9px] text-gray-500 font-light mt-0.5">{sajuInfo.year.stemEl}/{sajuInfo.year.branchEl}</div>
                   <div className="text-[8px] text-gray-400 mt-1.5 font-normal border-t border-gray-200/60 pt-1">초년·조상궁</div>
                 </div>
               </div>
 
               <div className="space-y-3 pt-2">
                 <p>
-                  네 개의 기둥 중에서도 나 자신을 대변하는 <strong>일간(日干: ${sajuInfo.day.stem})</strong>은 나의 정신적 자아와 핵심 가치관을 주도하는 최고 결정권자입니다. 일주(日柱)의 지지(${sajuInfo.day.branch})는 내가 지향하는 내면의 안전지대이자 배우자와 정서적 교감을 나누는 주거 환경입니다.
+                  네 개의 기둥 중에서도 나 자신을 대변하는 <strong>일간(日干: {sajuInfo.day.stem})</strong>은 나의 정신적 자아와 핵심 가치관을 주도하는 최고 결정권자입니다. 일주(日柱)의 지지({sajuInfo.day.branch})는 내가 지향하는 내면의 안전지대이자 배우자와 정서적 교감을 나누는 주거 환경입니다.
                 </p>
                 <p>
                   또한 사회적 활동 영역과 직업적 성취를 보여주는 월주(月柱)는 청년기부터 사회 초년생 시절의 대외적인 명예와 성장의 속도를 지배합니다. 초년과 조상의 기틀을 의미하는 년주(年柱)는 굳건한 뿌리가 되어 귀하의 든든한 보호막이 되어 줍니다.
@@ -3685,7 +3685,7 @@ function ResultContent() {
                 쉽게 말해 대운은 내가 운전해 가야 하는 도로의 포장 상태나 계절적 계절(봄·여름·가을·겨울)과 같으며, 매년 들어오는 세운(歲運)은 그 계절 위에서 날씨 변화처럼 매일 요동치는 비바람과 태양에 비유할 수 있습니다. 내가 달리는 고속도로(대운)가 비포장도로라면 아무리 맑은 날씨의 세운을 만나더라도 속도를 내기 어렵고, 도로 상태가 매끄러운 8차선 아스팔트 대운을 지나고 있다면 일시적으로 태풍이나 눈비(나쁜 세운)가 찾아오더라도 가볍게 이겨내며 안정을 유지할 수 있는 이치입니다.
               </p>
               <p>
-                의뢰인 ${name}님의 현재 10년 대운의 궤적은 2026년 병오년의 맹렬한 불꽃 기류와 만나 인생의 실질적인 전환점과 삶의 우선순위 조정을 강력하게 암시하고 있습니다. 대운의 지지가 나의 사주 균형을 돕는 오행인 수(水)나 금(金) 기운을 다정하게 머금고 있다면 세운의 과도한 화기를 정밀 제어하여 유용한 황동 보검으로 제련해 내는 생애 최고의 번영기가 펼쳐질 것이고, 대운마저 불씨를 자극하는 목(木)이나 화(火) 기류로 치우쳐 있다면 감정적 과열과 돌발 손재수를 방어하는 보수적 수비 전략이 강력하게 요구됩니다.
+                의뢰인 {name}님의 현재 10년 대운의 궤적은 2026년 병오년의 맹렬한 불꽃 기류와 만나 인생의 실질적인 전환점과 삶의 우선순위 조정을 강력하게 암시하고 있습니다. 대운의 지지가 나의 사주 균형을 돕는 오행인 수(水)나 금(金) 기운을 다정하게 머금고 있다면 세운의 과도한 화기를 정밀 제어하여 유용한 황동 보검으로 제련해 내는 생애 최고의 번영기가 펼쳐질 것이고, 대운마저 불씨를 자극하는 목(木)이나 화(火) 기류로 치우쳐 있다면 감정적 과열과 돌발 손재수를 방어하는 보수적 수비 전략이 강력하게 요구됩니다.
               </p>
               <div className="bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 text-center text-[11px] font-semibold text-gray-800">
                 💡 내 인생의 대세 대운을 면밀하게 이해하고, 세운의 기후 변화에 유연하게 옷을 갈아입는 자만이 무모한 질주를 차단하고 다가올 10년의 경제적·신체적 안정을 견고하게 수호할 수 있습니다.
@@ -3726,15 +3726,15 @@ function ResultContent() {
         const dayStemEl = sajuInfo.day.stemEl;
         const dayStem = sajuInfo.day.stem;
         if (dayStemEl === "목") {
-          stemHarmonyDesc = `의뢰인 ${name}님은 청량한 나무(木)의 일간(${dayStem}) 기질을 품고 계십니다. 나무가 병오년의 불꽃(火)을 만나면 자신의 잎과 꽃을 흐드러지게 피워내는 '식상(食傷)'의 작용이 일어납니다. 올해는 창의적인 아이디어가 번뜩이고 표현 능력이 극대화되어 나의 매력과 실력을 세상에 널리 알릴 최고의 기회입니다. 다만, 내 수분이 빠르게 고갈되므로 감정적 번아웃과 불만족(욱하는 감정)을 슬기롭게 다스려야 합니다.`;
+          stemHarmonyDesc = `의뢰인 {name}님은 청량한 나무(木)의 일간({dayStem}) 기질을 품고 계십니다. 나무가 병오년의 불꽃(火)을 만나면 자신의 잎과 꽃을 흐드러지게 피워내는 '식상(食傷)'의 작용이 일어납니다. 올해는 창의적인 아이디어가 번뜩이고 표현 능력이 극대화되어 나의 매력과 실력을 세상에 널리 알릴 최고의 기회입니다. 다만, 내 수분이 빠르게 고갈되므로 감정적 번아웃과 불만족(욱하는 감정)을 슬기롭게 다스려야 합니다.`;
         } else if (dayStemEl === "화") {
-          stemHarmonyDesc = `의뢰인 ${name}님은 태양 혹은 횃불(火)의 일간(${dayStem}) 기질을 지니셨습니다. 내 기운과 동일한 병오년의 거대한 불꽃(火)을 조우하여 '비겁(比劫)'이 극에 달하는 주체적인 해가 됩니다. 자신감과 독립심이 극대화되어 신규 사업, 창업, 혹은 강력한 자립을 도모하려는 에너지가 솟구칩니다. 다만, 강한 자존심끼리 마주쳐 동료, 배우자와 대립하거나 자만으로 손재수를 입기 쉬우니 한 걸음 양보가 운을 살리는 지름길입니다.`;
+          stemHarmonyDesc = `의뢰인 {name}님은 태양 혹은 횃불(火)의 일간({dayStem}) 기질을 지니셨습니다. 내 기운과 동일한 병오년의 거대한 불꽃(火)을 조우하여 '비겁(比劫)'이 극에 달하는 주체적인 해가 됩니다. 자신감과 독립심이 극대화되어 신규 사업, 창업, 혹은 강력한 자립을 도모하려는 에너지가 솟구칩니다. 다만, 강한 자존심끼리 마주쳐 동료, 배우자와 대립하거나 자만으로 손재수를 입기 쉬우니 한 걸음 양보가 운을 살리는 지름길입니다.`;
         } else if (dayStemEl === "토") {
-          stemHarmonyDesc = `의뢰인 ${name}님은 넉넉한 대지(土)의 일간(${dayStem}) 기질을 소유하고 계십니다. 불꽃(火)이 흙을 다정하게 익혀주고 단단히 다져주는 '인성(印星)'의 대단히 길한 기류가 도래합니다. 공부, 학업, 국가 고시, 자격증 취득 등 문서상의 경사가 따르며, 나를 후원해 주는 조력자나 은인(귀인)의 등장이 강력하게 보장되는 은혜롭고 든든한 한 해가 될 것입니다.`;
+          stemHarmonyDesc = `의뢰인 {name}님은 넉넉한 대지(土)의 일간({dayStem}) 기질을 소유하고 계십니다. 불꽃(火)이 흙을 다정하게 익혀주고 단단히 다져주는 '인성(印星)'의 대단히 길한 기류가 도래합니다. 공부, 학업, 국가 고시, 자격증 취득 등 문서상의 경사가 따르며, 나를 후원해 주는 조력자나 은인(귀인)의 등장이 강력하게 보장되는 은혜롭고 든든한 한 해가 될 것입니다.`;
         } else if (dayStemEl === "금") {
-          stemHarmonyDesc = `의뢰인 ${name}님은 단단한 바위나 보석(金)의 일간(${dayStem}) 기질을 타고나셨습니다. 맹렬한 불꽃(火)이 쇠붙이를 제련하고 쓸모 있는 도구로 다듬는 강력한 '관성(官星)'의 해를 지납니다. 직장에서 중책을 맡아 공적 위상이 올라가거나 승진 및 영전의 기회를 얻게 됩니다. 다만 압박감과 책임감이 극에 달해 뼈, 호흡기 계통 건강 관리 및 상사와의 충돌 조절에 만전을 기해야 합니다.`;
+          stemHarmonyDesc = `의뢰인 {name}님은 단단한 바위나 보석(金)의 일간({dayStem}) 기질을 타고나셨습니다. 맹렬한 불꽃(火)이 쇠붙이를 제련하고 쓸모 있는 도구로 다듬는 강력한 '관성(官星)'의 해를 지납니다. 직장에서 중책을 맡아 공적 위상이 올라가거나 승진 및 영전의 기회를 얻게 됩니다. 다만 압박감과 책임감이 극에 달해 뼈, 호흡기 계통 건강 관리 및 상사와의 충돌 조절에 만전을 기해야 합니다.`;
         } else {
-          stemHarmonyDesc = `의뢰인 ${name}님은 깊고 차가운 물(水)의 일간(${dayStem}) 기질을 지니고 태어나셨습니다. 차가운 물줄기가 2026년 병오년의 거대한 화기(火)를 통제하고 가두는 '재성(財星)'의 해가 열립니다. 막혔던 현금 흐름이 트이고 뜻밖의 투자 소득, 연봉 협상 타결, 횡재수 등 경제적 기회가 요동칩니다. 다만 불을 끄느라 내 수분이 소모되므로 건강을 챙기며 에너지를 완급 조절하십시오.`;
+          stemHarmonyDesc = `의뢰인 {name}님은 깊고 차가운 물(水)의 일간({dayStem}) 기질을 지니고 태어나셨습니다. 차가운 물줄기가 2026년 병오년의 거대한 화기(火)를 통제하고 가두는 '재성(財星)'의 해가 열립니다. 막혔던 현금 흐름이 트이고 뜻밖의 투자 소득, 연봉 협상 타결, 횡재수 등 경제적 기회가 요동칩니다. 다만 불을 끄느라 내 수분이 소모되므로 건강을 챙기며 에너지를 완급 조절하십시오.`;
         }
 
         return wrapLock(
@@ -3811,13 +3811,13 @@ function ResultContent() {
                   const percentage = (nyCount / 10) * 100;
                   return (
                     <div key={el} className="flex items-center gap-3 text-xs">
-                      <span className={`w-16 text-center py-0.5 rounded font-bold text-[10px] ${getElementColor(el)}`}>
+                      <span className={`w-16 text-center py-0.5 rounded font-bold text-[10px] {getElementColor(el)}`}>
                         {el} ({nyCount}개)
                       </span>
                       <div className="flex-1 h-2.5 bg-gray-200 rounded-full overflow-hidden">
                         <div 
-                          className={`h-full transition-all duration-500 ${getElementBarColor(el)}`} 
-                          style={{ width: `${percentage}%` }}
+                          className={`h-full transition-all duration-500 {getElementBarColor(el)}`} 
+                          style={{ width: `{percentage}%` }}
                         />
                       </div>
                       <span className="w-8 text-right font-semibold text-gray-500">{Math.round(percentage)}%</span>
@@ -4017,7 +4017,7 @@ function ResultContent() {
               </div>
             </div>
           </div>,
-          `음력 ${m}월 상세 신수비결`
+          `음력 {m}월 상세 신수비결`
         );
       case "ny_wealth_fortune":
         return wrapLock(
@@ -4737,36 +4737,36 @@ function ResultContent() {
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p>
-                의뢰인 ${name}님의 사주 팔자(四柱八字) 원국 구성입니다. 사주는 연(年), 월(月), 일(日), 시(時)의 네 기둥과 여덟 글자로 이루어지며, 나의 타고난 기질과 에너지 흐름을 보여줍니다.
+                의뢰인 {name}님의 사주 팔자(四柱八字) 원국 구성입니다. 사주는 연(年), 월(月), 일(日), 시(時)의 네 기둥과 여덟 글자로 이루어지며, 나의 타고난 기질과 에너지 흐름을 보여줍니다.
               </p>
               <div className="grid grid-cols-4 gap-2 text-center font-bold">
                 <div className="bg-[#FAF7F0] p-2 rounded border border-[#E2DDD5]/50">
                   <div className="text-[10px] text-gray-400">시주(時柱)</div>
-                  <div className="text-sm text-[#A3845B] mt-1">${sajuInfo.hour.stem}${sajuInfo.hour.branch}</div>
-                  <div className="text-[9px] text-gray-500 font-light">${sajuInfo.hour.stemEl}/${sajuInfo.hour.branchEl}</div>
+                  <div className="text-sm text-[#A3845B] mt-1">{sajuInfo.hour.stem}{sajuInfo.hour.branch}</div>
+                  <div className="text-[9px] text-gray-500 font-light">{sajuInfo.hour.stemEl}/{sajuInfo.hour.branchEl}</div>
                   <div className="text-[8px] text-gray-400 mt-1 font-normal">노년·자식운</div>
                 </div>
                 <div className="bg-[#FAF7F0] p-2 rounded border border-[#E2DDD5]/50 border-2 border-brass">
                   <div className="text-[10px] text-brass">일주(日柱)</div>
-                  <div className="text-sm text-brass mt-1">${sajuInfo.day.stem}${sajuInfo.day.branch}</div>
-                  <div className="text-[9px] text-brass font-light">${sajuInfo.day.stemEl}/${sajuInfo.day.branchEl}</div>
+                  <div className="text-sm text-brass mt-1">{sajuInfo.day.stem}{sajuInfo.day.branch}</div>
+                  <div className="text-[9px] text-brass font-light">{sajuInfo.day.stemEl}/{sajuInfo.day.branchEl}</div>
                   <div className="text-[8px] text-brass mt-1 font-normal">중년·배우자궁</div>
                 </div>
                 <div className="bg-[#FAF7F0] p-2 rounded border border-[#E2DDD5]/50">
                   <div className="text-[10px] text-gray-400">월주(月柱)</div>
-                  <div className="text-sm text-[#A3845B] mt-1">${sajuInfo.month.stem}${sajuInfo.month.branch}</div>
-                  <div className="text-[9px] text-gray-500 font-light">${sajuInfo.month.stemEl}/${sajuInfo.month.branchEl}</div>
+                  <div className="text-sm text-[#A3845B] mt-1">{sajuInfo.month.stem}{sajuInfo.month.branch}</div>
+                  <div className="text-[9px] text-gray-500 font-light">{sajuInfo.month.stemEl}/{sajuInfo.month.branchEl}</div>
                   <div className="text-[8px] text-gray-400 mt-1 font-normal">청년·사회운</div>
                 </div>
                 <div className="bg-[#FAF7F0] p-2 rounded border border-[#E2DDD5]/50">
                   <div className="text-[10px] text-gray-400">년주(年柱)</div>
-                  <div className="text-sm text-[#A3845B] mt-1">${sajuInfo.year.stem}${sajuInfo.year.branch}</div>
-                  <div className="text-[9px] text-gray-500 font-light">${sajuInfo.year.stemEl}/${sajuInfo.year.branchEl}</div>
+                  <div className="text-sm text-[#A3845B] mt-1">{sajuInfo.year.stem}{sajuInfo.year.branch}</div>
+                  <div className="text-[9px] text-gray-500 font-light">{sajuInfo.year.stemEl}/{sajuInfo.year.branchEl}</div>
                   <div className="text-[8px] text-gray-400 mt-1 font-normal">초년·조상궁</div>
                 </div>
               </div>
               <p className="border-t border-[#E2DDD5]/60 pt-3">
-                특히 일간(日干: ${sajuInfo.day.stem})은 나 자신을 상징하는 핵심적인 글자이며, 2026년 병오년 세운의 유입에 따라 가장 역동적으로 반응하게 됩니다.
+                특히 일간(日干: {sajuInfo.day.stem})은 나 자신을 상징하는 핵심적인 글자이며, 2026년 병오년 세운의 유입에 따라 가장 역동적으로 반응하게 됩니다.
               </p>
             </div>
           </div>,
@@ -4786,7 +4786,7 @@ function ResultContent() {
                 대운(大運)이란 10년 주기로 변화하는 나의 큰 운명적 환경을 뜻합니다. 매년 들어오는 세운(歲運)은 이 대운이라는 거대한 무대 위에서 춤을 추는 댄서와 같습니다.
               </p>
               <p>
-                의뢰인 ${name}님의 현재 대운 기류는 2026년 병오년의 천지합화(天地合火) 기운과 만나 삶의 우선순위를 재배치하게 만듭니다. 대운의 지지가 화(火) 기운을 지지하느냐, 혹은 제어하느냐에 따라 성공의 속도와 수호의 강도가 결정됩니다.
+                의뢰인 {name}님의 현재 대운 기류는 2026년 병오년의 천지합화(天地合火) 기운과 만나 삶의 우선순위를 재배치하게 만듭니다. 대운의 지지가 화(火) 기운을 지지하느냐, 혹은 제어하느냐에 따라 성공의 속도와 수호의 강도가 결정됩니다.
               </p>
               <div className="bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 text-center text-[11px] font-semibold text-gray-800">
                 💡 올해는 장기적인 커리어 변화를 추진하기 전, 현재 위치에서 대운의 지지적 안정을 확보하는 것이 가장 현명합니다.
@@ -4936,7 +4936,7 @@ function ResultContent() {
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p>
-                의뢰인 ${name}님의 사주 오행 배치를 토대로 제안하는 2026년 경제 활동의 맥락과 방향성입니다.
+                의뢰인 {name}님의 사주 오행 배치를 토대로 제안하는 2026년 경제 활동의 맥락과 방향성입니다.
               </p>
               <div className="border-l-4 border-[#8B221E] pl-4 py-1">
                 <h4 className="font-semibold text-gray-800">성장주보다는 가치주, 공격보다는 방어</h4>
@@ -4962,7 +4962,7 @@ function ResultContent() {
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p>
-                의뢰인 ${name}님의 올해 승진, 이직, 시험 통과 등 명예/커리어 운세의 구체적인 핵심 기간을 짚어드립니다.
+                의뢰인 {name}님의 올해 승진, 이직, 시험 통과 등 명예/커리어 운세의 구체적인 핵심 기간을 짚어드립니다.
               </p>
               <div className="space-y-2 bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60">
                 <p><strong>• 골든 타임 (승진/영전/합격):</strong> 음력 8월(정유월)과 음력 10월(기해월)에 내 신분이 상승하는 귀중한 기회가 들어옵니다.</p>
@@ -5036,7 +5036,7 @@ function ResultContent() {
                 2031년 신해년(辛亥年)은 하늘에 반짝이는 보석인 신금(辛金)과 땅에 유유히 흐르는 큰 물 해수(亥水)가 결합한 금수상생(金水相生)의 해입니다.
               </p>
               <p>
-                명리학적으로 만물이 정화되고 평온함을 얻는 해이며, 의뢰인 ${name}님에게도 지난 5년간의 거친 풍파와 열정이 평화로운 일상과 가정의 안락함으로 치환되는 은혜로운 보상의 해가 될 것입니다.
+                명리학적으로 만물이 정화되고 평온함을 얻는 해이며, 의뢰인 {name}님에게도 지난 5년간의 거친 풍파와 열정이 평화로운 일상과 가정의 안락함으로 치환되는 은혜로운 보상의 해가 될 것입니다.
               </p>
             </div>
           </div>,
