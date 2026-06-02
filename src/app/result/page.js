@@ -3900,32 +3900,133 @@ function ResultContent() {
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">오행 보완 비책</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">부족한 오행을 채우는 생활 습관</h2>
+              <span className="text-xs text-[#A3845B] font-bold block">오행 보완 비책 (五行 補完 秘策)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">부족한 오행을 채우는 생활 밀착 개운법</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                오행의 조화는 단순히 학설에 머무는 것이 아니라, 내가 머무는 공간, 만나는 물질, 일상적인 습관을 통해 즉각적으로 조율될 수 있습니다. 2026년 병오년의 과열된 불꽃을 다스리기 위한 최고의 생활 개운 전략을 제안합니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2026년 병오년(丙午年)의 맹렬한 불꽃 기류 속에서 내 사주 원국을 안정시키기 위해서는 강한 불기운에 의해 증발하기 쉬운 <strong>수(水)</strong> 기운과 녹아내리기 쉬운 <strong>금(金)</strong> 기운을 보완해야 합니다. 오행의 상생 흐름인 <strong>금생수(金生水: 쇠가 물을 맑게 걸러내고 생한다)</strong> 작용을 일상에서 실천하여 운명을 개척하는 최고의 처방입니다.
               </p>
               
-              <div className="grid grid-cols-2 gap-4 mt-4">
-                <div className="border border-[#E2DDD5] bg-[#FAF7F0] p-4 rounded-lg shadow-sm">
-                  <div className="font-bold text-[#5F7A68] text-xs mb-2 border-b border-[#5F7A68]/20 pb-1.5 flex items-center gap-1">🌊 수(水) 기운 생활 밀착 처방</div>
-                  <ul className="space-y-1.5 text-[10px] text-gray-500 font-light">
-                    <li>• <strong>진시(07~09시):</strong> 시원한 공복 냉수 음미</li>
-                    <li>• <strong>해시(21~23시):</strong> 머리를 식히는 정갈한 반신욕</li>
-                    <li>• <strong>풍수방향:</strong> 집안 북쪽에 바다 일러스트 부착</li>
+              <div className="grid grid-cols-2 gap-4">
+                {/* 수 기운 보완 처방 */}
+                <div className="border border-[#D4E2D7] bg-[#F4FAF6] rounded-xl p-5 shadow-sm space-y-3">
+                  <div className="font-bold text-[#2D5A27] text-xs border-b border-[#2D5A27]/20 pb-2 flex items-center gap-1.5">
+                    <span className="text-lg">🌊</span> 수(水) 기운 처방: 지혜와 평온
+                  </div>
+                  
+                  {/* 시각화: 개운 지표 */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] text-[#2D5A27] font-semibold">
+                      <span>정신적 여유 & 충동 억제</span>
+                      <span>88%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-[#E6EFEA] rounded-full overflow-hidden">
+                      <div className="h-full bg-[#2D5A27] rounded-full" style={{ width: "88%" }} />
+                    </div>
+                  </div>
+
+                  <ul className="space-y-2 text-[10px] text-gray-600 font-light pt-2">
+                    <li className="flex items-start gap-1">
+                      <span className="text-[#2D5A27] font-bold">•</span>
+                      <span><strong>개운 시간:</strong> 진시(07~09시) 공복 냉수, 해시(21~23시) 명상 반신욕</span>
+                    </li>
+                    <li className="flex items-start gap-1">
+                      <span className="text-[#2D5A27] font-bold">•</span>
+                      <span><strong>공간 풍수:</strong> 집안 북쪽에 바다/호수 그림 액자나 미니 어항 배치</span>
+                    </li>
+                    <li className="flex items-start gap-1">
+                      <span className="text-[#2D5A27] font-bold">•</span>
+                      <span><strong>행운 스타일:</strong> 블랙, 네이비 계열 의상, 유연한 실크 소재 패션</span>
+                    </li>
+                    <li className="flex items-start gap-1">
+                      <span className="text-[#2D5A27] font-bold">•</span>
+                      <span><strong>보약 식품:</strong> 미역, 다시마 등 해조류, 블랙푸드(검은깨, 검은콩)</span>
+                    </li>
                   </ul>
+                  <p className="text-[9px] text-gray-500 bg-white/70 p-2 rounded border border-[#E2DDD5]/30 leading-normal">
+                    💡 <strong>보충 설명:</strong> 수(水) 기운은 성급한 불길을 잠재우고 내면의 통찰을 깨워줍니다. 감정이 격앙될 때 시원한 물 한 잔을 천천히 음미하는 행동이 즉각적인 개운법입니다.
+                  </p>
                 </div>
-                <div className="border border-[#E2DDD5] bg-[#FAF7F0] p-4 rounded-lg shadow-sm">
-                  <div className="font-bold text-[#A3845B] text-xs mb-2 border-b border-[#A3845B]/20 pb-1.5 flex items-center gap-1">🪙 금(金) 기운 생활 밀착 처방</div>
-                  <ul className="space-y-1.5 text-[10px] text-gray-500 font-light">
-                    <li>• <strong>사시(09~11시):</strong> 펜으로 중요 스케줄 수기 기록</li>
-                    <li>• <strong>신시(15~17시):</strong> 메탈 시계 확인하며 완급 조율</li>
-                    <li>• <strong>풍수방향:</strong> 서재 서쪽에 정돈된 금속 스탠드 배치</li>
+
+                {/* 금 기운 보완 처방 */}
+                <div className="border border-[#E7DCD0] bg-[#FCF9F5] rounded-xl p-5 shadow-sm space-y-3">
+                  <div className="font-bold text-[#A3845B] text-xs border-b border-[#A3845B]/20 pb-2 flex items-center gap-1.5">
+                    <span className="text-lg">🪙</span> 금(金) 기운 처방: 결단과 자산
+                  </div>
+
+                  {/* 시각화: 개운 지표 */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] text-[#A3845B] font-semibold">
+                      <span>현실적 결단 & 자산 보호</span>
+                      <span>92%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-[#F2ECE4] rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "92%" }} />
+                    </div>
+                  </div>
+
+                  <ul className="space-y-2 text-[10px] text-gray-600 font-light pt-2">
+                    <li className="flex items-start gap-1">
+                      <span className="text-[#A3845B] font-bold">•</span>
+                      <span><strong>개운 시간:</strong> 사시(09~11시) 플래너 수기 기록, 신시(15~17시) 완급 조율</span>
+                    </li>
+                    <li className="flex items-start gap-1">
+                      <span className="text-[#A3845B] font-bold">•</span>
+                      <span><strong>공간 풍수:</strong> 서재 서쪽에 정돈된 금속 스탠드나 흰색 석조 소품 배치</span>
+                    </li>
+                    <li className="flex items-start gap-1">
+                      <span className="text-[#A3845B] font-bold">•</span>
+                      <span><strong>행운 스타일:</strong> 화이트, 실버 메탈 시계나 은 반지 악세사리 착용</span>
+                    </li>
+                    <li className="flex items-start gap-1">
+                      <span className="text-[#A3845B] font-bold">•</span>
+                      <span><strong>보약 식품:</strong> 아몬드, 호두 등 견과류, 도라지나 배 등 흰색 식품</span>
+                    </li>
                   </ul>
+                  <p className="text-[9px] text-gray-500 bg-white/70 p-2 rounded border border-[#E2DDD5]/30 leading-normal">
+                    💡 <strong>보충 설명:</strong> 금(金) 기운은 맺고 끊음이 흐려질 때 단호한 판단력을 주고, 불필요하게 돈이 세어 나가는 것을 방어하여 내 지갑과 재물 창고를 튼튼하게 지켜줍니다.
+                  </p>
                 </div>
+              </div>
+
+              {/* 하단 융합 시각적 요약 박스 (금생수 상생 작용) */}
+              <div className="border border-[#E2DDD5] bg-[#FAF8F5] rounded-xl p-5 space-y-3">
+                <h4 className="font-myeongjo text-xs font-bold text-[#8B221E] text-center">
+                  🔑 2026 병오년 수호의 핵심: 금생수(金生水) 상생 순환도
+                </h4>
+                
+                <div className="flex items-center justify-around py-2 max-w-sm mx-auto bg-white rounded-lg border border-[#E2DDD5]/60 shadow-inner">
+                  <div className="flex flex-col items-center">
+                    <div className="w-10 h-10 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center font-bold text-xs text-gray-800 shadow-sm">金 (금)</div>
+                    <span className="text-[8px] text-gray-500 mt-1">냉철한 결단</span>
+                  </div>
+                  
+                  <div className="flex flex-col items-center">
+                    <span className="text-gray-400 font-bold text-sm">➔</span>
+                    <span className="text-[7px] text-[#8B221E] font-semibold bg-red-50 px-1 rounded border border-red-200">금생수 (상생)</span>
+                  </div>
+
+                  <div className="flex flex-col items-center">
+                    <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center font-bold text-xs text-blue-900 shadow-sm">水 (수)</div>
+                    <span className="text-[8px] text-blue-600 mt-1">유연한 수용</span>
+                  </div>
+
+                  <div className="flex flex-col items-center">
+                    <span className="text-gray-400 font-bold text-sm">➔</span>
+                    <span className="text-[7px] text-green-700 font-semibold bg-green-50 px-1 rounded border border-green-200">화기 제어 (안정)</span>
+                  </div>
+
+                  <div className="flex flex-col items-center">
+                    <div className="w-10 h-10 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center font-bold text-xs text-amber-900 shadow-sm">平 (평)</div>
+                    <span className="text-[8px] text-amber-700 mt-1">신년 균형 회복</span>
+                  </div>
+                </div>
+
+                <p className="text-[10px] text-gray-500 leading-relaxed text-center font-light pt-1">
+                  결단(金)이 바로 서야 지혜(水)가 맑아지고, 비로소 세운의 격렬한 불기운(火)을 지혜롭게 조율하여 **안정적인 부와 명예**를 성취할 수 있습니다.
+                </p>
               </div>
             </div>
           </div>,
