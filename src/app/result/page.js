@@ -4960,17 +4960,69 @@ function ResultContent() {
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">가을철 기류 전략</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">음력 7월~9월 계절별 행동 전략</h2>
+              <span className="text-xs text-[#A3845B] font-bold block">가을철 기류 전략 (음력 7~9월)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">결실의 수확, 팽창을 멈추고 현금화하는 황금기</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                가을은 신유술(申酉戌) 금(金)의 기운이 들어와 타오르던 열기를 가라앉히고 실질적인 열매(결실)를 수확하는 황금기입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                가을철(음력 7월~9월)은 신유술(申酉戌) 금(金)의 기운이 지배하여 만물의 성장을 매듭짓고 단단한 결실을 영그는 수축의 시기입니다. 그동안 벌려놓았던 일들이 매끄러운 계약이나 성과로 나타나는 최고의 골든타임입니다. 새로운 투자보다는 수확한 결과를 안전자산으로 지키는 지혜가 빛을 발하게 될 것입니다.
               </p>
-              <p>
-                그동안 밀어붙였던 일들이 결실을 맺거나 문서운, 계약운이 대단히 유리하게 작용합니다. 이직이나 연봉 협상, 자산의 실질적 투자 등은 이 가을의 정밀한 타이밍을 공략해야 가장 큰 이득을 취할 수 있습니다.
-              </p>
+              
+              {/* 시각화: 가을철 기류 지수 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 가을철 기류 전략 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>수확 및 결실 완성도</span>
+                      <span className="text-[#8A6F4C]">85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>문서 및 계약 성취도</span>
+                      <span className="text-[#8A6F4C]">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 pt-1">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-gray-500">
+                      <span>안정적 투자 지향성</span>
+                      <span className="text-[#A3845B]">75%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#8A6F4C] rounded-full" style={{ width: "75%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-gray-500">
+                      <span>과열 기류 제어도</span>
+                      <span className="text-[#A3845B]">80%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#8A6F4C] rounded-full" style={{ width: "80%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 실천 가이드 */}
+              <div className="border border-[#E2DDD5] rounded-xl p-4 bg-[#FAF7F0]/30 text-justify space-y-2">
+                <span className="font-bold text-xs text-[#8A6F4C] block">🧭 가을철 3대 실천 가이드</span>
+                <ul className="space-y-1.5 text-[10px] text-gray-600 font-light">
+                  <li>• <strong>음력 7월 (임신월):</strong> 봄과 여름철 벌여온 업무나 프로젝트의 중간 성과를 철저히 검토하고, 문서상의 법적/절차적 미비점을 수정 및 보강하십시오.</li>
+                  <li>• <strong>음력 8월 (계유월):</strong> 명리학적 금(金) 기운의 조력으로 귀인이 돕는 시기입니다. 이직, 연봉 협상, 중대 계약 진행 시 적극적으로 권리를 주장하십시오.</li>
+                  <li>• <strong>음력 9월 (갑술월):</strong> 수확한 재물이나 성과를 성급하게 재투자하지 마십시오. 이익을 확실하게 현금화하고 겨울의 동결기를 준비하는 자산 수렴 단계입니다.</li>
+                </ul>
+              </div>
             </div>
           </div>,
           "가을철 계절적 세부 기운과 전략"
@@ -5324,17 +5376,69 @@ function ResultContent() {
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">가을철 기류 전략</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">음력 7월~9월 계절별 행동 전략</h2>
+              <span className="text-xs text-[#A3845B] font-bold block">가을철 기류 전략 (음력 7~9월)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">결실의 수확, 팽창을 멈추고 현금화하는 황금기</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                가을은 신유술(申酉戌) 금(金)의 기운이 들어와 타오르던 열기를 가라앉히고 실질적인 열매(결실)를 수확하는 황금기입니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                가을철(음력 7월~9월)은 신유술(申酉戌) 금(金)의 기운이 지배하여 만물의 성장을 매듭짓고 단단한 결실을 영그는 수축의 시기입니다. 그동안 벌려놓았던 일들이 매끄러운 계약이나 성과로 나타나는 최고의 골든타임입니다. 새로운 투자보다는 수확한 결과를 안전자산으로 지키는 지혜가 빛을 발하게 될 것입니다.
               </p>
-              <p>
-                그동안 밀어붙였던 일들이 결실을 맺거나 문서운, 계약운이 대단히 유리하게 작용합니다. 이직이나 연봉 협상, 자산의 실질적 투자 등은 이 가을의 정밀한 타이밍을 공략해야 가장 큰 이득을 취할 수 있습니다.
-              </p>
+              
+              {/* 시각화: 가을철 기류 지수 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 가을철 기류 전략 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>수확 및 결실 완성도</span>
+                      <span className="text-[#8A6F4C]">85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>문서 및 계약 성취도</span>
+                      <span className="text-[#8A6F4C]">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 pt-1">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-gray-500">
+                      <span>안정적 투자 지향성</span>
+                      <span className="text-[#A3845B]">75%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#8A6F4C] rounded-full" style={{ width: "75%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-gray-500">
+                      <span>과열 기류 제어도</span>
+                      <span className="text-[#A3845B]">80%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#8A6F4C] rounded-full" style={{ width: "80%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 실천 가이드 */}
+              <div className="border border-[#E2DDD5] rounded-xl p-4 bg-[#FAF7F0]/30 text-justify space-y-2">
+                <span className="font-bold text-xs text-[#8A6F4C] block">🧭 가을철 3대 실천 가이드</span>
+                <ul className="space-y-1.5 text-[10px] text-gray-600 font-light">
+                  <li>• <strong>음력 7월 (임신월):</strong> 봄과 여름철 벌여온 업무나 프로젝트의 중간 성과를 철저히 검토하고, 문서상의 법적/절차적 미비점을 수정 및 보강하십시오.</li>
+                  <li>• <strong>음력 8월 (계유월):</strong> 명리학적 금(金) 기운의 조력으로 귀인이 돕는 시기입니다. 이직, 연봉 협상, 중대 계약 진행 시 적극적으로 권리를 주장하십시오.</li>
+                  <li>• <strong>음력 9월 (갑술월):</strong> 수확한 재물이나 성과를 성급하게 재투자하지 마십시오. 이익을 확실하게 현금화하고 겨울의 동결기를 준비하는 자산 수렴 단계입니다.</li>
+                </ul>
+              </div>
             </div>
           </div>,
           "가을철 계절적 세부 기운과 전략"
