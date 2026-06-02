@@ -3728,10 +3728,10 @@ function ResultContent() {
         const dayStem = sajuInfo.day.stem;
         
         if (dayStemEl === "목") {
-          stemHarmonyDesc = `의뢰인 ${name}님은 청량한 나무(木)의 일간(${dayStem}) 기질을 품고 계십니다. 나무가 병오년의 불꽃(화)을 만나면 자신의 잎과 꽃을 흐드러지게 피워내는 '식상(食傷)'의 작용이 일어납니다. 올해는 창의적인 아이디어가 번뜩이고 표현 능력이 극대화되어 나의 매력과 실력을 세상에 널리 알릴 최고의 기회입니다. 다만, 내 수분이 빠르게 고갈되므로 감정적 번아웃 and 불만족(욱하는 감정)을 슬기롭게 다스려야 합니다.`;
+          stemHarmonyDesc = `의뢰인 ${name}님은 청량한 나무(木)의 일간(${dayStem}) 기질을 품고 계십니다. 나무가 병오년의 불꽃(화)을 만나면 자신의 잎과 꽃을 흐드러지게 피워내는 '식상(食傷)'의 작용이 일어납니다. 올해는 창의적인 아이디어가 번뜩이고 표현 능력이 극대화되어 나의 매력과 실력을 세상에 널리 알릴 최고의 기회입니다. 새로운 프로젝트의 기획이나 예술적 창작, 그리고 대외적인 마케팅 활동에서 누구보다 눈부신 두각을 나타내게 될 것입니다. 다만, 불이 맹렬해질수록 내 본연의 수분이 빠르게 고갈되므로 감정적 번아웃과 불만족(욱하는 감정)을 슬기롭게 다스려야 합니다. 특히 대인 관계에서 자존심을 앞세우기보다 한 템포 물러서서 상대의 의견을 경청하는 유연성이 올 한 해의 성패를 가를 것입니다.`;
           relationGraph = (
             <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
-              <div className="px-3 py-1 bg-[#5F7A68] text-white rounded font-bold text-xs shadow-sm">나 (${dayStem}木)</div>
+              <div className="px-3 py-1 bg-[#5F7A68] text-white rounded font-bold text-xs shadow-sm">나 ({dayStem}木)</div>
               <span className="text-[#A3845B] font-bold text-sm">➔</span>
               <div className="px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded text-[9px] font-semibold">목생화 (식상·발산)</div>
               <span className="text-[#A3845B] font-bold text-sm">➔</span>
@@ -3739,10 +3739,10 @@ function ResultContent() {
             </div>
           );
         } else if (dayStemEl === "화") {
-          stemHarmonyDesc = `의뢰인 ${name}님은 태양 혹은 횃불(화)의 일간(${dayStem}) 기질을 지니셨습니다. 내 기운과 동일한 병오년의 거대한 불꽃(화)을 조우하여 '비겁(比劫)'이 극에 달하는 주체적인 해가 됩니다. 자신감과 독립심이 극대화되어 신규 사업, 창업, 혹은 강력한 자립을 도모하려는 에너지가 솟구칩니다. 다만, 강한 자존심끼리 마주쳐 동료, 배우자와 대립하거나 자만으로 손재수를 입기 쉬우니 한 걸음 양보가 운을 살리는 지름길입니다.`;
+          stemHarmonyDesc = `의뢰인 ${name}님은 태양 혹은 횃불(화)의 일간(${dayStem}) 기질을 지니셨습니다. 내 기운과 동일한 병오년의 거대한 불꽃(화)을 조우하여 '비겁(比劫)'이 극에 달하는 주체적인 해가 됩니다. 자신감과 독립심이 극대화되어 신규 사업, 창업, 혹은 강력한 자립을 도모하려는 에너지가 솟구칩니다. 남의 눈치를 보지 않고 오롯이 내 주도하에 판을 짜고 리드할 수 있는 최적의 시기입니다. 다만, 강한 자존심끼리 마주쳐 동료, 배우자와 대립하거나 자만으로 손재수를 입기 쉬우니 한 걸음 양보가 운을 살리는 지름길입니다. 주변 사람들과의 공생을 먼저 고려하고, 지나친 확장을 경계하는 신중함이야말로 솟구치는 불길을 황금으로 바꾸는 연쇠가 될 것입니다.`;
           relationGraph = (
             <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
-              <div className="px-3 py-1 bg-red-500 text-white rounded font-bold text-xs shadow-sm">나 (${dayStem}火)</div>
+              <div className="px-3 py-1 bg-red-500 text-white rounded font-bold text-xs shadow-sm">나 ({dayStem}火)</div>
               <span className="text-[#A3845B] font-bold text-sm">➔</span>
               <div className="px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded text-[9px] font-semibold">비겁중중 (경쟁·자립)</div>
               <span className="text-[#A3845B] font-bold text-sm">➔</span>
@@ -3750,10 +3750,10 @@ function ResultContent() {
             </div>
           );
         } else if (dayStemEl === "토") {
-          stemHarmonyDesc = `의뢰인 ${name}님은 넉넉한 대지(토)의 일간(${dayStem}) 기질을 소유하고 계십니다. 불꽃(화)이 흙을 다정하게 익혀주고 단단히 다져주는 '인성(印星)'의 대단히 길한 기류가 도래합니다. 공부, 학업, 국가 고시, 자격증 취득 등 문서상의 경사가 따르며, 나를 후원해 주는 조력자나 은인(귀인)의 등장이 강력하게 보장되는 은혜롭고 든든한 한 해가 될 것입니다.`;
+          stemHarmonyDesc = `의뢰인 ${name}님은 넉넉한 대지(토)의 일간(${dayStem}) 기질을 소유하고 계십니다. 불꽃(화)이 흙을 다정하게 익혀주고 단단히 다져주는 '인성(印星)'의 대단히 길한 기류가 도래합니다. 공부, 학업, 국가 고시, 자격증 취득 등 문서상의 경사가 따르며, 나를 후원해 주는 조력자나 은인(귀인)의 등장이 강력하게 보장되는 은혜롭고 든든한 한 해가 될 것입니다. 인생의 중요한 계약서 도장을 찍거나, 부동산 및 문서 형태의 자산을 확보하는 데 최고의 타이밍입니다. 다만, 들어오는 기운이 지나치게 강해지면 스스로 안일함에 빠지거나 행동하지 않고 생각만 많아지는 부작용이 생길 수 있으니, 계획을 세웠다면 지체 없이 실천으로 옮기는 기동력을 발휘하십시오.`;
           relationGraph = (
             <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
-              <div className="px-3 py-1 bg-[#A3845B] text-white rounded font-bold text-xs shadow-sm">나 (${dayStem}土)</div>
+              <div className="px-3 py-1 bg-[#A3845B] text-white rounded font-bold text-xs shadow-sm">나 ({dayStem}土)</div>
               <span className="text-[#A3845B] font-bold text-sm">⇠</span>
               <div className="px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded text-[9px] font-semibold">화생토 (인성·후원)</div>
               <span className="text-[#A3845B] font-bold text-sm">⇠</span>
@@ -3761,10 +3761,10 @@ function ResultContent() {
             </div>
           );
         } else if (dayStemEl === "금") {
-          stemHarmonyDesc = `의뢰인 ${name}님은 단단한 바위나 보석(금)의 일간(${dayStem}) 기질을 타고나셨습니다. 맹렬한 불꽃(화)이 쇠붙이를 제련하고 쓸모 있는 도구로 다듬는 강력한 '관성(官星)'의 해를 지납니다. 직장에서 중책을 맡아 공적 위상이 올라가거나 승진 및 영전의 기회를 얻게 됩니다. 다만 압박감과 책임감이 극에 달해 뼈, 호흡기 계통 건강 관리 및 상사와의 충돌 조절에 만전을 기해야 합니다.`;
+          stemHarmonyDesc = `의뢰인 ${name}님은 단단한 바위나 보석(금)의 일간(${dayStem}) 기질을 타고나셨습니다. 맹렬한 불꽃(화)이 쇠붙이를 제련하고 쓸모 있는 도구로 다듬는 강력한 '관성(官星)'의 해를 지납니다. 직장에서 중책을 맡아 공적 위상이 올라가거나 승진 및 영전의 기회를 얻게 됩니다. 나의 명예와 신용도가 크게 올라가 주변의 존경을 받는 귀한 시기입니다. 다만 압박감과 책임감이 극에 달해 뼈, 호흡기 계통 건강 관리 및 상사와의 충돌 조절에 만전을 기해야 합니다. 지나친 완벽주의로 스스로를 옥죄기 쉬우니, 일과 휴식의 균형을 엄격하게 관리하고 사소한 실수에는 관대해지는 너그러운 마음가짐이 절대적으로 요구됩니다.`;
           relationGraph = (
             <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
-              <div className="px-3 py-1 bg-gray-400 text-gray-900 rounded font-bold text-xs shadow-sm">나 (${dayStem}金)</div>
+              <div className="px-3 py-1 bg-gray-400 text-gray-900 rounded font-bold text-xs shadow-sm">나 ({dayStem}金)</div>
               <span className="text-[#A3845B] font-bold text-sm">⇠</span>
               <div className="px-2 py-0.5 bg-red-100 text-red-950 border border-red-300 rounded text-[9px] font-semibold">화극금 (관성·제련)</div>
               <span className="text-[#A3845B] font-bold text-sm">⇠</span>
@@ -3772,10 +3772,10 @@ function ResultContent() {
             </div>
           );
         } else {
-          stemHarmonyDesc = `의뢰인 ${name}님은 깊고 차가운 물(수)의 일간(${dayStem}) 기질을 지니고 태어나셨습니다. 차가운 물줄기가 2026년 병오년의 거대한 화기(화)를 통제하고 가두는 '재성(財星)'의 해가 열립니다. 막혔던 현금 흐름이 트이고 투자 소득, 연봉 협상 타결, 횡재수 등 경제적 기회가 요동칩니다. 다만 불을 끄느라 내 수분이 소모되므로 건강을 챙기며 에너지를 완급 조절하십시오.`;
+          stemHarmonyDesc = `의뢰인 ${name}님은 깊고 차가운 물(수)의 일간(${dayStem}) 기질을 지니고 태어나셨습니다. 차가운 물줄기가 2026년 병오년의 거대한 화기(화)를 통제하고 가두는 '재성(財星)'의 해가 열립니다. 막혔던 현금 흐름이 트이고 투자 소득, 연봉 협상 타결, 횡재수 등 경제적 기회가 요동칩니다. 내 노력의 결실이 눈에 보이는 성과물로 뚜렷하게 환원되는 가장 역동적인 한 해가 될 것입니다. 다만 불을 끄느라 내 수분이 소모되므로 건강을 챙기며 에너지를 완급 조절하십시오. 급격하게 늘어나는 지출이나 감정적 소비를 통제하고, 안정적인 저축 비중을 늘려야 연말에 새어나가는 자금 없이 든든한 금고를 지킬 수 있습니다.`;
           relationGraph = (
             <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
-              <div className="px-3 py-1 bg-gray-800 text-white rounded font-bold text-xs shadow-sm">나 (${dayStem}水)</div>
+              <div className="px-3 py-1 bg-gray-800 text-white rounded font-bold text-xs shadow-sm">나 ({dayStem}水)</div>
               <span className="text-[#A3845B] font-bold text-sm">➔</span>
               <div className="px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded text-[9px] font-semibold">수극화 (재성·획득)</div>
               <span className="text-[#A3845B] font-bold text-sm">➔</span>
