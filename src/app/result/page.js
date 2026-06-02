@@ -4037,54 +4037,122 @@ function ResultContent() {
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">건강 수호 보감</span>
+              <span className="text-xs text-[#A3845B] font-bold block">건강 수호 보감 (健康 守護 寶鑑)</span>
               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">세운 기류 변화에 따른 신년 건강 처방</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                황제내경(黃帝內經)의 운기학에 따르면, 2026년 병오년은 강력한 불의 세력이 기승을 부려 우리 신체 내부의 <strong>심장(심혈관계), 소장, 그리고 안구 부위의 열감을 자극</strong>하고, 상대적으로 호흡기계(폐, 기관지) 및 신장(신묘계)을 건조하게 메말리는 한 해가 됩니다.
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                동양 의학의 원전인 황제내경(黃帝內經) 운기학에 따르면, 2026년 병오년은 강력한 불의 세력이 기승을 부려 우리 신체 내부의 <strong>심장(심혈관계), 소장, 그리고 안구 부위의 열감을 강하게 자극</strong>하게 됩니다. 상대적으로 화기(火氣)에 의해 수분과 금속 기운이 증발하면서 <strong>호흡기계(폐/기관지) 및 비뇨기계(신장/방광)가 건조하게 메마르는 리스크</strong>가 유독 높으므로 이에 대한 선제적 방어가 필수적입니다.
               </p>
               
-              <div className="space-y-3 bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 my-4 text-[10px] shadow-sm">
-                <div className="flex justify-between items-center border-b border-gray-200/50 pb-1.5">
-                  <span className="font-semibold text-gray-700 flex items-center gap-1">❤️ 심혈관계 (심장/혈압)</span>
-                  <div className="flex gap-0.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-                    <span className="ml-1 text-[8px] font-bold text-red-500">과열 (80%)</span>
+              {/* 장부별 건강 적신호 정밀 진단 카드 */}
+              <div className="space-y-4">
+                {/* 심혈관계 카드 */}
+                <div className="border border-red-100 bg-red-50/30 rounded-xl p-4 shadow-sm space-y-3">
+                  <div className="flex justify-between items-center border-b border-red-100/70 pb-2">
+                    <span className="font-bold text-red-900 flex items-center gap-1.5 text-xs">
+                      <span>❤️</span> 심혈관계 (심장 / 혈압 / 혈액순환)
+                    </span>
+                    <span className="text-[9px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold">⚠️ 과열·위험 상태</span>
+                  </div>
+                  
+                  {/* 시각화: 지표 바 */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[8px] text-red-700 font-semibold">
+                      <span>심장 열감 및 자율신경 압박도</span>
+                      <span>80% (위험)</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-red-100/60 rounded-full overflow-hidden">
+                      <div className="h-full bg-red-500 rounded-full" style={{ width: "80%" }} />
+                    </div>
+                  </div>
+                  
+                  <p className="text-[10px] text-gray-600 font-light leading-relaxed">
+                    강렬한 세운의 화기가 혈압 상승 및 상열감을 부추깁니다. 평소 두통이 잦거나 안구가 쉽게 충혈되는 증상이 생기며, 자율신경계 과열로 인한 가슴 두근거림이나 불면 증상이 찾아올 수 있으니 흥분과 과로를 피해야 합니다.
+                  </p>
+                  <div className="text-[9px] text-[#8B221E] font-medium bg-white/80 p-2 rounded border border-red-200/50">
+                    💡 <strong>실천 요령:</strong> 매운 자극성 음식과 음주를 제한하고, 하루 10분씩 뇌를 식히는 냉각 호흡 및 명상을 실천해 열감을 내려야 합니다.
                   </div>
                 </div>
-                <div className="flex justify-between items-center border-b border-gray-200/50 pb-1.5">
-                  <span className="font-semibold text-gray-700 flex items-center gap-1">🤍 호흡기계 (폐/기관지)</span>
-                  <div className="flex gap-0.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-                    <span className="ml-1 text-[8px] font-bold text-yellow-600">건조 (60%)</span>
+
+                {/* 호흡기계 카드 */}
+                <div className="border border-amber-100 bg-amber-50/20 rounded-xl p-4 shadow-sm space-y-3">
+                  <div className="flex justify-between items-center border-b border-amber-100/70 pb-2">
+                    <span className="font-bold text-amber-900 flex items-center gap-1.5 text-xs">
+                      <span>🤍</span> 호흡기계 (폐 / 기관지 / 피부 건조)
+                    </span>
+                    <span className="text-[9px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold">⚠️ 수분 증발·주의</span>
+                  </div>
+
+                  {/* 시각화: 지표 바 */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[8px] text-amber-800 font-semibold">
+                      <span>기관지 점막 및 피부 건조도</span>
+                      <span>60% (주의)</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-amber-100/50 rounded-full overflow-hidden">
+                      <div className="h-full bg-amber-500 rounded-full" style={{ width: "60%" }} />
+                    </div>
+                  </div>
+
+                  <p className="text-[10px] text-gray-600 font-light leading-relaxed">
+                    뜨거운 열기가 사주의 금(金) 기운을 녹이면서 기관지 점막과 피부 장벽을 빠르게 메마르게 만듭니다. 원인 모를 마른기침, 목 이물감, 만성적인 인후염 및 피부 가려움증이 쉽게 도질 수 있어 보습 관리가 생명입니다.
+                  </p>
+                  <div className="text-[9px] text-amber-900 font-medium bg-white/80 p-2 rounded border border-amber-200/50">
+                    💡 <strong>실천 요령:</strong> 가습기를 활용해 실내 습도를 50~60%로 고정하고, 점막을 촉촉하게 지켜주는 맥문동이나 오미자차를 수시로 마시면 건조증을 예방할 수 있습니다.
                   </div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold text-gray-700 flex items-center gap-1">🖤 비뇨기계 (신장/비뇨)</span>
-                  <div className="flex gap-0.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-                    <span className="ml-1 text-[8px] font-bold text-blue-500">쇠약 (40%)</span>
+
+                {/* 비뇨기계 카드 */}
+                <div className="border border-blue-100 bg-blue-50/20 rounded-xl p-4 shadow-sm space-y-3">
+                  <div className="flex justify-between items-center border-b border-blue-100/70 pb-2">
+                    <span className="font-bold text-blue-900 flex items-center gap-1.5 text-xs">
+                      <span>🖤</span> 비뇨기계 (신장 / 방광 / 만성 피로)
+                    </span>
+                    <span className="text-[9px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">⚠️ 수기 고갈·쇠약</span>
+                  </div>
+
+                  {/* 시각화: 지표 바 */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[8px] text-blue-800 font-semibold">
+                      <span>신장 필터 기능 및 에너지 쇠약도</span>
+                      <span>40% (약화)</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-blue-100/50 rounded-full overflow-hidden">
+                      <div className="h-full bg-blue-500 rounded-full" style={{ width: "40%" }} />
+                    </div>
+                  </div>
+
+                  <p className="text-[10px] text-gray-600 font-light leading-relaxed">
+                    오행의 물(水) 기운이 세운의 불길을 잡기 위해 과도하게 소모되면서 신장과 방광 기능이 쇠약해집니다. 이로 인해 만성 피로가 유발되고, 아침마다 몸과 얼굴이 자주 부으며 하체 근력과 비뇨계통 에너지가 저하되기 쉽습니다.
+                  </p>
+                  <div className="text-[9px] text-blue-950 font-medium bg-white/80 p-2 rounded border border-blue-200/50">
+                    💡 <strong>실천 요령:</strong> 무리한 야근과 과로를 피하고 충분한 수면 시간을 보장해야 하며, 검은깨, 검은콩 등 짠맛을 지닌 블랙 오행 식품으로 신장의 근본 수기를 보충해야 합니다.
                   </div>
                 </div>
               </div>
 
-              <p className="mt-4">
-                특히 평소에 열이 많거나 땀을 많이 흘리는 체질의 경우 신체 수분이 고갈되어 만성 피로와 피부 건조증, 두통 및 안구건조증이 깊어지기 쉽습니다. 스트레스가 극에 달하면 자율신경계가 과열되어 불면증이나 가슴 두근거림 증상이 발현될 우려가 높으므로 한 템포 쉬어가는 이완법이 강력하게 요구됩니다.
-              </p>
+              {/* 하단: 건강 수호 3대 비책 체크리스트 */}
+              <div className="border border-[#E2DDD5]/60 rounded-xl p-5 bg-[#FAF8F5] shadow-sm space-y-3">
+                <h4 className="font-myeongjo text-xs font-bold text-[#A3845B] border-b border-[#E2DDD5]/50 pb-1.5 flex items-center gap-1.5">
+                  🍀 [신년 건강 수호를 위한 3대 핵심 생활 수칙]
+                </h4>
+                <div className="grid gap-2 text-[10px] text-gray-600 font-light">
+                  <div className="flex gap-2 items-start bg-white p-2.5 rounded border border-[#E2DDD5]/40">
+                    <span className="w-5 h-5 rounded-full bg-[#FAF7F0] text-[#A3845B] border border-[#E2DDD5]/60 flex items-center justify-center font-bold text-[10px] shrink-0">1</span>
+                    <p className="leading-relaxed"><strong>하루 미온수 1.5L 규칙적 수혈:</strong> 차가운 얼음물은 자칫 비위를 상하게 하니 체온과 비슷한 온도의 맑은 물을 매시간 반 컵씩 음용하십시오.</p>
+                  </div>
+                  <div className="flex gap-2 items-start bg-white p-2.5 rounded border border-[#E2DDD5]/40">
+                    <span className="w-5 h-5 rounded-full bg-[#FAF7F0] text-[#A3845B] border border-[#E2DDD5]/60 flex items-center justify-center font-bold text-[10px] shrink-0">2</span>
+                    <p className="leading-relaxed"><strong>야간 족욕 및 반신욕 생활화:</strong> 머리로 솟아오른 뜨거운 기운을 발밑으로 끌어내리는 수승화강(水昇火降) 요법으로 불면증과 안구 건조증을 퇴치하십시오.</p>
+                  </div>
+                  <div className="flex gap-2 items-start bg-white p-2.5 rounded border border-[#E2DDD5]/40">
+                    <span className="w-5 h-5 rounded-full bg-[#FAF7F0] text-[#A3845B] border border-[#E2DDD5]/60 flex items-center justify-center font-bold text-[10px] shrink-0">3</span>
+                    <p className="leading-relaxed"><strong>자연 친화적 흙길 밟기(어싱):</strong> 전자파를 빼주고 지구 대지의 안정적 에너지를 발바닥으로 흡수하여 심혈관계의 압박을 낮추는 최고의 자연 요법입니다.</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>,
           "신년 건강 처방"
