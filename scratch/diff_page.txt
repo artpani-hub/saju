@@ -1,0 +1,914 @@
+﻿diff --git a/src/app/result/page.js b/src/app/result/page.js
+index 59d2e1e..72c049a 100644
+--- a/src/app/result/page.js
++++ b/src/app/result/page.js
+@@ -3669,7 +3669,24 @@ function ResultContent() {
+           "?섎ː??紐낆“ 遺꾩꽍怨??ъ＜ ?먭뎅"
+         );
+ 
+-      case "ny_daewun_flow":
++      case "ny_daewun_flow": {
++        const dayStemElVal = sajuInfo.day.stemEl;
++        let harmonyVal = 70;
++        let stressVal = 60;
++        let opportunityVal = 75;
++
++        if (dayStemElVal === "?? || dayStemElVal === "麗?) {
++          harmonyVal = 85; stressVal = 45; opportunityVal = 90;
++        } else if (dayStemElVal === "湲? || dayStemElVal === "??) {
++          harmonyVal = 75; stressVal = 75; opportunityVal = 80;
++        } else if (dayStemElVal === "?? || dayStemElVal === "??) {
++          harmonyVal = 50; stressVal = 85; opportunityVal = 55;
++        } else if (dayStemElVal === "紐? || dayStemElVal === "??) {
++          harmonyVal = 65; stressVal = 70; opportunityVal = 70;
++        } else {
++          harmonyVal = 80; stressVal = 50; opportunityVal = 75;
++        }
++
+         return wrapLock(
+           <div className="space-y-6 py-4">
+             <div className="text-center space-y-2 mb-8">
+@@ -3677,14 +3694,77 @@ function ResultContent() {
+               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">?대챸??嫄곕???媛뺣Ъ, 10????닿낵 ?좊뀈???듯빀</h2>
+               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+             </div>
++
++            {/* ?꾨━誘몄뾼 ?쒓컖??1: ????몄슫 ?곹샇?묒슜 ?먮꼫吏 ?쒕툕 ?먮쫫??(SVG) */}
++            <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-4">
++              <span className="font-bold text-xs text-[#8A6F4C] block">?? ???鸚㏝걢) &amp; ?몄슫(閭꿴걢) ?먮꼫吏 議고솕 ?쒕툕</span>
++              <div className="relative h-14 bg-gray-50 rounded-lg flex items-center justify-between px-6 border border-gray-100">
++                <div className="flex flex-col text-left">
++                  <span className="text-[9px] text-gray-400">10??二쇨린</span>
++                  <span className="text-xs font-bold text-gray-800">????섍꼍</span>
++                </div>
++                <div className="flex-1 mx-4 h-6 relative">
++                  <svg className="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
++                    <defs>
++                      <linearGradient id="tubeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
++                        <stop offset="0%" stopColor="#A3845B" />
++                        <stop offset="50%" stopColor="#E2DDD5" />
++                        <stop offset="100%" stopColor="#DC2626" />
++                      </linearGradient>
++                    </defs>
++                    <path d="M 0 10 Q 25 2, 50 10 T 100 10" fill="none" stroke="url(#tubeGrad)" strokeWidth="4" strokeLinecap="round" />
++                    <circle cx="50" cy="10" r="4" fill="#8B221E" />
++                  </svg>
++                </div>
++                <div className="flex flex-col text-right">
++                  <span className="text-[9px] text-gray-400">2026 蹂묒삤??/span>
++                  <span className="text-xs font-bold text-red-600">?몄슫 遺덇퐙</span>
++                </div>
++              </div>
++            </div>
++
++            {/* ?꾨━誘몄뾼 ?쒓컖??2: ?좊뀈 ????듯빀 吏??*/}
++            <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl p-5 space-y-3">
++              <span className="font-bold text-xs text-[#8A6F4C] block">?뱤 2026 ?좊뀈 ???議곗쑉 吏??/span>
++              <div className="space-y-2 text-[9px] font-semibold text-gray-700">
++                <div className="space-y-1">
++                  <div className="flex justify-between">
++                    <span>?먮꼫吏 ?듯빀 議고솕??/span>
++                    <span className="text-emerald-700">{harmonyVal}%</span>
++                  </div>
++                  <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
++                    <div className="h-full bg-emerald-600 rounded-full" style={{ width: `${harmonyVal}%` }} />
++                  </div>
++                </div>
++                <div className="space-y-1">
++                  <div className="flex justify-between">
++                    <span>?좊뀈 湲고쉶 ?ъ갑瑜?/span>
++                    <span className="text-blue-700">{opportunityVal}%</span>
++                  </div>
++                  <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
++                    <div className="h-full bg-blue-600 rounded-full" style={{ width: `${opportunityVal}%` }} />
++                  </div>
++                </div>
++                <div className="space-y-1">
++                  <div className="flex justify-between">
++                    <span>湲곕쪟 怨쇱뿴 ?ㅽ듃?덉뒪</span>
++                    <span className="text-red-600">{stressVal}%</span>
++                  </div>
++                  <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
++                    <div className="h-full bg-red-600 rounded-full" style={{ width: `${stressVal}%` }} />
++                  </div>
++                </div>
++              </div>
++            </div>
++
+             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+-              <p>
++              <p className="text-justify font-light">
+                 紐낅━?숈뿉???뷀엳 留먰븯?????鸚㏝걢)?대? '媛묒옄湲?李얠븘?ㅻ뒗 ?꾩껌?섍쾶 醫뗭? ?諛??됱슫'???꾨땲?? 10?꾨쭏???쒗솚?섎ŉ 諛붾뚮뒗 <strong>???몄깮??嫄곕???湲고썑???섍꼍怨?臾대?</strong>瑜??섎??⑸땲??
+               </p>
+-              <p>
++              <p className="text-justify font-light">
+                 ?쎄쾶 留먰빐 ??댁? ?닿? ?댁쟾??媛???섎뒗 ?꾨줈???ъ옣 ?곹깭??怨꾩젅??怨꾩젅(遊꽷룹뿬由꽷룰??꽷룰꺼??怨?媛숈쑝硫? 留ㅻ뀈 ?ㅼ뼱?ㅻ뒗 ?몄슫(閭꿴걢)? 洹?怨꾩젅 ?꾩뿉???좎뵪 蹂?붿쿂??留ㅼ씪 ?붾룞移섎뒗 鍮꾨컮?뚭낵 ?쒖뼇??鍮꾩쑀?????덉뒿?덈떎. ?닿? ?щ━??怨좎냽?꾨줈(???媛 鍮꾪룷?λ룄濡쒕씪硫??꾨Т由?留묒? ?좎뵪???몄슫??留뚮굹?붾씪???띾룄瑜??닿린 ?대졄怨? ?꾨줈 ?곹깭媛 留ㅻ걚?ъ슫 8李⑥꽑 ?꾩뒪?뷀듃 ??댁쓣 吏?섍퀬 ?덈떎硫??쇱떆?곸쑝濡??쒗뭾?대굹 ?덈퉬(?섏걶 ?몄슫)媛 李얠븘?ㅻ뜑?쇰룄 媛蹂띻쾶 ?닿꺼?대ŉ ?덉젙???좎??????덈뒗 ?댁튂?낅땲??
+               </p>
+-              <p>
++              <p className="text-justify font-light">
+                 ?섎ː??{name}?섏쓽 ?꾩옱 10????댁쓽 沅ㅼ쟻? 2026??蹂묒삤?꾩쓽 留밸젹??遺덇퐙 湲곕쪟? 留뚮굹 ?몄깮???ㅼ쭏?곸씤 ?꾪솚?먭낵 ?띠쓽 ?곗꽑?쒖쐞 議곗젙??媛뺣젰?섍쾶 ?붿떆?섍퀬 ?덉뒿?덈떎. ??댁쓽 吏吏媛 ?섏쓽 ?ъ＜ 洹좏삎???뺣뒗 ?ㅽ뻾????麗???湲??? 湲곗슫???ㅼ젙?섍쾶 癒멸툑怨??덈떎硫??몄슫??怨쇰룄???붽린瑜??뺣? ?쒖뼱?섏뿬 ?좎슜???⑸룞 蹂닿??쇰줈 ?쒕젴???대뒗 ?앹븷 理쒓퀬??踰덉쁺湲곌? ?쇱퀜吏?寃껋씠怨? ??대쭏? 遺덉뵪瑜??먭레?섎뒗 紐????대굹 ???? 湲곕쪟濡?移섏슦爾??덈떎硫?媛먯젙??怨쇱뿴怨??뚮컻 ?먯옱?섎? 諛⑹뼱?섎뒗 蹂댁닔???섎퉬 ?꾨왂??媛뺣젰?섍쾶 ?붽뎄?⑸땲??
+               </p>
+               <div className="bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 text-center text-[11px] font-semibold text-gray-800">
+@@ -3694,8 +3774,14 @@ function ResultContent() {
+           </div>,
+           "?앹븷 ????먮쫫怨??몄슫???듯빀 遺꾩꽍"
+         );
++      }
++
++      case "ny_seoun_analysis": {
++        const speedAngle = -180 + (92 / 100) * 180;
++        const rad = speedAngle * Math.PI / 180;
++        const needleX = 100 + 60 * Math.cos(rad);
++        const needleY = 90 + 60 * Math.sin(rad);
+ 
+-      case "ny_seoun_analysis":
+         return wrapLock(
+           <div className="space-y-6 py-4">
+             <div className="text-center space-y-2 mb-8">
+@@ -3703,31 +3789,91 @@ function ResultContent() {
+               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">泥쒖??⑺솕(鸚⒴쑑?덄겓) - ?쒖뼇怨??⑷킅濡쒖쓽 ??룞???쒖궗</h2>
+               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+             </div>
++
++            {/* ?꾨━誘몄뾼 ?쒓컖??1: ?붽린 ?쎌갹???ㅽ뵾?꾨???*/}
++            <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm flex flex-col items-center">
++              <span className="font-bold text-xs text-[#8A6F4C] mb-2">?뵦 2026 蹂묒삤???몄슫 ?붽린(?ユ간) ?쎌갹??/span>
++              <div className="relative w-[180px] h-[105px]">
++                <svg viewBox="0 0 200 110" className="w-full h-full">
++                  <defs>
++                    <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
++                      <stop offset="0%" stopColor="#3B82F6" />
++                      <stop offset="50%" stopColor="#F59E0B" />
++                      <stop offset="100%" stopColor="#EF4444" />
++                    </linearGradient>
++                  </defs>
++                  <path d="M 25 90 A 75 75 0 0 1 175 90" fill="none" stroke="#F3F4F6" strokeWidth="12" strokeLinecap="round" />
++                  <path d="M 25 90 A 75 75 0 0 1 175 90" fill="none" stroke="url(#gaugeGrad)" strokeWidth="12" strokeLinecap="round" strokeDasharray="235" strokeDashoffset="18" />
++                  
++                  <circle cx="100" cy="90" r="5" fill="#1A1A1A" />
++                  <line x1="100" y1="90" x2={needleX} y2={needleY} stroke="#1A1A1A" strokeWidth="2.5" strokeLinecap="round" />
++                  
++                  <text x="100" y="80" textAnchor="middle" fontSize="13" fontWeight="bold" fill="#8B221E">92% 洹밸???/text>
++                  <text x="25" y="105" textAnchor="middle" fontSize="8" fill="#9CA3AF">?덉젙</text>
++                  <text x="175" y="105" textAnchor="middle" fontSize="8" fill="#EF4444">?꾧퀎(?쎌갹)</text>
++                </svg>
++              </div>
++              <p className="text-[9px] text-gray-400 font-light mt-1">
++                * ?ы빐 泥쒖??⑺솕(鸚⒴쑑?덄겓) 湲곗슫???섑빐 ?곗＜???댄뙺李쎈룄媛 ?꾧퀎移섏뿉 ?ㅻ떎???먯븘 諛?媛먯젙??怨쇱뿴?섍린 ?쎌뒿?덈떎.
++              </p>
++            </div>
++
++            {/* ?꾨━誘몄뾼 ?쒓컖??2: 4? 遺꾩빞蹂??좊뀈 ?댁꽭 ?깃툒 移대뱶 */}
++            <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl p-5 space-y-3">
++              <span className="font-bold text-xs text-[#8A6F4C] block">?뱤 2026 遺꾩빞蹂?湲명쓨 ?議?移대뱶</span>
++              <div className="grid grid-cols-4 gap-2 text-center text-[9px] font-bold">
++                <div className="bg-white border border-[#E2DDD5] p-2.5 rounded shadow-sm">
++                  <span className="text-gray-400 block font-normal mb-1">?첌 ?щЪ??/span>
++                  <span className="bg-emerald-50 text-emerald-800 px-1 py-0.5 rounded block">?湲?(鸚㎩릧)</span>
++                </div>
++                <div className="bg-white border border-[#E2DDD5] p-2.5 rounded shadow-sm">
++                  <span className="text-gray-400 block font-normal mb-1">?뮳 吏곸뾽??/span>
++                  <span className="bg-blue-50 text-blue-800 px-1 py-0.5 rounded block">?곸듅 (??</span>
++                </div>
++                <div className="bg-white border border-[#E2DDD5] p-2.5 rounded shadow-sm">
++                  <span className="text-gray-400 block font-normal mb-1">?뙼 嫄닿컯??/span>
++                  <span className="bg-red-50 text-red-800 px-1 py-0.5 rounded block">寃쎄퀬 (??</span>
++                </div>
++                <div className="bg-white border border-[#E2DDD5] p-2.5 rounded shadow-sm">
++                  <span className="text-gray-400 block font-normal mb-1">?쩃 ??몄슫</span>
++                  <span className="bg-amber-50 text-amber-800 px-1 py-0.5 rounded block">議곗쑉 (亮?</span>
++                </div>
++              </div>
++            </div>
++
+             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+               <div className="border-l-4 border-[#8B221E] pl-4 py-1">
+                 <h4 className="font-myeongjo text-sm font-bold text-gray-800">?섎뒛怨??吏瑜?遺됯쾶 ?쒖슦??嫄곕????먮꼫吏</h4>
+                 <p className="text-[11px] text-gray-500 mt-1">泥쒓컙 訝숂겓(?쒖뼇)? 吏吏 ?덄겓(?⑷킅濡?媛 ?쇱쑝?ㅻ뒗 洹밸떒???묎린(?썸간)???덉젙</p>
+               </div>
+-              <p>
++              <p className="text-justify font-light">
+                 2026??蹂묒삤?꾩? ?섎뒛???섑븯怨??덈????쒖뼇?댁옄 留뚮Ъ??鍮꾩텛???쒖닔 遺덇퐙??<strong>蹂묓솕(訝숂겓)</strong>? 吏?곸쓽 嫄곕????⑷킅濡쒖씠???ъ? ?딄퀬 嫄곗튌寃?吏덉＜?섎뒗 以留덉씤 <strong>?ㅽ솕(?덄겓)</strong>媛 ?꾩븘?섎줈 ?섎굹瑜??대（硫??ㅺ??ㅻ뒗 寃⑹젙?곸씤 ?댁엯?덈떎. 紐낅━?숈뿉?쒕뒗 ?댁쿂??泥쒓컙怨?吏吏媛 紐⑤몢 ???? 湲곗슫?쇰줈 媛뺣젰?섍쾶 寃고빀???뺤꽭瑜?<strong>泥쒖??⑺솕(鸚⒴쑑?덄겓)</strong>??移?븯硫? ?곗＜???쎌갹?κ낵 ?댁젙??洹뱁븳???ㅻ떎瑜대뒗 ?쒓린濡??뺤쓽?⑸땲??
+               </p>
+-              <p>
++              <p className="text-justify font-light">
+                 ??湲곕쪟 ?섏뿉?쒕뒗 ???몄긽???쇱씠?꾩궗?댄겢 ?띾룄媛 臾댁꽌?곕━留뚯튂 鍮⑤씪吏묐땲?? 媛먯텛?댁죱???대몢???꾩꽑?대굹 臾듭? 議곗쭅??紐⑥닚?ㅼ씠 ?쒖뼇 ?꾨옒 ?곷굹?쇳븯寃???줈?섎ŉ 媛뺤젣?곸씤 媛쒗쁺怨??뺣━媛 ?⑦뻾?섍퀬, 臾명솕, 湲곗닠, IT ?곗뾽?먯꽌??湲곗〈 ?⑤윭?ㅼ엫???ㅽ쓷?쒕뒗 ?뚭눼???곸떊??遺덇만泥섎읆 踰덉쭛?덈떎. 媛쒖씤 ??떆 洹멸컙 ?듬닃???붾뜕 ?먮┰?ш낵 ?대쭩????컻?섏뿬 ?댁쭅, ?낅┰, ?덈줈??怨듬???鍮꾩쫰?덉뒪???꾩쟾?섍퀬???섎뒗 留덉쓬????룞?깆씠 理쒕?濡??곸듅?섍쾶 ?⑸땲??
+               </p>
+-              <p>
++              <p className="text-justify font-light">
+                 洹몃윭??怨쇰룄???붿뿼? 諛섎뱶??二쇱쐞??臾쇨낵 ?좊? 硫붾쭏瑜닿쾶 ?섍퀬 ?곗쓣 媛萸꾩뿉 李뚮뱾寃??⑸땲?? ?щ━?곸씤 議곌툒?⑥쑝濡??명빐 ?ｋ?瑜?怨꾩빟???꾩옣??李띻굅?? 遺꾨끂瑜?議곗젅?섏? 紐삵빐 ?뚯쨷???몃㎘???쒖썙踰꾨┫ 由ъ뒪?ш? 怨듭〈?섎?濡? ??ㅻⅤ??遺덇만 ?쒓??대뜲?먯꽌 李④????몄닔 媛숈? 移⑤У怨??뺢탳???먭툑 ?섎퉬 ?梨낆쓣 ?몄썙 ?먮뒗 寃껊쭔???ы빐 ?쎌냽??踰덉쁺怨?沅뚯꽭瑜??꾩쟾????寃껋쑝濡?留뚮뱶???쒖븞???듭떖?낅땲??
+               </p>
+             </div>
+           </div>,
+           "蹂묒삤???몄슫 湲곕쪟 珥앺룊"
+         );
+-      case "ny_stem_harmony":
++      }
++
++      case "ny_stem_harmony": {
+         let stemHarmonyDesc = "";
+         let relationGraph = null;
+         const dayStemEl = sajuInfo.day.stemEl;
+         const dayStem = sajuInfo.day.stem;
+         
++        let harmonyPercent = 80;
++        let harmonyText = "?덉젙???듯빀";
++        let cardBg = "from-[#FAF8F5] to-[#EDE8DE]";
++        let badgeColor = "bg-[#A3845B]";
++
+         if (dayStemEl === "紐?) {
++          harmonyPercent = 85; harmonyText = "紐⑹깮??(?ㅺ린 媛쒗솕)"; cardBg = "from-emerald-50/30 to-[#FAF8F5]"; badgeColor = "bg-[#5F7A68]";
+           stemHarmonyDesc = `?섎ː??${name}?섏? 泥?웾???섎Т(?????쇨컙(${dayStem}) 湲곗쭏???덇퀬 怨꾩떗?덈떎. ?섎Т媛 蹂묒삤?꾩쓽 遺덇퐙(????留뚮굹硫??먯떊???롪낵 苑껋쓣 ?먮뱶?ъ?寃??쇱썙?대뒗 '?앹긽(繇잌궥)'???묒슜???쇱뼱?⑸땲?? ?ы빐??李쎌쓽?곸씤 ?꾩씠?붿뼱媛 踰덈쑊?닿퀬 ?쒗쁽 ?λ젰??洹밸??붾릺???섏쓽 留ㅻ젰怨??ㅻ젰???몄긽???먮━ ?뚮┫ 理쒓퀬??湲고쉶?낅땲?? ?덈줈???꾨줈?앺듃??湲고쉷?대굹 ?덉닠??李쎌옉, 洹몃━怨???몄쟻??留덉????쒕룞?먯꽌 ?꾧뎄蹂대떎 ?덈????먭컖???섑??닿쾶 ??寃껋엯?덈떎. ?ㅻ쭔, 遺덉씠 留밸젹?댁쭏?섎줉 ??蹂몄뿰???섎텇??鍮좊Ⅴ寃?怨좉컝?섎?濡?媛먯젙??踰덉븘?껉낵 遺덈쭔議??깊븯??媛먯젙)???ш린濡?쾶 ?ㅼ뒪?ㅼ빞 ?⑸땲?? ?뱁엳 ???愿怨꾩뿉???먯〈?ъ쓣 ?욎꽭?곌린蹂대떎 ???쒗룷 臾쇰윭?쒖꽌 ?곷????섍껄??寃쎌껌?섎뒗 ?좎뿰?깆씠 ?????댁쓽 ?깊뙣瑜?媛瑜?寃껋엯?덈떎.`;
+           relationGraph = (
+             <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
+@@ -3739,6 +3885,7 @@ function ResultContent() {
+             </div>
+           );
+         } else if (dayStemEl === "??) {
++          harmonyPercent = 50; harmonyText = "?붽린?쒓낵 (媛먯젙 怨쇱뿴)"; cardBg = "from-red-50/20 to-[#FAF8F5]"; badgeColor = "bg-red-600";
+           stemHarmonyDesc = `?섎ː??${name}?섏? ?쒖뼇 ?뱀? ?껊텋(?????쇨컙(${dayStem}) 湲곗쭏??吏?덉뀲?듬땲?? ??湲곗슫怨??숈씪??蹂묒삤?꾩쓽 嫄곕???遺덇퐙(????議곗슦?섏뿬 '鍮꾧쾪(驪붷뒲)'??洹뱀뿉 ?ы븯??二쇱껜?곸씤 ?닿? ?⑸땲?? ?먯떊媛먭낵 ?낅┰?ъ씠 洹밸??붾릺???좉퇋 ?ъ뾽, 李쎌뾽, ?뱀? 媛뺣젰???먮┰???꾨え?섎젮???먮꼫吏媛 ?잕뎄移⑸땲?? ?⑥쓽 ?덉튂瑜?蹂댁? ?딄퀬 ?ㅻ’????二쇰룄?섏뿉 ?먯쓣 吏쒓퀬 由щ뱶?????덈뒗 理쒖쟻???쒓린?낅땲?? ?ㅻ쭔, 媛뺥븳 ?먯〈?щ겮由?留덉＜爾??숇즺, 諛곗슦?먯? ?由쏀븯嫄곕굹 ?먮쭔?쇰줈 ?먯옱?섎? ?낃린 ?ъ슦????嫄몄쓬 ?묐낫媛 ?댁쓣 ?대━??吏由꾧만?낅땲?? 二쇰? ?щ엺?ㅺ낵??怨듭깮??癒쇱? 怨좊젮?섍퀬, 吏?섏튇 ?뺤옣??寃쎄퀎?섎뒗 ?좎쨷?⑥씠?쇰쭚濡??잕뎄移섎뒗 遺덇만???⑷툑?쇰줈 諛붽씀???곗뇿媛 ??寃껋엯?덈떎.`;
+           relationGraph = (
+             <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
+@@ -3750,6 +3897,7 @@ function ResultContent() {
+             </div>
+           );
+         } else if (dayStemEl === "??) {
++          harmonyPercent = 90; harmonyText = "?붿깮??(洹???앹“)"; cardBg = "from-[#FAF8F5] to-[#F1ECE1]"; badgeColor = "bg-[#A3845B]";
+           stemHarmonyDesc = `?섎ː??${name}?섏? ?됰꼮???吏(?????쇨컙(${dayStem}) 湲곗쭏???뚯쑀?섍퀬 怨꾩떗?덈떎. 遺덇퐙(?????숈쓣 ?ㅼ젙?섍쾶 ?듯?二쇨퀬 ?⑤떒???ㅼ졇二쇰뒗 '?몄꽦(?경삜)'????⑦엳 湲명븳 湲곕쪟媛 ?꾨옒?⑸땲?? 怨듬?, ?숈뾽, 援?? 怨좎떆, ?먭꺽利?痍⑤뱷 ??臾몄꽌?곸쓽 寃쎌궗媛 ?곕Ⅴ硫? ?섎? ?꾩썝??二쇰뒗 議곕젰?먮굹 ???洹?????깆옣??媛뺣젰?섍쾶 蹂댁옣?섎뒗 ??쒕∼怨??좊뱺?????닿? ??寃껋엯?덈떎. ?몄깮??以묒슂??怨꾩빟???꾩옣??李띻굅?? 遺?숈궛 諛?臾몄꽌 ?뺥깭???먯궛???뺣낫?섎뒗 ??理쒓퀬????대컢?낅땲?? ?ㅻ쭔, ?ㅼ뼱?ㅻ뒗 湲곗슫??吏?섏튂寃?媛뺥빐吏硫??ㅼ뒪濡??덉씪?⑥뿉 鍮좎?嫄곕굹 ?됰룞?섏? ?딄퀬 ?앷컖留?留롮븘吏??遺?묒슜???앷만 ???덉쑝?? 怨꾪쉷???몄썱?ㅻ㈃ 吏泥??놁씠 ?ㅼ쿇?쇰줈 ??린??湲곕룞?μ쓣 諛쒗쐶?섏떗?쒖삤.`;
+           relationGraph = (
+             <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
+@@ -3761,6 +3909,7 @@ function ResultContent() {
+             </div>
+           );
+         } else if (dayStemEl === "湲?) {
++          harmonyPercent = 70; harmonyText = "?붽레湲?(紐낆삁 ?쒕젴)"; cardBg = "from-gray-50 to-[#FAF8F5]"; badgeColor = "bg-gray-400 text-gray-900";
+           stemHarmonyDesc = `?섎ː??${name}?섏? ?⑤떒??諛붿쐞??蹂댁꽍(湲????쇨컙(${dayStem}) 湲곗쭏???怨좊굹?⑥뒿?덈떎. 留밸젹??遺덇퐙(?????좊텤?대? ?쒕젴?섍퀬 ?몃え ?덈뒗 ?꾧뎄濡??ㅻ벉??媛뺣젰??'愿??若섉삜)'???대? 吏?⑸땲?? 吏곸옣?먯꽌 以묒콉??留≪븘 怨듭쟻 ?꾩긽???щ씪媛嫄곕굹 ?뱀쭊 諛??곸쟾??湲고쉶瑜??산쾶 ?⑸땲?? ?섏쓽 紐낆삁? ?좎슜?꾧? ?ш쾶 ?щ씪媛 二쇰???議닿꼍??諛쏅뒗 洹???쒓린?낅땲?? ?ㅻ쭔 ?뺣컯媛먭낵 梨낆엫媛먯씠 洹뱀뿉 ?ы빐 堉? ?명씉湲?怨꾪넻 嫄닿컯 愿由?諛??곸궗???異⑸룎 議곗젅??留뚯쟾??湲고빐???⑸땲?? 吏?섏튇 ?꾨꼍二쇱쓽濡??ㅼ뒪濡쒕? ?μ즲湲??ъ슦?? ?쇨낵 ?댁떇??洹좏삎???꾧꺽?섍쾶 愿由ы븯怨??ъ냼???ㅼ닔?먮뒗 愿??댁????덇렇?ъ슫 留덉쓬媛吏먯씠 ?덈??곸쑝濡??붽뎄?⑸땲??`;
+           relationGraph = (
+             <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
+@@ -3772,6 +3921,7 @@ function ResultContent() {
+             </div>
+           );
+         } else {
++          harmonyPercent = 95; harmonyText = "?섍레??(?щЪ ?곸랬)"; cardBg = "from-slate-50 to-[#FAF8F5]"; badgeColor = "bg-gray-800";
+           stemHarmonyDesc = `?섎ː??${name}?섏? 源딄퀬 李④???臾??????쇨컙(${dayStem}) 湲곗쭏??吏?덇퀬 ?쒖뼱?섏뀲?듬땲?? 李④???臾쇱쨪湲곌? 2026??蹂묒삤?꾩쓽 嫄곕????붽린(??瑜??듭젣?섍퀬 媛?먮뒗 '?ъ꽦(縕→삜)'???닿? ?대┰?덈떎. 留됲삍???꾧툑 ?먮쫫???몄씠怨??ъ옄 ?뚮뱷, ?곕큺 ?묒긽 ?寃? ?≪옱????寃쎌젣??湲고쉶媛 ?붾룞移⑸땲?? ???몃젰??寃곗떎???덉뿉 蹂댁씠???깃낵臾쇰줈 ?쒕졆?섍쾶 ?섏썝?섎뒗 媛????룞?곸씤 ???닿? ??寃껋엯?덈떎. ?ㅻ쭔 遺덉쓣 ?꾨뒓?????섎텇???뚮え?섎?濡?嫄닿컯??梨숆린硫??먮꼫吏瑜??꾧툒 議곗젅?섏떗?쒖삤. 湲됯꺽?섍쾶 ?섏뼱?섎뒗 吏異쒖씠??媛먯젙???뚮퉬瑜??듭젣?섍퀬, ?덉젙?곸씤 ?異?鍮꾩쨷???섎젮???곕쭚???덉뼱?섍????먭툑 ?놁씠 ?좊뱺??湲덇퀬瑜?吏?????덉뒿?덈떎.`;
+           relationGraph = (
+             <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
+@@ -3791,39 +3941,92 @@ function ResultContent() {
+               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">?섏쓽 ?怨좊궃 ?쇨컙怨??몄슫???듯빀</h2>
+               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+             </div>
++
++            {/* ?꾨━誘몄뾼 ?쒓컖??1: 泥쒓컙 ?듯빀 ?쒕꼫吏 釉붾줉??*/}
++            <div className={`bg-gradient-to-br ${cardBg} border-2 border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-3`}>
++              <div className="flex justify-between items-center">
++                <span className="text-xs font-bold text-gray-800 font-myeongjo">?뵰 泥쒓컙 ?듯빀 ?뚮룞 遺꾩꽍</span>
++                <span className={`text-[9px] text-white px-2 py-0.5 rounded font-bold ${badgeColor}`}>{harmonyText}</span>
++              </div>
++              <div className="flex justify-center items-center gap-4 py-2">
++                <div className="w-12 h-12 bg-white rounded-full flex flex-col justify-center items-center border-2 border-brass shadow-sm">
++                  <span className="text-sm font-bold text-[#1A1A1A] font-myeongjo">{dayStem}</span>
++                  <span className="text-[7px] text-gray-400">?쇨컙</span>
++                </div>
++                <div className="h-0.5 w-10 bg-gradient-to-r from-brass to-red-500 relative">
++                  <span className="absolute -top-1.5 left-3.5 text-[8px] animate-pulse">??/span>
++                </div>
++                <div className="w-12 h-12 bg-red-500 rounded-full flex flex-col justify-center items-center border-2 border-red-600 shadow-sm text-white">
++                  <span className="text-sm font-bold font-myeongjo">訝?/span>
++                  <span className="text-[7px] opacity-80">?몄슫</span>
++                </div>
++              </div>
++              <div className="space-y-1 text-[9px] font-semibold text-gray-500 pt-1.5">
++                <div className="flex justify-between">
++                  <span>?좊뀈 泥쒓컙 ?듯빀??/span>
++                  <span className="text-[#8B221E]">{harmonyPercent}%</span>
++                </div>
++                <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
++                  <div className="h-full bg-[#8B221E] rounded-full" style={{ width: `${harmonyPercent}%` }} />
++                </div>
++              </div>
++            </div>
++
+             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+               <div className="bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 text-center font-bold text-sm text-[#A3845B]">
+                 {name}?섏쓽 ?쇨컙: {dayStem} ({dayStemEl}??湲곗슫)
+               </div>
+               
+               {relationGraph}
+-
+-              <p className="mt-4">
++ 
++              <p className="mt-4 text-justify font-light text-gray-600">
+                 {stemHarmonyDesc}
+               </p>
+             </div>
+           </div>,
+           "?쇨컙 ?ㅽ뻾怨??몄슫???듯빀 遺꾩꽍"
+         );
++      }
+ 
+-      case "ny_ilju_harmony":
++      case "ny_ilju_harmony": {
+         const ilju = sajuInfo.day.stem + sajuInfo.day.branch;
+         const dayBranch = sajuInfo.day.branch;
+         let relationDesc = "";
+         let statusBadge = <span className="bg-blue-100 text-blue-800 border border-blue-200 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">?꾨쭔??議고솕 (?됱삩)</span>;
+         
++        let lightColor = "bg-blue-500";
++        let borderClass = "border-blue-200";
++        let cardBgClass = "bg-blue-50/10";
++        let scoreLabel = "?덉쟾吏?";
++
+         if (dayBranch === "耶?) {
+           relationDesc = "2026???ㅽ솕(?덄겓) ?몄슫? 洹?섏쓽 ?쇱? ?먯닔(耶먩객)? 寃⑸젹??遺?れ튂???먯삤異?耶먨뜄亦????좊컻?⑸땲?? ?대뒗 吏묓꽣, 洹쇰Т吏 ?대룞, ?뱀? 遺遺 愿怨꾩쓽 湲됯꺽??吏媛곷??숈쓣 ?삵빀?덈떎. ?붾뱾由쇱쓣 ?먮젮?뚰븯湲곕낫??怨좎뿬?덈뜕 ?섏걶 ?듦????몄뼱?대뒗 怨꾧린濡??쇱쑝??떆??";
+           statusBadge = <span className="bg-red-100 text-red-800 border border-red-200 text-[10px] font-bold px-2 py-0.5 rounded animate-pulse shadow-sm">?좑툘 寃⑸젹??蹂??(異⑹궡)</span>;
++          lightColor = "bg-red-600";
++          borderClass = "border-red-300";
++          cardBgClass = "bg-red-50/40";
++          scoreLabel = "二쇱쓽寃쎈낫 (蹂?숈닔)";
+         } else if (dayBranch === "??) {
+           relationDesc = "2026???ㅽ솕(?덄겓)?????쇱????ㅽ솕? 寃뱀퀜 ?ㅼ뒪濡쒕? ??븘留ㅻ뒗 ?ㅼ삤?먰삎(?덂뜄?ゅ닊)???쇱쑝?듬땲?? 媛먯젙 湲곕났???ы빐???ｋ?瑜?留먯씠???됰룞?쇰줈 ?쇱쓣 洹몃Ⅴ移섍린 ?ъ슦??怨꾩빟 泥닿껐 ?쒖뿉??諛섎뱶????몄쓽 ?쇰뱶諛깆쓣 ??踰???嫄곗튂??떆??";
+           statusBadge = <span className="bg-orange-100 text-orange-800 border border-orange-200 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">?좑툘 ?ㅼ뒪濡??⑥냽 (?먰삎)</span>;
++          lightColor = "bg-orange-500";
++          borderClass = "border-orange-300";
++          cardBgClass = "bg-orange-50/40";
++          scoreLabel = "媛먯젙?⑥냽 (?먯꽦)";
+         } else if (dayBranch === "?? || dayBranch === "野? || dayBranch === "??) {
+           relationDesc = "2026???몄슫???ㅽ솕(?덄겓)?????쇱?? ?곕쑜?????덃쑋 ?≫빀, 野끻뜄???쇳빀)???대（???됲솕濡?퀬 議고솕濡쒖슫 湲곕쪟瑜??뺤꽦?⑸땲?? ??멸?怨꾩쓽 ?ㅽ빐媛 ???밸벏 ?由ш퀬 洹?몄쓽 ?곴레?곸씤 ?묐젰??諛쏆븘 ?몄븞?섍쾶 ?덉젙???살쓣 ???덈뒗 ?湲명븳 ?먮쫫?낅땲??";
+           statusBadge = <span className="bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">???湲명븳 ?뷀빀 (吏??</span>;
++          lightColor = "bg-emerald-600";
++          borderClass = "border-emerald-300";
++          cardBgClass = "bg-emerald-50/40";
++          scoreLabel = "?湲명솕??(洹?몄“??";
+         } else if (dayBranch === "訝?) {
+           relationDesc = "2026???ㅽ솕(?덄겓)?????쇱? 異뺥넗(訝묈쐿)? 留뚮굹硫??쒕줈 ?洹쇳엳 諛?대궡怨??먮쭩?섍쾶 留뚮뱶??異뺤삤?먯쭊(訝묈뜄?ⓨ뿏) 諛?洹臾멸???湲곕쪟瑜??앹꽦?⑸땲?? ?덈??④낵 ?щ━??遺덉븞?뺤씠 ?믪븘??媛源뚯슫 ?댁쓽 留??쒕쭏?붿뿉 ???곸쿂瑜??낃굅???ㅽ빐瑜??섍린 ?쎌뒿?덈떎. ?곷?諛⑹쓣 鍮꾨궃?섍린 ?꾩뿉 ???쒗룷 ?명씉??怨좊Ⅴ怨??댁꽦?곸쑝濡??⑺듃瑜??먭??섏떗?쒖삤.";
+           statusBadge = <span className="bg-purple-100 text-purple-800 border border-purple-200 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">?좑툘 媛먯젙 ?ㅽ빐 (?먯쭊)</span>;
++          lightColor = "bg-purple-600";
++          borderClass = "border-purple-300";
++          cardBgClass = "bg-purple-50/40";
++          scoreLabel = "?좉꼍?덉젙 (?덈??꾩긽??";
+         }
+ 
+         return wrapLock(
+@@ -3833,23 +4036,62 @@ function ResultContent() {
+               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">?쇱＜? ?몄슫???빧룹땐쨌?뙿룻빀 ?뺣? 吏꾨떒</h2>
+               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+             </div>
++
++            {/* ?꾨━誘몄뾼 ?쒓컖??1: ?좊뀈 ?쇱? ?덉쟾???좏샇??*/}
++            <div className={`border ${borderClass} ${cardBgClass} rounded-xl p-5 space-y-3`}>
++              <div className="flex items-center gap-2">
++                <div className="relative flex h-3.5 w-3.5">
++                  <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${lightColor} opacity-75`}></span>
++                  <span className={`relative inline-flex rounded-full h-3.5 w-3.5 ${lightColor}`}></span>
++                </div>
++                <div className="pl-2">
++                  <span className="text-[10px] text-gray-400 block font-semibold">?좊뀈 ?대?沅??덉떇泥? 蹂댁븞 ?곹깭</span>
++                  <span className="font-myeongjo text-xs font-bold text-gray-800">吏꾨떒 ?ㅼ썙?? {scoreLabel}</span>
++                </div>
++              </div>
++              <p className="text-[10px] text-gray-500 font-light leading-relaxed text-justify">
++                吏吏???섎뒛???먮꼫吏媛 ?낆뿉 ?대┛ ?ㅼ젣 ?섍꼍?쇰줈, 諛곗슦?먯? 媛???덈씫?⑥쓣 吏諛고빀?덈떎. ?좏샇???됱긽???곸깋?대굹 ?먯깋 怨꾩뿴???뚮뒗 異⑸룎?대굹 ?쒕퉬?섍? 媛뺥븯?????留덉같??蹂댁닔?곸쑝濡??뚰뵾?섏떗?쒖삤.
++              </p>
++            </div>
++
+             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+               <div className="flex justify-between items-center bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 text-sm font-bold text-[#8B221E]">
+                 <span>洹?섏쓽 ?怨좊궃 ?쇱＜: {ilju}?쇱＜</span>
+                 {statusBadge}
+               </div>
+-              <p className="mt-4">
+-                ?쇱????ъ＜?먯꽌 <strong>?섏쓽 媛쒖씤?곸씤 ?덉떇泥? 移⑥떎, 洹몃━怨?諛곗슦??沅?/strong>???곸쭠?⑸땲?? 1?꾩쓽 湲곕쪟瑜?吏諛고븯???몄슫??吏吏(?ㅽ솕)媛 ???덉떇泥섏쓽 湲?먯? ?대뼡 愿怨꾨? 留븍뒓?먯뿉 ?곕씪 ?ㅼ쭏?곸씤 ?좎껜 而⑤뵒?섍낵 媛?뺤깮?쒖쓽 ?됲솕 吏?섍? 醫뚯슦?⑸땲??
++              <p className="text-justify font-light text-gray-600">
++                ?쇱????ъ＜?먯꽌 <strong>?섏쓽 媛쒖씤?곸씤 ?덉떇泥? 移⑥떎, 洹몃━怨?諛곗슦??沅?/strong>???곸쭠?⑸땲?? 1?꾩쓽 湲곕쪟瑜?吏諛고븯???몄슫??吏吏(?ㅽ솕)媛 ???덉떇泥섏쓽 湲?먯? ?대뼡 愿怨꾨? 留븍뒓?먯뿉 ?곕씪 ?ㅼ쭏?곸씤 ?좎껜 而⑤뵒?섁퉩錫?린 媛?뺤깮?쒖쓽 ?됲솕 吏?섍? 醫뚯슦?⑸땲??
+               </p>
+-              <p>
++              <p className="text-justify font-light text-gray-600">
+                 {relationDesc}
+               </p>
+             </div>
+           </div>,
+           "?쇱＜? ?몄슫???㈑룹땐쨌?빧룻뙆쨌??吏꾨떒"
+         );
++      }
++
++      case "ny_elements_balance": {
++        const elCount = {
++          "紐?: sajuInfo.elements.紐?|| 0,
++          "??: (sajuInfo.elements.??|| 0) + 2,
++          "??: sajuInfo.elements.??|| 0,
++          "湲?: sajuInfo.elements.湲?|| 0,
++          "??: sajuInfo.elements.??|| 0
++        };
++
++        const totalNyEl = elCount.紐?+ elCount.??+ elCount.??+ elCount.湲?+ elCount.??|| 10;
++        
++        const elementsSorted = [
++          { name: "紐?, count: elCount.紐? color: "#5F7A68" },
++          { name: "??, count: elCount.?? color: "#DC2626" },
++          { name: "??, count: elCount.?? color: "#A3845B" },
++          { name: "湲?, count: elCount.湲? color: "#9CA3AF" },
++          { name: "??, count: elCount.?? color: "#1F2937" }
++        ];
++
++        let accumulatedLength = 0;
+ 
+-      case "ny_elements_balance":
+         return wrapLock(
+           <div className="space-y-6 py-4">
+             <div className="text-center space-y-2 mb-8">
+@@ -3857,19 +4099,55 @@ function ResultContent() {
+               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2026???몄슫 ?좎엯 ?ㅽ뻾 洹좏삎 遺꾩꽍</h2>
+               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+             </div>
+-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs text-gray-700 font-traditional">
+-              <p className="leading-relaxed font-light">
++
++            {/* ?꾨━誘몄뾼 ?쒓컖??1: 2026 蹂댁젙 ?ㅽ뻾 諛몃윴????(SVG) */}
++            <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 shadow-sm flex flex-col items-center">
++              <span className="font-bold text-xs text-[#8A6F4C] mb-4">?뜦 2026 蹂묒삤???⑹궛 蹂댁젙 ?ㅽ뻾 洹좏삎 ??/span>
++              <div className="relative w-[180px] h-[180px] flex items-center justify-center">
++                <svg viewBox="0 0 120 120" className="w-[160px] h-[160px] transform -rotate-90">
++                  <circle cx="60" cy="60" r="45" fill="none" stroke="#F3F4F6" strokeWidth="12" />
++                  {elementsSorted.map((item, idx) => {
++                    const ratio = item.count / totalNyEl;
++                    const strokeLength = ratio * 282.6;
++                    const offset = 282.6 - strokeLength - accumulatedLength;
++                    accumulatedLength += strokeLength;
++                    if (item.count === 0) return null;
++                    return (
++                      <circle
++                        key={idx}
++                        cx="60"
++                        cy="60"
++                        r="45"
++                        fill="none"
++                        stroke={item.color}
++                        strokeWidth="12"
++                        strokeDasharray={`${strokeLength} ${282.6 - strokeLength}`}
++                        strokeDashoffset={offset}
++                        className="transition-all duration-500"
++                      />
++                    );
++                  })}
++                  <circle cx="60" cy="60" r="32" fill="#FFFFFF" />
++                </svg>
++                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
++                  <span className="text-[8px] text-gray-400 font-semibold">珥??좎엯 ?ㅽ뻾</span>
++                  <span className="text-xs font-bold text-gray-800">{totalNyEl}???⑹궛</span>
++                </div>
++              </div>
++            </div>
++
++            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs text-gray-700 font-traditional font-light">
++              <p className="leading-relaxed font-light text-gray-600 text-justify">
+                 ?섎ː??{name}?섏쓽 ?怨좊궃 ?ъ＜ ?먭뎅 8湲?먯뿉 2026??蹂묒삤?꾩쓽 <strong>媛뺣젹??遺??? 湲곗슫 2媛?/strong>媛 ?좎엯?섏뿀???뚯쓽 醫낇빀 ?ㅽ뻾 ???遺꾪룷 ?곹깭?낅땲?? ?ㅽ뻾??移섏슦移??뺣룄???곕씪 ???댁쓽 ?대챸??而⑤뵒?섏씠 ?붾룞移섍쾶 ?⑸땲??
+               </p>
+               
+               <div className="space-y-3 bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60">
+-                {Object.entries(sajuInfo.elements).map(([el, count]) => {
+-                  const nyCount = el === "?? ? count + 2 : count;
+-                  const percentage = (nyCount / 10) * 100;
++                {Object.entries(elCount).map(([el, count]) => {
++                  const percentage = (count / totalNyEl) * 100;
+                   return (
+                     <div key={el} className="flex items-center gap-3 text-xs">
+                       <span className={`w-16 text-center py-0.5 rounded font-bold text-[10px] ${getElementColor(el)}`}>
+-                        {el} ({nyCount}媛?
++                        {el} ({count}媛?
+                       </span>
+                       <div className="flex-1 h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                         <div 
+@@ -3883,8 +4161,8 @@ function ResultContent() {
+                 })}
+               </div>
+ 
+-              <p className="leading-relaxed font-light border-t border-[#E2DDD5]/60 pt-3">
+-                {sajuInfo.elements.??+ 2 >= 4 ? (
++              <p className="leading-relaxed border-t border-[#E2DDD5]/60 pt-3 font-light text-gray-600 text-justify">
++                {elCount.??>= 4 ? (
+                   <span className="text-red-700 font-bold block mb-1 flex items-center gap-1">?좑툘 [寃쎈낫] ???? 湲곗슫??鍮꾨??붾줈 ?명븳 嫄댁“/怨쇱뿴 ?곹깭</span>
+                 ) : (
+                   <span className="text-gray-800 font-bold block mb-1 flex items-center gap-1">??[?덉젙] ?곸젅???붽린 議곗쑉 ?곹깭</span>
+@@ -3895,6 +4173,7 @@ function ResultContent() {
+           </div>,
+           "?좊뀈 ?ㅽ뻾 怨쇱엵/寃고븤 吏꾨떒"
+         );
++      }
+ 
+       case "ny_elements_supplement":
+         return wrapLock(
+@@ -6280,7 +6559,7 @@ function ResultContent() {
+           "2031???좏빐??渦쎽벤亮? ?몄슫 濡쒕뱶留?
+         )
+ 
+-      case "ny_lucky_fashion":
++case "ny_lucky_fashion":
+         return wrapLock(
+           <div className="space-y-6 py-4">
+             <div className="text-center space-y-2 mb-8">
+@@ -6288,24 +6567,148 @@ function ResultContent() {
+               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">?섏쓽 ?ъ＜ 湲곗슫??蹂댁셿?섎뒗 ?몄쟻 ?곗텧踰?/h2>
+               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+             </div>
+-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
++
++            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+               <p className="text-justify font-light text-gray-600">
+-                ?룹감由쇨낵 而щ윭 諛곗튂??媛???먯돺怨?利됯컖?곸쑝濡???二쇰???媛쒖슫 ?먮꼫吏瑜??먭레?섎뒗 ?됰룞 ?띿닔 ?ㅼ쿇踰뺤엯?덈떎.
++                ?룹감由쇨낵 而щ윭 諛곗튂??媛???먯돺怨?利됯컖?곸쑝濡???二쇰???媛쒖슫 ?먮꼫吏瑜??먭레?섎뒗 ?됰룞 ?띿닔 ?ㅼ쿇踰뺤엯?덈떎. 2026??蹂묒삤?꾩쓽 ??ㅻⅤ?????????닿린瑜??앺엳怨?硫붾쭏瑜??낆쓣 ?곸떆????麗? 湲곗슫怨? ?⑤떒??寃곕떒?μ쓣 ?쒓났?섎뒗 湲??? 湲곗슫???쇱긽???⑥뀡怨?硫붿씠?ъ뾽, ?μ닔 ??깮踰뺤쓣 ?듯빐 ?곴레?곸쑝濡?二쇱엯?섏떗?쒖삤.
+               </p>
+ 
+-              {/* ?ㅽ?????移대뱶 */}
+-              <div className="space-y-3">
+-                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-4 rounded-xl shadow-sm text-justify">
+-                  <span className="font-bold text-[#5F7A68] text-[11px] block mb-1">?몦 異붿쿇 猷? 誘몃땲硫 ?대옒??肄붾뵒</span>
+-                  <p className="text-[10px] text-gray-500 font-light leading-relaxed">
+-                    吏?섏튂寃??붾젮?섍굅??遺됱? 怨꾩뿴???섏긽? ?쇳븯??떆?? ?ㅼ씠鍮? 李⑥퐳, ?붿씠?????뺣룉??誘몃땲硫 ?대옒??猷⑹쓣 留ㅼ튂???? ?댁쟻??移대━?ㅻ쭏? 吏?쒕줈???ㅻ뱷?μ쓣 ?꾨떖?섍린媛 媛???섏썡?⑸땲??
+-                  </p>
++              {/* ?쒓컖??1: ??궎 而щ윭 移??붾젅??*/}
++              <div className="bg-[#FAF8F5] border border-[#E2DDD5]/60 rounded-xl p-5 space-y-4">
++                <span className="font-bold text-xs text-[#8A6F4C] block text-center">?렓 蹂묒삤???섑샇 ?ㅽ뻾 ??궎 而щ윭 ?붾젅??/span>
++                
++                <div className="grid grid-cols-4 gap-3 max-w-md mx-auto">
++                  <div className="flex flex-col items-center space-y-1.5 p-2 bg-white rounded-lg border border-[#E2DDD5]/40 shadow-sm">
++                    <div className="w-10 h-10 rounded-full bg-[#1A2E40] border border-gray-300 shadow-inner" />
++                    <span className="font-semibold text-gray-800 text-[9px]">???ㅼ씠鍮?/span>
++                    <span className="text-[8px] text-gray-400 font-light">??麗? 湲곕쪟</span>
++                  </div>
++                  <div className="flex flex-col items-center space-y-1.5 p-2 bg-white rounded-lg border border-[#E2DDD5]/40 shadow-sm">
++                    <div className="w-10 h-10 rounded-full bg-[#0D0D0D] border border-gray-300 shadow-inner" />
++                    <span className="font-semibold text-gray-800 text-[9px]">?쒗듃 釉붾옓</span>
++                    <span className="text-[8px] text-gray-400 font-light">??麗? ?섑샇</span>
++                  </div>
++                  <div className="flex flex-col items-center space-y-1.5 p-2 bg-white rounded-lg border border-[#E2DDD5]/40 shadow-sm">
++                    <div className="w-10 h-10 rounded-full bg-[#EAEAEA] border border-gray-300 shadow-inner" />
++                    <span className="font-semibold text-gray-800 text-[9px]">硫뷀깉 ?ㅻ쾭</span>
++                    <span className="text-[8px] text-gray-400 font-light">湲??? ?섏?</span>
++                  </div>
++                  <div className="flex flex-col items-center space-y-1.5 p-2 bg-white rounded-lg border border-[#E2DDD5]/40 shadow-sm">
++                    <div className="w-10 h-10 rounded-full bg-[#FAF5EB] border border-gray-300 shadow-inner" />
++                    <span className="font-semibold text-gray-800 text-[9px]">?щ┝ ?붿씠??/span>
++                    <span className="text-[8px] text-gray-400 font-light">湲??? ?좊ː</span>
++                  </div>
+                 </div>
+-                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-4 rounded-xl shadow-sm text-justify">
+-                  <span className="font-bold text-[#A3845B] text-[11px] block mb-1">?뭾 ?≪꽭?쒕━: 硫뷀깉 諛??ㅻ쾭 ?ъ씤??/span>
+-                  <p className="text-[10px] text-gray-500 font-light leading-relaxed">
+-                    ?ы뵆???ㅽ떥 ?쒓퀎???ㅻ쾭 二쇱뼹由? ?뺢컝??硫뷀깉 ?덇꼍?뚮? ?쒖슜?섏뿬 ?댁쟻??湲?湲곗슫???쒕떇?섏떗?쒖삤. ??몄뿉寃??좊ː媛먯쓣 ?꾨떖?섍퀬 遺덊븘?뷀븳 援ъ꽕??李⑤떒?섎뒗 媛뺣젰??蹂댄샇 ?쒖뒪媛 ?⑸땲??
+-                  </p>
++              </div>
++
++              {/* ?쒓컖??2: ?ㅽ????쒕꼫吏 諛?蹂댄샇 ?먮꼫吏 吏??*/}
++              <div className="bg-[#FAF7F0]/40 border border-[#E2DDD5] rounded-xl p-4 space-y-3 shadow-inner">
++                <span className="font-bold text-xs text-[#8A6F4C] block">?뱤 ??궎 ?ㅽ??쇰쭅 ?댁꽭 蹂댁젙 吏??/span>
++                <div className="grid grid-cols-2 gap-4">
++                  <div className="space-y-1">
++                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
++                      <span>??멸?怨??좎슜 諛??됲뙋 ?곸듅瑜?/span>
++                      <span className="text-[#8A6F4C]">90%</span>
++                    </div>
++                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
++                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "90%" }} />
++                    </div>
++                  </div>
++                  <div className="space-y-1">
++                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
++                      <span>援ъ꽕??諛⑹뼱 諛??낆궡 李⑤떒??/span>
++                      <span className="text-[#8A6F4C]">88%</span>
++                    </div>
++                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
++                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "88%" }} />
++                    </div>
++                  </div>
++                </div>
++                <div className="grid grid-cols-2 gap-4 pt-1">
++                  <div className="space-y-1">
++                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
++                      <span>?щ━???덉젙 & 議곌툒???됯컖瑜?/span>
++                      <span className="text-[#8A6F4C]">85%</span>
++                    </div>
++                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
++                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "85%" }} />
++                    </div>
++                  </div>
++                  <div className="space-y-1">
++                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
++                      <span>?곸뾽 / 怨꾩빟 ?깆궗 ?쒕꼫吏</span>
++                      <span className="text-[#8A6F4C]">92%</span>
++                    </div>
++                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
++                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "92%" }} />
++                    </div>
++                  </div>
++                </div>
++              </div>
++
++              {/* ?ㅽ???泥섎갑 議곌껄??*/}
++              <span className="font-bold text-xs text-[#8A6F4C] block pt-2">?뵎 遺?꾨퀎 ?뷀뀒??肄붾뵒?ㅼ씠??泥섎갑</span>
++              <div className="border border-[#E2DDD5] rounded-xl overflow-hidden shadow-sm">
++                <table className="w-full text-[9px] text-left border-collapse">
++                  <thead>
++                    <tr className="bg-[#FAF7F0] text-[#8A6F4C] font-bold border-b border-[#E2DDD5]">
++                      <th className="p-2">遺꾨쪟</th>
++                      <th className="p-2 text-center">沅뚯옣 ?ㅽ???諛??ъ씤??/th>
++                      <th className="p-2 text-center">異붿쿇 ?꾩씠??/ 而щ윭</th>
++                      <th className="p-2">媛쒖슫 硫붿빱?덉쬁</th>
++                    </tr>
++                  </thead>
++                  <tbody className="text-gray-600 font-light">
++                    <tr className="border-b border-[#E2DDD5]/40">
++                      <td className="p-2 font-semibold text-gray-800">?몦 ?섏긽 肄붾뵒</td>
++                      <td className="p-2 text-center font-medium">?⑥젙??誘몃땲硫 ?대옒????/td>
++                      <td className="p-2 text-center text-[#1A2E40] font-semibold">?ㅼ씠鍮??먯폆, 釉붾옓 ?щ옓??/td>
++                      <td className="p-2">?붽린瑜??듭젣?섎뒗 源붾걫????麗????덉젣濡??좎슜??洹밸??뷀븿</td>
++                    </tr>
++                    <tr className="border-b border-[#E2DDD5]/40">
++                      <td className="p-2 font-semibold text-gray-800">?뭵 硫붿씠?ъ뾽</td>
++                      <td className="p-2 text-center font-medium">?ㅺ린 ?섎뒗 ?몃?湲濡쒖슦 ?ㅽ궓</td>
++                      <td className="p-2 text-center text-gray-600 font-semibold">?섎텇 珥됱큺 由쎈갇, ?ㅻ쾭 ???섏씠?쇱씠??/td>
++                      <td className="p-2">媛???댁뒳泥섎읆 珥됱큺?섍퀬 ?щ챸??吏덇컧?쇰줈 湲덉닔?띿껌 湲곕쪟 ?쒖꽦??/td>
++                    </tr>
++                    <tr className="border-b border-[#E2DDD5]/40">
++                      <td className="p-2 font-semibold text-gray-800">?뭾 ?≪꽭?쒕━</td>
++                      <td className="p-2 text-center font-medium">李④???湲덉냽 ???덇꼍 諛?二쇱뼹由?/td>
++                      <td className="p-2 text-center text-gray-500 font-semibold">?ㅻ쾭 二쇱뼹由? 硫뷀깉 ?ㅽ떥 ?쒓퀎</td>
++                      <td className="p-2">湲?????湲곕쪟瑜??뷀븯????멸?怨???移?媛숈? 遺꾨퀎?κ낵 紐낆삁???섑샇</td>
++                    </tr>
++                    <tr className="border-b border-[#E2DDD5]/40">
++                      <td className="p-2 font-semibold text-gray-800">?뮜 ??궎 ?μ닔</td>
++                      <td className="p-2 text-center font-medium">李⑤텇?섍퀬 臾듭쭅???섎텇媛??μ“</td>
++                      <td className="p-2 text-center text-emerald-800 font-semibold">?곕뵒, 癒몄뒪?? 留덈┛ ??/td>
++                      <td className="p-2">?뺤꽌??怨쇱뿴???대━怨?二쇰? ?몃㎘?먭쾶 李⑤텇?섍퀬 吏?쒕줈??遺꾩쐞湲??꾨떖</td>
++                    </tr>
++                    <tr className="bg-rose-50/30">
++                      <td className="p-2 font-semibold text-rose-800">?좑툘 ?쇳븷 ?ㅽ???/td>
++                      <td className="p-2 text-center font-medium text-rose-950">?붾젮???먯깋 諛??뺢킅 ?⑥뀡</td>
++                      <td className="p-2 text-center text-rose-700 font-semibold">?덈뱶, ?ㅼ삩 ?ㅻ젋吏 ?곸쓽</td>
++                      <td className="p-2 text-rose-950">媛?⑹씠???④굅??蹂묒삤?꾩쓽 ?붽린(遺덇퐙)瑜??먭레???щ━??異⑸룞怨?援ъ꽕???좊컻</td>
++                    </tr>
++                  </tbody>
++                </table>
++              </div>
++
++              {/* 3???섏튃 移대뱶 */}
++              <div className="grid grid-cols-3 gap-3 pt-2">
++                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-center shadow-inner">
++                  <span className="text-xl block mb-1">?몦</span>
++                  <span className="font-bold text-[#A3845B] text-[10px] block">?ㅼ씠鍮??ㅼ삩??/span>
++                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">?곸쓽瑜??대몢???⑥깋 怨꾩뿴濡??낆뼱 移⑥갑?깆쓣 媛뺥솕</p>
++                </div>
++                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-center shadow-inner">
++                  <span className="text-xl block mb-1">?뭾</span>
++                  <span className="font-bold text-[#A3845B] text-[10px] block">硫뷀깉 ?ъ씤??/span>
++                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">?諛섏?, ?ㅽ떥 ?쒓퀎 ?깆쑝濡??먮떒 湲곕쪟瑜??쒖꽦??/p>
++                </div>
++                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-center shadow-inner">
++                  <span className="text-xl block mb-1">?뭵</span>
++                  <span className="font-bold text-[#A3845B] text-[10px] block">臾쇨킅 硫붿씠?ъ뾽</span>
++                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">?쇨뎬???섎텇媛먯쓣 媛誘명빐 ?붽린 ?쎌갹???듭젣</p>
+                 </div>
+               </div>
+             </div>
+@@ -6313,29 +6716,231 @@ function ResultContent() {
+           "?좊뀈 ?⑥뀡 硫붿씠?ъ뾽 ?ㅽ??쇰쭅 媛?대뱶"
+         )
+ 
+-      case "ny_diet_presc":
++case "ny_diet_presc": {
++        const dayStemEl = sajuInfo.day.stemEl;
++        let constitutionName = "?ㅽ뻾 ?됲삎 泥댁쭏";
++        let constitutionDesc = "";
++        let goodFoods = "";
++        let badFoods = "";
++        let teaName = "";
++        let teaDesc = "";
++        let organGraph = null;
++
++        if (dayStemEl === "紐? || dayStemEl === "??) {
++          constitutionName = "?띾ぉ(窯ⓩ쑉) 泥댁쭏 (媛꽷룸떞 湲곕뒫 ?몄쨷)";
++          constitutionDesc = "紐?湲곗슫???뱀쭠???잕뎄移섎뒗 湲곗슫??媛뺥븯?? ?ㅽ듃?덉뒪瑜?諛쏄굅???붽린媛 移⑤쾾?????덉쓽 ?쇰줈? ?닿묠 寃곕┝, ?먰넻???쎄쾶 ?숇컲?섎뒗 泥댁쭏?낅땲?? ??ㅻⅤ???붽린濡??명빐 泥대궡 紐⑷린媛 嫄댁“?댁졇 ?좉꼍怨??쇰줈媛 ?꾩쟻???꾪뿕???믪뒿?덈떎.";
++          goodFoods = "釉뚮줈肄쒕━, 誘몃굹由? ?쒓툑移????몃Ⅸ ??梨꾩냼 諛??ш낵, 留ㅼ떎 (?쇰줈 ?댁냼 ?좊룄)";
++          badFoods = "吏?섏튂寃?留ㅼ슫 留덈뒛/怨좎텛 ?붾━, ?湲?怨좉린瑜? 怨좊룄?섏쓽 ?뚯＜ (媛꾩뿴 利앺룺)";
++          teaName = "援ш린?먯감 (?멩씆耶먫뙳)";
++          teaDesc = "援ш린?먮뒗 嫄댁“?댁쭊 媛?湲곕뒫??蹂댄샇?섍퀬 ?덉쓽 ?쇰줈瑜???텛硫?紐⑷린瑜?遺?쒕읇寃??댁셿?쒗궢?덈떎.";
++          organGraph = (
++            <div className="grid grid-cols-2 gap-4">
++              <div className="space-y-1">
++                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
++                  <span>媛꽷룸떞(?? ?쇰줈??/span>
++                  <span className="text-[#8A6F4C]">80%</span>
++                </div>
++                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
++                  <div className="h-full bg-emerald-700 rounded-full" style={{ width: "80%" }} />
++                </div>
++              </div>
++              <div className="space-y-1">
++                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
++                  <span>?꽷룹옣(?? ?뚰솕 ?⑥쑉</span>
++                  <span className="text-[#8A6F4C]">75%</span>
++                </div>
++                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
++                  <div className="h-full bg-yellow-600 rounded-full" style={{ width: "75%" }} />
++                </div>
++              </div>
++            </div>
++          );
++        } else if (dayStemEl === "?? || dayStemEl === "??) {
++          constitutionName = "援고솕(?쏁겓) 泥댁쭏 (??룹냼???곸뿴 泥댁쭏)";
++          constitutionDesc = "2026??蹂묒삤?꾩쓽 ??ㅻⅤ??媛뺣젰??遺덇퐙 ?몄슫怨?留뚮굹 遺덇린?댁씠 洹뱀뿉 ?ы븷 ???덈뒗 泥댁쭏?낅땲?? ?곷컲?좎쑝濡??댁씠 ?쎄쾶 ?잕뎄爾??덈㈃ ?띿“, 援щ궡?? ?섎㈃ ?μ븷(遺덈㈃利?媛 ?앷린湲??ъ슦硫??덉븬 議곗쑉???좉꼍 ?⑥빞 ?⑸땲??";
++          goodFoods = "?ㅼ씠, ?좊쭏?? ?섎컯 ???섎텇怨?李??깆쭏??媛?앺븳 梨꾩냼 諛?硫붾? (?곸뿴媛??꾪솕)";
++          badFoods = "留덈씪?? ?먭레?곸씤 ?μ떊猷? 怨쇰룄???〓쪟 ??랬, 移댄럹???ㅻ웾 ??랬 (?ы삁愿 ?댁쬆 ?먭레)";
++          teaName = "蹂대━李??먮뒗 二쎌뿽李?(塋배몛??";
++          teaDesc = "??섎Т ?롮쑝濡??곕젮??李⑤뒗 ?ъ옣??遺덇컳? ?댁쓣 李⑤텇?섍쾶 媛?쇱븠?덇퀬 ?섎텇??蹂댁땐??以띾땲??";
++          organGraph = (
++            <div className="grid grid-cols-2 gap-4">
++              <div className="space-y-1">
++                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
++                  <span>??룹냼???? 怨쇱뿴??/span>
++                  <span className="text-[#8A6F4C]">95%</span>
++                </div>
++                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
++                  <div className="h-full bg-red-700 rounded-full" style={{ width: "95%" }} />
++                </div>
++              </div>
++              <div className="space-y-1">
++                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
++                  <span>?졖룸갑愿?麗? 嫄댁“??/span>
++                  <span className="text-[#8A6F4C]">90%</span>
++                </div>
++                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
++                  <div className="h-full bg-slate-800 rounded-full" style={{ width: "90%" }} />
++                </div>
++              </div>
++            </div>
++          );
++        } else if (dayStemEl === "?? || dayStemEl === "??) {
++          constitutionName = "?듯넗(嚥뺝쐿) 泥댁쭏 (鍮꽷룹쐞???뚰솕湲??몄쨷)";
++          constitutionDesc = "?뚰솕湲?怨꾪넻???섏쓣 伊먭퀬 ?덉쑝?? ?몄슫???닿린媛 媛뺥빐???꾩옣???쎄쾶 硫붾쭏瑜닿퀬 泥대궡 ?명룓臾??듬떞)???덉쟻?섍쾶 ?④린 ?ъ슫 泥댁쭏?낅땲?? 鍮꾩쐞媛 ?쏀빐吏硫??쇰줈媛?and 蹂듬? ?쎈쭔媛먯쓣 ?먯＜ ?몄냼?????덉뒿?덈떎.";
++          goodFoods = "?⑦샇諛? ?묐같異? ?곌렐, 媛먯옄 ???먮줈???몃뱶 諛??⑤Т (鍮꾩쐞 ?뚰솕 珥됱쭊)";
++          badFoods = "李④???鍮숈닔??留μ＜, 李④????좎쓬?? 諛媛猷?媛怨듯뭹 (鍮꾩옣 ?뚰솕 留덈퉬)";
++          teaName = "?앷컯?섎Т李??먮뒗 諛깆텧李?(?썸쑏??";
++          teaDesc = "諛깆텧李⑤뒗 ?꾩옣???듦린瑜??쒓굅?섍퀬 ?꾨꼍???쇳듉?섍쾶 蹂댄빐 ?뚰솕 ?≪닔?μ쓣 ?곸듅?쒗궢?덈떎.";
++          organGraph = (
++            <div className="grid grid-cols-2 gap-4">
++              <div className="space-y-1">
++                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
++                  <span>鍮꽷룹쐞???? 諛⑹뼱留?/span>
++                  <span className="text-[#8A6F4C]">85%</span>
++                </div>
++                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
++                  <div className="h-full bg-yellow-600 rounded-full" style={{ width: "85%" }} />
++                </div>
++              </div>
++              <div className="space-y-1">
++                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
++                  <span>媛꽷룸떞(?? ?듭젣 吏??/span>
++                  <span className="text-[#8A6F4C]">70%</span>
++                </div>
++                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
++                  <div className="h-full bg-emerald-700 rounded-full" style={{ width: "70%" }} />
++                </div>
++              </div>
++            </div>
++          );
++        } else if (dayStemEl === "湲? || dayStemEl === "??) {
++          constitutionName = "議곌툑(?ι뇫) 泥댁쭏 (?먃룸????명씉湲??몄쨷)";
++          constitutionDesc = "?⑤떒?섍퀬 ?됱젙?섏?留??붽린 ?몄슫??移⑥엯?쇰줈 媛???쎄쾶 ?뱀븘?대━???붽레湲? ?곗빟???좊텤?댁쓽 湲곗쭏?낅땲?? ?쇰? 嫄댁“利? 留뚯꽦 留덈Ⅸ湲곗묠, ???嫄댁“濡??명븳 蹂鍮??깆뿉 留ㅼ슦 痍⑥빟??泥댁쭏?낅땲??";
++          goodFoods = "臾? ?꾨씪吏, ?붾뜒, 踰꾩꽢 ???곗깋 肉뚮━ 梨꾩냼 諛?諛곗쬂 (?명씉湲??쇰? ?먮쭑 蹂댁뒿)";
++          badFoods = "諛붾퉬?? 援ъ슫 怨좉린瑜? 怨좎텛????留ㅼ슫 ?뚯떇, ?≪뿰 (湲곌?吏 嫄댁“ ?먭레)";
++          teaName = "留λЦ?숈감 (墉ι??ц뙳)";
++          teaDesc = "留λЦ?숈? ?먯? 紐⑷뎄硫띿뿉 ?뚯븸(?섎텇)???щ퓤 ?ｌ뼱 嫄댁“?⑥쓣 紐곗븘?닿퀬 留덈Ⅸ湲곗묠??媛?쇱븠?숇땲??";
++          organGraph = (
++            <div className="grid grid-cols-2 gap-4">
++              <div className="space-y-1">
++                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
++                  <span>?먃룰린愿吏(?? ?먮쭑??/span>
++                  <span className="text-[#8A6F4C]">65%</span>
++                </div>
++                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
++                  <div className="h-full bg-zinc-400 rounded-full" style={{ width: "65%" }} />
++                </div>
++              </div>
++              <div className="space-y-1">
++                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
++                  <span>????? ?섎텇 ?좎???/span>
++                  <span className="text-[#8A6F4C]">70%</span>
++                </div>
++                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
++                  <div className="h-full bg-zinc-500 rounded-full" style={{ width: "70%" }} />
++                </div>
++              </div>
++            </div>
++          );
++        } else {
++          constitutionName = "?쒖닔(野믤객) 泥댁쭏 (?졖룸갑愿??좎쭊????몄쨷)";
++          constitutionDesc = "李⑤텇?섍퀬 ?좎뿰??臾?湲곗슫???怨좊궗?쇰굹, 2026??蹂묒삤?꾩쓽 洹밴컯??遺덇퐙 ?몄슫??吏곴꺽?꾩쓣 留욎븘 泥대궡 ?섍린媛 ?듭㎏濡?利앸컻(?섑솕?由??섍린 ?쎌뒿?덈떎. 鍮꾨눊湲? ?먭턿, ?몃Ⅴ紐???????諛?泥대궡 ?꾪빐吏?遺議깆쓣 寃り린 ?쎌뒿?덈떎.";
++          goodFoods = "誘몄뿭, ?ㅼ떆留????댁“瑜섏? 寃?肄? 寃?源? ?좎꽑???앹꽑 諛?援?(?좎옣 ?쒖꽦??";
++          badFoods = "吏?李뚭컻 諛??뚭툑湲?留롮? ?ㅻ궢, 怨쇳븳 ?뚯퐫????랬 (?좎옣 ?덉닔 媛以?";
++          teaName = "?μ닔?섏닔?쇱감 ?먮뒗 寃?肄⑹감";
++          teaDesc = "?좎옣???명룓臾?諛곗텧?μ쓣 ?뺢퀬 ?덉닔瑜?留됱쑝硫??좎옣 ?먮꼫吏瑜?源딆닕??異⑹쟾?⑸땲??";
++          organGraph = (
++            <div className="grid grid-cols-2 gap-4">
++              <div className="space-y-1">
++                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
++                  <span>?졖룸갑愿?麗? ?뚯븸 吏??/span>
++                  <span className="text-[#8A6F4C]">60%</span>
++                </div>
++                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
++                  <div className="h-full bg-slate-900 rounded-full" style={{ width: "60%" }} />
++                </div>
++              </div>
++              <div className="space-y-1">
++                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
++                  <span>?먭턿쨌?앹떇怨?硫댁뿭??/span>
++                  <span className="text-[#8A6F4C]">68%</span>
++                </div>
++                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
++                  <div className="h-full bg-slate-700 rounded-full" style={{ width: "68%" }} />
++                </div>
++              </div>
++            </div>
++          );
++        }
++
+         return wrapLock(
+           <div className="space-y-6 py-4">
+             <div className="text-center space-y-2 mb-8">
+-              <span className="text-xs text-[#A3845B] font-bold block">?ㅽ뻾 ??깮踰?/span>
++              <span className="text-xs text-[#A3845B] font-bold block">?ㅽ뻾 ??깮踰?(雅붻죱 ?앯뵟)</span>
+               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">湲곗슫???덉젙?쒗궎??嫄닿컯 泥댁쭏 ?뚯떇 媛?대뱶</h2>
+               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+             </div>
+-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+-              <p>
+-                ?뚯떇??怨④퀬猷???랬?섎릺 紐낅━?숈쟻 ?ㅽ뻾??湲곗슫??蹂댁셿?섎뒗 ?쎌꽑 ??깮 ?붾졊?낅땲??
++
++            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
++              <p className="text-justify font-light text-gray-600">
++                留ㅼ씪 ?낆쑝濡??ㅼ뼱媛???뚯떇???ㅽ뻾 ?깆쭏? ?ㅼ옣?〓????닿낵 ?쒓린瑜?議곗쑉?섎뒗 湲곗큹 ?쒖쓽?숈쟻 媛쒖슫 泥섎갑?낅땲?? ?섎ː??<strong>{name}</strong>?섏쓽 ?ъ＜ ?쇨컙 ?ㅽ뻾 ?깊뼢??遺꾩꽍??寃곌낵, ?꾨옒? 媛숈씠 留욎땄???쎌꽑 ??깮 泥섎갑???쒓났?⑸땲??
+               </p>
+-              <div className="bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 space-y-2">
+-                <p><strong>????麗? 湲곗슫 蹂댁셿 ?뚯떇:</strong> ?댁“瑜?誘몄뿭, ?ㅼ떆留?, 寃?肄? ?묒엫?? ?좎꽑??援?/p>
+-                <p><strong>??湲??? 湲곗슫 蹂댁셿 ?뚯떇:</strong> 臾? ?꾨씪吏, ?붾뜒 ???곗깋 肉뚮━ 梨꾩냼</p>
++
++              {/* ?쒓컖??1: 媛쒖씤 ?ъ＜ 留욎땄 泥댁쭏 吏꾨떒 */}
++              <div className="bg-[#FAF8F5] border border-[#E2DDD5]/60 rounded-xl p-5 space-y-3">
++                <div className="flex items-center gap-2">
++                  <span className="text-xl">?뙼</span>
++                  <div>
++                    <span className="text-[10px] text-[#A3845B] font-bold block">?섏쓽 留욎땄???ㅽ뻾 泥댁쭏</span>
++                    <span className="font-myeongjo text-sm font-bold text-gray-800">{constitutionName}</span>
++                  </div>
++                </div>
++                <p className="text-[10px] text-gray-500 font-light leading-relaxed border-t border-[#E2DDD5]/40 pt-2 text-justify">
++                  {constitutionDesc}
++                </p>
++              </div>
++
++              {/* ?쒓컖??2: ?ㅽ뻾 ?λ? 媛뺤빟 吏??(?숈쟻 援ъ꽦) */}
++              <div className="bg-[#FAF7F0]/40 border border-[#E2DDD5] rounded-xl p-4 space-y-3 shadow-inner">
++                <span className="font-bold text-xs text-[#8A6F4C] block">?뱤 2026???ㅽ뻾 ?λ?(?잒뀘) ?먮꼫吏 諛몃윴??/span>
++                {organGraph}
++              </div>
++
++              {/* 異붿쿇/湲고뵾 ??깮 留ㅼ묶 ?뚮젅?댄듃 */}
++              <div className="grid grid-cols-2 gap-4">
++                <div className="bg-emerald-50/40 border border-emerald-100/70 p-4 rounded-xl space-y-2">
++                  <span className="font-bold text-emerald-800 text-[11px] block flex items-center gap-1">
++                    ?윟 異붿쿇 ?앹옄??(Good)
++                  </span>
++                  <p className="text-[9px] text-emerald-950 font-light leading-relaxed text-justify">
++                    {goodFoods}
++                  </p>
++                </div>
++                <div className="bg-rose-50/40 border border-rose-100/70 p-4 rounded-xl space-y-2">
++                  <span className="font-bold text-rose-800 text-[11px] block flex items-center gap-1">
++                    ?뵶 ?쇨??????뚯떇 (Bad)
++                  </span>
++                  <p className="text-[9px] text-rose-950 font-light leading-relaxed text-justify">
++                    {badFoods}
++                  </p>
++                </div>
++              </div>
++
++              {/* ?섑샇 ?쎌꽑李??뷀뀒??移대뱶 */}
++              <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-4 rounded-xl shadow-sm text-justify flex items-start gap-4">
++                <span className="text-2xl pt-0.5">??/span>
++                <div className="space-y-1">
++                  <span className="font-bold text-[#A3845B] text-[11px] block">?좊뀈 異붿쿇 媛쒖슫 李? {teaName}</span>
++                  <p className="text-[9px] text-gray-500 font-light leading-relaxed">
++                    {teaDesc} ?곕쑜?섍쾶 ?곕젮?댁뼱 ?섎（ ???붿뵫 ?몄븞???쒓컙???뚯슜?섎ŉ ?대㈃???κ린 湲곗슫???쒗깂?섍쾶 蹂댁셿?섏떗?쒖삤.
++                  </p>
++                </div>
+               </div>
+-              <p>
+-                湲곗슫???덈Т ?④굅?뚯????먭레?곸씠怨?留ㅼ슫 ?뚯떇怨?怨쇳븳 ?뚯퐫????랬???щ━??遺덇만?????먭레?섎?濡?媛湲됱쟻 媛蹂띻퀬 ?대갚???쒖떇 ?꾩＜???앸떒??援ъ꽦??寃껋쓣 沅뚯옣?⑸땲??
+-              </p>
+             </div>
+           </div>,
+           "泥댁쭏 留욎땄???ㅽ뻾 ??깮 ?뚯떇 泥섎갑"
+         );
++      }
+ 
+       case "ny_intro_saju":
+         return wrapLock(

@@ -743,7 +743,7 @@ export default function Home() {
             {/* Product Card 2 - 신년운세 */}
             <div className="border border-border-custom bg-background rounded-lg p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
               <div>
-                <span className="text-xs font-semibold text-brass tracking-wider uppercase block mb-1">시즌 한정</span>
+                <span className="text-xs font-semibold text-brass tracking-wider uppercase block mb-1">신년운세</span>
                 <h3 className="font-myeongjo text-xl font-bold text-foreground mb-2 group-hover:text-brass transition-colors">신년운세</h3>
                 <p className="text-sm text-foreground-muted leading-relaxed mb-4 font-light">
                   새해에 가장 많이 찾는 상품으로, 한 해의 총체적인 흐름, 오행의 상생상극 융합 및 신수비결 분석.
@@ -798,7 +798,7 @@ export default function Home() {
             {/* Product Card 2-2 - 토정비결 */}
             <div className="border border-border-custom bg-background rounded-lg p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
               <div>
-                <span className="text-xs font-semibold text-brass tracking-wider uppercase block mb-1">시즌 한정</span>
+                <span className="text-xs font-semibold text-brass tracking-wider uppercase block mb-1">토정비결</span>
                 <h3 className="font-myeongjo text-xl font-bold text-foreground mb-2 group-hover:text-brass transition-colors">토정비결</h3>
                 <p className="text-sm text-foreground-muted leading-relaxed mb-4 font-light">
                   조선 정통 토정 이지함 선생의 원본 해석에 따른 1년 신수비결과 생존 전략.

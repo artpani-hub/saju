@@ -17,14 +17,14 @@ const products = {
   },
   newyear: {
     title: "신년운세",
-    category: "시즌 한정",
+    category: "신년운세",
     price: 34900,
     originalPrice: 55000,
     desc: "한 해의 전체적인 기운과 방향성, 월별 상세 운세 가이드",
   },
   tojeong: {
     title: "토정비결",
-    category: "시즌 한정",
+    category: "토정비결",
     price: 29900,
     originalPrice: 36900,
     desc: "조선 정통 토정 이지함의 비결로 풀어보는 한 해의 신수비결과 월별 지침",
@@ -677,19 +677,36 @@ function InputFormContent() {
 
   // 실제 포트원 결제창 호출 및 처리
   const handlePortonePayment = () => {
+    // 로컬 환경(localhost) 또는 개발 모드일 경우 결제 모듈 로드 여부와 상관없이 즉시 시뮬레이션 실행
+    const isLocal = (typeof window !== "undefined" && (
+      window.location.hostname === "localhost" || 
+      window.location.hostname === "127.0.0.1" ||
+      window.location.hostname.startsWith("192.168.") ||
+      window.location.hostname.startsWith("10.") ||
+      window.location.port === "3000"
+    )) || process.env.NODE_ENV === "development";
+
+    if (isLocal) {
+      alert("[개발자 테스트 안내] 개발 환경(Local/Dev)이 감지되어 모의 결제 성공 시뮬레이션을 즉시 실행합니다.\n\n확인을 누르시면 분석 화면으로 넘어갑니다.");
+      startAnalysis();
+      return;
+    }
+
+    const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
+    const pgChannel = process.env.NEXT_PUBLIC_PORTONE_PG || "html5_inicis";
+
+    if (impCode === "imp00000000") {
+      alert("[개발자 테스트 안내] 테스트 가맹점 코드(imp00000000)가 감지되어 모의 결제 성공 시뮬레이션을 즉시 실행합니다.\n\n확인을 누르시면 주문 정보가 관리자 페이지에 결제완료(paid) 상태로 즉시 등록되고 분석 화면으로 넘어갑니다.");
+      startAnalysis();
+      return;
+    }
+
     if (typeof window === "undefined" || !window.IMP) {
       alert("결제 모듈을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
       return;
     }
 
     const IMP = window.IMP;
-    const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
-    const pgChannel = process.env.NEXT_PUBLIC_PORTONE_PG || "html5_inicis";
-    if (impCode === "imp00000000") {
-      alert("[개발자 테스트 안내] 테스트 가맹점 코드(imp00000000)가 감지되어 모의 결제 성공 시뮬레이션을 즉시 실행합니다.\n\n확인을 누르시면 주문 정보가 관리자 페이지에 결제완료(paid) 상태로 즉시 등록되고 분석 화면으로 넘어갑니다.");
-      startAnalysis();
-      return;
-    }
 
     IMP.init(impCode);
 
