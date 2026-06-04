@@ -1605,7 +1605,7 @@ function InputFormContent() {
                     ? (reportGrade === "deep" 
                       ? base + 15000 
                       : reportGrade === "sms" 
-                      ? Math.max(5000, base - 10000) 
+                      ? Math.max(5000, base - 20000) 
                       : base)
                     : base;
                   return (
