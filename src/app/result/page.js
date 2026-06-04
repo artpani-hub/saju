@@ -3104,8 +3104,140 @@ function ResultContent() {
     }
   };
 
+  const handleUpgradeFromSms = (grade, amount) => {
+    if (typeof window === "undefined") return;
+
+    const updateLocalStorageOrderGrade = (targetGrade) => {
+      try {
+        const existingStr = localStorage.getItem("hyeandang_orders");
+        if (existingStr) {
+          const orders = JSON.parse(existingStr);
+          const matchedIdx = orders.findIndex(o => 
+            o.name === name && 
+            o.year === String(year) &&
+            o.month === String(month) &&
+            o.day === String(day)
+          );
+          if (matchedIdx > -1) {
+            orders[matchedIdx].status = "paid";
+            orders[matchedIdx].reportGrade = targetGrade;
+            if (typeParam === "tojeong") {
+              orders[matchedIdx].productName = "정통 토정비결";
+            }
+            localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    const performUpgrade = () => {
+      updateLocalStorageOrderGrade(grade);
+      setIsPaid(true);
+      setCurrentGrade(grade);
+      
+      const url = new URL(window.location.href);
+      url.searchParams.delete("reportGrade");
+      window.location.href = url.toString();
+    };
+
+    const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
+    const pgCode = process.env.NEXT_PUBLIC_PORTONE_PG || "html5_inicis";
+
+    // 테스트 가맹점 코드이면 IMP 모듈 없이도 모의 결제 진행
+    if (impCode === "imp00000000") {
+      alert(`[개발자 테스트 안내] 모의 업그레이드 결제 성공 시뮬레이션을 즉시 실행합니다.\n\n확인을 누르시면 ${grade === "premium" ? "고급" : "프리미엄"} 리포트로 업그레이드되며 잠금이 풀리게 됩니다.`);
+      setIsProcessing(true);
+      setProgress(0);
+      
+      let currentProgress = 0;
+      const interval = setInterval(() => {
+        currentProgress += 10;
+        if (currentProgress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            setIsProcessing(false);
+            performUpgrade();
+          }, 300);
+        } else {
+          setProgress(currentProgress);
+        }
+      }, 150);
+      return;
+    }
+
+    if (!window.IMP) {
+      alert("결제 모듈이 아직 로드되지 않았습니다. 인터넷 연결을 확인하시거나, 브라우저의 광고 차단 확장 프로그램(AdBlock 등)이 활성화되어 있다면 해제한 후 새로고침(F5)을 해주세요.");
+      return;
+    }
+
+    try {
+      const IMP = window.IMP;
+      IMP.init(impCode);
+
+      IMP.request_pay({
+        pg: pgCode,
+        pay_method: "card",
+        merchant_uid: `merchant_${new Date().getTime()}`,
+        name: `${name}님 ${typeParam === "tojeong" ? "토정비결" : "신수비결"} ${grade === "premium" ? "고급" : "프리미엄"} 업그레이드`,
+        amount: amount,
+        buyer_name: name,
+      }, function (rsp) {
+        if (rsp.success) {
+          setIsProcessing(true);
+          setProgress(0);
+          
+          let currentProgress = 0;
+          const interval = setInterval(() => {
+            currentProgress += 10;
+            if (currentProgress >= 100) {
+              clearInterval(interval);
+              setTimeout(() => {
+                setIsProcessing(false);
+                performUpgrade();
+              }, 300);
+            } else {
+              setProgress(currentProgress);
+            }
+          }, 150);
+        } else {
+          alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
+        }
+      });
+    } catch (err) {
+      alert(`결제 모듈 실행 중 오류가 발생했습니다: ${err.message}`);
+    }
+  };
+
   const handlePortonePayment = () => {
     if (typeof window === "undefined") return;
+
+    const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
+    const pgCode = process.env.NEXT_PUBLIC_PORTONE_PG || "html5_inicis";
+
+    // 테스트 가맹점 코드이면 IMP 모듈 없이도 모의 결제 진행
+    if (impCode === "imp00000000") {
+      alert("[개발자 테스트 안내] 테스트 가맹점 코드(imp00000000)가 감지되어 모의 결제 성공 시뮬레이션을 즉시 실행합니다.\n\n확인을 누르시면 로컬 스토리지에 결제완료(paid) 정보가 반영되고 34페이지 상세 보고서 잠금이 풀리게 됩니다.");
+      setIsProcessing(true);
+      setProgress(0);
+      
+      let currentProgress = 0;
+      const interval = setInterval(() => {
+        currentProgress += 10;
+        if (currentProgress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            setIsProcessing(false);
+            setIsPaid(true);
+            updateLocalStorageOrderToPaid();
+          }, 300);
+        } else {
+          setProgress(currentProgress);
+        }
+      }, 150);
+      return;
+    }
     
     if (!window.IMP) {
       alert("결제 모듈이 아직 로드되지 않았습니다. 인터넷 연결을 확인하시거나, 브라우저의 광고 차단 확장 프로그램(AdBlock 등)이 활성화되어 있다면 해제한 후 새로고침(F5)을 해주세요.");
@@ -3114,31 +3246,6 @@ function ResultContent() {
 
     try {
       const IMP = window.IMP;
-      const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
-      const pgCode = process.env.NEXT_PUBLIC_PORTONE_PG || "html5_inicis";
-
-      if (impCode === "imp00000000") {
-        alert("[개발자 테스트 안내] 테스트 가맹점 코드(imp00000000)가 감지되어 모의 결제 성공 시뮬레이션을 즉시 실행합니다.\n\n확인을 누르시면 로컬 스토리지에 결제완료(paid) 정보가 반영되고 34페이지 상세 보고서 잠금이 풀리게 됩니다.");
-        setIsProcessing(true);
-        setProgress(0);
-        
-        let currentProgress = 0;
-        const interval = setInterval(() => {
-          currentProgress += 10;
-          if (currentProgress >= 100) {
-            clearInterval(interval);
-            setTimeout(() => {
-              setIsProcessing(false);
-              setIsPaid(true);
-              updateLocalStorageOrderToPaid();
-            }, 300);
-          } else {
-            setProgress(currentProgress);
-          }
-        }, 150);
-        return;
-      }
-      
       IMP.init(impCode);
 
       IMP.request_pay({
@@ -3175,6 +3282,10 @@ function ResultContent() {
     } catch (err) {
       alert(`결제 모듈 실행 중 오류가 발생했습니다: ${err.message}`);
     }
+  };
+
+  const handleUpgradePayment = () => {
+    handleUpgradeFromSms("deep", 15000);
   };
 
   const renderLockOverlay = (sectionTitle) => {
