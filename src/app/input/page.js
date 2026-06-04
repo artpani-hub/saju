@@ -1351,7 +1351,7 @@ function InputFormContent() {
                                 >
                                   <div>
                                     <span className="text-[11px] font-bold text-[#5F7A68] flex items-center gap-1">
-                                      👑 심화 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span>
+                                      👑 프리미엄 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span>
                                     </span>
                                     <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
                                       고급 리포트 전체 + 신년운세 + 용신/대운 + 질문 심화 풀이
@@ -1613,7 +1613,7 @@ function InputFormContent() {
                       <div>
                         <span className="text-[10px] text-foreground-muted block">상품명</span>
                         <span className="text-sm text-foreground">
-                          {activeProduct.title} {(productKey === "saju" || productKey === "newyear" || productKey === "tojeong") && `(${reportGrade === "premium" ? "고급 리포트" : reportGrade === "deep" ? "심화 리포트" : (productKey === "tojeong" ? "문자메시지요약" : "문자 요약")})`}
+                          {activeProduct.title} {(productKey === "saju" || productKey === "newyear" || productKey === "tojeong") && `(${reportGrade === "premium" ? "고급 리포트" : reportGrade === "deep" ? "프리미엄 리포트" : (productKey === "tojeong" ? "문자메시지요약" : "문자 요약")})`}
                         </span>
                       </div>
                       <div>
@@ -1793,7 +1793,7 @@ function InputFormContent() {
               <div className="flex justify-between text-xs">
                 <span className="text-foreground-muted">신청 상품</span>
                 <span className="font-semibold text-foreground">
-                  {activeProduct.title} {((productKey === "saju" || productKey === "newyear" || productKey === "tojeong") && reportGrade !== "sms") && `(${reportGrade === "premium" ? "고급 리포트" : "심화 리포트"})`}
+                  {activeProduct.title} {((productKey === "saju" || productKey === "newyear" || productKey === "tojeong") && reportGrade !== "sms") && `(${reportGrade === "premium" ? "고급 리포트" : "프리미엄 리포트"})`}
                 </span>
               </div>
               <div className="flex justify-between text-xs">

@@ -2994,6 +2994,7 @@ function ResultContent() {
   const [copied, setCopied] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   const [cumulativeCount, setCumulativeCount] = useState(14820);
+  const [currentGrade, setCurrentGrade] = useState("");
 
   useEffect(() => {
     setCumulativeCount(getCumulativeCount());
@@ -3028,7 +3029,13 @@ function ResultContent() {
   const hour = searchParams.get("hour") || "10:00";
   const worryCategory = searchParams.get("worryCategory") || "general";
   const worryText = searchParams.get("worryText") || "";
-  const reportGrade = searchParams.get("reportGrade") || "premium"; // premium(고급), deep(심화)
+  const reportGrade = searchParams.get("reportGrade") || "premium"; // premium(고급), deep(프리미엄)
+  
+  useEffect(() => {
+    if (reportGrade) {
+      setCurrentGrade(reportGrade);
+    }
+  }, [reportGrade]);
 
   // Partner parameters
   const partnerName = searchParams.get("partnerName") || "강민우";
@@ -3058,6 +3065,26 @@ function ResultContent() {
       // reportGrade가 free가 아니거나 debugUnlock이 활성화되어 있으면 즉시 잠금 해제
       if (debugUnlock || reportGrade !== "free") {
         setIsPaid(true);
+        
+        try {
+          const existingStr = localStorage.getItem("hyeandang_orders");
+          if (existingStr) {
+            const orders = JSON.parse(existingStr);
+            const matched = orders.find(o => 
+              o.name === name && 
+              o.status === "paid" &&
+              o.year === String(year) &&
+              o.month === String(month) &&
+              o.day === String(day)
+            );
+            if (matched) {
+              if (matched.reportGrade === "deep" || (matched.productName && (matched.productName.includes("프리미엄") || matched.productName.includes("deep")))) {
+                setCurrentGrade("deep");
+              }
+            }
+          }
+        } catch (err) {}
+        
         return;
       }
       try {
@@ -3073,6 +3100,9 @@ function ResultContent() {
           );
           if (matched) {
             setIsPaid(true);
+            if (matched.reportGrade === "deep" || (matched.productName && (matched.productName.includes("프리미엄") || matched.productName.includes("deep")))) {
+              setCurrentGrade("deep");
+            }
           }
         }
       } catch (e) {
@@ -3176,6 +3206,165 @@ function ResultContent() {
     }
   };
 
+  const performUpgrade = () => {
+    try {
+      const existingStr = localStorage.getItem("hyeandang_orders");
+      if (existingStr) {
+        const orders = JSON.parse(existingStr);
+        const matchedIdx = orders.findIndex(o => 
+          o.name === name && 
+          o.year === String(year) &&
+          o.month === String(month) &&
+          o.day === String(day)
+        );
+        if (matchedIdx > -1) {
+          orders[matchedIdx].productName = orders[matchedIdx].productName.replace("고급", "프리미엄");
+          orders[matchedIdx].amount = (orders[matchedIdx].amount || 30000) + 15000;
+          orders[matchedIdx].reportGrade = "deep";
+          localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    setCurrentGrade("deep");
+  };
+
+  const handleUpgradePayment = () => {
+    const isLocal = (typeof window !== "undefined" && (
+      window.location.hostname === "localhost" || 
+      window.location.hostname === "127.0.0.1" ||
+      window.location.hostname.startsWith("192.168.") ||
+      window.location.hostname.startsWith("10.") ||
+      window.location.port === "3000" ||
+      window.location.port === "3001"
+    )) || process.env.NODE_ENV === "development";
+
+    if (isLocal) {
+      alert("[개발자 테스트 안내] 개발 환경이 감지되어 모의 프리미엄 업그레이드 결제 성공 시뮬레이션을 즉시 실행합니다.\n\n확인을 누르시면 즉시 프리미엄 리포트로 업그레이드되고 8가지 심화 분석 잠금이 해제됩니다.");
+      setIsProcessing(true);
+      setProgress(0);
+      
+      let currentProgress = 0;
+      const interval = setInterval(() => {
+        currentProgress += 10;
+        if (currentProgress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            setIsProcessing(false);
+            performUpgrade();
+          }, 300);
+        } else {
+          setProgress(currentProgress);
+        }
+      }, 150);
+      return;
+    }
+
+    if (typeof window === "undefined" || !window.IMP) {
+      alert("결제 모듈이 아직 로드되지 않았습니다. 인터넷 연결을 확인하시거나, 브라우저의 광고 차단 확장 프로그램(AdBlock 등)이 활성화되어 있다면 해제한 후 새로고침(F5)을 해주세요.");
+      return;
+    }
+
+    try {
+      const IMP = window.IMP;
+      const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
+      const pgCode = process.env.NEXT_PUBLIC_PORTONE_PG || "html5_inicis";
+
+      if (impCode === "imp00000000") {
+        alert("[개발자 테스트 안내] 테스트 가맹점 코드(imp00000000)가 감지되어 모의 프리미엄 업그레이드를 즉시 실행합니다.");
+        setIsProcessing(true);
+        setProgress(0);
+        
+        let currentProgress = 0;
+        const interval = setInterval(() => {
+          currentProgress += 10;
+          if (currentProgress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+              setIsProcessing(false);
+              performUpgrade();
+            }, 300);
+          } else {
+            setProgress(currentProgress);
+          }
+        }, 150);
+        return;
+      }
+      
+      IMP.init(impCode);
+
+      IMP.request_pay({
+        pg: pgCode,
+        pay_method: "card",
+        merchant_uid: `merchant_upgrade_${new Date().getTime()}`,
+        name: `${name}님 신년운세 프리미엄 리포트 업그레이드`,
+        amount: 15000,
+        buyer_name: name,
+      }, function (rsp) {
+        if (rsp.success) {
+          setIsProcessing(true);
+          setProgress(0);
+          
+          let currentProgress = 0;
+          const interval = setInterval(() => {
+            currentProgress += 10;
+            if (currentProgress >= 100) {
+              clearInterval(interval);
+              setTimeout(() => {
+                setIsProcessing(false);
+                performUpgrade();
+              }, 300);
+            } else {
+              setProgress(currentProgress);
+            }
+          }, 150);
+        } else {
+          alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
+        }
+      });
+    } catch (err) {
+      alert(`결제 모듈 실행 중 오류가 발생했습니다: ${err.message}`);
+    }
+  };
+
+  const renderUpgradeOverlay = (sectionTitle) => {
+    return (
+      <div className="absolute inset-0 bg-[#F9F8F6]/90 backdrop-blur-md flex flex-col items-center justify-center z-20 p-6 text-center select-none print:hidden">
+        <div className="border-2 border-[#5F7A68] bg-[#F9F8F6] rounded-xl p-8 max-w-sm shadow-xl space-y-4 relative">
+          <div className="absolute top-2 left-2 text-[#5F7A68]/20 text-[10px]">卍</div>
+          <div className="absolute top-2 right-2 text-[#5F7A68]/20 text-[10px]">卍</div>
+          <div className="absolute bottom-2 left-2 text-[#5F7A68]/20 text-[10px]">卍</div>
+          <div className="absolute bottom-2 right-2 text-[#5F7A68]/20 text-[10px]">卍</div>
+          
+          <div className="w-12 h-12 bg-[#5F7A68]/10 text-[#5F7A68] rounded-full flex items-center justify-center mx-auto text-xl font-bold">
+            👑
+          </div>
+          <h4 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">
+            {sectionTitle || "프리미엄 운세 분석"} 잠겨있음
+          </h4>
+          <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light font-traditional">
+            이 분석 페이지는 <strong>프리미엄 신년운세 리포트</strong> 전용 핵심 서비스 영역입니다. 15,000원 추가 결제를 통해 프리미엄 등급으로 업그레이드 시 즉시 모든 잠금 페이지가 해제됩니다.
+          </p>
+          <button
+            type="button"
+            onClick={handleUpgradePayment}
+            className="w-full py-2.5 bg-[#5F7A68] hover:bg-[#38493D] text-white rounded text-xs font-semibold shadow-md transition-all font-traditional"
+          >
+            프리미엄 리포트로 업그레이드 (+15,000원)
+          </button>
+          <button
+            type="button"
+            onClick={() => setCurrentGrade("deep")}
+            className="w-full py-1.5 bg-gray-500 hover:bg-gray-700 text-[#FAF7F0] rounded text-[10px] font-semibold tracking-wider transition-all mt-1"
+          >
+            ⚙️ [개발자 테스트] 즉시 프리미엄 해제
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   const renderLockOverlay = (sectionTitle) => {
     return (
       <div className="absolute inset-0 bg-[#F9F8F6]/85 backdrop-blur-md flex flex-col items-center justify-center z-20 p-6 text-center select-none print:hidden">
@@ -3218,15 +3407,8 @@ function ResultContent() {
   };
 
   // Generate Personalized Worry Solution
-  const getPersonalizedSolution = (name, text, category) => {
-    if (!text || text.trim() === "") {
-      return {
-        analysis: `의뢰인 ${name}님의 사주 기질과 운세를 바탕으로 도출한 총론입니다. 귀하의 기운은 주체적이고 독립적인 성향이 돋보이며, 주변의 간섭에서 벗어나 스스로 삶을 주도하려는 에너지가 강하게 흐릅니다. 현재 삶의 전반적인 답답함은 기운이 팽창하면서 기존 환경과의 마찰을 빚고 있기 때문입니다.`,
-        timing: `조급하게 답을 내리려 하기보다, 음력 8월(酉월) 이후 흩어진 토(土) 기운이 찾아와 현실적인 자리를 잡아줄 때 구체적인 선택을 하는 것이 길합니다.`,
-        actionPlan: `1. 노란색이나 밝은 브라운 계열의 소품을 가까이 두어 부족한 안정을 도우십시오.\n2. 매사에 완벽을 추구하여 나를 혹사시키지 말고, 하루 20분 명상이나 가벼운 산책으로 생각을 비우십시오.\n3. 동쪽 방향과의 상성이 좋으니 답답할 땐 동쪽 교외로 나들이를 떠나보시길 권합니다.`
-      };
-    }
-
+  const getWorryTextSolution = (name, text) => {
+    if (!text || text.trim() === "") return null;
     const cleanedText = decodeURIComponent(text);
     const hasJob = /이직|회사|직장|퇴사|취업|일|업무|창업|보스|상사|동료|사직|승진/.test(cleanedText);
     const hasLove = /남자|여자|남친|여친|결혼|연애|사랑|이혼|속마음|그 사람|헤어짐|이별|부부|갈등/.test(cleanedText);
@@ -3234,69 +3416,125 @@ function ResultContent() {
     const hasHealth = /건강|질병|아픔|수술|몸|치료|병원|피로|우울|마음|스트레스/.test(cleanedText);
     const hasStudy = /시험|합격|공부|학업|진학|대학|자격증|진로|배움|학원/.test(cleanedText);
 
-    let analysis = "";
-    let timing = "";
-    let actionPlan = "";
-
-    // [우선순위 재정렬] 텍스트에 포함된 구체적 키워드를 카테고리 변수보다 우선 탐색하여 매칭합니다.
     if (hasHealth) {
-      analysis = `의뢰인 ${name}님의 건강 상태 및 심신의 안녕["${cleanedText}"]에 대한 명리학적 케어 가이드입니다. 사주 내 특정 오행(특히 화기운의 과다 혹은 수기운의 결핍)이 불균형을 이룰 때 피로가 누적되고 신경성 질환이나 면역력 약화가 찾아오기 쉽습니다. 몸의 적신호는 단순히 체력의 문제가 아니라, 마음의 응어리와 기운의 불통이 신체로 발현되는 과정입니다. 스스로를 가혹하게 채찍질하기보다 쉼표를 찍어줄 때입니다.`;
-      timing = `정체된 기운이 소통되고 신체 리듬이 안정을 찾는 가장 길한 시기는 오행의 열기를 식히고 윤활유를 채워주는 가을철(음력 7~8월) 및 겨울철(음력 10~11월)입니다.`;
-      actionPlan = `1. 매일 취침 전 15~20분간 따뜻한 물로 족욕을 실천하여 머리의 열을 내리고 아래를 따뜻하게 하는 수승화강(水昇火降)을 도우십시오.\n2. 자연의 목(木) 기운을 보완하기 위해 녹색 식물을 방에 두거나 가벼운 숲길 산책을 일상화하십시오.\n3. 신맛이 나는 차(오미자, 매실)나 따뜻한 보리차를 수시로 음용하여 마른 체내에 수분을 보충해 주십시오.`;
-    } else if (hasStudy) {
-      analysis = `의뢰인 ${name}님의 학업 성취, 자격증 취득 및 시험 합격 안건["${cleanedText}"]에 대한 명리 분석입니다. 시험과 공부는 사주에서 문서와 인내를 뜻하는 인성(印星)의 기운이 지지해 줄 때 합격의 문이 넓어집니다. 의욕이 앞설 때 집중력이 흩어지기 쉬운 구조를 가졌으니, 한 번에 여러 공부를 하기보다 하나의 목표를 잘게 쪼개어 정복해 나가는 끈기가 핵심입니다.`;
-      timing = `집중력이 극대화되고 시험관이나 채점관에게 좋은 인상을 주는 합격 및 문서 취득의 골든 타임은 2026년 음력 8월(酉월) 및 9월(戌월)의 대길한 문서운 시기입니다.`;
-      actionPlan = `1. 공부방이나 책상을 행운의 방위인 남서쪽이나 서쪽을 향하도록 배치하여 집중의 밀도를 높이십시오.\n2. 중요한 시험 당일에는 노란색(土)이나 브라운 계열의 의상을 입거나 필기구를 소지하여 문서의 수호 기운을 보충하십시오.\n3. 매일 아침 간단한 일일 투두리스트를 서면으로 작성하고 완료 시 체크하는 방식으로 성취감을 의식적으로 유도하십시오.`;
-    } else if (hasJob) {
-      analysis = `의뢰인 ${name}님께서 고민하고 계신 직장 생활 및 이직/퇴사 안건["${cleanedText}"]에 대한 사주 매칭 정밀 처방입니다. 귀하의 명식은 강한 주체성과 식상(표현 및 행동력)이 발달해 있어, 직장 상사의 비합리적인 지시나 융통성 없는 조직의 룰(관성)에 억눌릴 때 강한 이직 충동을 느낍니다. 이는 한때의 권태기가 아니며, 내 안의 에너지가 스스로 통제권을 쥐고 일어서려 하는 변화의 흐름과 맞닿아 있습니다.`;
-      timing = `가장 유리한 구직 및 이동의 타이밍은 나를 지탱하고 도와줄 관성(직장운)과 인성(문서/합격운)이 견고하게 들어오는 음력 7~9월 사이입니다. 상반기에 무작정 퇴사하기보다는 재직 중 이직처를 확정하고 가을경 이동하시는 것을 추천합니다.`;
-      actionPlan = `1. 회사에서는 나만의 고유 영역을 확실히 나누고 감정적 논쟁은 일체 차단하여 에너지를 절약하십시오.\n2. 행운의 색상인 화이트(金)나 실버 액세서리를 착용하여 신뢰감을 주는 이미지를 메이킹하십시오.\n3. 이직을 진행할 때 서쪽(西) 방향에 위치한 회사나 기관이 귀하에게 훨씬 유리한 기운을 제공합니다.`;
-    } else if (hasLove) {
-      analysis = `의뢰인 ${name}님께서 겪고 계신 인연 및 연애/관계 갈등["${cleanedText}"]에 대한 명리학적 대답입니다. 명식상 귀하는 한 번 마음을 준 인연에게 신뢰를 아끼지 않으나, 기대치에 어긋나거나 관계의 불확실성이 지속되면 극심한 마음고생을 겪으며 문을 닫아버리는 섬세한 성향을 가졌습니다. 현재 겪는 고착 상태는 상대방과의 기운의 온도 차이로 인해 대화 주파수가 맞지 않아 발생한 일시적 흐름입니다.`;
-      timing = `서로의 오해가 풀리고 막혔던 소통의 흐름이 물꼬를 트는 시기는 음력 10월(亥월) 및 11월(子월) 즈음입니다. 이 시기에 수(水) 기운의 융합이 자연스럽게 일어나 오해가 눈 녹듯 풀릴 수 있으니, 그전까지는 감정적인 다그침을 거두고 기다리셔야 합니다.`;
-      actionPlan = `1. 상대방의 연락 속도에 예민하게 반응하지 말고 의식적으로 나의 관심사를 다른 취미로 돌리십시오.\n2. 따뜻한 붉은색 계열(火)의 홈웨어 또는 포인트 조명을 활용하면 서로의 긴장을 누그러뜨리는 효과가 있습니다.\n3. 대화를 시도할 때는 서로 마주 보는 자리보다 나란히 걸으며 이야기할 때 감정의 대립을 막아줍니다.`;
-    } else if (hasMoney) {
-      analysis = `의뢰인 ${name}님의 재정적 고민 및 재물/투자 갈등["${cleanedText}"]에 대한 정밀 비책입니다. 귀하의 명조는 버는 능력(식상)에 비해 나가는 누수 경로(재성 결합력 부족)를 제어하는 제어판이 약해, 목돈이 생기면 주변의 솔깃한 투자 권유(주식 단타, 고위험 코인, 부동산 모험)에 휩쓸려 예상 밖의 손실을 입기 쉬운 체질입니다. 무분별한 베팅은 절대 피해야 합니다.`;
-      timing = `목돈이 묶이거나 자금난이 해소되는 시기는 대지(土)의 기운이 굳건하게 작용하는 가을~겨울 철입니다. 상반기의 무리한 신규 투자는 절대 피하시고 하반기(음력 9월 이후)에 안정성을 담보한 장기 채권이나 실물 위주로 분산투자 하시는 것이 최선입니다.`;
-      actionPlan = `1. 현금 흐름의 60% 이상은 수동적 예적금이나 연금저축 같이 임의 출금이 불가능한 금융 바구니에 고정시키십시오.\n2. 노란색(土) 지갑이나 브라운 계열의 의상을 입으면 재물이 밖으로 누수되는 기운을 비보(裨補)해 줍니다.\n3. 거래 계약 시 노란 색상의 낙관 도장을 사용하면 문수의 흉한 기운을 막아주는 힘이 생깁니다.`;
-    } else if (category === "business") {
-      analysis = `의뢰인 ${name}님의 사업체 운영 및 비즈니스 경영상 겪고 계신 갈등["${cleanedText}"]에 대한 사주 정밀 분석입니다. 사주 내 과도한 화(火) 기운이 발현될 때, 조급한 투자 결정이나 감정적인 거래선 확장은 불필요한 금전적 리스크를 유발합니다. 또한 동업자나 고용 직원과의 갈등, 의견 대립이 잦아져 경영 전반에 마찰음이 커질 수 있으니 수(水)의 유연함과 통찰을 바탕으로 차분하게 내실을 수성하는 전략이 급선무입니다.`;
-      timing = `새로운 비즈니스 계약이나 자금 집행, 사업장 이동은 하늘의 금(金) 기운과 수(水) 기운이 조화롭게 흐르는 음력 8월(酉월) 하반기 및 10월(亥월)이 가장 길합니다. 이 시기에 추진하시는 계약은 리스크가 최소화되고 안정적인 결실을 보장받습니다.`;
-      actionPlan = `1. 사업장 내 북쪽(水) 방향에 수경 식물이나 미니 분수를 배치해 과열된 기운을 차분히 식히십시오.\n2. 중요 미팅이나 계약 날인 시 신뢰도와 차분한 기품을 주는 다크 네이비(水) 계열 의상을 착용하십시오.\n3. 동업 또는 하도급 계약서 작성 시 당일 즉시 서명하기보다 반드시 최소 3일간의 내부 검토 기간을 두는 필터링 룰을 적용해 손재수를 철저히 예방하십시오.`;
-    } else if (category === "startup") {
-      analysis = `의뢰인 ${name}님의 신규 창업 및 부업 개시 안건["${cleanedText}"]에 대한 명리 솔루션입니다. 귀하의 타고난 명조는 자기 브랜드를 구축하고자 하는 욕구(식상생재)가 매우 발달해 있습니다. 다만, 아직 경험이 완전히 축적되지 않은 상태에서 대출 비중을 높여 무리하게 진입하면 초기 고정비 과부하로 인한 큰 손실 위험이 있습니다. 소자본 및 온라인 채널을 통한 린 스타트업(Lean Startup) 형태의 철저한 테스트가 우선입니다.`;
-      timing = `실제 매장을 오픈하거나 정식 사업자 등록을 하기에 가장 좋은 절기적 타이밍은 차가운 기운이 안정적으로 스며들어 감정적 조급함을 제어해 주는 음력 10월(亥월) 이후입니다.`;
-      actionPlan = `1. 초기에 매장 임차료나 인테리어 설비 같은 하드웨어 비용 투자를 최소화하고, service/콘텐츠 등의 소프트웨어 위주로 시범 론칭하십시오.\n2. 노란색(土)이나 브라운 컬러를 로고나 사무 집기에 적용하여 신뢰와 중개력을 돕는 토의 기운을 보완하십시오.\n3. 창업 파트너나 조력자를 구할 때 사주 상 물(水)이나 금(金) 기운이 많고 냉철한 성품을 지닌 인물과 손잡을 때 내 부족한 추진력을 완벽히 비보해 줍니다.`;
-    } else if (category === "trade") {
-      analysis = `의뢰인 ${name}님의 장사 및 물류 유통 사업["${cleanedText}"]에 대한 역학 솔루션입니다. 장사와 유통은 고객과의 잦은 대면 소통과 끊임없는 유동성 관리가 본질입니다. 귀하의 사주는 대인 친화력이 뛰어나 단골 유치에는 유리하지만, 외상 거래나 인정에 끌린 무리한 어음/미수금 거래로 인해 현금이 묶여 고통받을 수 있는 약점이 있습니다. 철저한 선결제 시스템 구축과 마진 구조의 개혁이 핵심입니다.`;
-      timing = `매출 활성화가 정점에 달하고 유통망이 매끄럽게 뚫리는 시기는 금(金)의 결실 에너지가 사주의 중심을 잡아주는 음력 7~9월 가을철입니다.`;
-      actionPlan = `1. 카운터나 매장 입구에 붉은색(火) 계열의 행운 장식품이나 은은한 향을 매칭하여 손님들의 호기심과 발길을 자극하십시오.\n2. 거래처 미팅 시 흰색(金) 상의를 착용하여 공사 구분이 확실하고 결단력 있는 이미지를 보여주십시오.\n3. 매장 내부의 서쪽(西) 방향을 밝게 정리하고, 현금 금고를 노란색 비단 천에 싸서 서쪽 서랍에 깊숙이 보관하십시오.`;
-    } else if (category === "facility") {
-      analysis = `의뢰인 ${name}님의 설비투자 및 사업장 확장, 장비 구입["${cleanedText}"]에 대한 금전 비책입니다. 기계, 공장 설비, 신규 하드웨어를 구매하거나 대형 리모델링에 착수하는 것은 사주의 문서운(인성)과 장비 계약운(관성)이 깨끗할 때 진입해야 고장이나 시공 하자, 이자 비용의 폭증을 피할 수 있습니다. 현재의 충살 기운 하에서는 성급하게 고가의 장비를 리스하거나 확장 계약을 맺으면 향후 골칫거리가 될 수 있습니다.`;
-      timing = `계약 체결 및 설비 입고에 가장 하자가 없고 안전한 골든 타임은 문서 기운이 가장 안정되는 2026년 음력 8월(酉월) 하반기 및 9월(戌월)입니다.`;
-      actionPlan = `1. 계약 체결 시 반드시 보증보험이나 하자보수 서약서를 이중으로 징구하여 예상치 못한 파손 리스크에 대비하십시오.\n2. 노란색(土) 가죽 다이어리나 서류 바인더에 설비 도면과 서류를 보관하여 계약 체결 시 발생하는 살(煞)을 정화하십시오.\n3. 계약서 날인 당일에는 15분 동안 반신욕이나 족욕을 통해 몸의 열기를 다스린 후 가장 이성적이고 차분한 상태에서 최종 확인을 거쳐 서명하십시오.`;
-    } else if (category === "career") {
-      analysis = `의뢰인 ${name}님께서 고민하고 계신 직장 생활 및 이직/퇴사 안건["${cleanedText}"]에 대한 사주 매칭 정밀 처방입니다. 귀하의 명식은 강한 주체성과 식상(표현 및 행동력)이 발달해 있어, 직장 상사의 비합리적인 지시나 융통성 없는 조직의 룰(관성)에 억눌릴 때 강한 이직 충동을 느낍니다. 이는 한때의 권태기가 아니며, 내 안의 에너지가 스스로 통제권을 쥐고 일어서려 하는 변화의 흐름과 맞닿아 있습니다.`;
-      timing = `가장 유리한 구직 및 이동의 타이밍은 나를 지탱하고 도와줄 관성(직장운)과 인성(문서/합격운)이 견고하게 들어오는 음력 7~9월 사이입니다. 상반기에 무작정 퇴사하기보다는 재직 중 이직처를 확정하고 가을경 이동하시는 것을 추천합니다.`;
-      actionPlan = `1. 회사에서는 나만의 고유 영역을 확실히 나누고 감정적 논쟁은 일체 차단하여 에너지를 절약하십시오.\n2. 행운의 색상인 화이트(金)나 실버 액세서리를 착용하여 신뢰감을 주는 이미지를 메이킹하십시오.\n3. 이직을 진행할 때 서쪽(西) 방향에 위치한 회사나 기관이 귀하에게 훨씬 유리한 기운을 제공합니다.`;
-    } else if (category === "love") {
-      analysis = `의뢰인 ${name}님께서 겪고 계신 인연 및 연애/관계 갈등["${cleanedText}"]에 대한 명리학적 대답입니다. 명식상 귀하는 한 번 마음을 준 인연에게 신뢰를 아끼지 않으나, 기대치에 어긋나거나 관계의 불확실성이 지속되면 극심한 마음고생을 겪으며 문을 닫아버리는 섬세한 성향을 가졌습니다. 현재 겪는 고착 상태는 상대방과의 기운의 온도 차이로 인해 대화 주파수가 맞지 않아 발생한 일시적 흐름입니다.`;
-      timing = `서로의 오해가 풀리고 막혔던 소통의 흐름이 물꼬를 트는 시기는 음력 10월(亥월) 및 11월(子월) 즈음입니다. 이 시기에 수(水) 기운의 융합이 자연스럽게 일어나 오해가 눈 녹듯 풀릴 수 있으니, 그전까지는 감정적인 다그침을 거두고 기다리셔야 합니다.`;
-      actionPlan = `1. 상대방의 연락 속도에 예민하게 반응하지 말고 의식적으로 나의 관심사를 다른 취미로 돌리십시오.\n2. 따뜻한 붉은색 계열(火)의 홈웨어 또는 포인트 조명을 활용하면 서로의 긴장을 누그러뜨리는 효과가 있습니다.\n3. 대화를 시도할 때는 서로 마주 보는 자리보다 나란히 걸으며 이야기할 때 감정의 대립을 막아줍니다.`;
-    } else if (category === "wealth") {
-      analysis = `의뢰인 ${name}님의 재정적 고민 및 재물/투자 갈등["${cleanedText}"]에 대한 정밀 비책입니다. 귀하의 명조는 버는 능력(식상)에 비해 나가는 누수 경로(재성 결합력 부족)를 제어하는 제어판이 약해, 목돈이 생기면 주변의 솔깃한 투자 권유(주식 단타, 고위험 코인, 부동산 모험)에 휩쓸려 예상 밖의 손실을 입기 쉬운 체질입니다. 무분별한 베팅은 절대 피해야 합니다.`;
-      timing = `목돈이 묶이거나 자금난이 해소되는 시기는 대지(土)의 기운이 굳건하게 작용하는 가을~겨울 철입니다. 상반기의 무리한 신규 투자는 절대 피하시고 하반기(음력 9월 이후)에 안정성을 담보한 장기 채권이나 실물 위주로 분산투자 하시는 것이 최선입니다.`;
-      actionPlan = `1. 현금 흐름의 60% 이상은 수동적 예적금이나 연금저축 같이 임의 출금이 불가능한 금융 바구니에 고정시키십시오.\n2. 노란색(土) 지갑이나 브라운 계열의 의상을 입으면 재물이 밖으로 누수되는 기운을 비보(裨補)해 줍니다.\n3. 거래 계약 시 노란 색상의 낙관 도장을 사용하면 문수의 흉한 기운을 막아주는 힘이 생깁니다.`;
-    } else {
-      analysis = `의뢰인 ${name}님께서 적어주신 인생의 고뇌["${cleanedText}"]에 대한 따뜻한 명리학적 위로와 해결책입니다. 귀하가 느끼시는 마음에 낀 안개와 정체는 사주 속 특정 오행의 흐름이 한자리에 고여 원활하게 소통되지 못해 생겨난 감정적 피로입니다. 모든 것을 내 책임으로 돌리고 혼자 짊어지려는 곧은 기질로 인해 번아웃에 직면해 있으니, 타인의 기대에 맞추기보다 나를 아끼는 것이 최우선 과제입니다.`;
-      timing = `정체된 흐름이 풀려 마음의 안정을 찾을 수 있는 시기는 귀하의 기운을 다정하게 감싸줄 목(木)과 화(火)의 생동하는 에너지가 들어오는 음력 6~7월 사이입니다.`;
-      actionPlan = `1. 타인의 무리한 부탁이나 기대에 대해 '아니오'라고 단호하고 완곡하게 거절하는 연습을 시작하십시오.\n2. 침실 내 싱그러운 초록 식물이나 화분을 배치하여 정체된 감정을 순화시키는 자연 개운을 도우십시오.\n3. 취침 전 하루의 스트레스를 땀으로 내보내는 20분간의 족욕을 통해 위는 차갑고 아래는 따뜻한 수승화강을 실천하십시오.`;
+      return {
+        analysis: `의뢰인 ${name}님의 건강 상태 및 심신의 안녕["${cleanedText}"]에 대한 명리학적 케어 가이드입니다. 사주 내 특정 오행(특히 화기운의 과다 혹은 수기운의 결핍)이 불균형을 이룰 때 피로가 누적되고 신경성 질환이나 면역력 약화가 찾아오기 쉽습니다. 몸의 적신호는 단순히 체력의 문제가 아니라, 마음의 응어리와 기운의 불통이 신체로 발현되는 과정입니다. 스스로를 가혹하게 채찍질하기보다 쉼표를 찍어줄 때입니다.`,
+        timing: `정체된 기운이 소통되고 신체 리듬이 안정을 찾는 가장 길한 시기는 오행의 열기를 식히고 윤활유를 채워주는 가을철(음력 7~8월) 및 겨울철(음력 10~11월)입니다.`,
+        actionPlan: `1. 매일 취침 전 15~20분간 따뜻한 물로 족욕을 실천하여 머리의 열을 내리고 아래를 따뜻하게 하는 수승화강(水昇火降)을 도우십시오.\n2. 자연의 목(木) 기운을 보완하기 위해 녹색 식물을 방에 두거나 가벼운 숲길 산책을 일상화하십시오.\n3. 신맛이 나는 차(오미자, 매실)나 따뜻한 보리차를 수시로 음용하여 마른 체내에 수분을 보충해 주십시오.`
+      };
+    }
+    if (hasStudy) {
+      return {
+        analysis: `의뢰인 ${name}님의 학업 성취, 자격증 취득 및 시험 합격 안건["${cleanedText}"]에 대한 명리 분석입니다. 시험과 공부는 사주에서 문서와 인내를 뜻하는 인성(印星)의 기운이 지지해 줄 때 합격의 문이 넓어집니다. 의욕이 앞설 때 집중력이 흩어지기 쉬운 구조를 가졌으니, 한 번에 여러 공부를 하기보다 하나의 목표를 잘게 쪼개어 정복해 나가는 끈기가 핵심입니다.`,
+        timing: `집중력이 극대화되고 시험관이나 채점관에게 좋은 인상을 주는 합격 및 문서 취득의 골든 타임은 2026년 음력 8월(酉월) 및 9월(戌월)의 대길한 문서운 시기입니다.`,
+        actionPlan: `1. 공부방이나 책상을 행운의 방위인 남서쪽이나 서쪽을 향하도록 배치하여 집중의 밀도를 높이십시오.\n2. 중요한 시험 당일에는 노란색(土)이나 브라운 계열의 의상을 입거나 필기구를 소지하여 문서의 수호 기운을 보충하십시오.\n3. 매일 아침 간단한 일일 투두리스트를 서면으로 작성하고 완료 시 체크하는 방식으로 성취감을 의식적으로 유도하십시오.`
+      };
+    }
+    if (hasJob) {
+      return {
+        analysis: `의뢰인 ${name}님께서 고민하고 계신 직장 생활 및 이직/퇴사 안건["${cleanedText}"]에 대한 사주 매칭 정밀 처방입니다. 귀하의 명식은 강한 주체성과 식상(표현 및 행동력)이 발달해 있어, 직장 상사의 비합리적인 지시나 융통성 없는 조직의 룰(관성)에 억눌릴 때 강한 이직 충동을 느낍니다. 이는 한때의 권태기가 아니며, 내 안의 에너지가 스스로 통제권을 쥐고 일어서려 하는 변화의 흐름과 맞닿아 있습니다.`,
+        timing: `가장 유리한 구직 및 이동의 타이밍은 나를 지탱하고 도와줄 관성(직장운)과 인성(문서/합격운)이 견고하게 들어오는 음력 7~9월 사이입니다. 상반기에 무작정 퇴사하기보다는 재직 중 이직처를 확정하고 가을경 이동하시는 것을 추천합니다.`,
+        actionPlan: `1. 회사에서는 나만의 고유 영역을 확실히 나누고 감정적 논쟁은 일체 차단하여 에너지를 절약하십시오.\n2. 행운의 색상인 화이트(金)나 실버 액세서리를 착용하여 신뢰감을 주는 이미지를 메이킹하십시오.\n3. 이직을 진행할 때 서쪽(西) 방향에 위치한 회사나 기관이 귀하에게 훨씬 유리한 기운을 제공합니다.`
+      };
+    }
+    if (hasLove) {
+      return {
+        analysis: `의뢰인 ${name}님께서 겪고 계신 인연 및 연애/관계 갈등["${cleanedText}"]에 대한 명리학적 대답입니다. 명식상 귀하는 한 번 마음을 준 인연에게 신뢰를 아끼지 않으나, 기대치에 어긋나거나 관계의 불확실성이 지속되면 극심한 마음고생을 겪으며 문을 닫아버리는 섬세한 성향을 가졌습니다. 현재 겪는 고착 상태는 상대방과의 기운의 온도 차이로 인해 대화 주파수가 맞지 않아 발생한 일시적 흐름입니다.`,
+        timing: `서로의 오해가 풀리고 막혔던 소통의 흐름이 물꼬를 트는 시기는 음력 10월(亥월) 및 11월(子월) 즈음입니다. 이 시기에 수(水) 기운의 융합이 자연스럽게 일어나 오해가 눈 녹듯 풀릴 수 있으니, 그전까지는 감정적인 다그침을 거두고 기다리셔야 합니다.`,
+        actionPlan: `1. 상대방의 연락 속도에 예민하게 반응하지 말고 의식적으로 나의 관심사를 다른 취미로 돌리십시오.\n2. 따뜻한 붉은색 계열(火)의 홈웨어 또는 포인트 조명을 활용하면 서로의 긴장을 누그러뜨리는 효과가 있습니다.\n3. 대화를 시도할 때는 서로 마주 보는 자리보다 나란히 걸으며 이야기할 때 감정의 대립을 막아줍니다.`
+      };
+    }
+    if (hasMoney) {
+      return {
+        analysis: `의뢰인 ${name}님의 재정적 고민 및 재물/투자 갈등["${cleanedText}"]에 대한 정밀 비책입니다. 귀하의 명조는 버는 능력(식상)에 비해 나가는 누수 경로(재성 결합력 부족)를 제어하는 제어판이 약해, 목돈이 생기면 주변의 솔깃한 투자 권유(주식 단타, 고위험 코인, 부동산 모험)에 휩쓸려 예상 밖의 손실을 입기 쉬운 체질입니다. 무분별한 베팅은 절대 피해야 합니다.`,
+        timing: `목돈이 묶이거나 자금난이 해소되는 시기는 대지(土)의 기운이 굳건하게 작용하는 가을~겨울 철입니다. 상반기의 무리한 신규 투자는 절대 피하시고 하반기(음력 9월 이후)에 안정성을 담보한 장기 채권이나 실물 위주로 분산투자 하시는 것이 최선입니다.`,
+        actionPlan: `1. 현금 흐름의 60% 이상은 수동적 예적금이나 연금저축 같이 임의 출금이 불가능한 금융 바구니에 고정시키십시오.\n2. 노란색(土) 지갑이나 브라운 계열의 의상을 입으면 재물이 밖으로 누수되는 기운을 비보(裨補)해 줍니다.\n3. 거래 계약 시 노란 색상의 낙관 도장을 사용하면 문수의 흉한 기운을 막아주는 힘이 생깁니다.`
+      };
     }
 
-    return { analysis, timing, actionPlan };
+    return {
+      analysis: `의뢰인 ${name}님께서 적어주신 인생의 고뇌["${cleanedText}"]에 대한 따뜻한 명리학적 위로와 해결책입니다. 귀하가 느끼시는 마음에 낀 안개와 정체는 사주 속 특정 오행의 흐름이 한자리에 고여 원활하게 소통되지 못해 생겨난 감정적 피로입니다. 모든 것을 내 책임으로 돌리고 혼자 짊어지려는 곧은 기질로 인해 번아웃에 직면해 있으니, 타인의 기대에 맞추기보다 나를 아끼는 것이 최우선 과제입니다.`,
+      timing: `정체된 흐름이 풀려 마음의 안정을 찾을 수 있는 시기는 귀하의 기운을 다정하게 감싸줄 목(木)과 화(火)의 생동하는 에너지가 들어오는 음력 6~7월 사이입니다.`,
+      actionPlan: `1. 타인의 무리한 부탁이나 기대에 대해 '아니오'라고 단호하고 완곡하게 거절하는 연습을 시작하십시오.\n2. 침실 내 싱그러운 초록 식물이나 화분을 배치하여 정체된 감정을 순화시키는 자연 개운을 도우십시오.\n3. 취침 전 하루의 스트레스를 땀으로 내보내는 20분간의 족욕을 통해 위는 차갑고 아래는 따뜻한 수승화강을 실천하십시오.`
+    };
   };
 
-  const personalizedText = getPersonalizedSolution(name, worryText, worryCategory);
+  const getCategorySolution = (name, category) => {
+    if (category === "business") {
+      return {
+        analysis: `의뢰인 ${name}님의 사업체 운영 및 비즈니스 경영상 겪고 계신 갈등에 대한 사주 정밀 분석입니다. 사주 내 과도한 화(火) 기운이 발현될 때, 조급한 투자 결정이나 감정적인 거래선 확장은 불필요한 금전적 리스크를 유발합니다. 또한 동업자나 고용 직원과의 갈등, 의견 대립이 잦아져 경영 전반에 마찰음이 커질 수 있으니 수(水)의 유연함과 통찰을 바탕으로 차분하게 내실을 수성하는 전략이 급선무입니다.`,
+        timing: `새로운 비즈니스 계약이나 자금 집행, 사업장 이동은 하늘의 금(金) 기운과 수(水) 기운이 조화롭게 흐르는 음력 8월(酉월) 하반기 및 10월(亥월)이 가장 gil합니다. 이 시기에 추진하시는 계약은 리스크가 최소화되고 안정적인 결실을 보장받습니다.`,
+        actionPlan: `1. 사업장 내 북쪽(水) 방향에 수경 식물이나 미니 분수를 배치해 과열된 기운을 차분히 식히십시오.\n2. 중요 미팅이나 계약 날인 시 신뢰도와 차분한 기품을 주는 다크 네이비(水) 계열 의상을 착용하십시오.\n3. 동업 또는 하도급 계약서 작성 시 당일 즉시 서명하기보다 반드시 최소 3일간의 내부 검토 기간을 두는 필터링 룰을 적용해 손재수를 철저히 예방하십시오.`
+      };
+    }
+    if (category === "startup") {
+      return {
+        analysis: `의뢰인 ${name}님의 신규 창업 및 부업 개시 안건에 대한 명리 솔루션입니다. 귀하의 타고난 명조는 자기 브랜드를 구축하고자 하는 욕구(식상생재)가 매우 발달해 있습니다. 다만, 아직 경험이 완전히 축적되지 않은 상태에서 대출 비중을 높여 무리하게 진입하면 초기 고정비 과부하로 인한 큰 손실 위험이 있습니다. 소자본 및 온라인 채널을 통한 린 스타트업(Lean Startup) 형태의 철저한 테스트가 우선입니다.`,
+        timing: `실제 매장을 오픈하거나 정식 사업자 등록을 하기에 가장 좋은 절기적 타이밍은 차가운 기운이 안정적으로 스며들어 감정적 조급함을 제어해 주는 음력 10월(亥월) 이후입니다.`,
+        actionPlan: `1. 초기에 매장 임차료나 인테리어 설비 같은 하드웨어 비용 투자를 최소화하고, 서비스/콘텐츠 등의 소프트웨어 위주로 시범 론칭하십시오.\n2. 노란색(土)이나 브라운 컬러를 로고나 사무 집기에 적용하여 신뢰와 중개력을 돕는 토의 기운을 보완하십시오.\n3. 창업 파트너나 조력자를 구할 때 사주 상 물(水)이나 금(金) 기운이 많고 냉철한 성품을 지닌 인물과 손잡을 때 내 부족한 추진력을 완벽히 비보해 줍니다.`
+      };
+    }
+    if (category === "trade") {
+      return {
+        analysis: `의뢰인 ${name}님의 장사 및 물류 유통 사업에 대한 역학 솔루션입니다. 장사와 유통은 고객과의 잦은 대면 소통과 끊임없는 유동성 관리가 본질입니다. 귀하의 사주는 대인 친화력이 뛰어나 단골 유치에는 유리하지만, 외상 거래나 인정에 끌린 무리한 어음/미수금 거래로 인해 현금이 묶여 고통받을 수 있는 약점이 있습니다. 철저한 선결제 시스템 구축과 마진 구조의 개혁이 핵심입니다.`,
+        timing: `매출 활성화가 정점에 달하고 유통망이 매끄럽게 뚫리는 시기는 금(金)의 결실 에너지가 사주의 중심을 잡아주는 음력 7~9월 가을철입니다.`,
+        actionPlan: `1. 카운터나 매장 입구에 붉은색(火) 계열의 행운 장식품이나 은은한 향을 매칭하여 손님들의 호기심과 발길을 자극하십시오.\n2. 거래처 미팅 시 흰색(金) 상의를 착용하여 공사 구분이 확실하고 결단력 있는 이미지를 보여주십시오.\n3. 매장 내부의 서쪽(西) 방향을 밝게 정리하고, 현금 금고를 노란색 비단 천에 싸서 서쪽 서랍에 깊숙이 보관하십시오.`
+      };
+    }
+    if (category === "facility") {
+      return {
+        analysis: `의뢰인 ${name}님의 설비투자 및 사업장 확장, 장비 구입에 대한 금전 비책입니다. 기계, 공장 설비, 신규 하드웨어를 구매하거나 대형 리모델링에 착수하는 것은 사주의 문서운(인성)과 장비 계약운(관성)이 깨끗할 때 진입해야 고장이나 시공 하자, 이자 비용의 폭증을 피할 수 있습니다. 현재의 충살 기운 하에서는 성급하게 고가의 장비를 리스하거나 확장 계약을 맺으면 향후 골칫거리가 될 수 있습니다.`,
+        timing: `계약 체결 및 설비 입고에 가장 하자가 없고 안전한 골든 타임은 문서 기운이 가장 안정되는 2026년 음력 8월(酉월) 하반기 및 9월(戌월)입니다.`,
+        actionPlan: `1. 계약 체결 시 반드시 보증보험이나 하자보수 서약서를 이중으로 징구하여 예상치 못한 파손 리스크에 대비하십시오.\n2. 노란색(土) 가죽 다이어리나 서류 바인더에 설비 도면과 서류를 보관하여 계약 체결 시 발생하는 살(煞)을 정화하십시오.\n3. 계약서 날인 당일에는 15분 동안 반신욕이나 족욕을 통해 몸의 열기를 다스린 후 가장 이성적이고 차분한 상태에서 최종 확인을 거쳐 서명하십시오.`
+      };
+    }
+    if (category === "career") {
+      return {
+        analysis: `의뢰인 ${name}님께서 고민하고 계신 직장 생활 및 커리어 발전에 대한 사주 매칭 정밀 처방입니다. 귀하의 명식은 강한 주체성과 식상(표현 및 행동력)이 발달해 있어, 직장 내 비합리적인 규율이나 한계에 부딪칠 때 강한 정체감을 느끼기 쉽습니다. 이는 단순한 피로가 아니라 귀하의 커리어 에너지가 새로운 전환점과 마주하고 있음을 의미합니다. 내실을 차분히 축적하여 한 단계 올라서야 할 때입니다.`,
+        timing: `나를 지탱하고 도와줄 조직운(관성)과 기획/문서운(인성)이 결합하여 유리한 기류를 만드는 시기는 음력 7~9월 사이입니다. 이 시기에 중요한 직무 조정이나 이직 제안이 들어온다면 적극적으로 검토해 보십시오.`,
+        actionPlan: `1. 사내 불필요한 세력 다툼이나 감정 논쟁은 완곡히 피하고 나만의 실적 지표를 증명하는 데 집중하십시오.\n2. 행운의 색상인 화이트(金)나 메탈/실버 액세서리를 착용하여 냉철하고 신뢰감을 주는 전문적 매력을 어필하십시오.\n3. 업무 공간의 서쪽(西) 방향을 항상 깔끔하고 밝게 유지하여 커리어운을 보호하십시오.`
+      };
+    }
+    if (category === "love") {
+      return {
+        analysis: `의뢰인 ${name}님께서 겪고 계신 인연 및 연애/가정 관계에 대한 명리학적 대안입니다. 귀하는 관계에서 신뢰와 정성을 다하지만, 기류의 조화가 맞지 않는 과도기적 시기에는 사소한 마찰로 인연의 평화가 쉽게 손상될 수 있습니다. 대화 시 논쟁적인 태도를 지양하고 서로의 영역을 존중하는 유연함이 가정을 평안히 지키는 기둥입니다.`,
+        timing: `기류가 순탄하게 융합되고 정서적인 공감대가 넓어지는 골든 타이밍은 수(水) 기운이 찾아와 열기를 다스리는 음력 10월 및 11월입니다.`,
+        actionPlan: `1. 상대방의 의견에 즉각 반박하기 전에 '10초만 눈을 감고 듣기'를 실천하여 감정의 비화를 예방하십시오.\n2. 관계의 긴장감을 완화하기 위해 방안이나 대화 공간에 은은한 붉은색(火) 계열의 간접 조명을 켜 두십시오.\n3. 산책이나 외부의 가벼운 동반 야외 활동을 통해 신선한 공기를 불어넣는 개운을 추천합니다.`
+      };
+    }
+    if (category === "wealth") {
+      return {
+        analysis: `의뢰인 ${name}님의 재물운 흐름과 재정 안정화에 대한 사주 정밀 분석입니다. 사주 내 누수 경향을 잡고 복록을 수성하려면, 무리한 단기 차익 실현 목적의 투자보다 안전한 장기 가치 중심의 저축 습관을 정비해야 합니다. 귀하의 기운은 외부의 유혹에 일시적으로 흔들리기 쉬우니 보수적인 자세를 고수하는 것이 최선입니다.`,
+        timing: `재물의 누수가 멈추고 현금의 흐름이 다시 영양가 있게 채워지는 시기는 토(土)와 금(金) 기운이 보충되는 가을철(음력 8~9월)입니다.`,
+        actionPlan: `1. 자산의 일정 비율 이상은 강제 납입 예적금 등 해지가 어려운 고정 금전 금고에 묶어 두십시오.\n2. 황금색(토)이나 브라운 계열의 소품을 지갑이나 가방 안에 넣어두어 기운적 비보를 다하십시오.\n3. 중요 계약 조율 시 노란색 도장이나 노란 펜을 활용해 문서운의 견고함을 돕게 설계하십시오.`
+      };
+    }
+
+    return {
+      analysis: `의뢰인 ${name}님의 사주 기질과 운세를 바탕으로 도출한 인생 전반의 총체적 갈등 해소 및 개운 비책입니다. 귀하의 기운은 주체적이고 독립적인 성향이 돋보이며, 삶을 스스로 개척하려는 에너지가 강하게 흐릅니다. 다만, 세운의 기류 마찰로 인해 일시적으로 답답함이 유입될 수 있으니 생각을 비우는 지혜가 필요합니다.`,
+      timing: `조급하게 답을 내리려 하기보다, 음력 8월(酉월) 이후 흩어진 토(土) 기운이 찾아와 현실적인 자리를 잡아줄 때 구체적인 선택을 하는 것이 길합니다.`,
+      actionPlan: `1. 노란색이나 밝은 브라운 계열의 소품을 가까이 두어 부족한 안정을 도우십시오.\n2. 매사에 완벽을 추구하여 나를 혹사시키지 말고, 하루 20분 명상이나 가벼운 산책으로 생각을 비우십시오.\n3. 동쪽 방향과의 상성이 좋으니 답답할 땐 동쪽 교외로 나들이를 떠나보시길 권합니다.`
+    };
+  };
+
+  const textSolution = getWorryTextSolution(name, worryText);
+  const categorySolution = getCategorySolution(name, worryCategory);
+
+  // 다른 컴포넌트 및 알림톡 수신본을 위한 하위 호환성 personalizedText 선언
+  const personalizedText = {
+    analysis: (textSolution ? textSolution.analysis : "") + 
+              (textSolution && categorySolution ? "\n\n" : "") + 
+              (categorySolution ? categorySolution.analysis : "") || 
+              `의뢰인 ${name}님의 사주 기질과 운세를 바탕으로 도출한 총론입니다. 귀하의 기운은 주체적이고 독립적인 성향이 돋보이며, 주변의 간섭에서 벗어나 스스로 삶을 주도하려는 에너지가 강하게 흐릅니다.`,
+    timing: (textSolution ? textSolution.timing : "") + 
+            (textSolution && categorySolution ? "\n\n" : "") + 
+            (categorySolution ? categorySolution.timing : "") || 
+            `조급하게 답을 내리려 하기보다, 음력 8월(酉월) 이후 흩어진 토(土) 기운이 찾아와 현실적인 자리를 잡아줄 때 구체적인 선택을 하는 것이 길합니다.`,
+    actionPlan: (textSolution ? textSolution.actionPlan : "") + 
+                (textSolution && categorySolution ? "\n\n" : "") + 
+                (categorySolution ? categorySolution.actionPlan : "") || 
+                `1. 노란색이나 밝은 브라운 계열의 소품을 가까이 두어 부족한 안정을 도우십시오.\n2. 매사에 완벽을 추구하여 나를 혹사시키지 말고, 하루 20분 명상이나 가벼운 산책으로 생각을 비우십시오.`
+  };
 
   const getElementColor = (el) => {
     switch (el) {
@@ -3840,28 +4078,46 @@ function ResultContent() {
       { page: 38, type: "ny_gwiin_harmony", title: "신년 인연 및 귀인 조화 분석" },
       { page: 39, type: "ny_warning_period", title: "치명적인 액난 경보 및 방어 비책" }, // 심화 (고급 제외 #3)
       { page: 40, type: "ny_worry_solution", title: "고민 해결 맞춤형 솔루션" }, // 심화 (고급 제외 #4)
-      { page: 41, type: "ny_roadmap_2027", title: "2027년 정미년(丁未年) 세운 로드맵" }, // 심화 (고급 제외 #5)
-      { page: 42, type: "ny_roadmap_2028", title: "2028년 무신년(戊申年) 세운 로드맵" }, // 심화 (고급 제외 #6)
-      { page: 43, type: "ny_roadmap_2029", title: "2029년 기유년(己酉年) 세운 로드맵" }, // 심화 (고급 제외 #7)
-      { page: 44, type: "ny_roadmap_2030", title: "2030년 경술년(庚戌年) 세운 로드맵" },
-      { page: 45, type: "ny_roadmap_2031", title: "2031년 신해년(辛亥年) 세운 로드맵" },
-      { page: 46, type: "ny_action_rules", title: "신년 개운 실천 3대 행동 강령" },
-      { page: 47, type: "ny_fengshui_interior", title: "신년 공간 풍수 인테리어 처방" }, // 심화 (고급 제외 #8)
-      { page: 48, type: "ny_lucky_items", title: "신년 추천 수호 소품 리스트" },
-      { page: 49, type: "ny_lucky_fashion", title: "신년 패션 메이크업 스타일링 가이드" },
-      { page: 50, type: "ny_diet_presc", title: "체질 맞춤형 오행 섭생 음식 처방" },
-      { page: 51, type: "ny_final_blessing", title: "병오년 성공 기원 마지막 축원문" }
+      { page: 41, type: "ny_personal_worry", title: "의뢰인 맞춤형 고민 정밀 비책" }, // 고민 개별 솔루션 페이지 추가
+      { page: 42, type: "ny_roadmap_2027", title: "2027년 정미년(丁未年) 세운 로드맵" }, // 심화 (고급 제외 #5)
+      { page: 43, type: "ny_roadmap_2028", title: "2028년 무신년(戊申年) 세운 로드맵" }, // 심화 (고급 제외 #6)
+      { page: 44, type: "ny_roadmap_2029", title: "2029년 기유년(己酉年) 세운 로드맵" }, // 심화 (고급 제외 #7)
+      { page: 45, type: "ny_roadmap_2030", title: "2030년 경술년(庚戌年) 세운 로드맵" },
+      { page: 46, type: "ny_roadmap_2031", title: "2031년 신해년(辛亥年) 세운 로드맵" },
+      { page: 47, type: "ny_action_rules", title: "신년 개운 실천 3대 행동 강령" },
+      { page: 48, type: "ny_fengshui_interior", title: "신년 공간 풍수 인테리어 처방" }, // 심화 (고급 제외 #8)
+      { page: 49, type: "ny_lucky_items", title: "신년 추천 수호 소품 리스트" },
+      { page: 50, type: "ny_lucky_fashion", title: "신년 패션 메이크업 스타일링 가이드" },
+      { page: 51, type: "ny_diet_presc", title: "체질 맞춤형 오행 섭생 음식 처방" },
+      { page: 52, type: "ny_final_blessing", title: "병오년 성공 기원 마지막 축원문" }
     ];
   };  const renderNewYearPageContent = (page, ctx) => {
-    const { isFree } = ctx;
+    const { isFree, currentGrade, worryCategory } = ctx;
     
     const wrapLock = (content, sectionTitle) => {
+      const isNewYear = type === "newyear" && typeParam !== "tojeong";
+      const premiumOnlyPages = [
+        "ny_ilju_harmony",
+        "ny_sinsal_active",
+        "ny_warning_period",
+        "ny_worry_solution",
+        "ny_personal_worry",
+        "ny_roadmap_2027",
+        "ny_roadmap_2028",
+        "ny_roadmap_2029",
+        "ny_fengshui_interior"
+      ];
+      
+      const isUpgradeLocked = isNewYear && currentGrade === "premium" && premiumOnlyPages.includes(page.type);
+      const shouldBlur = isFree || isUpgradeLocked;
+
       return (
         <div className="relative min-h-[400px] flex flex-col justify-between">
-          <div className={isFree ? "blur-[5px] select-none pointer-events-none transition-all duration-300" : ""}>
+          <div className={shouldBlur ? "blur-[5px] select-none pointer-events-none transition-all duration-300" : ""}>
             {content}
           </div>
           {isFree && renderLockOverlay(sectionTitle)}
+          {!isFree && isUpgradeLocked && renderUpgradeOverlay(sectionTitle)}
         </div>
       );
     };
@@ -3902,7 +4158,7 @@ function ResultContent() {
                 <div>
                   <span className="text-[#A3845B] font-bold block mb-1">리포트 등급</span>
                   <span className="font-semibold text-[#8B221E] uppercase font-sans">
-                    {reportGrade === "free" ? "무료 체험" : reportGrade === "premium" ? "고급 (Premium)" : "심화 (Deep)"}
+                    {currentGrade === "free" ? "무료 체험" : currentGrade === "premium" ? "고급 리포트" : "프리미엄 리포트"}
                   </span>
                 </div>
               </div>
@@ -5415,13 +5671,189 @@ function ResultContent() {
               <div className="border border-[#E2DDD5] rounded-xl p-4 bg-[#FAF7F0]/30 text-justify space-y-2">
                 <span className="font-bold text-xs text-[#8A6F4C] block">🛡️ 실천 요결</span>
                 <p className="text-[10px] text-gray-500 font-light leading-relaxed">
-                  {worryText ? `제출해주신 [${worryText}] 안건은` : ""} 성급한 출발보다 안전장치를 두 겹으로 두르고 시작할 때 85%의 성취율을 쟁취합니다. 동요하지 말고 계획된 단계에 맞추어 움직이십시오.
+                  성급한 출발보다 안전장치를 두 겹으로 두르고 시작할 때 85%의 성취율을 쟁취합니다. 동요하지 말고 계획된 단계에 맞추어 움직이십시오.
                 </p>
               </div>
             </div>
           </div>,
           "고민 해결 맞춤형 솔루션"
-        )
+        );
+
+      case "ny_personal_worry": {
+        const categoryLabels = {
+          love: "연애 / 속마음",
+          career: "직장 / 이직",
+          wealth: "금전 / 투자",
+          exam: "학업 / 시험",
+          general: "종합 / 기타",
+          business: "사업 / 경영",
+          startup: "창업 / 부업",
+          trade: "장사 / 유통",
+          facility: "설비 / 확장"
+        };
+        const currentCategoryLabel = categoryLabels[worryCategory] || "종합 / 기타";
+
+        let metricsData = { success: 85, negotiation: 80, control: 75, synergy: 90 };
+        if (worryCategory === "love") {
+          metricsData = { success: 88, negotiation: 72, control: 68, synergy: 85 };
+        } else if (worryCategory === "career") {
+          metricsData = { success: 82, negotiation: 78, control: 72, synergy: 90 };
+        } else if (["wealth", "business", "startup", "trade", "facility"].includes(worryCategory)) {
+          metricsData = { success: 80, negotiation: 85, control: 70, synergy: 82 };
+        } else if (worryCategory === "exam") {
+          metricsData = { success: 85, negotiation: 65, control: 80, synergy: 75 };
+        }
+
+        return wrapLock(
+          <div className="space-y-6 py-4">
+            <div className="text-center space-y-2 mb-8">
+              <span className="text-xs text-[#8A6F4C] font-bold block">고민 해결 정밀 처방 (苦悶 處方)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">의뢰인 입력 안건에 대한 혜안당 정밀 비책</h2>
+              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+            </div>
+
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              {/* 고민 정보 헤더 */}
+              <div className="bg-[#FAF7F0] border-l-4 border-[#A3845B] p-4 rounded-lg space-y-2">
+                <div className="flex items-center justify-between border-b border-[#E2DDD5]/60 pb-1.5">
+                  <span className="font-bold text-[10px] text-[#A3845B] uppercase font-sans">고민 분야: {currentCategoryLabel}</span>
+                  <span className="text-[9px] bg-[#A3845B]/10 text-[#A3845B] px-1.5 py-0.5 rounded font-bold font-sans">정밀 분석 안건</span>
+                </div>
+                <p className="text-[11px] text-gray-600 italic font-light">
+                  "{worryText ? decodeURIComponent(worryText) : "인생 전반의 총체적 갈등 해소 및 개운"}"
+                </p>
+              </div>
+
+              {/* 1. 작성하신 안건 분석 대답 (텍스트 우선) */}
+              {textSolution && (
+                <div className="border border-[#E2DDD5]/60 rounded-xl p-4 bg-[#FAF7F0]/30 space-y-4">
+                  <span className="font-bold text-xs text-[#A3845B] block">✍️ 작성하신 고민 안건 정밀 처방</span>
+                  
+                  <div className="space-y-3">
+                    <div className="space-y-1">
+                      <span className="font-bold text-[11px] text-[#8A6F4C] block">• 📍 안건의 신년 명리학적 해석</span>
+                      <p className="text-justify text-gray-600 font-light pl-3 border-l border-gray-200">
+                        {textSolution.analysis}
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <span className="font-bold text-[11px] text-[#8A6F4C] block">• ⏰ 하늘이 돕는 개운 타이밍</span>
+                      <p className="text-justify text-gray-600 font-light pl-3 border-l border-gray-200">
+                        {textSolution.timing}
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <span className="font-bold text-[11px] text-[#8A6F4C] block">• 🔑 혜안당 정밀 개운 비책</span>
+                      <div 
+                        className="bg-white p-3 rounded-md border border-[#E2DDD5]/70 whitespace-pre-line text-[11px] font-light text-gray-600 pl-3"
+                        dangerouslySetInnerHTML={{ __html: textSolution.actionPlan }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 2. 체크하신 고민 분야 조언 (다음 답변) */}
+              {categorySolution && (
+                <div className="border border-[#E2DDD5]/60 rounded-xl p-4 bg-[#FAF7F0]/30 space-y-4">
+                  <span className="font-bold text-xs text-[#A3845B] block">🏷️ 선택하신 [{currentCategoryLabel}] 분야 조언</span>
+                  
+                  <div className="space-y-3">
+                    <div className="space-y-1">
+                      <span className="font-bold text-[11px] text-[#8A6F4C] block">• 📍 분야별 신년 명리학적 해석</span>
+                      <p className="text-justify text-gray-600 font-light pl-3 border-l border-gray-200">
+                        {categorySolution.analysis}
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <span className="font-bold text-[11px] text-[#8A6F4C] block">• ⏰ 하늘이 돕는 개운 타이밍</span>
+                      <p className="text-justify text-gray-600 font-light pl-3 border-l border-gray-200">
+                        {categorySolution.timing}
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <span className="font-bold text-[11px] text-[#8A6F4C] block">• 🔑 혜안당 정밀 개운 비책</span>
+                      <div 
+                        className="bg-white p-3 rounded-md border border-[#E2DDD5]/70 whitespace-pre-line text-[11px] font-light text-gray-600 pl-3"
+                        dangerouslySetInnerHTML={{ __html: categorySolution.actionPlan }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 시각화: 고민 해결 성공률 및 조율 지표 */}
+              <div className="bg-[#FAF7F0]/60 border border-[#E2DDD5] rounded-xl p-4 space-y-3 mt-4">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 고민 해결 및 대처 능력 지수</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>안건 성취 및 해결 성공률</span>
+                      <span className="text-[#8A6F4C]">{metricsData.success}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full transition-all duration-500" style={{ width: `${metricsData.success}%` }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>외부 협상 및 계약 유리도</span>
+                      <span className="text-[#8A6F4C]">{metricsData.negotiation}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full transition-all duration-500" style={{ width: `${metricsData.negotiation}%` }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 pt-1">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>감정 컨트롤 & 마음 안정도</span>
+                      <span className="text-[#8A6F4C]">{metricsData.control}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full transition-all duration-500" style={{ width: `${metricsData.control}%` }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>귀인 및 동료 조력 효율</span>
+                      <span className="text-[#8A6F4C]">{metricsData.synergy}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full transition-all duration-500" style={{ width: `${metricsData.synergy}%` }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 고민 해결 3단계 카드 (3열) */}
+              <span className="font-bold text-xs text-[#8A6F4C] block pt-2">🧭 고민 해결을 위한 3단계 개운 로드맵</span>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-justify shadow-inner">
+                  <span className="font-bold text-[#8A6F4C] text-[10px] block">⏳ 1단계: 수성 & 보류</span>
+                  <p className="text-[9px] text-gray-500 font-light mt-1 leading-snug">
+                    상반기의 기운 과열 시기에는 홧김에 하는 결정을 피하고 내실을 다지십시오.
+                  </p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-justify shadow-inner">
+                  <span className="font-bold text-[#8A6F4C] text-[10px] block">📑 2단계: 법적 조율</span>
+                  <p className="text-[9px] text-gray-500 font-light mt-1 leading-snug">
+                    음력 8월의 선선한 금(金) 기운을 기점으로 자금과 계약 서류의 완성도를 검증하십시오.
+                  </p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-justify shadow-inner">
+                  <span className="font-bold text-[#8A6F4C] text-[10px] block">🏆 3단계: 성과 안착</span>
+                  <p className="text-[9px] text-gray-500 font-light mt-1 leading-snug">
+                    연말 음력 10월 이후 귀인의 조력을 득해 고민 안건을 원만히 갈무리하십시오.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>,
+          "의뢰인 맞춤형 고민 정밀 비책"
+        );
+      }
 
       case "ny_roadmap_2027":
         return wrapLock(
@@ -8236,15 +8668,7 @@ function ResultContent() {
               </p>
             </div>
             
-            <div className="pt-12 space-y-3">
-              <div className="flex items-center justify-center gap-2">
-                <svg width="24" height="24" viewBox="0 0 100 100" className="text-[#A3845B]">
-                  <rect x="15" y="15" width="70" height="70" rx="4" fill="none" stroke="currentColor" strokeWidth="10" />
-                  <path d="M35 35 L65 35 M35 50 L65 50 M35 65 L65 65" stroke="currentColor" strokeWidth="6" />
-                </svg>
-                <span className="font-myeongjo text-base font-bold text-gray-800 tracking-wider">慧眼堂 명리연구소 원장 이현 拜上</span>
-              </div>
-            </div>
+
           </div>
         );
 
@@ -8273,11 +8697,15 @@ function ResultContent() {
       "ny_fengshui_interior"
     ];
 
-    const activePages = reportGrade === "premium"
+    const isNewYear = type === "newyear" && typeParam !== "tojeong";
+
+    const activePages = isNewYear
       ? pages
-          .filter(p => !deepExcludeTypes.includes(p.type))
-          .map((p, idx) => ({ ...p, page: idx + 1 }))
-      : pages;
+      : (reportGrade === "premium"
+          ? pages
+              .filter(p => !deepExcludeTypes.includes(p.type))
+              .map((p, idx) => ({ ...p, page: idx + 1 }))
+          : pages);
 
     return (
       <div className="space-y-12 print:space-y-0">
@@ -8311,7 +8739,9 @@ function ResultContent() {
                   personalizedText,
                   baseEl,
                   worryText,
-                  isFree
+                  worryCategory,
+                  isFree,
+                  currentGrade
                 })}
               </div>
             </div>
@@ -9630,6 +10060,20 @@ function ResultContent() {
               className="w-full bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] py-4 px-6 rounded-xl font-myeongjo font-bold text-xs sm:text-sm md:text-base flex items-center justify-between shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#A3845B]/20"
             >
               <span>{name}님 정통 {typeParam === "tojeong" ? "토정비결" : (type === "newyear" ? "신년운세" : "사주 풀이")} ({metrics.nickname})</span>
+              <span className="text-lg">➔</span>
+            </button>
+          </div>
+        )}
+
+        {/* 신년운세 고급 리포트일 때 프리미엄 업그레이드 하단 고정 플로팅 바 */}
+        {!isFree && type === "newyear" && typeParam !== "tojeong" && currentGrade === "premium" && (
+          <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
+            <button
+              type="button"
+              onClick={handleUpgradePayment}
+              className="w-full bg-[#5F7A68] hover:bg-[#465A4B] text-white py-4 px-6 rounded-xl font-myeongjo font-bold text-xs sm:text-sm md:text-base flex items-center justify-between shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#5F7A68]/20"
+            >
+              <span>👑 {name}님 신년운세 프리미엄 리포트로 업그레이드 (+15,000원)</span>
               <span className="text-lg">➔</span>
             </button>
           </div>

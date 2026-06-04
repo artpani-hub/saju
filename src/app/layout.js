@@ -1,21 +1,12 @@
-import { Nanum_Myeongjo, Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 
-const myeongjo = Nanum_Myeongjo({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  variable: "--font-myeongjo",
-  display: "swap",
-  preload: false,
-});
+const myeongjo = {
+  variable: "font-myeongjo",
+};
 
-const gothic = Noto_Sans_KR({
-  weight: ["300", "400", "500", "700"],
-  subsets: ["latin"],
-  variable: "--font-gothic",
-  display: "swap",
-  preload: false,
-});
+const gothic = {
+  variable: "font-gothic",
+};
 
 export const metadata = {
   title: "혜안당 (慧眼堂) - 지혜로운 눈으로 밝히는 운명",

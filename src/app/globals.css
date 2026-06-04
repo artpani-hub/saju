@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -27,8 +28,8 @@
   --color-jade-dark: var(--accent-jade-dark);
   --color-border-custom: var(--border-color);
   
-  --font-myeongjo: var(--font-myeongjo);
-  --font-gothic: var(--font-gothic);
+  --font-myeongjo: 'Nanum Myeongjo', serif;
+  --font-gothic: 'Noto Sans KR', sans-serif;
 }
 
 body {
