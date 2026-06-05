@@ -3706,44 +3706,145 @@ function ResultContent() {
                 </div>
 
                 <div className="space-y-5">
-                  <div className="text-center py-4 space-y-2">
+                  <div className="text-center py-3 space-y-1.5">
                     <span className="text-xs text-[#A3845B] tracking-widest font-bold block font-myeongjo">— 2026 丙午年 —</span>
-                    <h2 className="font-myeongjo text-3xl font-bold text-[#1A1A1A] tracking-wide">{name} 님 토정비결 요약</h2>
-                    <div className="w-20 h-0.5 bg-[#A3845B]/40 mx-auto mt-1" />
+                    <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A] tracking-wide">{name} 님 토정비결 요약</h2>
+                    <div className="w-16 h-0.5 bg-[#A3845B]/40 mx-auto mt-0.5" />
+                  </div>
+
+                  {/* 한줄 총평 요약 배너 */}
+                  <div className="bg-gradient-to-r from-[#A3845B] via-[#C49A6C] to-[#A3845B] text-white py-2.5 px-4 rounded-xl text-center shadow-md space-y-0.5">
+                    <span className="text-[7px] tracking-widest text-[#FFFDFC]/85 block font-sans uppercase">2026 병오년 핵심 비결 총평</span>
+                    <p className="font-myeongjo text-[11px] font-bold text-white tracking-wide">
+                      "뜨거운 태양 아래 질주하는 적마(赤馬)의 형국, 속도를 조절하면 대업을 이룬다"
+                    </p>
                   </div>
 
                   {/* 병오년 세운 기조 */}
-                  <div className="bg-white border border-[#E2DDD5] rounded-xl p-5 space-y-3.5 shadow-sm">
-                    <span className="font-bold text-[#A3845B] text-xs block font-myeongjo">■ 1. 2026년 병오년 세운 기조</span>
-                    <div className="text-xs text-[#5F5F5F] font-light leading-relaxed space-y-1.5">
-                      <p><strong>• 세운 특징:</strong> <span className="font-semibold text-[#A3845B]">천지합화(天地合火)</span> - 위아래가 모두 거대한 불꽃으로 화하는 역동적 한 해입니다.</p>
-                      <p><strong>• 오행 분포:</strong> <span className="font-semibold text-gray-700">{elStats}</span></p>
+                  <div className="bg-gradient-to-br from-[#FFFDFC] to-[#FFF9F6] border border-[#E8DFD8] rounded-xl p-4.5 space-y-3.5 shadow-sm relative overflow-hidden">
+                    <div className="absolute right-0 top-0 w-24 h-24 bg-red-500/5 rounded-full blur-2xl pointer-events-none" />
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold text-[#A3845B] text-xs font-myeongjo flex items-center gap-1">
+                        <Sparkles className="w-3.5 h-3.5 text-[#C49A6C] animate-pulse" />
+                        ■ 1. 2026년 병오년 세운 기조
+                      </span>
+                      <span className="px-2 py-0.5 bg-red-50 text-red-700 text-[8px] font-bold rounded-full border border-red-100">
+                        丙午 붉은 말의 해
+                      </span>
+                    </div>
+                    
+                    <div className="text-[10px] text-[#5F5F5F] font-light leading-relaxed space-y-2.5">
+                      <p>
+                        <strong>• 세운 특징:</strong>{' '}
+                        <span className="font-semibold text-red-700 bg-red-50/50 px-1 py-0.5 rounded">천지합화(天地合火)</span> - 하늘과 땅이 모두 거대한 불꽃으로 화하는 역동적이고 주도적인 한 해입니다. 성급함을 제어하고 에너지를 잘 조율한다면 눈부신 도약의 발판이 됩니다.
+                      </p>
+                      
+                      {/* 오행 분포 시각화 차트 */}
+                      <div className="pt-2 border-t border-[#E8DFD8]/50">
+                        <span className="text-[9px] font-semibold text-gray-700 block mb-2">📊 내 사주 오행 분포도 (전체 8자 기준)</span>
+                        <div className="space-y-1.5">
+                          {[
+                            { name: '목(木)', key: '목', color: 'bg-emerald-600', valColor: 'text-emerald-700', bg: 'bg-emerald-50', desc: '성장, 시작' },
+                            { name: '화(火)', key: '화', color: 'bg-red-500', valColor: 'text-red-600', bg: 'bg-red-50', desc: '열정, 확장' },
+                            { name: '토(土)', key: '토', color: 'bg-amber-600', valColor: 'text-amber-700', bg: 'bg-amber-50', desc: '중재, 신용' },
+                            { name: '금(金)', key: '금', color: 'bg-zinc-500', valColor: 'text-zinc-600', bg: 'bg-zinc-50', desc: '결실, 판단' },
+                            { name: '수(水)', key: '수', color: 'bg-blue-600', valColor: 'text-blue-700', bg: 'bg-blue-50', desc: '지혜, 휴식' }
+                          ].map(el => {
+                            const count = sajuInfo.elements[el.key] || 0;
+                            const percentage = Math.max(5, (count / 8) * 100);
+                            return (
+                              <div key={el.name} className="flex items-center gap-2">
+                                <span className={`w-11 text-[8.5px] font-bold text-center py-0.5 rounded ${el.bg} ${el.valColor}`}>
+                                  {el.name}
+                                </span>
+                                <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden flex">
+                                  <div 
+                                    className={`h-full ${el.color} rounded-full transition-all duration-1000`} 
+                                    style={{ width: `${percentage}%` }}
+                                  />
+                                </div>
+                                <span className="w-10 text-[8.5px] font-bold text-right text-gray-600">
+                                  {count}개 ({Math.round((count / 8) * 100)}%)
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
                   {/* 4대 분야별 심층 요약 카드 */}
                   <div className="space-y-3">
                     <span className="font-bold text-[#A3845B] text-xs block font-myeongjo">■ 2. 4대 핵심 분야 운세 요약</span>
-                    <div className="grid grid-cols-2 gap-3 text-[10px]">
-                      <div className="bg-white p-3.5 rounded-xl border border-[#E2DDD5]/60 space-y-1 shadow-sm">
-                        <span className="font-bold text-amber-800 block">① 재물운 (Wealth)</span>
-                        <p className="text-gray-500 leading-normal font-light">가을철(음력 7~9월) 금(金)의 수축기에 재물이 쌓이는 구조입니다. 상반기 투자는 절대 금물입니다.</p>
+                    <div className="grid grid-cols-2 gap-3 text-[9px]">
+                      
+                      {/* 재물운 */}
+                      <div className="bg-white p-3.5 rounded-xl border border-[#E2DDD5]/60 hover:border-amber-400/50 hover:shadow-md transition-all duration-300 space-y-1 flex flex-col justify-between shadow-sm relative overflow-hidden group">
+                        <div className="absolute right-1 top-1 text-amber-500/10 group-hover:text-amber-500/25 transition-colors">
+                          <DollarSign className="w-7 h-7" />
+                        </div>
+                        <div className="space-y-1">
+                          <span className="font-bold text-amber-800 flex items-center gap-1 font-myeongjo">
+                            <DollarSign className="w-3 h-3 text-amber-600" />
+                            ① 재물운 (Wealth)
+                          </span>
+                          <p className="text-gray-500 leading-relaxed font-light text-justify text-[8.5px]">
+                            가을철(음력 7~9월) 금(金)의 수축기에 재물이 단단하게 축적되는 좋은 흐름입니다. 다만 상반기에는 화(火) 기운의 영향으로 충동적인 투자와 지출이 늘 수 있어 현금 확보에 집중해야 합니다.
+                          </p>
+                        </div>
                       </div>
-                      <div className="bg-white p-3.5 rounded-xl border border-[#E2DDD5]/60 space-y-1 shadow-sm">
-                        <span className="font-bold text-blue-800 block">② 직장운 (Career)</span>
-                        <p className="text-gray-500 leading-normal font-light">윗사람이나 선배(귀인)의 천거가 예상되며 이직/승진 기회는 음력 3, 8월에 집중됩니다.</p>
+
+                      {/* 직장운 */}
+                      <div className="bg-white p-3.5 rounded-xl border border-[#E2DDD5]/60 hover:border-blue-400/50 hover:shadow-md transition-all duration-300 space-y-1 flex flex-col justify-between shadow-sm relative overflow-hidden group">
+                        <div className="absolute right-1 top-1 text-blue-500/10 group-hover:text-blue-500/25 transition-colors">
+                          <Award className="w-7 h-7" />
+                        </div>
+                        <div className="space-y-1">
+                          <span className="font-bold text-blue-800 flex items-center gap-1 font-myeongjo">
+                            <Award className="w-3 h-3 text-blue-600" />
+                            ② 직장 & 커리어 (Career)
+                          </span>
+                          <p className="text-gray-500 leading-relaxed font-light text-justify text-[8.5px]">
+                            윗사람이나 귀인의 은밀한 천거가 기대되며 직장 내 승진이나 시험 합격, 창업/이직 등의 전환기는 음력 3월과 8월에 기운이 강합니다. 사람과의 신의를 먼저 지키면 관운이 함께 열립니다.
+                          </p>
+                        </div>
                       </div>
-                      <div className="bg-white p-3.5 rounded-xl border border-[#E2DDD5]/60 space-y-1 shadow-sm">
-                        <span className="font-bold text-rose-800 block">③ 애정운 (Love)</span>
-                        <p className="text-gray-500 leading-normal font-light">하반기에 차분하고 지적인 인연운이 들며, 기혼자는 상반기 감정 충동 대립을 경계하십시오.</p>
+
+                      {/* 애정운 */}
+                      <div className="bg-white p-3.5 rounded-xl border border-[#E2DDD5]/60 hover:border-rose-400/50 hover:shadow-md transition-all duration-300 space-y-1 flex flex-col justify-between shadow-sm relative overflow-hidden group">
+                        <div className="absolute right-1 top-1 text-rose-500/10 group-hover:text-rose-500/25 transition-colors">
+                          <Heart className="w-7 h-7" />
+                        </div>
+                        <div className="space-y-1">
+                          <span className="font-bold text-rose-800 flex items-center gap-1 font-myeongjo">
+                            <Heart className="w-3 h-3 text-rose-600" />
+                            ③ 애정 & 대인관계 (Love)
+                          </span>
+                          <p className="text-gray-500 leading-relaxed font-light text-justify text-[8.5px]">
+                            솔로는 하반기에 조용하고 신뢰할 수 있는 실속 있는 인연을 만날 기회가 옵니다. 부부나 연인은 상반기 중 거친 말과 감정 충돌이 생기지 않도록 정성껏 배려하는 대화가 필수적입니다.
+                          </p>
+                        </div>
                       </div>
-                      <div className="bg-white p-3.5 rounded-xl border border-[#E2DDD5]/60 space-y-1 shadow-sm">
-                        <span className="font-bold text-emerald-800 block">④ 건강운 (Health)</span>
-                        <p className="text-gray-500 leading-normal font-light">상열감, 심혈관계 피로가 늘기 쉽습니다. 수분을 자주 섭취하고 족욕을 생활화하십시오.</p>
+
+                      {/* 건강운 */}
+                      <div className="bg-white p-3.5 rounded-xl border border-[#E2DDD5]/60 hover:border-emerald-400/50 hover:shadow-md transition-all duration-300 space-y-1 flex flex-col justify-between shadow-sm relative overflow-hidden group">
+                        <div className="absolute right-1 top-1 text-emerald-500/10 group-hover:text-emerald-500/25 transition-colors">
+                          <Shield className="w-7 h-7" />
+                        </div>
+                        <div className="space-y-1">
+                          <span className="font-bold text-emerald-800 flex items-center gap-1 font-myeongjo">
+                            <Shield className="w-3 h-3 text-emerald-600" />
+                            ④ 건강 & 신수 (Health)
+                          </span>
+                          <p className="text-gray-500 leading-relaxed font-light text-justify text-[8.5px]">
+                            심장계 및 혈관계 피로, 상열감, 안구 건조 등 화독(火毒)의 증상을 조심해야 합니다. 주기적인 찬물 족욕이나 명상, 충분한 수분 섭취를 통해 화 기운을 가라앉히는 것이 중요합니다.
+                          </p>
+                        </div>
                       </div>
+
                     </div>
                   </div>
-                </div>
               </div>
 
               {/* 하단 푸터 */}
