@@ -3135,7 +3135,6 @@ function ResultContent() {
     const performUpgrade = () => {
       updateLocalStorageOrderGrade(grade);
       setIsPaid(true);
-      setCurrentGrade(grade);
       
       const url = new URL(window.location.href);
       url.searchParams.delete("reportGrade");
@@ -3147,23 +3146,8 @@ function ResultContent() {
 
     // 테스트 가맹점 코드이면 IMP 모듈 없이도 모의 결제 진행
     if (impCode === "imp00000000") {
-      alert(`[개발자 테스트 안내] 모의 업그레이드 결제 성공 시뮬레이션을 즉시 실행합니다.\n\n확인을 누르시면 ${grade === "premium" ? "고급" : "프리미엄"} 리포트로 업그레이드되며 잠금이 풀리게 됩니다.`);
-      setIsProcessing(true);
-      setProgress(0);
-      
-      let currentProgress = 0;
-      const interval = setInterval(() => {
-        currentProgress += 10;
-        if (currentProgress >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setIsProcessing(false);
-            performUpgrade();
-          }, 300);
-        } else {
-          setProgress(currentProgress);
-        }
-      }, 150);
+      alert(`[개발자 테스트 안내] 모의 업그레이드 결제를 즉시 실행합니다.\n\n확인을 누르시면 ${grade === "premium" ? "고급" : "프리미엄"} 리포트로 업그레이드됩니다.`);
+      performUpgrade();
       return;
     }
 
@@ -3218,24 +3202,9 @@ function ResultContent() {
 
     // 테스트 가맹점 코드이면 IMP 모듈 없이도 모의 결제 진행
     if (impCode === "imp00000000") {
-      alert("[개발자 테스트 안내] 테스트 가맹점 코드(imp00000000)가 감지되어 모의 결제 성공 시뮬레이션을 즉시 실행합니다.\n\n확인을 누르시면 로컬 스토리지에 결제완료(paid) 정보가 반영되고 34페이지 상세 보고서 잠금이 풀리게 됩니다.");
-      setIsProcessing(true);
-      setProgress(0);
-      
-      let currentProgress = 0;
-      const interval = setInterval(() => {
-        currentProgress += 10;
-        if (currentProgress >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setIsProcessing(false);
-            setIsPaid(true);
-            updateLocalStorageOrderToPaid();
-          }, 300);
-        } else {
-          setProgress(currentProgress);
-        }
-      }, 150);
+      alert("[개발자 테스트 안내] 모의 결제를 즉시 실행합니다.\n\n확인을 누르시면 결제완료 처리되고 상세 보고서 잠금이 풀립니다.");
+      setIsPaid(true);
+      updateLocalStorageOrderToPaid();
       return;
     }
     
@@ -3846,7 +3815,16 @@ function ResultContent() {
                     </button>
                     <div className="flex justify-center gap-4 text-[9px] text-gray-400">
                       <p>✓ 결제 즉시 페이지가 새로고침되어 잠금이 해제됩니다.</p>
-                      <button type="button" onClick={() => setIsPaid(true)} className="hover:text-white underline">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsPaid(true);
+                          const url = new URL(window.location.href);
+                          url.searchParams.delete("reportGrade");
+                          window.location.href = url.toString();
+                        }}
+                        className="hover:text-white underline"
+                      >
                         [테스트용 즉시 해제]
                       </button>
                     </div>
@@ -4177,7 +4155,16 @@ function ResultContent() {
                 </div>
                 <div className="flex justify-center gap-4 text-[9px] text-gray-400">
                   <p>✓ 결제 즉시 페이지가 새로고침되어 잠금이 해제됩니다.</p>
-                  <button type="button" onClick={() => setIsPaid(true)} className="hover:text-white underline">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsPaid(true);
+                      const url = new URL(window.location.href);
+                      url.searchParams.delete("reportGrade");
+                      window.location.href = url.toString();
+                    }}
+                    className="hover:text-white underline"
+                  >
                     [테스트용 즉시 해제]
                   </button>
                 </div>
