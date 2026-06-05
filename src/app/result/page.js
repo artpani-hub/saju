@@ -3694,6 +3694,21 @@ function ResultContent() {
 
       const elStats = `목(${sajuInfo.elements.목}개) | 화(${sajuInfo.elements.화}개) | 토(${sajuInfo.elements.토}개) | 금(${sajuInfo.elements.금}개) | 수(${sajuInfo.elements.수}개)`;
 
+      let tojeongGeneralDesc = "";
+      const currentBaseEl = baseEl || (sajuInfo && sajuInfo.day && sajuInfo.day.stemEl) || "목";
+      
+      if (currentBaseEl === "목") {
+        tojeongGeneralDesc = "목(木) 일간인 귀하에게 2026년은 맹렬한 화(火) 기운이 목생화(木生火)로 설계되어 내적 재능과 열정이 크게 발산되는 해입니다. 기획이나 창작 활동에서 눈부신 성과를 내고 대외적 영향력이 확장되나, 과도한 활동으로 체력이 쉽게 소진되고 심리적 조급증이나 상열감이 발생할 수 있으니 완급 조절이 필수적입니다. 특히 음력 5월과 6월의 폭발적인 화기 속에서는 무리한 확장을 지양하고 휴식을 병행하는 정중동의 지혜가 필요합니다.";
+      } else if (currentBaseEl === "화") {
+        tojeongGeneralDesc = "화(火) 일간인 귀하에게 2026년은 나와 같은 강력한 화(火) 기운이 세운에서 더해져 자신감과 고집이 최고조에 달하는 비겁(比劫)의 시기입니다. 스스로 독립하여 새로운 영역을 개척하려는 에너지가 솟구치나, 자만심으로 인한 무리한 투자나 대인관계의 시비, 동업 문제로 손재수를 입을 수 있으니 겸손과 자제가 가장 강력한 개운법입니다. 뜨거운 열정을 내실을 다지고 리스크를 방어하는 데 집중하여 큰 재물 손실을 피해야 합니다.";
+      } else if (currentBaseEl === "토") {
+        tojeongGeneralDesc = "토(土) 일간인 귀하에게 2026년은 맹렬한 불길이 단단한 흙을 돕는 화생토(火生土)의 강한 인성(印星)의 해입니다. 나를 돕는 귀인의 혜택이나 문서상의 계약(부동산, 자격증, 합격 등)에서 매우 길한 소식이 기대됩니다. 다만 생각이 지나치게 많아져 실행력이 떨어지는 '생각의 감옥'을 경계해야 합니다. 행동이 무거워지지 않도록 실용적인 계획을 세우고, 가을철 금(金)의 기류를 타고 결실을 과감히 쟁취해 보십시오.";
+      } else if (currentBaseEl === "금") {
+        tojeongGeneralDesc = "금(金) 일간인 귀하에게 2026년은 뜨거운 용광로의 불꽃이 단단한 쇠를 제련하는 화극금(화극금)의 관성(官星)의 해입니다. 직장에서의 승진, 명예 획득, 새로운 책임감 등 삶의 중요한 뼈대를 세우는 제련의 과정을 겪게 됩니다. 책임감이 무겁고 대외적 스트레스가 따르나, 이 시기를 묵묵히 인내하고 규칙을 준수하며 버텨낸다면 연말에는 값진 명예와 한 단계 도약한 사회적 지위를 얻을 것입니다.";
+      } else { // 수
+        tojeongGeneralDesc = "수(水) 일간인 귀하에게 2026년은 뜨거운 불을 다스리는 수극화(수극화)의 재성(財星)의 해입니다. 일생일대의 큰 재물적 기회와 성과가 눈앞에 다가오는 역동적인 시기입니다. 횡재수나 대외적인 실리를 확실하게 챙길 수 있는 판이 짜이지만, 조급하게 서두르거나 분수에 넘치는 과욕을 부리면 불길에 물이 모두 증발하여 오히려 큰 낭패를 볼 수 있으니 차분하고 이성적인 현금 자산 관리가 절대적으로 필요합니다.";
+      }
+
       return (
         <div className="space-y-12 print:space-y-0">
           {/* SMS PAGE 1 - 운세 기조 및 4대 분야 요약 */}
@@ -3845,6 +3860,20 @@ function ResultContent() {
 
                     </div>
                   </div>
+
+                  {/* 3. 종합 운명 해설 추가 */}
+                  <div className="bg-white border border-[#E2DDD5] rounded-xl p-4.5 space-y-2.5 shadow-sm relative overflow-hidden group hover:border-[#A3845B]/50 transition-all duration-300">
+                    <div className="flex justify-between items-center border-b border-[#E2DDD5]/40 pb-1.5">
+                      <span className="font-bold text-[#A3845B] text-xs font-myeongjo flex items-center gap-1">
+                        <Compass className="w-3.5 h-3.5 text-[#C49A6C]" />
+                        ■ 3. 2026년 토정비결 종합 운명 해설
+                      </span>
+                    </div>
+                    <p className="text-[9.5px] text-gray-600 font-light leading-relaxed text-justify font-sans">
+                      {tojeongGeneralDesc}
+                    </p>
+                  </div>
+
                 </div>
               </div>
 
@@ -3881,12 +3910,115 @@ function ResultContent() {
                         </div>
                       ))}
                     </div>
+
+                    {/* 월별 파동 그래프 시각화 (새로 추가) */}
+                    <div className="pt-3 border-t border-[#E2DDD5]/50 mt-3">
+                      <span className="text-[8.5px] font-bold text-[#A3845B] block mb-1 text-center font-sans tracking-wide">
+                        📈 2026 병오년 월별 운세 에너지 파동 흐름
+                      </span>
+                      <div className="bg-[#FAF8F5]/80 rounded-lg p-2 border border-[#E2DDD5]/40 flex justify-center items-center">
+                        <svg viewBox="0 0 360 90" className="w-full max-w-lg h-auto select-none">
+                          <defs>
+                            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#A3845B" stopOpacity="0.3" />
+                              <stop offset="100%" stopColor="#A3845B" stopOpacity="0.0" />
+                            </linearGradient>
+                          </defs>
+                          {/* 가이드 수평선 */}
+                          <line x1="15" y1="15" x2="345" y2="15" stroke="#E2DDD5" strokeWidth="0.5" strokeDasharray="2,2" />
+                          <line x1="15" y1="28" x2="345" y2="28" stroke="#E2DDD5" strokeWidth="0.5" strokeDasharray="2,2" />
+                          <line x1="15" y1="42" x2="345" y2="42" stroke="#E2DDD5" strokeWidth="0.5" strokeDasharray="2,2" />
+                          <line x1="15" y1="55" x2="345" y2="55" stroke="#E2DDD5" strokeWidth="0.5" strokeDasharray="2,2" />
+                          
+                          {/* 면적 채우기 */}
+                          <path d="M 15 28 L 45 42 L 75 28 L 105 42 L 135 55 L 165 42 L 195 28 L 225 15 L 255 28 L 285 28 L 315 42 L 345 28 L 345 70 L 15 70 Z" fill="url(#chartGrad)" />
+                          
+                          {/* 선 그리기 */}
+                          <path d="M 15 28 L 45 42 L 75 28 L 105 42 L 135 55 L 165 42 L 195 28 L 225 15 L 255 28 L 285 28 L 315 42 L 345 28" fill="none" stroke="#A3845B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          
+                          {/* 노드 점 그리기 */}
+                          {[
+                            { x: 15, y: 28, m: "1월" },
+                            { x: 45, y: 42, m: "2월" },
+                            { x: 75, y: 28, m: "3월" },
+                            { x: 105, y: 42, m: "4월" },
+                            { x: 135, y: 55, m: "5월" },
+                            { x: 165, y: 42, m: "6월" },
+                            { x: 195, y: 28, m: "7월" },
+                            { x: 225, y: 15, m: "8월", p: true },
+                            { x: 255, y: 28, m: "9월" },
+                            { x: 285, y: 28, m: "10월" },
+                            { x: 315, y: 42, m: "11월" },
+                            { x: 345, y: 28, m: "12월" }
+                          ].map((pt, idx) => (
+                            <g key={idx}>
+                              <circle cx={pt.x} cy={pt.y} r={pt.p ? "4.5" : "3.5"} fill={pt.p ? "#8B221E" : "#A3845B"} stroke="#FFFFFF" strokeWidth="1" />
+                              <text x={pt.x} y="82" textAnchor="middle" fontSize="7" fontWeight="bold" fill="#5F5F5F" className="font-sans">
+                                {pt.m}
+                              </text>
+                            </g>
+                          ))}
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 2026 병오년 분기별 세운 대전술 (새로 추가) */}
+                  <div className="bg-white border border-[#E2DDD5] rounded-xl p-4 space-y-3 shadow-sm">
+                    <span className="font-bold text-[#A3845B] text-xs block font-myeongjo">■ 4. 2026년 분기별 세운 대전술 (4계절 흐름)</span>
+                    <div className="grid grid-cols-2 gap-3 text-[9px]">
+                      
+                      {/* 1분기 */}
+                      <div className="bg-[#FAF8F5]/60 p-3 rounded-lg border border-[#E2DDD5]/40 space-y-1 relative overflow-hidden">
+                        <div className="flex items-center gap-1.5 font-bold text-emerald-800">
+                          <span className="text-[11px]">🌱</span>
+                          <span>1분기 (음력 1~3월) : 태동기</span>
+                        </div>
+                        <p className="text-gray-500 leading-relaxed font-light text-justify text-[8.5px]">
+                          한 해의 기획을 수립하고 기류가 꿈틀대는 시기입니다. 섣부른 행동보다는 문서상의 기초를 다지며, 새로운 지식을 습득하고 계약의 유리함을 선점하는 전략이 절대적으로 적합합니다.
+                        </p>
+                      </div>
+
+                      {/* 2분기 */}
+                      <div className="bg-[#FAF8F5]/60 p-3 rounded-lg border border-[#E2DDD5]/40 space-y-1 relative overflow-hidden">
+                        <div className="flex items-center gap-1.5 font-bold text-red-800">
+                          <span className="text-[11px]">🔥</span>
+                          <span>2분기 (음력 4~6월) : 성장기</span>
+                        </div>
+                        <p className="text-gray-500 leading-relaxed font-light text-justify text-[8.5px]">
+                          병오년의 활화산 같은 화(火)의 기운이 극에 달합니다. 감정적인 욱함이나 충동 거래를 피하고, 1등 자존심 대결보다는 남모르게 실속을 챙기며 후방 리스크를 단단히 방어해야 합니다.
+                        </p>
+                      </div>
+
+                      {/* 3분기 */}
+                      <div className="bg-[#FAF8F5]/60 p-3 rounded-lg border border-[#E2DDD5]/40 space-y-1 relative overflow-hidden">
+                        <div className="flex items-center gap-1.5 font-bold text-amber-800">
+                          <span className="text-[11px]">🌾</span>
+                          <span>3분기 (음력 7~9월) : 수축기</span>
+                        </div>
+                        <p className="text-gray-500 leading-relaxed font-light text-justify text-[8.5px]">
+                          대지에 맹렬한 금(金)의 응축력이 작용하여 성과물이 실현되는 수확기입니다. 투자의 결실을 걷어 들이거나 자산을 문서나 안전자산 형태로 단단하게 묶는 것이 가장 길한 수입니다.
+                        </p>
+                      </div>
+
+                      {/* 4분기 */}
+                      <div className="bg-[#FAF8F5]/60 p-3 rounded-lg border border-[#E2DDD5]/40 space-y-1 relative overflow-hidden">
+                        <div className="flex items-center gap-1.5 font-bold text-blue-800">
+                          <span className="text-[11px]">❄️</span>
+                          <span>4분기 (음력 10~12월) : 갈무리</span>
+                        </div>
+                        <p className="text-gray-500 leading-relaxed font-light text-justify text-[8.5px]">
+                          수(水)의 지혜와 차분함으로 다음 해를 설계하는 충전의 시기입니다. 겉으로 드러나는 무대를 만들기보단 실질 자산을 방어하고, 내면의 건강과 명상을 통해 기의 밸런스를 맞춰야 합니다.
+                        </p>
+                      </div>
+
+                    </div>
                   </div>
 
                   {/* 올해의 개운 솔루션 & 조언 */}
                   <div className="grid grid-cols-2 gap-3 text-[10px]">
                     <div className="border border-[#E2DDD5] rounded-xl p-4 bg-white shadow-sm space-y-2">
-                      <span className="font-bold text-[#A3845B] block font-myeongjo">🍀 4. 행운의 개운 비법</span>
+                      <span className="font-bold text-[#A3845B] block font-myeongjo">🍀 5. 행운의 개운 비법</span>
                       <div className="text-[9px] text-gray-500 space-y-1 font-light leading-normal">
                         <p><strong>• 행운의 색상/숫자:</strong> 백색, 흑색 / 1, 4, 6, 9</p>
                         <p><strong>• 행운의 방향:</strong> 서쪽, 북쪽</p>
@@ -3894,43 +4026,14 @@ function ResultContent() {
                       </div>
                     </div>
                     <div className="border border-[#E2DDD5] rounded-xl p-4 bg-white shadow-sm space-y-2">
-                      <span className="font-bold text-[#A3845B] block font-myeongjo">🔑 5. 맞춤 고민 처방</span>
+                      <span className="font-bold text-[#A3845B] block font-myeongjo">🔑 6. 맞춤 고민 처방</span>
                       <p className="text-[9px] text-gray-500 font-light leading-relaxed text-justify">
                         {worrySolutionText}
                       </p>
                     </div>
                   </div>
 
-                  {/* 고급 리포트 업그레이드 CTA 배너 */}
-                  <div className="border-2 border-double border-[#A3845B] bg-[#1C1613] text-[#FAF7F0] rounded-xl p-5 shadow-lg text-center space-y-3 mt-4 print:hidden">
-                    <span className="text-[9px] tracking-widest text-[#A3845B] block font-myeongjo">— 혜안당 정밀 분석 추가 제안 —</span>
-                    <h4 className="font-myeongjo text-xs font-bold text-white leading-normal max-w-xs mx-auto">
-                      {name}님을 위한 30페이지 분량의 심층 분석 전체가 포함된 고급 리포트가 대기하고 있습니다.
-                    </h4>
-                    <button
-                      type="button"
-                      onClick={() => handleUpgradeFromSms("premium", 15000)}
-                      className="w-full py-3 bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] rounded font-bold text-[11px] shadow transition-all cursor-pointer"
-                    >
-                      👑 정통 토정비결 고급 리포트 업그레이드 (+15,000원) →
-                      <span className="block text-[8px] font-normal text-[#1C1613]/70 mt-0.5">30페이지 전체 풀이 및 조언 즉시 해제</span>
-                    </button>
-                    <div className="flex justify-center gap-4 text-[9px] text-gray-400">
-                      <p>✓ 결제 즉시 페이지가 새로고침되어 잠금이 해제됩니다.</p>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsPaid(true);
-                          const url = new URL(window.location.href);
-                          url.searchParams.delete("reportGrade");
-                          window.location.href = url.toString();
-                        }}
-                        className="hover:text-white underline"
-                      >
-                        [테스트용 즉시 해제]
-                      </button>
-                    </div>
-                  </div>
+
                 </div>
               </div>
 
@@ -3954,6 +4057,39 @@ function ResultContent() {
                     </text>
                   </svg>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 화면 하단 플로팅 결제 바 (모바일 및 PC 대응, 인쇄시 숨김) */}
+          <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-3xl z-50 bg-[#1C1613]/95 backdrop-blur-md border-t border-[#A3845B]/30 py-3.5 px-6 shadow-[0_-8px_30px_rgb(0,0,0,0.2)] print:hidden rounded-t-xl">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 w-full">
+              <div className="text-left sm:pl-2">
+                <span className="text-[8px] tracking-widest text-[#A3845B] block font-myeongjo font-bold uppercase">— 慧眼堂 프리미엄 업그레이드 —</span>
+                <h4 className="font-myeongjo text-[11px] font-bold text-[#FAF7F0] leading-tight mt-0.5">
+                  {name}님을 위한 30페이지 분량의 심층 분석 전체가 포함된 고급 리포트 대기 중
+                </h4>
+              </div>
+              <div className="flex items-center gap-3 w-full sm:w-auto sm:pr-2">
+                <button
+                  type="button"
+                  onClick={() => handleUpgradeFromSms("premium", 15000)}
+                  className="flex-1 sm:flex-none px-6 py-2.5 bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] rounded-lg font-bold text-[10px] shadow transition-all duration-300 transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  👑 고급 리포트 업그레이드 (+15,000원) →
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsPaid(true);
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete("reportGrade");
+                    window.location.href = url.toString();
+                  }}
+                  className="text-[8.5px] text-[#A3845B]/60 hover:text-white underline cursor-pointer shrink-0"
+                >
+                  [테스트용 즉시 해제]
+                </button>
               </div>
             </div>
           </div>
