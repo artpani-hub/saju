@@ -3845,6 +3845,7 @@ function ResultContent() {
 
                     </div>
                   </div>
+                </div>
               </div>
 
               {/* 하단 푸터 */}
