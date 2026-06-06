@@ -4,7 +4,22 @@ const path = require('path');
 const filePath = path.join('d:', '인터그리비티', 'saju', 'src', 'app', 'result', 'page.js');
 const content = fs.readFileSync(filePath, 'utf8');
 
-console.log("=== Checking substrings in page.js ===");
-console.log("ny_lucky_fashion count:", (content.split("ny_lucky_fashion").length - 1));
-console.log("ny_diet_presc count:", (content.split("ny_diet_presc").length - 1));
-console.log("ny_intro_saju count:", (content.split("ny_intro_saju").length - 1));
+const keywords = ["ResultContent", "renderPageContent", "worryText", "getPersonalizedSolution"];
+
+console.log("=== Checking keywords in page.js ===");
+const lines = content.split('\n');
+
+keywords.forEach(kw => {
+  console.log(`\nKeyword: "${kw}"`);
+  let foundCount = 0;
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].includes(kw)) {
+      console.log(`Line ${i + 1}: ${lines[i].trim()}`);
+      foundCount++;
+      if (foundCount > 15) {
+        console.log("... (too many matches, truncated)");
+        break;
+      }
+    }
+  }
+});

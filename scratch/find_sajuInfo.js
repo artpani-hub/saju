@@ -5,7 +5,9 @@ const filePath = path.join('d:', '인터그리비티', 'saju', 'src', 'app', 're
 const content = fs.readFileSync(filePath, 'utf8');
 
 const lines = content.split('\n');
-console.log("=== Printing lines 4000-4070 of page.js ===");
-for (let i = 3999; i < 4069 && i < lines.length; i++) {
-  console.log(`${i + 1}: ${lines[i]}`);
-}
+console.log("=== Finding sajuInfo references ===");
+lines.forEach((line, idx) => {
+  if (line.includes('sajuInfo')) {
+    console.log(`Line ${idx + 1}: ${line.trim()}`);
+  }
+});
