@@ -4638,10 +4638,10 @@ function ResultContent() {
               <span className="text-xs tracking-[0.35em] text-[#A3845B] font-bold block font-myeongjo">— 慧眼堂 寶鑑 —</span>
               <div className="w-24 h-0.5 bg-[#A3845B]/40 mx-auto" />
             </div>
-            <div className="space-y-6 py-8">
-              <h1 className="font-myeongjo text-3xl md:text-5xl font-extrabold text-[#1A1A1A] tracking-widest leading-normal">
-                2026 丙午年<br />
-                정통 토정비결 (土亭秘訣)
+            <div className="space-y-6 py-8 overflow-hidden">
+              <h1 className="font-myeongjo font-extrabold text-[#1A1A1A] tracking-widest leading-normal">
+                <span className="block text-3xl md:text-5xl whitespace-nowrap">2026 丙午年</span>
+                <span className="block text-xl sm:text-2xl md:text-4xl whitespace-nowrap break-keep mt-2">정통 토정비결 (土亭秘訣)</span>
               </h1>
               <p className="text-sm text-[#5F5F5F] font-light tracking-wide font-traditional">
                 조선 명의 토정 이지함 선생의 비결로 풀어보는 귀하의 일생 지침 보감
@@ -4704,16 +4704,76 @@ function ResultContent() {
                 토정비결은 조선 선조 시기의 대학자이자 기인인 <strong>토정 이지함(土亭 李之菡)</strong> 선생이 고단한 백성들의 흉함을 피하고 길함을 돕기 위해 천문 지리와 주역의 괘를 통속적으로 재해석하여 저술한 지혜서입니다.
               </p>
               <p>
-                이지함 선생은 한평생을 흙집(土亭)에 머물며 스스로 가난한 삶을 자처하셨고, 길거리의 걸인들과 백성들의 아픔을 몸소 위로하셨습니다. 그분이 사주와 숫자의 오행적 상생상극 조합을 이용해 한 해의 길흉을 풀어낸 것은, 단순한 점술이 아닌 다가올 역경에 대비하여 긍정의 개운을 이뤄내고자 한 따뜻한 휴머니즘의 소산이었습니다.
+                이지함 선생은 평생 동안 마포 강변의 흙집(土亭)에 머물며 스스로 가난한 삶을 자처하셨고, 길거리의 걸인들과 백성들의 고난을 직접 위로하셨습니다. 그분이 음양오행과 3대 상수(象數) 조합을 이용해 한 해의 길흉을 세밀하게 풀어낸 것은, 단순한 점술을 넘어 닥쳐올 고난을 미리 예방하고 지혜롭게 인생을 경영하고자 한 따뜻한 애민(愛民)정신의 발로였습니다.
               </p>
               <p>
-                본 혜안당 정통 토정비결은 2026년 병오년(丙午年) 세운의 불꽃(火) 기운과 의뢰인 <strong>{name}</strong>님의 사주 원국의 융합 관계를 추길피흉(趨吉避凶)의 관점으로 풀어낸 30페이지 분량의 완결 보감입니다. 올해의 뜨거운 에너지를 제련하여 행운으로 취하는 비책을 마음속 깊이 새기시길 권합니다.
+                일반적인 주역이 64괘를 기반으로 하는 반면, 토정비결은 일 년의 흐름에 최적화하여 <strong>총 144가지의 세밀한 괘(卦)</strong>로 인생의 사계절을 풀어냅니다. 의뢰인 <strong>{name}</strong>님의 생년월일시와 주역의 수학적 상수 계산을 결합하여, 올해 병오년의 길흉화복을 다스릴 전용 비방을 수립하였습니다.
+              </p>
+            </div>
+
+            {/* 신규 시각화: 괘 도출 메커니즘 다이어그램 */}
+            <div className="border border-[#E2DDD5] rounded-lg p-5 bg-[#FAF8F5] shadow-sm space-y-4">
+              <span className="font-bold text-[#A3845B] text-xs block">⚙️ 토정비결 신년 괘(卦) 도출 프로세스</span>
+              <div className="flex justify-center py-2">
+                <svg viewBox="0 0 420 120" className="w-full max-w-[400px] h-auto font-sans">
+                  {/* 상괘 박스 */}
+                  <rect x="10" y="10" width="100" height="45" rx="5" fill="#FAF7F0" stroke="#A3845B" strokeWidth="1.5" />
+                  <text x="60" y="28" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#1A1A1A">상괘 (上卦)</text>
+                  <text x="60" y="44" textAnchor="middle" fontSize="8" fill="#8A6F4C">생년 태세 수 (1~8)</text>
+
+                  {/* 중괘 박스 */}
+                  <rect x="160" y="10" width="100" height="45" rx="5" fill="#FAF7F0" stroke="#A3845B" strokeWidth="1.5" />
+                  <text x="210" y="28" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#1A1A1A">중괘 (中卦)</text>
+                  <text x="210" y="44" textAnchor="middle" fontSize="8" fill="#8A6F4C">생월 대소 수 (1~6)</text>
+
+                  {/* 하괘 박스 */}
+                  <rect x="310" y="10" width="100" height="45" rx="5" fill="#FAF7F0" stroke="#A3845B" strokeWidth="1.5" />
+                  <text x="360" y="28" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#1A1A1A">하괘 (下卦)</text>
+                  <text x="360" y="44" textAnchor="middle" fontSize="8" fill="#8A6F4C">생일 주역 수 (1~3)</text>
+
+                  {/* 연결 화살표들 */}
+                  <path d="M 60 55 L 60 75 L 170 75" fill="none" stroke="#A3845B" strokeWidth="1.2" strokeDasharray="2,2" />
+                  <path d="M 210 55 L 210 75" fill="none" stroke="#A3845B" strokeWidth="1.2" strokeDasharray="2,2" />
+                  <path d="M 360 55 L 360 75 L 250 75" fill="none" stroke="#A3845B" strokeWidth="1.2" strokeDasharray="2,2" />
+                  <polygon points="210,80 206,73 214,73" fill="#A3845B" />
+
+                  {/* 결과물 박스 */}
+                  <rect x="135" y="85" width="150" height="30" rx="4" fill="#1C1613" stroke="#A3845B" strokeWidth="1" />
+                  <text x="210" y="104" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#FAF7F0" letterSpacing="1">
+                    신년 전용 괘합성 [총 144괘]
+                  </text>
+                </svg>
+              </div>
+              <p className="text-[10px] text-[#5F5F5F] font-light leading-relaxed text-justify">
+                * 상괘, 중괘, 하괘의 조합으로 탄생한 3자리 숫자의 괘합(예: 312, 453 등)을 해독하여, 다가올 새해의 12달 각 절기 기류에 대해 일체 오차 없는 명리학적 가이드를 드립니다.
               </p>
             </div>
           </div>
         );
 
-      case "tj_intro_saju":
+      case "tj_intro_saju": {
+        const elementsList = [
+          sajuInfo.year?.stemEl, sajuInfo.year?.branchEl,
+          sajuInfo.month?.stemEl, sajuInfo.month?.branchEl,
+          sajuInfo.day?.stemEl, sajuInfo.day?.branchEl,
+          sajuInfo.hour?.stemEl, sajuInfo.hour?.branchEl
+        ].filter(Boolean);
+
+        const elementCounts = { "목": 0, "화": 0, "토": 0, "금": 0, "수": 0 };
+        elementsList.forEach(el => {
+          if (elementCounts[el] !== undefined) {
+            elementCounts[el]++;
+          }
+        });
+
+        const elementColors = {
+          "목": { fill: "#10B981", label: "木 (목/나무)" },
+          "화": { fill: "#EF4444", label: "火 (화/불)" },
+          "토": { fill: "#F59E0B", label: "土 (토/흙)" },
+          "금": { fill: "#9CA3AF", label: "金 (금/쇠)" },
+          "수": { fill: "#3B82F6", label: "水 (수/물)" }
+        };
+
         return (
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
@@ -4728,37 +4788,73 @@ function ResultContent() {
               <div className="grid grid-cols-4 gap-2 text-center font-bold">
                 <div className="bg-[#FAF7F0] p-2.5 rounded border border-[#E2DDD5]/50">
                   <div className="text-[10px] text-gray-400">시주(時柱)</div>
-                  <div className="text-sm text-[#A3845B] mt-1.5">{sajuInfo.hour.stem}{sajuInfo.hour.branch}</div>
-                  <div className="text-[9px] text-gray-500 font-light mt-0.5">{sajuInfo.hour.stemEl}/{sajuInfo.hour.branchEl}</div>
+                  <div className="text-sm text-[#A3845B] mt-1.5">{sajuInfo.hour?.stem}{sajuInfo.hour?.branch}</div>
+                  <div className="text-[9px] text-gray-500 font-light mt-0.5">{sajuInfo.hour?.stemEl}/{sajuInfo.hour?.branchEl}</div>
                   <div className="text-[8px] text-gray-400 mt-1.5 font-normal border-t border-gray-200/60 pt-1">노년·자식운</div>
                 </div>
                 <div className="bg-[#FAF7F0] p-2.5 rounded border border-[#E2DDD5]/50 border-2 border-brass">
                   <div className="text-[10px] text-brass">일주(日柱)</div>
-                  <div className="text-sm text-brass mt-1.5">{sajuInfo.day.stem}{sajuInfo.day.branch}</div>
-                  <div className="text-[9px] text-brass font-light mt-0.5">{sajuInfo.day.stemEl}/{sajuInfo.day.branchEl}</div>
+                  <div className="text-sm text-brass mt-1.5">{sajuInfo.day?.stem}{sajuInfo.day?.branch}</div>
+                  <div className="text-[9px] text-brass font-light mt-0.5">{sajuInfo.day?.stemEl}/{sajuInfo.day?.branchEl}</div>
                   <div className="text-[8px] text-brass mt-1.5 font-normal border-t border-brass/20 pt-1">중년·배우자궁</div>
                 </div>
                 <div className="bg-[#FAF7F0] p-2.5 rounded border border-[#E2DDD5]/50">
                   <div className="text-[10px] text-gray-400">월주(月柱)</div>
-                  <div className="text-sm text-[#A3845B] mt-1.5">{sajuInfo.month.stem}{sajuInfo.month.branch}</div>
-                  <div className="text-[9px] text-gray-500 font-light mt-0.5">{sajuInfo.month.stemEl}/{sajuInfo.month.branchEl}</div>
+                  <div className="text-sm text-[#A3845B] mt-1.5">{sajuInfo.month?.stem}{sajuInfo.month?.branch}</div>
+                  <div className="text-[9px] text-gray-500 font-light mt-0.5">{sajuInfo.month?.stemEl}/{sajuInfo.month?.branchEl}</div>
                   <div className="text-[8px] text-gray-400 mt-1.5 font-normal border-t border-gray-200/60 pt-1">청년·사회운</div>
                 </div>
                 <div className="bg-[#FAF7F0] p-2.5 rounded border border-[#E2DDD5]/50">
                   <div className="text-[10px] text-gray-400">년주(年柱)</div>
-                  <div className="text-sm text-[#A3845B] mt-1.5">{sajuInfo.year.stem}{sajuInfo.year.branch}</div>
-                  <div className="text-[9px] text-gray-500 font-light mt-0.5">{sajuInfo.year.stemEl}/{sajuInfo.year.branchEl}</div>
+                  <div className="text-sm text-[#A3845B] mt-1.5">{sajuInfo.year?.stem}{sajuInfo.year?.branch}</div>
+                  <div className="text-[9px] text-gray-500 font-light mt-0.5">{sajuInfo.year?.stemEl}/{sajuInfo.year?.branchEl}</div>
                   <div className="text-[8px] text-gray-400 mt-1.5 font-normal border-t border-gray-200/60 pt-1">초년·조상궁</div>
                 </div>
               </div>
-              <div className="space-y-2 pt-2">
+              <div className="space-y-3 pt-2">
                 <p>
-                  네 기둥 중에서도 나 자신을 대표하는 <strong>일간(日干: {sajuInfo.day.stem})</strong>은 나의 자아를 상징하며, 년주({sajuInfo.year.stem}{sajuInfo.year.branch})는 나의 든든한 가문과 사회적 뿌리를 의미합니다. 올 한 해 병오년의 기운이 이 여덟 글자와 마주하여 일으키는 상호 융합 작용을 상세 분석하여 최적의 대처 비책을 제공합니다.
+                  네 기둥 중에서도 나 자신을 대표하는 <strong>일간(日干: {sajuInfo.day?.stem})</strong>은 나의 자아를 상징하며, 년주({sajuInfo.year?.stem}{sajuInfo.year?.branch})는 나의 든든한 가문과 사회적 뿌리를 의미합니다. 올 한 해 병오년의 기운이 이 여덟 글자와 마주하여 일으키는 상호 융합 작용을 상세 분석하여 최적의 대처 비책을 제공합니다.
+                </p>
+                <p>
+                  각 기둥은 인생의 주요 전환점에 대응합니다. 년주는 삶의 시작점인 유아 및 초년을 규정하고, 월주는 학업에서 커리어의 정초를 다지는 청년기를 관장합니다. 일주는 주체적 자아를 확립해 나가는 중년의 성취와 안정을 지배하며, 시주는 노년의 운맥과 유산, 후손과의 상호 작용을 투영합니다.
                 </p>
               </div>
             </div>
+
+            {/* 신규 시각화: 오행 분포 차트 */}
+            <div className="border border-[#E2DDD5] rounded-lg p-5 bg-[#FAF8F5] shadow-sm space-y-4">
+              <span className="font-bold text-[#A3845B] text-xs block">📊 내 사주 원국 음양오행(陰陽五行) 분포 현황</span>
+              <div className="space-y-3">
+                {Object.keys(elementCounts).map(el => {
+                  const count = elementCounts[el];
+                  const percent = Math.round((count / 8) * 100);
+                  const colorConfig = elementColors[el];
+                  return (
+                    <div key={el} className="space-y-1">
+                      <div className="flex justify-between items-center text-[10px]">
+                        <span className="font-semibold text-gray-700">{colorConfig.label}</span>
+                        <span className="text-[#A3845B] font-bold">{count}개 ({percent}%)</span>
+                      </div>
+                      <div className="w-full h-2 bg-[#E2DDD5]/40 rounded-full overflow-hidden flex">
+                        <div 
+                          className="h-full rounded-full transition-all duration-500" 
+                          style={{ 
+                            width: `${percent > 0 ? percent : 2}%`, 
+                            backgroundColor: colorConfig.fill 
+                          }} 
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="text-[10px] text-[#5F5F5F] font-light leading-relaxed text-justify border-t border-[#E2DDD5]/65 pt-2">
+                * 오행의 고른 조화(각 1~2개 분포)가 갖춰질 때 삶의 풍파가 적고 평탄한 운을 유지합니다. 만약 특정 오행이 3개 이상 과다하거나 0개로 결핍되어 있다면, 해당 오행의 특성과 결부된 운명적 왜곡 현상이나 건강상의 불균형이 신년에 표출될 수 있으므로, 보완 기운을 적극 수렴하는 개운법 실천이 중요합니다.
+              </p>
+            </div>
           </div>
         );
+      }
 
       case "tj_daewun_flow":
         return (
@@ -4771,22 +4867,79 @@ function ResultContent() {
             
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p>
-                명리학에서 <strong>대운(大運)</strong>이란 10년 주기로 움직이는 내 영혼의 도로 기후 상태를 의미하며, <strong>세운(歲運)</strong>은 매년 변하는 일시적인 날씨 변화에 비유됩니다.
+                명리학에서 <strong>대운(大運)</strong>이란 10년 주기로 움직이는 내 영혼의 도로 상태이자 기후를 의미하며, <strong>세운(歲運)</strong>은 매년 찾아오는 일시적인 날씨 변화에 비유됩니다. 아무리 날씨가 맑아도 도로가 험하면 속도를 낼 수 없고, 도로가 포장되어 있어도 폭풍우가 치면 조심해야 하듯, 이 두 물결의 유기적인 결합을 분석하는 것이 한 해 예측의 출발점입니다.
               </p>
               <div className="bg-[#FAF8F5] border border-[#E2DDD5]/60 rounded-xl p-4 space-y-3">
                 <span className="font-bold text-xs text-[#8A6F4C] block">🌀 2026 신년 대운 및 세운 조화도</span>
                 <div className="space-y-2">
                   <div className="flex justify-between text-[10px]">
                     <span>대운-세운 에너지 융합 지수</span>
-                    <span className="text-emerald-700 font-bold">80%</span>
+                    <span className="text-emerald-700 font-bold">85%</span>
                   </div>
-                  <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-600 rounded-full" style={{ width: "80%" }} />
+                  <div className="w-full h-1.5 bg-gray-150 rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-600 rounded-full" style={{ width: "85%" }} />
                   </div>
                 </div>
               </div>
               <p>
-                의뢰인 {name}님의 타고난 일간 오행과 대운 지지의 관계가 2026년 병오년의 맹렬한 불꽃 기류와 만나 인생의 전환기적 합(合)과 팽창을 유도하고 있습니다. 지나치게 공격적인 영역 확장보다는 안정성을 기반으로 대운의 순탄함을 수호해야 합니다.
+                의뢰인 {name}님의 타고난 일간 오행과 대운 지지의 상생 관계는 현재 안정기에 놓여 있습니다. 2026년 병오년의 맹렬한 화(火) 기류는 이 안정적인 도로 위에 타오르는 태양처럼 작용합니다. 사주 원국에 목(木)이 있다면 불의 세기가 증폭되어 성급함이 앞서기 쉽고, 수(水)가 있다면 뜨거운 열기와 부딪쳐 일시적인 변화와 마찰이 유도될 수 있습니다. 대운의 순탄한 토대를 믿고 세운의 과열을 지혜롭게 제어하는 수성이 최선의 길입니다.
+              </p>
+            </div>
+
+            {/* 신규 시각화: 평생 대운 기류 변동 추이 곡선 */}
+            <div className="border border-[#E2DDD5] rounded-lg p-5 bg-[#FAF8F5] shadow-sm space-y-4">
+              <span className="font-bold text-[#A3845B] text-xs block">📈 평생 대운 기류 변동 추이 (Life-cycle Trend)</span>
+              <div className="flex justify-center py-2">
+                <svg viewBox="0 0 420 160" className="w-full max-w-[400px] h-auto font-sans">
+                  <defs>
+                    <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#A3845B" stopOpacity="0.4" />
+                      <stop offset="100%" stopColor="#A3845B" stopOpacity="0.0" />
+                    </linearGradient>
+                  </defs>
+                  
+                  {/* Grid Lines */}
+                  <line x1="30" y1="25" x2="390" y2="25" stroke="#E2DDD5" strokeWidth="0.5" strokeDasharray="2,2" />
+                  <line x1="30" y1="80" x2="390" y2="80" stroke="#E2DDD5" strokeWidth="0.5" strokeDasharray="2,2" />
+                  <line x1="30" y1="135" x2="390" y2="135" stroke="#E2DDD5" strokeWidth="0.5" />
+
+                  {/* Area & Path */}
+                  <path d="M 30 135 Q 90 55 150 85 T 270 35 T 390 135" fill="url(#areaGrad)" />
+                  <path d="M 30 135 Q 90 55 150 85 T 270 35 T 390 135" fill="none" stroke="#A3845B" strokeWidth="2" />
+
+                  {/* Age Nodes */}
+                  <circle cx="30" cy="135" r="3" fill="#A3845B" />
+                  <text x="30" y="148" textAnchor="middle" fontSize="7" fill="#8A6F4C">10대</text>
+                  
+                  <circle cx="102" cy="88" r="3" fill="#A3845B" />
+                  <text x="102" y="148" textAnchor="middle" fontSize="7" fill="#8A6F4C">20대</text>
+
+                  <circle cx="174" cy="73" r="3" fill="#A3845B" />
+                  <text x="174" y="148" textAnchor="middle" fontSize="7" fill="#8A6F4C">30대</text>
+
+                  {/* 현재 연령대 하이라이트 (30대~40대 사이) */}
+                  <circle cx="210" cy="58" r="5" fill="#8B221E" />
+                  <circle cx="210" cy="58" r="9" fill="none" stroke="#8B221E" strokeWidth="1" className="animate-ping" />
+                  <line x1="210" y1="58" x2="210" y2="135" stroke="#8B221E" strokeWidth="1.2" strokeDasharray="2,2" />
+                  <text x="210" y="42" textAnchor="middle" fontSize="8" fontWeight="bold" fill="#8B221E">현재 대운 (2026)</text>
+                  
+                  <circle cx="246" cy="43" r="3" fill="#A3845B" />
+                  <text x="246" y="148" textAnchor="middle" fontSize="7" fill="#8A6F4C">40대</text>
+
+                  <circle cx="318" cy="55" r="3" fill="#A3845B" />
+                  <text x="318" y="148" textAnchor="middle" fontSize="7" fill="#8A6F4C">50대</text>
+
+                  <circle cx="390" cy="135" r="3" fill="#A3845B" />
+                  <text x="390" y="148" textAnchor="middle" fontSize="7" fill="#8A6F4C">60대</text>
+
+                  {/* Y축 라벨 */}
+                  <text x="25" y="28" textAnchor="end" fontSize="6" fill="#8A6F4C">최고조</text>
+                  <text x="25" y="83" textAnchor="end" fontSize="6" fill="#8A6F4C">평탄</text>
+                  <text x="25" y="137" textAnchor="end" fontSize="6" fill="#8A6F4C">성찰기</text>
+                </svg>
+              </div>
+              <p className="text-[10px] text-[#5F5F5F] font-light leading-relaxed text-justify">
+                * 위 그래프는 평생 대운의 굴곡을 도식화한 예시 지표입니다. 붉은색 마커가 위치한 현재 대운 지점은 일생 중 가장 역동적이며 세운의 강한 화기운을 온전히 제련해 사회적 지위와 안정을 창출하기 좋은 골든타임 구간에 들어와 있음을 나타냅니다.
               </p>
             </div>
           </div>
@@ -5297,10 +5450,12 @@ function ResultContent() {
               <span className="text-xs tracking-[0.35em] text-[#A3845B] font-bold block font-myeongjo">— 慧眼堂 寶鑑 —</span>
               <div className="w-24 h-0.5 bg-[#A3845B]/40 mx-auto" />
             </div>
-            <div className="space-y-6 py-8">
-              <h1 className="font-myeongjo text-3xl md:text-5xl font-extrabold text-[#1A1A1A] tracking-widest leading-normal">
-                2026 丙午年<br />
-                {typeParam === "tojeong" ? "정통 토정비결 (土亭秘訣)" : "정통 신수비결 (新年運勢)"}
+            <div className="space-y-6 py-8 overflow-hidden">
+              <h1 className="font-myeongjo font-extrabold text-[#1A1A1A] tracking-widest leading-normal">
+                <span className="block text-3xl md:text-5xl whitespace-nowrap">2026 丙午年</span>
+                <span className="block text-xl sm:text-2xl md:text-4xl whitespace-nowrap break-keep mt-2">
+                  {typeParam === "tojeong" ? "정통 토정비결 (土亭秘訣)" : "정통 신수비결 (新年運勢)"}
+                </span>
               </h1>
               <p className="text-sm text-[#5F5F5F] font-light tracking-wide font-traditional">
                 {typeParam === "tojeong" ? "조선 정통 이지함의 비결로 풀어보는 한 해의 지침" : "천지합화(天地合火)의 기운을 다스리는 인생 지침 보감"}
