@@ -3138,7 +3138,7 @@ function ResultContent() {
       setIsPaid(true);
       
       const url = new URL(window.location.href);
-      url.searchParams.delete("reportGrade");
+      url.searchParams.set("reportGrade", grade);
       window.location.href = url.toString();
     };
 
