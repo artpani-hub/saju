@@ -5411,7 +5411,7 @@ function ResultContent() {
                   <span className="text-[10px] text-gray-500 font-semibold ml-0.5">점</span>
                 </div>
               </div>
-              <p className="font-myeongjo text-xs font-bold text-gray-800 leading-snug pt-2 border-t border-[#E2DDD5]/40 max-w-xs mx-auto text-center">
+              <p className="font-myeongjo text-xs font-bold text-gray-800 leading-snug pt-2 border-t border-[#E2DDD5]/40 max-w-md mx-auto text-center break-keep">
                 "{data.summary}"
               </p>
             </div>
