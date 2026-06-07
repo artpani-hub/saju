@@ -4533,10 +4533,11 @@ function ResultContent() {
         { page: 24, type: "tj_fengshui", title: "신년 공간 풍수 인테리어 처방" },
         { page: 25, type: "tj_lucky_items", title: "신년 추천 수호 소품 리스트" },
         { page: 26, type: "tj_diet", title: "체질 맞춤형 오행 섭생 처방" },
-        { page: 27, type: "tj_roadmap_2027", title: "2027년 정미년(丁未年) 세운 로드맵" },
-        { page: 28, type: "tj_roadmap_2028", title: "2028년 무신년(戊申年) 세운 로드맵" },
-        { page: 29, type: "tj_roadmap_2029", title: "2029년 기유년(己酉年) 세운 로드맵" },
-        { page: 30, type: "tj_final_blessing", title: "병오년 성공 기원 최종 축원문" }
+        { page: 27, type: "tj_worry_solution", title: "의뢰인 고민 극복 맞춤 비책" },
+        { page: 28, type: "tj_roadmap_2027", title: "2027년 정미년(丁未年) 세운 로드맵" },
+        { page: 29, type: "tj_roadmap_2028", title: "2028년 무신년(戊申年) 세운 로드맵" },
+        { page: 30, type: "tj_roadmap_2029", title: "2029년 기유년(己酉年) 세운 로드맵" },
+        { page: 31, type: "tj_final_blessing", title: "병오년 성공 기원 최종 축원문" }
       ];
     }
 
@@ -6323,6 +6324,73 @@ function ResultContent() {
                   <p className="text-[9px] text-gray-500 font-light leading-relaxed">
                     {teaDesc} 따뜻하게 우려내어 하루 한 잔씩 편안한 시간에 음용하며 내면의 장기 기운을 순탄하게 보완하십시오.
                   </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      case "tj_worry_solution": {
+        const categoryLabels = {
+          love: "연애 / 속마음",
+          career: "직장 / 이직",
+          wealth: "금전 / 투자",
+          exam: "학업 / 시험",
+          general: "종합 / 기타",
+          business: "사업 / 경영",
+          startup: "창업 / 부업",
+          trade: "장사 / 유통",
+          facility: "설비 / 확장"
+        };
+        const currentCategoryLabel = categoryLabels[worryCategory] || "종합 / 기타";
+        const personalizedText = getPersonalizedSolution(name, worryText, worryCategory);
+
+        return (
+          <div className="space-y-6 py-4">
+            <div className="text-center space-y-2 mb-8">
+              <span className="text-xs text-[#A3845B] font-bold block">고민 해결 처방 (苦悶 處方)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">의뢰인 맞춤형 고민 극복 정밀 솔루션</h2>
+              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+            </div>
+
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                의뢰인 <strong>{name}</strong>님께서 직접 남겨주신 고민에 대하여, 병오년의 절기적 기류와 명조의 오행 변화를 대입해 도출해 낸 혜안당의 독점적인 명리 극복 솔루션입니다.
+              </p>
+
+              {/* 고민 정보 헤더 */}
+              <div className="bg-[#FAF8F5] border-l-4 border-[#A3845B] p-4 rounded-lg space-y-2">
+                <div className="flex items-center justify-between border-b border-[#E2DDD5]/60 pb-1.5">
+                  <span className="font-bold text-[10px] text-[#A3845B] uppercase font-sans">선택하신 고민 분야: {currentCategoryLabel}</span>
+                  <span className="text-[9px] bg-[#A3845B]/10 text-[#A3845B] px-1.5 py-0.5 rounded font-bold font-sans">정밀 처방 안건</span>
+                </div>
+                <p className="text-[11px] text-gray-600 italic font-light">
+                  "{worryText ? decodeURIComponent(worryText) : "인생 전반의 총체적 갈등 해소 및 개운"}"
+                </p>
+              </div>
+
+              {/* 솔루션 상세 */}
+              <div className="space-y-5">
+                <div className="border border-[#E2DDD5]/60 rounded-xl p-4 bg-[#FAF8F5] space-y-3">
+                  <span className="font-bold text-xs text-[#A3845B] block">📍 고민 안건의 명리학적 해석</span>
+                  <p className="text-justify text-gray-600 font-light leading-relaxed pl-3 border-l border-[#A3845B]/30">
+                    {personalizedText.analysis}
+                  </p>
+                </div>
+
+                <div className="border border-[#E2DDD5]/60 rounded-xl p-4 bg-[#FAF8F5] space-y-3">
+                  <span className="font-bold text-xs text-[#A3845B] block">⏰ 하늘이 돕는 개운 타이밍</span>
+                  <p className="text-justify text-gray-600 font-light leading-relaxed pl-3 border-l border-[#A3845B]/30">
+                    {personalizedText.timing}
+                  </p>
+                </div>
+
+                <div className="border border-[#E2DDD5]/60 rounded-xl p-4 bg-[#FAF7F0]/40 space-y-3">
+                  <span className="font-bold text-xs text-[#8A6F4C] block">🔑 혜안당 정밀 개운 비책</span>
+                  <div className="bg-[#FAF7F0] p-4 rounded-lg border border-[#E2DDD5]/50 whitespace-pre-line text-xs font-light text-gray-600 leading-relaxed">
+                    {personalizedText.actionPlan}
+                  </div>
                 </div>
               </div>
             </div>
