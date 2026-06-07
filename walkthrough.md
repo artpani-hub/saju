@@ -48,3 +48,7 @@
 - **포지셔닝 수정**: 기존의 본문 영역 내 인라인 유료 전환 배너를 제거하고, 화면 스크롤과 무관하게 하단 뷰포트에 항상 상주하는 고정 플로팅 바(`fixed bottom-0 z-50`) 레이아웃으로 변경했습니다.
 - **구조적 개선**: `fixed` 포지셔닝이 조상 요소인 `print-page-wrapper`의 `transform` 속성 등에 영향받지 않도록, 컴포넌트 구조의 가장 바깥쪽 형제 레벨로 위치를 추출하여 뷰포트 절대 기준 하단 고정을 보장했습니다.
 - **반응형 디자인**: 모바일 및 PC 화면 크기에 유연하게 대응하여 고급/프리미엄 업그레이드 및 즉시 해제 링크가 아름답게 정렬되도록 디자인을 다듬었습니다.
+
+### 10. 신년운세 업그레이드 크래시 버그 수정 [NEW]
+- **원인 분석**: 신수비결/신년운세 고급 등급에서 프리미엄 업그레이드 버튼을 눌러 `reportGrade`가 소거되었을 때, 혹은 `currentGrade === "premium"` 조건에 의해 렌더링이 전환될 때 `renderNewYearPageContent` 내에서 의뢰인 고민 처방용 데이터 객체인 `textSolution`과 `categorySolution`이 정의되지 않은 상태에서 참조되어 `ReferenceError: textSolution is not defined` 크래시가 발생하는 문제였습니다.
+- **해결책**: `renderNewYearPageContent` 내부에 `getPersonalizedSolution`을 활용해 고민 입력 텍스트 및 선택 카테고리에 상응하는 `textSolution` 및 `categorySolution` 선언 코드를 추가하여 런타임 오류 없이 안전하게 프리미엄 화면이 마스킹 및 오버레이 렌더링되도록 조치했습니다.

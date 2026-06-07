@@ -3029,7 +3029,8 @@ function ResultContent() {
   const hour = searchParams.get("hour") || "10:00";
   const worryCategory = searchParams.get("worryCategory") || "general";
   const worryText = searchParams.get("worryText") || "";
-  const reportGrade = searchParams.get("reportGrade") || "premium"; // premium(고급), deep(심화)  const currentGrade = reportGrade;
+  const reportGrade = searchParams.get("reportGrade") || "premium"; // premium(고급), deep(심화)
+  const currentGrade = reportGrade;
 
   // Partner parameters
   const partnerName = searchParams.get("partnerName") || "강민우";
@@ -3288,6 +3289,46 @@ function ResultContent() {
             className="w-full py-1.5 bg-[#5F7A68] hover:bg-[#38493D] text-[#FAF7F0] rounded text-[10px] font-semibold tracking-wider transition-all mt-1"
           >
             ⚙️ [개발자 테스트] 즉시 잠금해제 확인하기
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderUpgradeOverlay = (sectionTitle) => {
+    return (
+      <div className="absolute inset-0 bg-[#F9F8F6]/85 backdrop-blur-md flex flex-col items-center justify-center z-20 p-6 text-center select-none print:hidden">
+        <div className="border-2 border-[#A3845B] bg-[#F9F8F6] rounded-xl p-8 max-w-sm shadow-xl space-y-4 relative">
+          <div className="absolute top-2 left-2 text-[#A3845B]/20 text-[10px]">卍</div>
+          <div className="absolute top-2 right-2 text-[#A3845B]/20 text-[10px]">卍</div>
+          
+          <div className="w-12 h-12 bg-[#A3845B]/10 text-[#A3845B] rounded-full flex items-center justify-center mx-auto text-xl font-bold">
+            👑
+          </div>
+          <h4 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">
+            {sectionTitle || "정밀 심화 분석"} 잠겨 있음
+          </h4>
+          <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light font-traditional">
+            이 영역은 <strong>심화(Deep) 리포트 전용</strong> 고품격 분석서입니다. 현재 보유하신 고급 리포트에서 심화 리포트로 업그레이드하시면 즉시 전체 내용이 공개됩니다.
+          </p>
+          <button
+            type="button"
+            onClick={handleUpgradePayment}
+            className="w-full py-2.5 bg-[#8A6F4C] hover:bg-[#705A3D] text-white rounded text-xs font-semibold shadow-md transition-all font-traditional cursor-pointer"
+          >
+            프리미엄(심화) 리포트로 업그레이드 (+15,000원) →
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setIsPaid(true);
+              const url = new URL(window.location.href);
+              url.searchParams.delete("reportGrade");
+              window.location.href = url.toString();
+            }}
+            className="w-full py-1.5 bg-[#5F7A68] hover:bg-[#38493D] text-[#FAF7F0] rounded text-[10px] font-semibold tracking-wider transition-all mt-1 cursor-pointer"
+          >
+            ⚙️ [개발자 테스트] 즉시 업그레이드 적용하기
           </button>
         </div>
       </div>
@@ -8276,6 +8317,9 @@ function ResultContent() {
         } else if (worryCategory === "exam") {
           metricsData = { success: 85, negotiation: 65, control: 80, synergy: 75 };
         }
+
+        const textSolution = worryText && worryText.trim() !== "" ? getPersonalizedSolution(name, worryText, worryCategory) : null;
+        const categorySolution = worryCategory ? getPersonalizedSolution(name, "", worryCategory) : null;
 
         return wrapLock(
           <div className="space-y-6 py-4">
