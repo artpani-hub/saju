@@ -4367,52 +4367,54 @@ function ResultContent() {
                 </button>
               </div>
 
-              {/* [업그레이드 배너] */}
-              <div className="border-2 border-double border-[#A3845B] bg-[#1C1613] text-[#FAF7F0] rounded-xl p-5 shadow-lg text-center space-y-3 mt-4 print:hidden">
-                <span className="text-[9px] tracking-widest text-[#A3845B] block">— 혜안당 정밀 분석 추가 제안 —</span>
-                <h4 className="font-myeongjo text-sm font-bold text-white leading-snug">
-                  {name}님을 위한 8가지 심화 콘텐츠 및 로드맵 전체 분석이 준비되어 있습니다.
-                </h4>
-                <div className="flex gap-3 justify-center">
-                  <button
-                    type="button"
-                    onClick={() => handleUpgradeFromSms("premium", 20000)}
-                    className="flex-1 py-3 bg-zinc-800 hover:bg-zinc-700 border border-[#A3845B]/40 hover:border-[#A3845B] text-[#FAF7F0] rounded font-bold text-[11px] shadow transition-all cursor-pointer"
-                  >
-                    고급 리포트 업그레이드 (+20,000원) →
-                    <span className="block text-[8px] font-normal text-gray-400 mt-0.5">36페이지 상세 분석 잠금해제</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleUpgradeFromSms("deep", 35000)}
-                    className="flex-1 py-3 bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] rounded font-bold text-[11px] shadow transition-all cursor-pointer"
-                  >
-                    프리미엄 리포트 업그레이드 (+35,000원) →
-                    <span className="block text-[8px] font-normal text-[#1C1613]/70 mt-0.5">51페이지 전체 심화분석 해제</span>
-                  </button>
-                </div>
-                <div className="flex justify-center gap-4 text-[9px] text-gray-400">
-                  <p>✓ 결제 즉시 페이지가 새로고침되어 잠금이 해제됩니다.</p>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsPaid(true);
-                      const url = new URL(window.location.href);
-                      url.searchParams.delete("reportGrade");
-                      window.location.href = url.toString();
-                    }}
-                    className="hover:text-white underline"
-                  >
-                    [테스트용 즉시 해제]
-                  </button>
-                </div>
-              </div>
+            </div>
+
+            <div className="flex justify-between items-center border-t border-[#E2DDD5]/50 pt-3 mt-6 text-[9px] text-[#5F5F5F] mb-16 sm:mb-10">
+              <span className="font-myeongjo font-light">慧眼堂 寶鑑 · 병오년 {typeParam === "tojeong" ? "토정비결" : "신수비결"} 요약</span>
+              <span className="font-myeongjo font-bold">2 / 2</span>
             </div>
           </div>
 
-          <div className="flex justify-between items-center border-t border-[#E2DDD5]/50 pt-3 mt-6 text-[9px] text-[#5F5F5F]">
-            <span className="font-myeongjo font-light">慧眼堂 寶鑑 · 병오년 {typeParam === "tojeong" ? "토정비결" : "신수비결"} 요약</span>
-            <span className="font-myeongjo font-bold">2 / 2</span>
+          {/* 화면 하단 플로팅 결제 바 (모바일 및 PC 대응, 인쇄시 숨김) */}
+          <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-3xl z-50 bg-[#1C1613]/95 backdrop-blur-md border-t border-[#A3845B]/30 py-3.5 px-6 shadow-[0_-8px_30px_rgb(0,0,0,0.2)] print:hidden rounded-t-xl">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 w-full">
+              <div className="text-left sm:pl-2">
+                <span className="text-[8px] tracking-widest text-[#A3845B] block font-myeongjo font-bold uppercase">— 혜안당 정밀 분석 추가 제안 —</span>
+                <h4 className="font-myeongjo text-[11px] font-bold text-[#FAF7F0] leading-tight mt-0.5">
+                  {name}님을 위한 8가지 심화 콘텐츠 및 로드맵 전체 분석이 준비되어 있습니다.
+                </h4>
+              </div>
+              <div className="flex items-center gap-2 w-full sm:w-auto sm:pr-2">
+                <button
+                  type="button"
+                  onClick={() => handleUpgradeFromSms("premium", 20000)}
+                  className="flex-1 sm:flex-none px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-[#A3845B]/40 hover:border-[#A3845B] text-[#FAF7F0] rounded font-bold text-[10px] shadow transition-all duration-300 cursor-pointer flex flex-col items-center justify-center min-w-[120px]"
+                >
+                  <span>고급 업그레이드 (+20k)</span>
+                  <span className="text-[7px] font-normal text-gray-400 mt-0.5">36p 분석 해제</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleUpgradeFromSms("deep", 35000)}
+                  className="flex-1 sm:flex-none px-4 py-2 bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] rounded font-bold text-[10px] shadow transition-all duration-300 cursor-pointer flex flex-col items-center justify-center min-w-[120px]"
+                >
+                  <span>프리미엄 업그레이드 (+35k)</span>
+                  <span className="text-[7px] font-normal text-[#1C1613]/70 mt-0.5">51p 분석 해제</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsPaid(true);
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete("reportGrade");
+                    window.location.href = url.toString();
+                  }}
+                  className="text-[8.5px] text-[#A3845B]/60 hover:text-white underline cursor-pointer shrink-0"
+                >
+                  [즉시 해제]
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
