@@ -5861,7 +5861,105 @@ function ResultContent() {
         );
       }
 
-      case "tj_lucky_items":
+      case "tj_lucky_items": {
+        const dayStemEl = sajuInfo?.day?.stemEl || "목";
+        
+        // 일간 오행별 럭키 컬러 및 아이템 정의
+        let luckyColors = [];
+        let itemsTable = [];
+        let item1Title = "";
+        let item1Desc = "";
+        let item2Title = "";
+        let item2Desc = "";
+
+        if (dayStemEl === "목" || dayStemEl === "木") {
+          luckyColors = [
+            { name: "포레스트 그린", code: "#2F5233", energy: "목(木) 생기", desc: "주체성 회복" },
+            { name: "에메랄드", code: "#00A86B", energy: "목(木) 성장", desc: "진로 확장" },
+            { name: "크림 화이트", code: "#FFFDF9", energy: "금(金) 의지", desc: "결단력 보완" },
+            { name: "라이트 옐로우", code: "#FFF8D6", energy: "토(土) 신뢰", desc: "재물운 안착" }
+          ];
+          item1Title = "🪵 원목 또는 식물 소품";
+          item1Desc = "작은 테이블용 반려식물 화분이나 원목으로 가공된 소품은 목의 솟구치는 생명력을 극대화하여 활력을 공급합니다.";
+          item2Title = "✍️ 만년필 및 가죽 다이어리";
+          item2Desc = "목의 계획성을 기록으로 보완하고 실행에 확실한 뼈대를 세우기 위해 가죽이나 천연 소재 소품이 길합니다.";
+          itemsTable = [
+            { type: "👔 의상 코디", style: "내추럴 톤온톤 룩", item: "카키/베이지 리넨 셔츠", effect: "대인관계에 부드러운 신뢰와 편안함을 공급" },
+            { type: "💄 메이크업", style: "내추럴 누드 톤 스킨", item: "차분한 브라운/피치 립밤", effect: "과도한 긴장을 가라앉히고 안정감을 연출" },
+            { type: "💍 액세서리", style: "원목 가죽 믹스 주얼리", item: "천연 가죽 밴드 손목 시계", effect: "목의 고집을 조율하고 융통성 있는 교류 촉진" },
+            { type: "💨 럭키 향수", style: "싱그러운 풀잎 향조", item: "그린 티, 편백나무 향", effect: "머리를 맑게 하고 집중력과 스트레스 저하 유도" }
+          ];
+        } else if (dayStemEl === "화" || dayStemEl === "火") {
+          luckyColors = [
+            { name: "제트 블랙", code: "#0D0D0D", energy: "수(水) 수호", desc: "감정 진정" },
+            { name: "딥 블루", code: "#0F2027", energy: "수(水) 지혜", desc: "구설수 차단" },
+            { name: "에메랄드 그린", code: "#1B4D3E", energy: "목(木) 상생", desc: "인덕 공급" },
+            { name: "딥 퍼플", code: "#3F2B96", energy: "화(火) 조율", desc: "영감 충전" }
+          ];
+          item1Title = "🌊 수족관 및 미니 분수기";
+          item1Desc = "작은 흐르는 물소리나 실내 가습기는 타오르는 불꽃의 열기를 이성적으로 식히고 구설수를 차단하는 효과를 줍니다.";
+          item2Title = "🔮 흑요석 또는 오닉스 장식";
+          item2Desc = "블랙 계열의 천연 원석은 넘쳐나는 화기를 흡수하고 안정적인 심리 방어막을 구축하여 차분함을 보완합니다.";
+          itemsTable = [
+            { type: "👔 의상 코디", style: "시크 미니멀 룩", item: "제트 블랙 자켓, 차콜 슬랙스", effect: "감정적 과열을 억제하고 이성적 신용 구축" },
+            { type: "💄 메이크업", style: "차분한 세미매트 스킨", item: "톤다운 무드 레드 립", effect: "들뜬 기운을 가라앉히고 확실한 중심감 어필" },
+            { type: "💍 액세서리", style: "실버 메탈 주얼리", item: "화이트 실버 체인 팔찌", effect: "화극금의 상성 충돌을 정화하고 판단력 확보" },
+            { type: "💨 럭키 향수", style: "시원한 마린 앤 워터 향", item: "아쿠아, 바다 소금 향", effect: "주변 분위기를 정돈하고 본인의 카리스마 유연화" }
+          ];
+        } else if (dayStemEl === "토" || dayStemEl === "土") {
+          luckyColors = [
+            { name: "메탈 실버", code: "#C0C0C0", energy: "금(金) 의지", desc: "결단력 보강" },
+            { name: "제트 블랙", code: "#1C1C1C", energy: "수(水) 재물", desc: "현금 유입" },
+            { name: "포레스트 그린", code: "#2B4C3F", energy: "목(木) 관성", desc: "직무 안정" },
+            { name: "크림 화이트", code: "#FCFBF7", energy: "금(金) 신뢰", desc: "계약 성사" }
+          ];
+          item1Title = "💍 메탈 실버 액세서리";
+          item1Desc = "은반지나 스틸 시계 등 금속 소품은 토의 우유부단함을 결단력으로 승화시켜 계약운을 향상시킵니다.";
+          item2Title = "🏺 황토 도자기 오브제";
+          item2Desc = "마당이 없더라도 실내에 흙으로 구워낸 미니 도자기나 돌 장식품을 두면 본인의 굳건한 터전을 안정시킵니다.";
+          itemsTable = [
+            { type: "👔 의상 코디", style: "모던 포멀 수트 룩", item: "아이보리 니트, 실버 그레이 자켓", effect: "토의 무거운 느낌을 세련된 신용감으로 전환" },
+            { type: "💄 메이크업", style: "매끄럽고 맑은 피부 톤", item: "은은한 베이지 글로우 립", effect: "유연하고 호감 주는 인상을 주변에 전달" },
+            { type: "💍 액세서리", style: "화이트 실버 제품", item: "메탈 스틸 프레임 안경", effect: "대인관계에서 이성적 판단과 세련된 경청 유도" },
+            { type: "💨 럭키 향수", style: "묵직한 샌달우드 향조", item: "시더우드, 패출리 향", effect: "내면의 고집을 든든한 신뢰의 이미지로 정착" }
+          ];
+        } else if (dayStemEl === "금" || dayStemEl === "金") {
+          luckyColors = [
+            { name: "포레스트 그린", code: "#3E5F46", energy: "목(木) 재물", desc: "수익 활성화" },
+            { name: "스카이 BLUE", code: "#87CEEB", energy: "수(水) 상생", desc: "소통 유연" },
+            { name: "딥 블랙", code: "#111111", energy: "수(水) 리스크", desc: "리스크 회피" },
+            { name: "라이트 옐로우", code: "#FFF2CC", energy: "토(土) 인성", desc: "계약 자산" }
+          ];
+          item1Title = "🍀 반려식물 화분";
+          item1Desc = "금의 예리하고 차가운 성정을 싱그러운 초록 식물로 완화시켜 대인관계 인덕을 부드럽게 끌어올립니다.";
+          item2Title = "🌊 실내 미니 분수 또는 수분 가습기";
+          item2Desc = "흐르는 물과 가습은 금생수(金生水) 기류를 활성화하여 생각의 유연성과 기발한 영감을 불어넣습니다.";
+          itemsTable = [
+            { type: "👔 의상 코디", style: "캐주얼 스마트 룩", item: "카키 상의, 브라운 톤 팬츠", effect: "차가운 이미지를 부드러운 중용의 기류로 보완" },
+            { type: "💄 메이크업", style: "촉촉하고 생기 있는 연출", item: "로즈 피치 워터리 립스틱", effect: "얼굴에 밝은 화기를 주어 대인 매력도 상승" },
+            { type: "💍 액세서리", style: "천연 가죽 소재 주얼리", item: "가죽 스트랩 브레이슬릿", effect: "날카로운 결단을 조화롭고 협조적으로 유지" },
+            { type: "💨 럭키 향수", style: "싱그러운 시트러스 향조", item: "베르가못, 자몽, 만다린 향", effect: "날카로워진 신경을 즉각적으로 이완시키고 긍정화" }
+          ];
+        } else {
+          // 수(水) 일간 혹은 기본
+          luckyColors = [
+            { name: "크림 화이트", code: "#FDFCFA", energy: "금(金) 상생", desc: "학문/문서" },
+            { name: "메탈 실버", code: "#CCCCCC", energy: "금(金) 지혜", desc: "자산 계약" },
+            { name: "네이비 블루", code: "#1C3144", energy: "수(水) 수호", desc: "주체성 자각" },
+            { name: "미스티 그레이", code: "#8E9AAF", energy: "금(金) 정돈", desc: "결단력 상승" }
+          ];
+          item1Title = "🏺 화이트 백자 오브제";
+          item1Desc = "하얗고 깔끔한 백자 도자기 소품은 금생수 기류를 자극해 내면의 깊은 생각들을 정돈해 줍니다.";
+          item2Title = "⌚ 메탈 바디 아날로그 시계";
+          item2Desc = "정확하게 움직이는 금속 스틸 시계는 수의 흐릿한 유동성을 제어해 계획적인 실천력을 채워 줍니다.";
+          itemsTable = [
+            { type: "👔 의상 코디", style: "미니멀 모던 클래식 핏", item: "크림 화이트 셔츠, 그레이 가디건", effect: "정리정돈된 매력과 깊은 신용을 연출" },
+            { type: "💄 메이크업", style: "투명하고 맑은 수분광", item: "실버 펄 글로우 립, 투명 밤", effect: "피부 점막을 보습하고 명쾌한 소통 기류 강화" },
+            { type: "💍 액세서리", style: "실버 메탈 주얼리", item: "실버 링 귀걸이, 메탈 체인 링", effect: "인맥과의 불필요한 감정 얽힘을 칼처럼 차단" },
+            { type: "💨 럭키 향수", style: "차분하고 맑은 화이트 머스크", item: "네롤리, 코튼, 베이비파우더 향", effect: "불안한 심연을 차분하게 달래고 깊은 안정 부여" }
+          ];
+        }
+
         return (
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
@@ -5869,25 +5967,301 @@ function ResultContent() {
               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">의뢰인을 지켜주는 수호 행운 소품 리스트</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                의뢰인의 일간 오행과 올해 세운의 부딪힘을 예방해주는 최적의 수호 소품 가이드입니다.
+
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                일상에서 지니는 소품과 색상은 사주 원국의 부족한 에너지를 채우고 세운의 거친 충극을 완화하는 <strong>가장 즉각적이고 손쉬운 행동 풍수 실천법</strong>입니다. 의뢰인 <strong>{name}</strong>님의 사주 일간인 <strong>'{sajuInfo?.day?.stem}'({dayStemEl}의 기운)</strong>을 보완하여 액운을 막고 신년 운을 틔워주는 맞춤 수호 처방을 제안합니다.
               </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-[#FAF7F0] p-4 rounded-xl border border-[#E2DDD5]/60 space-y-1.5">
-                  <span className="font-bold text-[#8A6F4C] text-[11px] block">💎 천연 흑요석 또는 오닉스</span>
-                  <p className="text-[10px] text-gray-500 font-light leading-normal">어두운 색상의 돌 소품은 불안한 액운을 차단하고 든든한 보호막이 되어 줍니다.</p>
+
+              {/* 시각화 1: 럭키 컬러 칩 팔레트 (Glassmorphism Color Chips) */}
+              <div className="bg-[#FAF8F5] border border-[#E2DDD5]/60 rounded-xl p-5 space-y-4">
+                <span className="font-bold text-xs text-[#8A6F4C] block text-center">🎨 {dayStemEl} 기운 보완 수호 럭키 컬러 팔레트</span>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-lg mx-auto">
+                  {luckyColors.map((color, idx) => (
+                    <div key={idx} className="flex flex-col items-center space-y-1.5 p-3.5 bg-white rounded-lg border border-[#E2DDD5]/40 shadow-sm transition-all hover:scale-105">
+                      <div className="w-12 h-12 rounded-full border border-gray-200 shadow-inner" style={{ backgroundColor: color.code }} />
+                      <span className="font-semibold text-gray-800 text-[10px] mt-1">{color.name}</span>
+                      <span className="text-[8px] text-gray-500 font-light">{color.energy}</span>
+                      <span className="text-[8px] text-[#A3845B] font-bold bg-[#FAF7F0] px-1.5 py-0.5 rounded-full mt-0.5">{color.desc}</span>
+                    </div>
+                  ))}
                 </div>
-                <div className="bg-[#FAF7F0] p-4 rounded-xl border border-[#E2DDD5]/60 space-y-1.5">
-                  <span className="font-bold text-[#8A6F4C] text-[11px] block">⌚ 메탈 실버 스틸 제품</span>
-                  <p className="text-[10px] text-gray-500 font-light leading-normal">금속 성질의 소품은 판단력을 선명하게 하고 직무 상 명예운을 수호합니다.</p>
+              </div>
+
+              {/* 시각화 2: 스타일 시너지 및 보호 에너지 지표 */}
+              <div className="bg-[#FAF7F0]/40 border border-[#E2DDD5] rounded-xl p-4 space-y-3 shadow-inner">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 럭키 스타일링 장착 후 운세 보정 지수</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>대인관계 신용 및 평판 상승률</span>
+                      <span className="text-[#8A6F4C]">92%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-emerald-700 rounded-full" style={{ width: "92%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>구설수 방어 및 흉살 차단율</span>
+                      <span className="text-[#8A6F4C]">89%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-rose-700 rounded-full" style={{ width: "89%" }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 pt-1">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>정서적 안정 및 자존감 유지 지수</span>
+                      <span className="text-[#8A6F4C]">87%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-blue-700 rounded-full" style={{ width: "87%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>금전 창고(財庫) 활성 시너지</span>
+                      <span className="text-[#8A6F4C]">95%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-yellow-600 rounded-full" style={{ width: "95%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 추천/기피 수호 소품 매칭 */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-emerald-50/40 border border-emerald-100 p-4 rounded-xl space-y-2">
+                  <span className="font-bold text-emerald-800 text-[11px] block flex items-center gap-1">
+                    🎯 수호 소품 처방 1
+                  </span>
+                  <span className="font-bold text-[10px] text-emerald-950 block">{item1Title}</span>
+                  <p className="text-[9px] text-emerald-950 font-light leading-relaxed text-justify">
+                    {item1Desc}
+                  </p>
+                </div>
+                <div className="bg-emerald-50/40 border border-emerald-100 p-4 rounded-xl space-y-2">
+                  <span className="font-bold text-emerald-800 text-[11px] block flex items-center gap-1">
+                    🎯 수호 소품 처방 2
+                  </span>
+                  <span className="font-bold text-[10px] text-emerald-950 block">{item2Title}</span>
+                  <p className="text-[9px] text-emerald-950 font-light leading-relaxed text-justify">
+                    {item2Desc}
+                  </p>
+                </div>
+              </div>
+
+              {/* 스타일 처방 조견표 */}
+              <span className="font-bold text-xs text-[#8A6F4C] block pt-2">🔑 부위별 디테일 코디네이션 처방</span>
+              <div className="border border-[#E2DDD5] rounded-xl overflow-hidden shadow-sm">
+                <table className="w-full text-[9px] text-left border-collapse">
+                  <thead>
+                    <tr className="bg-[#FAF7F0] text-[#8A6F4C] font-bold border-b border-[#E2DDD5]">
+                      <th className="p-2">분류</th>
+                      <th className="p-2">권장 스타일 및 포인트</th>
+                      <th className="p-2">추천 아이템</th>
+                      <th className="p-2">개운 메커니즘</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-gray-600 font-light">
+                    {itemsTable.map((row, idx) => (
+                      <tr key={idx} className="border-b border-[#E2DDD5]/40 hover:bg-gray-50/50">
+                        <td className="p-2 font-semibold text-gray-800 shrink-0 whitespace-nowrap">{row.type}</td>
+                        <td className="p-2 font-medium">{row.style}</td>
+                        <td className="p-2 text-[#A3845B] font-semibold">{row.item}</td>
+                        <td className="p-2">{row.effect}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* 3열 수칙 카드 */}
+              <div className="grid grid-cols-3 gap-3 pt-2">
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-center shadow-inner">
+                  <span className="text-xl block mb-1">👔</span>
+                  <span className="font-bold text-[#A3845B] text-[10px] block">의복 보정</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">수호 컬러의 의상을 착용해 아우라 보완</p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-center shadow-inner">
+                  <span className="text-xl block mb-1">💍</span>
+                  <span className="font-bold text-[#A3845B] text-[10px] block">금속/가죽 조율</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">맞춤 소품으로 의지력과 판단 기류 활성화</p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-center shadow-inner">
+                  <span className="text-xl block mb-1">💨</span>
+                  <span className="font-bold text-[#A3845B] text-[10px] block">행운의 향기</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">기운을 정돈하는 천연 오일 및 디퓨저 매칭</p>
                 </div>
               </div>
             </div>
           </div>
         );
+      }
 
-      case "tj_diet":
+      case "tj_diet": {
+        const dayStemEl = sajuInfo?.day?.stemEl || "목";
+        let constitutionName = "오행 평형 체질";
+        let constitutionDesc = "";
+        let goodFoods = "";
+        let badFoods = "";
+        let teaName = "";
+        let teaDesc = "";
+        let organGraph = null;
+
+        if (dayStemEl === "목" || dayStemEl === "木") {
+          constitutionName = "풍목(風木) 체질 (간·담 기능 편중)";
+          constitutionDesc = "목 기운의 특징인 솟구치는 기운이 강하여, 스트레스를 받거나 화기가 침범할 때 눈의 피로와 어깨 결림, 두통이 쉽게 동반되는 체질입니다. 타오르는 화기로 인해 체내 목기가 건조해져 신경계 피로가 누적될 위험이 높습니다.";
+          goodFoods = "브로콜리, 미나리, 시금치 등 푸른 잎 채소 및 사과, 매실 (피로 해소 유도)";
+          badFoods = "지나치게 매운 마늘/고추 요리, 튀긴 고기류, 고도수의 음주 (간열 증폭)";
+          teaName = "구기자차 (枸杞子茶)";
+          teaDesc = "구기자는 건조해진 간 기능을 보호하고 눈의 피로를 낮추며 목기를 부드럽게 이완시킵니다.";
+          organGraph = (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                  <span>간·담(木) 피로도</span>
+                  <span className="text-[#8A6F4C]">80%</span>
+                </div>
+                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-700 rounded-full" style={{ width: "80%" }} />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                  <span>위·장(土) 소화 효율</span>
+                  <span className="text-[#8A6F4C]">75%</span>
+                </div>
+                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-yellow-600 rounded-full" style={{ width: "75%" }} />
+                </div>
+              </div>
+            </div>
+          );
+        } else if (dayStemEl === "화" || dayStemEl === "火") {
+          constitutionName = "군화(君火) 체질 (심·소장 상열 체질)";
+          constitutionDesc = "2026년 병오년의 타오르는 강력한 불꽃 세운과 만나 불기운이 극에 달할 수 있는 체질입니다. 상반신으로 열이 쉽게 솟구쳐 안면 홍조, 구내염, 수면 장애(불면증)가 생기기 쉬우며 혈압 조율에 신경 써야 합니다.";
+          goodFoods = "오이, 토마토, 수박 등 수분과 찬 성질이 가득한 채소 및 메밀 (상열감 완화)";
+          badFoods = "마라탕, 자극적인 향신료, 과도한 육류 섭취, 카페인 다량 섭취 (심혈관 열증 자극)";
+          teaName = "보리차 또는 죽엽차 (竹葉茶)";
+          teaDesc = "대나무 잎으로 우려낸 차는 심장의 불같은 열을 차분하게 가라앉히고 수분을 보충해 줍니다.";
+          organGraph = (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                  <span>심·소장(火) 과열도</span>
+                  <span className="text-[#8A6F4C]">95%</span>
+                </div>
+                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-red-700 rounded-full" style={{ width: "95%" }} />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                  <span>신·방광(水) 건조율</span>
+                  <span className="text-[#8A6F4C]">90%</span>
+                </div>
+                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-slate-800 rounded-full" style={{ width: "90%" }} />
+                </div>
+              </div>
+            </div>
+          );
+        } else if (dayStemEl === "토" || dayStemEl === "土") {
+          constitutionName = "습토(濕土) 체질 (비·위장 소화기 편중)";
+          constitutionDesc = "소화기 계통의 힘을 쥐고 있으나, 세운의 열기가 강해져 위장이 쉽게 메마르고 체내 노폐물(습담)이 끈적하게 남기 쉬운 체질입니다. 비위가 약해지면 피로감과 복부 팽만감을 자주 호소할 수 있습니다.";
+          goodFoods = "단호박, 양배추, 연근, 감자 등 옐로우 푸드 및 율무 (비위 소화 촉진)";
+          badFoods = "차가운 빙수나 맥주, 차가운 날음식, 밀가루 가공품 (비장 소화 마비)";
+          teaName = "생강나무차 또는 백출차 (白朮茶)";
+          teaDesc = "백출차는 위장의 습기를 제거하고 위벽을 튼튼하게 보해 소화 흡수력을 상승시킵니다.";
+          organGraph = (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                  <span>비·위장(土) 방어막</span>
+                  <span className="text-[#8A6F4C]">85%</span>
+                </div>
+                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-yellow-600 rounded-full" style={{ width: "85%" }} />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                  <span>간·담(木) 억제 지수</span>
+                  <span className="text-[#8A6F4C]">70%</span>
+                </div>
+                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-700 rounded-full" style={{ width: "70%" }} />
+                </div>
+              </div>
+            </div>
+          );
+        } else if (dayStemEl === "금" || dayStemEl === "金") {
+          constitutionName = "조금(燥金) 체질 (폐·대장 호흡기 편중)";
+          constitutionDesc = "단단하고 냉정하지만 화기 세운의 침입으로 가장 쉽게 녹아내리는(화극금) 연약한 쇠붙이의 기질입니다. 피부 건조증, 만성 마른기침, 대장 건조로 인한 변비 등에 매우 취약한 체질입니다.";
+          goodFoods = "무, 도라지, 더덕, 버섯 등 흰색 뿌리 채소 및 배즙 (호흡기/피부 점막 보습)";
+          badFoods = "바비큐, 구운 고기류, 고추장 등 매운 음식, 흡연 (기관지 건조 자극)";
+          teaName = "맥문동차 (麥門冬茶)";
+          teaDesc = "맥문동은 폐와 목구멍에 음액(수분)을 듬뿍 넣어 건조함을 몰아내고 마른기침을 가라앉힙니다.";
+          organGraph = (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                  <span>폐·기관지(金) 점막도</span>
+                  <span className="text-[#8A6F4C]">65%</span>
+                </div>
+                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-zinc-400 rounded-full" style={{ width: "65%" }} />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                  <span>대장(金) 수분 유지력</span>
+                  <span className="text-[#8A6F4C]">70%</span>
+                </div>
+                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-zinc-500 rounded-full" style={{ width: "70%" }} />
+                </div>
+              </div>
+            </div>
+          );
+        } else {
+          // 수(水) 일간 혹은 기본
+          constitutionName = "한수(寒水) 체질 (신·방광 신진대사 편중)";
+          constitutionDesc = "차분하고 유연한 물 기운을 타고났으나, 2026년 병오년의 극강의 불꽃 세운에 직격탄을 맞아 체내 수기가 통째로 증발(수화대립)하기 쉽습니다. 비뇨기, 자궁, 호르몬 대사 저하 및 체내 전해질 부족을 겪기 쉽습니다.";
+          goodFoods = "미역, 다시마 등 해조류와 검은콩, 검은깨, 신선한 생선 및 굴 (신장 활성화)";
+          badFoods = "짠 찌개 및 소금기 많은 스낵, 과한 알코올 섭취 (신장 탈수 가중)";
+          teaName = "옥수수수염차 또는 검은콩차";
+          teaDesc = "신장의 노폐물 배출력을 돕고 탈수를 막으며 신장 에너지를 깊숙이 충전합니다.";
+          organGraph = (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                  <span>신·방광(水) 음액 지수</span>
+                  <span className="text-[#8A6F4C]">60%</span>
+                </div>
+                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-slate-900 rounded-full" style={{ width: "60%" }} />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                  <span>자궁·생식계 면역력</span>
+                  <span className="text-[#8A6F4C]">68%</span>
+                </div>
+                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-slate-700 rounded-full" style={{ width: "68%" }} />
+                </div>
+              </div>
+            </div>
+          );
+        }
+
         return (
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
@@ -5895,25 +6269,77 @@ function ResultContent() {
               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">신진대사를 돕는 오행 섭생 음식 처방</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                오장육부의 상열감과 피로를 낮추기 위한 약선 음식 섭생 처방입니다.
+
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                매일 입으로 섭취하는 약선 음식의 성질은 내부 장기의 한열(寒熱) 밸런스를 바로잡아 질병을 예방하는 가장 현명한 체내 개운법입니다. 의뢰인 <strong>{name}</strong>님의 사주 일간 오행과 올해 기류를 바탕으로 신체의 과열을 다스리는 수호 식단과 차 요법을 제안합니다.
               </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-emerald-50/40 border border-emerald-100 p-4 rounded-xl space-y-1.5">
-                  <span className="font-bold text-emerald-800 text-[11px] block">🟢 추천 식재료</span>
-                  <p className="text-[10px] text-emerald-950 font-light leading-normal">수박, 참외, 브로콜리, 검은콩차, 해조류 등 체내 열을 내리고 수분을 채우는 시원한 약선 요리</p>
+
+              {/* 체질 진단 카드 */}
+              <div className="bg-[#FAF8F5] border border-[#E2DDD5]/60 rounded-xl p-5 space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">🌿</span>
+                  <div>
+                    <span className="text-[10px] text-[#A3845B] font-bold block">나의 맞춤형 오행 체질</span>
+                    <span className="font-myeongjo text-sm font-bold text-gray-800">{constitutionName}</span>
+                  </div>
                 </div>
-                <div className="bg-rose-50/40 border border-rose-100 p-4 rounded-xl space-y-1.5">
-                  <span className="font-bold text-rose-800 text-[11px] block">🔴 주의할 음식</span>
-                  <p className="text-[10px] text-rose-950 font-light leading-normal">고도수의 음주, 극도로 매운 자극적인 음식, 과도하게 탄 고기 등 체내 화기를 극대화하는 성질</p>
+                <p className="text-[10px] text-gray-500 font-light leading-relaxed border-t border-[#E2DDD5]/40 pt-2 text-justify">
+                  {constitutionDesc}
+                </p>
+              </div>
+
+              {/* 시각화 1: 오행 장부 강약 지표 */}
+              <div className="bg-[#FAF7F0]/40 border border-[#E2DDD5] rounded-xl p-4 space-y-3 shadow-inner">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 2026년 오행 장부(臟腑) 에너지 밸런스</span>
+                {organGraph}
+              </div>
+
+              {/* 추천/기피 섭생 매칭 플레이트 */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-emerald-50/40 border border-emerald-100 p-4 rounded-xl space-y-2">
+                  <span className="font-bold text-emerald-800 text-[11px] block flex items-center gap-1">
+                    🟢 추천 식자재 (Good)
+                  </span>
+                  <p className="text-[9px] text-emerald-950 font-light leading-relaxed text-justify">
+                    {goodFoods}
+                  </p>
+                </div>
+                <div className="bg-rose-50/40 border border-rose-100 p-4 rounded-xl space-y-2">
+                  <span className="font-bold text-rose-800 text-[11px] block flex items-center gap-1">
+                    🔴 삼가야 할 음식 (Bad)
+                  </span>
+                  <p className="text-[9px] text-rose-950 font-light leading-relaxed text-justify">
+                    {badFoods}
+                  </p>
+                </div>
+              </div>
+
+              {/* 수호 약선차 디테일 카드 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-4 rounded-xl shadow-sm text-justify flex items-start gap-4">
+                <span className="text-2xl pt-0.5">☕</span>
+                <div className="space-y-1">
+                  <span className="font-bold text-[#A3845B] text-[11px] block">신년 추천 개운 차: {teaName}</span>
+                  <p className="text-[9px] text-gray-500 font-light leading-relaxed">
+                    {teaDesc} 따뜻하게 우려내어 하루 한 잔씩 편안한 시간에 음용하며 내면의 장기 기운을 순탄하게 보완하십시오.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         );
+      }
 
-      case "tj_roadmap_2027":
+      case "tj_roadmap_2027": {
+        const dayStemEl = sajuInfo?.day?.stemEl || "목";
+        
+        let aspects = [
+          { title: "💰 재물운", stars: "★★★★☆", desc: "병오년의 활발한 추진력이 문서로 전환되는 시기입니다. 부동산 계약, 중장기 채권 등 묶어두는 투자에서 큰 이익을 봅니다.", action: "단기 현금보다 등기부등본 및 계약서 형태의 문서 자산으로 환원하십시오." },
+          { title: "🏢 직무/사업운", stars: "★★★★★", desc: "귀하의 결실이 공적인 문서(라이선스, 권한, 승진)로 인정받습니다. 협상에서 우위를 점하며 지위가 안정되는 해입니다.", action: "상반기에 주어지는 부서 이동이나 제휴 제안을 긍정적으로 검토하십시오." },
+          { title: "💑 애정/가정운", stars: "★★★★☆", desc: "서로에게 든든한 현실적 조력자가 되는 시기입니다. 연인 간에는 결혼이나 공동 자산 형성 등 구체적인 계약이 성사되기 좋습니다.", action: "가벼운 만남보다 현실적 미래를 함께 설계하는 진중한 대화에 힘쓰십시오." },
+          { title: "🛡️ 건강/수호운", stars: "★★★★☆", desc: "과열되었던 장부의 기운이 흙(土)의 기운을 만나 차분하게 수렴됩니다. 만성 피로가 호전되며 위장 건강이 회복됩니다.", action: "소화기에 습기가 차지 않도록 따뜻하고 규칙적인 한식 위주의 식습관을 유지하십시오." }
+        ];
+
         return (
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
@@ -5921,18 +6347,73 @@ function ResultContent() {
               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2027년 정미년(丁未年) 세운 로드맵</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                2027년 정미년(丁未年)은 병오년의 불꽃이 흙(土)의 기운을 만나 열기를 수축하고 가두어 두는 <strong>화생토(火生土)의 완환기</strong>를 상징합니다. 
+
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2027년 정미년(丁未年)은 맹렬히 타오르던 병오년(2026년)의 불꽃이 기름진 흙(土)의 품으로 수렴되어 안착하는 <strong>화생토(火生土)의 안정기이자 결실의 구체화 주기</strong>입니다. 지난 한 해 동안 기획하고 시작했던 여러 프로젝트들이 드디어 구체적인 권리, 계약서, 직위 상승 등 '문서상의 확실한 권익'으로 고정됩니다.
               </p>
-              <p>
-                올해 벌여두었던 여러 사안들이 마침내 법적인 계약이나 직급 상승, 자격증 획득 등의 문서상 실익으로 귀결되는 시점입니다. 서투른 확장보다는 2026년에 제련해둔 결실을 안정적인 자기 권리로 확고히 하기에 아주 유리한 한 해가 될 것입니다.
-              </p>
+
+              {/* 시각화 1: 2027년 분기별 흐름 타임라인 */}
+              <div className="bg-[#FAF8F5] border border-[#E2DDD5]/60 rounded-xl p-5 space-y-4">
+                <span className="font-bold text-xs text-[#8A6F4C] block text-center">📅 2027년 분기별 마일스톤 흐름도</span>
+                
+                <div className="relative border-l border-[#A3845B]/30 ml-4 pl-6 space-y-5">
+                  {[
+                    { q: "🌸 1분기 (1~3월) : 정돈 및 인프라 설계", desc: "병오년의 들떴던 실행의 여운을 정리하고, 상반기 계약 체결을 위한 기초 설계를 다집니다." },
+                    { q: "☀️ 2분기 (4~6월) : 귀인 인연과의 계약 체결", desc: "나를 돕는 귀인이나 공인 파트너십을 통해 계약서 도장을 찍는 실익이 발생하는 골든타임입니다." },
+                    { q: "🍁 3분기 (7~9월) : 자산 가치 안정화 및 수렴", desc: "재물 흐름이 안정 궤도에 접어듭니다. 단기 투자보다 안정적 중장기 저축 자산으로 락업하십시오." },
+                    { q: "❄️ 4분기 (10~12월) : 내실 다지기와 2028년 도약 준비", desc: "중말년 대운의 도약을 앞두고 자산 기반을 견고히 하며 건강과 가정을 평화롭게 보살핍니다." }
+                  ].map((milestone, idx) => (
+                    <div key={idx} className="relative group">
+                      <div className="absolute -left-[31px] top-1.5 w-2.5 h-2.5 rounded-full bg-[#A3845B] border-2 border-white group-hover:scale-125 transition-transform" />
+                      <span className="font-bold text-[10px] text-[#A3845B] block">{milestone.q}</span>
+                      <p className="text-[9px] text-gray-500 font-light mt-0.5 leading-relaxed text-justify">{milestone.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 시각화 2: 2027년 분야별 상세 등급 및 행동 강령 */}
+              <div className="space-y-4">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 2027년 분야별 등급 평가 및 전술</span>
+                <div className="grid gap-3">
+                  {aspects.map((item, idx) => (
+                    <div key={idx} className="bg-white border border-[#E2DDD5]/70 rounded-xl p-4 shadow-sm space-y-2 text-justify">
+                      <div className="flex justify-between font-bold text-xs">
+                        <span className="text-[#1A1A1A]">{item.title}</span>
+                        <span className="text-yellow-500">{item.stars}</span>
+                      </div>
+                      <p className="text-[10px] text-gray-500 font-light leading-relaxed">{item.desc}</p>
+                      <div className="bg-[#FAF7F0] p-2 rounded-lg border-l-2 border-[#A3845B] text-[9px] font-light text-gray-600">
+                        <strong className="text-[#A3845B] font-semibold">대응 전술:</strong> {item.action}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 시각화 3: 2027년 핵심 행동 강령 보드 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-4 rounded-xl shadow-sm">
+                <h4 className="font-bold text-[#A3845B] text-[11px] mb-2">🎯 2027년 정미년 인생 성공 강령</h4>
+                <p className="text-[10px] text-gray-500 font-light leading-relaxed text-justify">
+                  올해의 핵심 성공 열쇠는 <strong>'안정과 수성(守成)'</strong>입니다. 무리한 단기 배팅이나 타인의 투기성 권유에 지갑을 열지 마시고, 2026년에 만들어둔 기틀을 바탕으로 인맥을 견고히 하고 공인된 자격을 확보하여 내 자산을 지키는 것을 최우선 목표로 삼으십시오.
+                </p>
+              </div>
             </div>
           </div>
         );
+      }
 
-      case "tj_roadmap_2028":
+      case "tj_roadmap_2028": {
+        const dayStemEl = sajuInfo?.day?.stemEl || "목";
+        
+        let aspects = [
+          { title: "💰 재물운", stars: "★★★★★", desc: "드디어 하늘과 땅에 금(金)의 수확 기운이 차오르며, 묶여있던 현금 흐름에 거대한 활로가 뚫립니다. 투자 실익과 사업 매출이 일제히 우상향합니다.", action: "시드머니를 모아두었다면 이 시기에 핵심 우량 실물이나 지분 구조로 환금성을 높이십시오." },
+          { title: "🏢 직무/사업운", stars: "★★★★★", desc: "귀하의 강력한 돌파력과 결과 지향적 태도가 회사나 거래처에 깊게 어필됩니다. 중요한 프로젝트 주도권을 쟁취하게 됩니다.", action: "경쟁이 수반되는 승부처나 입찰 제안에 자신감을 가지고 적극 참여해 이익을 얻으십시오." },
+          { title: "💑 애정/가정운", stars: "★★★★☆", desc: "집안에 든든한 경제적 여유가 더해지며 배우자와의 불필요한 금전 갈등이 원만하게 해소되고 화목함이 깃듭니다.", action: "가족들과 함께 성취를 축하하며 풍요로운 여가나 감사 선물을 아끼지 마십시오." },
+          { title: "🛡️ 건강/수호운", stars: "★★★★☆", desc: "정신적 뚝심과 결단력이 샘솟아 머리가 맑아집니다. 스트레스나 잡생각이 정리되며 활발한 기혈 순환을 보여줍니다.", action: "호흡기와 뼈의 활력을 위해 신선한 공기가 가득한 산림욕이나 가벼운 근력 운동을 습관화하십시오." }
+        ];
+
         return (
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
@@ -5940,18 +6421,73 @@ function ResultContent() {
               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2028년 무신년(戊申年) 세운 로드맵</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                2028년 무신년(戊申年)은 드디어 차가운 금(金)의 기운이 하늘과 땅에 가득 차오르는 <strong>수확과 경제적 결실의 원년</strong>입니다.
+
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2028년 무신년(戊申年)은 오랜 기간 준비하고 제련해왔던 귀하의 노력들이 드디어 차가운 금(金)의 기운을 얻어 단단한 결실로 영그는 <strong>생애 최대 수확 및 경제적 팽창의 원년</strong>입니다. 내적으로만 머물던 비즈니스 모델이나 투자 설계가 실질적인 현금과 자산의 급격한 상승 기류를 타고 폭발적인 실리를 안겨주는 골든타임이 다가옵니다.
               </p>
-              <p>
-                그동안 묶여있던 현금 흐름에 강한 활로가 뚫리며 실질적인 투자 수익이나 영업 이익이 발생합니다. 적극적인 추진력을 단행하여 목돈을 쟁취하고 자산 포트폴리오를 다변화하기에 평생에 몇 안 되는 중요한 골든타임이 도래합니다.
-              </p>
+
+              {/* 시각화 1: 2028년 분기별 흐름 타임라인 */}
+              <div className="bg-[#FAF8F5] border border-[#E2DDD5]/60 rounded-xl p-5 space-y-4">
+                <span className="font-bold text-xs text-[#8A6F4C] block text-center">📅 2028년 분기별 마일스톤 흐름도</span>
+                
+                <div className="relative border-l border-[#A3845B]/30 ml-4 pl-6 space-y-5">
+                  {[
+                    { q: "🌸 1분기 (1~3월) : 새로운 자산 파이프라인 가동", desc: "연초부터 새로운 비즈니스나 자산 운용 방식에서 긍정적인 초기 현금 유입 소식이 전달되기 시작합니다." },
+                    { q: "☀️ 2분기 (4~6월) : 대형 계약 선점 및 지위 상승", desc: "치열한 경쟁에서 귀하의 안목과 실력을 확실히 입증하여 대형 수주나 핵심 주도권을 쟁취해냅니다." },
+                    { q: "🍁 3분기 (7~9월) : 대규모 현금 실익 수확기", desc: "금(金)의 결실 기류가 최고조에 도달합니다. 인센티브, 투자 보상금, 영업 수익 등이 통장에 안착하는 해의 중심지입니다." },
+                    { q: "❄️ 4분기 (10~12월) : 포트폴리오의 보수적 다변화", desc: "벌어들인 현금을 단기 투기에 재진입시키지 않고, 부동산이나 채권 등 영구형 문서 자산으로 굳건히 고정합니다." }
+                  ].map((milestone, idx) => (
+                    <div key={idx} className="relative group">
+                      <div className="absolute -left-[31px] top-1.5 w-2.5 h-2.5 rounded-full bg-[#A3845B] border-2 border-white group-hover:scale-125 transition-transform" />
+                      <span className="font-bold text-[10px] text-[#A3845B] block">{milestone.q}</span>
+                      <p className="text-[9px] text-gray-500 font-light mt-0.5 leading-relaxed text-justify">{milestone.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 시각화 2: 2028년 분야별 상세 등급 및 행동 강령 */}
+              <div className="space-y-4">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 2028년 분야별 등급 평가 및 전술</span>
+                <div className="grid gap-3">
+                  {aspects.map((item, idx) => (
+                    <div key={idx} className="bg-white border border-[#E2DDD5]/70 rounded-xl p-4 shadow-sm space-y-2 text-justify">
+                      <div className="flex justify-between font-bold text-xs">
+                        <span className="text-[#1A1A1A]">{item.title}</span>
+                        <span className="text-yellow-500">{item.stars}</span>
+                      </div>
+                      <p className="text-[10px] text-gray-500 font-light leading-relaxed">{item.desc}</p>
+                      <div className="bg-[#FAF7F0] p-2 rounded-lg border-l-2 border-[#A3845B] text-[9px] font-light text-gray-600">
+                        <strong className="text-[#A3845B] font-semibold">대응 전술:</strong> {item.action}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 시각화 3: 2028년 핵심 행동 강령 보드 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-4 rounded-xl shadow-sm">
+                <h4 className="font-bold text-[#A3845B] text-[11px] mb-2">🎯 2028년 무신년 인생 성공 강령</h4>
+                <p className="text-[10px] text-gray-500 font-light leading-relaxed text-justify">
+                  올해의 핵심 성공 키워드는 <strong>'기회 포착과 적극적 돌파'</strong>입니다. 뒤로 물러서서 관망하기보다 내 브랜드와 아이디어를 시장에 널리 드러내고 치열한 경쟁 환경에서 우위를 점할 수 있는 용기를 단행하여 평생의 가장 큰 종잣돈을 완성해내십시오.
+                </p>
+              </div>
             </div>
           </div>
         );
+      }
 
-      case "tj_roadmap_2029":
+      case "tj_roadmap_2029": {
+        const dayStemEl = sajuInfo?.day?.stemEl || "목";
+        
+        let aspects = [
+          { title: "💰 재물운", stars: "★★★★☆", desc: "자산 포트폴리오의 가치 상승이 안정 궤도에 정착하며, 불필요하게 흩어지던 소비와 지출이 자연스레 통제되어 곳간이 채워집니다.", action: "신규 모험 투자보다 기존 보유 자산의 리모델링이나 보수적인 관리에 힘쓰십시오." },
+          { title: "🏢 직무/사업운", stars: "★★★★★", desc: "대규모 조직의 장(長)이나 중요 부서의 고문, 독점 권한을 지닌 수장이 되는 등 명예운과 신뢰도가 인생 최고의 장치에 안착합니다.", action: "경쟁 관계를 적대하기보다 나와 공생할 수 있는 연대 관계의 네트워크를 확고히 구축하십시오." },
+          { title: "💑 애정/가정운", stars: "★★★★★", desc: "부부나 연인 간에 서로의 품격을 인정하고 가정을 가장 아름다운 성소로 완성하는 복이 가득합니다. 자녀운도 매우 길합니다.", action: "집안에 따뜻한 조명과 차분한 음악을 곁들여 집을 내적 행운의 공간으로 가꾸십시오." },
+          { title: "🛡️ 건강/수호운", stars: "★★★★★", desc: "신년 스트레스 지수가 최저 수준으로 하락하여 오장육부의 상생 흐름이 원활합니다. 심신이 안정되어 수면의 질이 높아집니다.", action: "맑은 물(水)의 순환을 위해 매일 저녁 가벼운 족욕이나 반신욕을 즐겨 기혈을 이완하십시오." }
+        ];
+
         return (
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
@@ -5959,39 +6495,122 @@ function ResultContent() {
               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2029년 기유년(己酉年) 세운 로드맵</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                2029년 기유년(己酉年)은 단단한 원석이 다정한 보석으로 매끄럽게 다듬어지는 <strong>인맥 및 대외 명예 완성의 해</strong>입니다.
+
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2029년 기유년(己酉年)은 수확했던 단단한 원석이 보석으로 매끄럽고 다정하게 제련되는 <strong>대외 명예의 완성 및 보수적 수성(守成)의 해</strong>입니다. 무분별한 신규 확장은 삼가고, 지난 3년간 쟁취해낸 번영의 영토를 확실하게 수비하며 귀하의 지위와 명성을 사회적으로 단단히 뿌리내리기에 아주 유리한 한 해입니다.
               </p>
-              <p>
-                귀하를 따르는 신뢰할 수 있는 부하 동료나 협력 파트너가 늘어나며 직장 내 승진의 종착지에 도달하게 됩니다. 무리한 모험을 단행하기보다 쟁취해낸 번영의 영토를 보수적으로 수비하고 건강에 깊게 집중하는 자세가 최고의 전략입니다.
-              </p>
+
+              {/* 시각화 1: 2029년 분기별 흐름 타임라인 */}
+              <div className="bg-[#FAF8F5] border border-[#E2DDD5]/60 rounded-xl p-5 space-y-4">
+                <span className="font-bold text-xs text-[#8A6F4C] block text-center">📅 2029년 분기별 마일스톤 흐름도</span>
+                
+                <div className="relative border-l border-[#A3845B]/30 ml-4 pl-6 space-y-5">
+                  {[
+                    { q: "🌸 1분기 (1~3월) : 입지와 평판의 선점", desc: "학문, 기획력, 성과에 대한 대외적 극찬을 얻어 단숨에 사내외 영향력의 상층부로 등극합니다." },
+                    { q: "☀️ 2분기 (4~6월) : 귀인 파트너십 구축", desc: "나의 업무 시스템을 자동화해줄 유능한 대리인이나 협조자들을 보강하여 실무 피로도를 낮춥니다." },
+                    { q: "🍁 3분기 (7~9월) : 시스템 내실 수비 및 고정", desc: "자금 누수의 요소를 원천 차단하고 보수적이고 안전한 정기수익 인프라를 한층 견고히 다집니다." },
+                    { q: "❄️ 4분기 (10~12월) : 정신적 성찰 및 평화", desc: "인생의 큰 계절 변화를 앞두고 심신을 편안히 가다듬으며, 자비와 평온의 기류를 향유합니다." }
+                  ].map((milestone, idx) => (
+                    <div key={idx} className="relative group">
+                      <div className="absolute -left-[31px] top-1.5 w-2.5 h-2.5 rounded-full bg-[#A3845B] border-2 border-white group-hover:scale-125 transition-transform" />
+                      <span className="font-bold text-[10px] text-[#A3845B] block">{milestone.q}</span>
+                      <p className="text-[9px] text-gray-500 font-light mt-0.5 leading-relaxed text-justify">{milestone.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 시각화 2: 2029년 분야별 상세 등급 및 행동 강령 */}
+              <div className="space-y-4">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 2029년 분야별 등급 평가 및 전술</span>
+                <div className="grid gap-3">
+                  {aspects.map((item, idx) => (
+                    <div key={idx} className="bg-white border border-[#E2DDD5]/70 rounded-xl p-4 shadow-sm space-y-2 text-justify">
+                      <div className="flex justify-between font-bold text-xs">
+                        <span className="text-[#1A1A1A]">{item.title}</span>
+                        <span className="text-yellow-500">{item.stars}</span>
+                      </div>
+                      <p className="text-[10px] text-gray-500 font-light leading-relaxed">{item.desc}</p>
+                      <div className="bg-[#FAF7F0] p-2 rounded-lg border-l-2 border-[#A3845B] text-[9px] font-light text-gray-600">
+                        <strong className="text-[#A3845B] font-semibold">대응 전술:</strong> {item.action}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 시각화 3: 2029년 핵심 행동 강령 보드 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-4 rounded-xl shadow-sm">
+                <h4 className="font-bold text-[#A3845B] text-[11px] mb-2">🎯 2029년 기유년 인생 성공 강령</h4>
+                <p className="text-[10px] text-gray-500 font-light leading-relaxed text-justify">
+                  올해의 핵심 성공 전술은 <strong>'공격보다 단단한 수성'</strong>입니다. 이미 얻은 자산과 지위를 지혜롭게 수비하고 곁의 소중한 인연들에게 감사와 덕을 베풀어 중말년 영구적 평화와 안락함을 보장받는 안전 기지로 정돈해 나가십시오.
+                </p>
+              </div>
             </div>
           </div>
         );
+      }
 
-      case "tj_final_blessing":
+      case "tj_final_blessing": {
+        const dayStemEl = sajuInfo?.day?.stemEl || "목";
+        let elementBlessing = "";
+
+        if (dayStemEl === "목" || dayStemEl === "木") {
+          elementBlessing = "푸른 거목처럼 굳건히 뿌리 내려 세운의 뜨거운 열기를 헤치고 위대한 성장을 이루어내시길 축원합니다.";
+        } else if (dayStemEl === "화" || dayStemEl === "火") {
+          elementBlessing = "어둠을 사르는 태양처럼 세상을 찬란하게 밝히고 내면의 열정과 성취를 아름다운 결실로 승화하시길 기원합니다.";
+        } else if (dayStemEl === "토" || dayStemEl === "土") {
+          elementBlessing = "만물을 품는 넓은 대지처럼 묵직한 신용과 끈기로 온갖 복록과 금전의 창고를 활짝 열어가시길 축원합니다.";
+        } else if (dayStemEl === "금" || dayStemEl === "金") {
+          elementBlessing = "단단하고 빛나는 보석처럼 매사에 차분하고 명료한 결단으로 일생의 귀한 대업을 굳건히 완성하시길 기원합니다.";
+        } else {
+          elementBlessing = "심연을 흐르는 맑은 물결처럼 무한한 지혜와 통찰력으로 삶의 모든 굴곡을 유연하고 복되게 개척해가시길 축원합니다.";
+        }
+
         return (
-          <div className="text-center space-y-12 py-16 bg-[#FDFBF7] border border-[#E2DDD5]/80 rounded-lg p-8 shadow-inner relative min-h-[400px]">
-            <div className="space-y-4">
-              <span className="text-xs tracking-[0.35em] text-[#A3845B] font-bold block font-myeongjo">— 慧眼堂 寶鑑 —</span>
-              <div className="w-24 h-0.5 bg-[#A3845B]/40 mx-auto" />
+          <div className="py-8 px-4 flex flex-col justify-between min-h-[600px] bg-gradient-to-b from-[#FDFBF7] to-[#FAF6EE] border-4 border-[#A3845B]/30 rounded-2xl relative shadow-lg overflow-hidden">
+            {/* 고풍스러운 모서리 문양 */}
+            <div className="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-[#A3845B]/40 pointer-events-none" />
+            <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-[#A3845B]/40 pointer-events-none" />
+            <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-[#A3845B]/40 pointer-events-none" />
+            <div className="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-[#A3845B]/40 pointer-events-none" />
+
+            <div className="text-center space-y-3 mt-4">
+              <span className="text-xs tracking-[0.4em] text-[#A3845B] font-bold block font-myeongjo">— 慧眼堂 寶鑑 —</span>
+              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto" />
             </div>
-            <div className="space-y-6 py-8">
-              <h1 className="font-myeongjo text-2xl md:text-3xl font-extrabold text-[#1A1A1A] leading-normal">
-                병오년 성공 기원 최종 축원문 (祝願文)
+
+            <div className="my-auto py-8 text-center space-y-8 max-w-lg mx-auto">
+              <h1 className="font-myeongjo text-3xl md:text-4xl font-extrabold text-[#1A1A1A] tracking-wider leading-relaxed">
+                丙午年 成功 祈願<br />
+                최종 축원문 (祝願文)
               </h1>
-              <p className="text-xs text-[#5F5F5F] font-light tracking-wide leading-relaxed font-traditional max-w-md mx-auto text-justify">
-                천지합화의 불꽃 기운이 의뢰인 <strong>{name}</strong>님의 앞길을 환히 비추는 빛이 되어, 흉한 액난은 모두 불길 속으로 소멸하고 오직 성공의 금빛 복록만이 굳건하게 영글기를 혜안당 명리연구소의 정성을 담아 간절히 기원합니다. 다가올 한 해 모든 선택의 기로에서 평화와 용기가 함께하시길 축원합니다.
-              </p>
+              
+              <div className="w-12 h-1 bg-[#A3845B]/40 mx-auto my-4" />
+
+              {/* 액자식 길조 수호 조언 */}
+              <div className="bg-[#FAF8F5]/80 border border-[#E2DDD5]/70 rounded-xl p-6 shadow-inner text-justify text-xs font-traditional font-light text-gray-700 leading-relaxed space-y-4">
+                <p>
+                  천지합화(天地合火)의 맹렬한 불꽃 기류가 의뢰인 <strong>{name}</strong>님의 인생 앞길을 밝히는 광명의 횃불이 되기를 간절히 기원합니다. 올해의 뜨거운 에너지는 귀하를 지치게 하는 액난을 모두 소멸시키고, 굳건한 금빛 성공의 토양으로 환원될 것입니다.
+                </p>
+                <p className="font-semibold text-[#8B221E] border-t border-[#E2DDD5]/40 pt-3 text-center">
+                  ✨ {name}님을 위한 오행 수호 축원
+                </p>
+                <p className="italic text-center text-gray-600 font-medium">
+                  "{elementBlessing}"
+                </p>
+              </div>
             </div>
-            <div className="space-y-2 pt-12">
-              <span className="font-myeongjo text-sm font-bold text-[#1A1A1A]">慧眼堂 명리연구소 소장 배상</span>
+
+            <div className="mt-8 mb-6 text-center space-y-3 relative z-10">
+              <span className="font-myeongjo text-base font-bold text-[#1A1A1A] tracking-widest block">慧眼堂 명리연구소 소장 배상</span>
+              <p className="text-[10px] text-gray-400 font-light font-sans">본 보감의 개운법을 일상에 새겨 복록을 누리소서.</p>
             </div>
-            
-            {/* 혜안당 공식 직인 */}
-            <div className="absolute right-8 bottom-8 select-none opacity-80">
-              <svg viewBox="0 0 60 60" className="w-[45px] h-[45px] transform -rotate-12">
+
+            {/* 혜안당 공식 직인 (낙관) */}
+            <div className="absolute right-12 bottom-12 select-none opacity-90 z-20">
+              <svg viewBox="0 0 60 60" className="w-[50px] h-[50px] transform -rotate-6 filter drop-shadow-[0_2px_4px_rgba(139,34,30,0.15)]">
                 <rect x="5" y="5" width="50" height="50" rx="3" fill="none" stroke="#8B221E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="30 1 10 1" />
                 <text x="30" y="24" textAnchor="middle" fontSize="12" fontWeight="900" fill="#8B221E" fontFamily="font-myeongjo" letterSpacing="0.5">
                   慧眼
@@ -6003,6 +6622,7 @@ function ResultContent() {
             </div>
           </div>
         );
+      }
 
       case "ny_cover":
         return (
