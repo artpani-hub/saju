@@ -11358,7 +11358,9 @@ function ResultContent() {
                   worryText,
                   worryCategory,
                   isFree,
-                  currentGrade
+                  currentGrade,
+                  type,
+                  typeParam
                 })}
               </div>
             </div>
