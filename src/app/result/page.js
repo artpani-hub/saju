@@ -11488,7 +11488,7 @@ function ResultContent() {
             </span>
             <p className="italic text-foreground-muted">"{decodeURIComponent(worryText)}"</p>
             <p className="text-[#2C2C2C] leading-relaxed pt-2 border-t border-[#E2DDD5]/60 font-light font-traditional">
-              귀하의 사주는 재물을 끌어오는 머리와 수완은 출중하나, 마무리가 급해 손실을 입을 위험이 도사립니다. 질문하신 사업/투자 안건은 올해 병오년의 불꽃 기운 때문에 자칫 오판을 하거나 귀인의 탈을 쓴 사기수에 노출될 수 있으니 아래의 기질과 안전 수칙을 철저히 지키십시오.
+              {personalizedText.analysis}
             </p>
           </div>
         )}

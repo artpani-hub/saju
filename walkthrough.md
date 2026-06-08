@@ -56,3 +56,8 @@
 - **검증**: 로컬 개발 서버(Next.js dev mode) 실행 후 에러 스택 확인 → 두 가지 수정 적용 → 정상 컴파일 확인.
 - **도커 빌드**: 수정 적용 후 `docker-compose up --build -d` 성공 배포.
 - **GitHub 커밋**: `5db6a4a` — `fix: upgrade button crash - textSolution declaration and redirect URL fix`
+
+### 11. 재물/비즈니스운 리포트 고민 해결 솔루션 동적 분석 버그 수정 [BUG FIX]
+- **에러 내용**: 재물 & 비즈니스운 리포트(`type === "wealth"`)의 "의뢰하신 금전/사업 갈등 심층 솔루션" 섹션에서 고객이 작성한 고민 내용(`worryText`)에 대한 개별 맞춤 솔루션을 보여주는 대신, 하드코딩된 특정 문장("귀하의 사주는 재물을 끌어오는 머리와 수완은 출중하나...")이 항상 고정적으로 렌더링되던 문제 발생.
+- **수정 내용**: `src/app/result/page.js` 파일 내의 `renderWealthContent` 함수 내부에서, 하드코딩되어 있던 문장 영역을 이미 계산 완료된 개인화 고민 분석 텍스트인 `{personalizedText.analysis}`로 동적 변경했습니다.
+- **검증**: 로컬 개발 서버를 통해 고민 텍스트가 바뀜에 따라 맞춤 답변이 동적으로 올바르게 렌더링되는 것을 확인했습니다.
