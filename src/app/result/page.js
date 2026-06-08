@@ -11462,7 +11462,8 @@ function ResultContent() {
     // Determine custom age ranges for wealth golden eras
     const birthYearNum = parseInt(searchParams.get("year")) || 1990;
     const birthMonthNum = parseInt(searchParams.get("month")) || 1;
-    const ageOffset = ((birthYearNum + birthMonthNum) % 7) - 3; // range -3 to +3
+    const birthDayNum = parseInt(searchParams.get("day")) || 15;
+    const ageOffset = ((birthYearNum * birthMonthNum + birthDayNum) % 9) - 4; // range -4 to +4
 
     const era1_start = 28 + ageOffset;
     const era1_end = 35 + ageOffset;
@@ -11482,6 +11483,43 @@ function ResultContent() {
       era2Desc = `사주의 대운 흐름 상, 부족한 화(관성)의 열기가 쇠붙이를 달구어 예리하고 진귀한 보검으로 제련해 내는 대길한 시기입니다. 사업체를 소유했다면 매출이 급등하며, 투자했던 자산이 몇 배로 불어나 인생에서 가장 큰 재물 창고를 개방하게 되는 황금 종착지입니다.`;
     } else { // 수
       era2Desc = `사주의 대운 흐름 상, 부족한 토(관성)와 화(재성)의 기운이 물길을 막아 댐처럼 거대한 재물을 조용히 가두고 축적하는 대길한 시기입니다. 사업체를 소유했다면 매출이 급등하며, 투자했던 자산이 몇 배로 불어나 인생에서 가장 큰 재물 창고를 개방하게 되는 황금 종착지입니다.`;
+    }
+
+    // Determine Wealth Summary Cards dynamically
+    let wealthGlassSize = "중상급 (中上級)";
+    const bizScore = metrics.scores.business || 75;
+    if (bizScore >= 85) {
+      wealthGlassSize = "대부격 (大富格)";
+    } else if (bizScore >= 70) {
+      wealthGlassSize = "중상급 (中上級)";
+    } else {
+      wealthGlassSize = "자수성가형 (自手成家)";
+    }
+
+    let optimalBizField = "유통/지식/부동산";
+    if (baseEl === "목") {
+      optimalBizField = "교육/문화/콘텐츠";
+    } else if (baseEl === "화") {
+      optimalBizField = "IT/마케팅/요식업";
+    } else if (baseEl === "토") {
+      optimalBizField = "부동산/개발/중개";
+    } else if (baseEl === "금") {
+      optimalBizField = "금융/제조/기술";
+    } else { // 수
+      optimalBizField = "무역/유통/물류";
+    }
+
+    let wealthWeakness = "단타 투자/동업";
+    if (baseEl === "목") {
+      wealthWeakness = "동업/인정 기반 거래";
+    } else if (baseEl === "화") {
+      wealthWeakness = "단타 투자/조급한 확장";
+    } else if (baseEl === "토") {
+      wealthWeakness = "자금 동결/리스크 방치";
+    } else if (baseEl === "금") {
+      wealthWeakness = "무리한 베팅/과소비";
+    } else { // 수
+      wealthWeakness = "누수 지출/자산 분산";
     }
 
     // Determine wealth profile description based on base element
@@ -11546,15 +11584,15 @@ function ResultContent() {
         <div className="grid grid-cols-3 gap-3 mb-8 text-center text-xs">
           <div className="bg-white border border-[#E2DDD5] rounded p-4 shadow-sm">
             <span className="text-[10px] text-[#5F5F5F] block mb-1">평생 재물 그릇 크기</span>
-            <span className="font-bold text-sm sm:text-base text-[#5F7A68]">중상급 (中上級)</span>
+            <span className="font-bold text-sm sm:text-base text-[#5F7A68]">{wealthGlassSize}</span>
           </div>
           <div className="bg-white border border-[#E2DDD5] rounded p-4 shadow-sm">
             <span className="text-[10px] text-[#5F5F5F] block mb-1">최적 비즈니스 분야</span>
-            <span className="font-bold text-sm sm:text-base text-[#5F7A68]">유통/지식/부동산</span>
+            <span className="font-bold text-sm sm:text-base text-[#5F7A68]">{optimalBizField}</span>
           </div>
           <div className="bg-white border border-[#E2DDD5] rounded p-4 shadow-sm">
             <span className="text-[10px] text-[#5F5F5F] block mb-1">재물 관리 취약점</span>
-            <span className="font-bold text-sm sm:text-base text-red-600">단타 투자/동업</span>
+            <span className="font-bold text-sm sm:text-base text-red-600">{wealthWeakness}</span>
           </div>
         </div>
 
