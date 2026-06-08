@@ -11435,6 +11435,55 @@ function ResultContent() {
   // Render: 재물 & 비즈니스운 (wealth) - Upgraded to Premium
   // ----------------------------------------------------
   const renderWealthContent = () => {
+    // Dynamic Business Metrics Calculation
+    const driveScore = metrics.scores.drive || 85;
+    const patienceScore = metrics.scores.patience || 60;
+    const negotiationScore = metrics.scores.negotiation || 75;
+
+    let commentText = "";
+    if (driveScore >= 75) {
+      commentText += `귀하는 강한 추진력과 돌파력(${driveScore}%)을 타고나 사업을 일으키고 매출을 만드는 에너지가 아주 훌륭합니다. `;
+    } else {
+      commentText += `귀하는 돌발적인 행동보다는 신중하게 기회를 포착하는 안정적인 추진력(${driveScore}%)을 지니고 있습니다. `;
+    }
+
+    if (patienceScore >= 70) {
+      commentText += `특히 자산을 철저하게 지켜내고 위기 상황을 통제하는 관리력(${patienceScore}%)이 우수하여 안정된 사업 운영이 가능합니다. `;
+    } else {
+      commentText += `다만, 벌어들인 재물을 안전하게 묶어두는 통제력(${patienceScore}%)이 다소 취약할 수 있으니 무리한 재투자는 피하고 현금 자산을 굳건히 수비하는 시스템을 구축하십시오. `;
+    }
+
+    if (negotiationScore >= 70) {
+      commentText += `또한, 타인과의 상생 및 협상력(${negotiationScore}%)이 뛰어나 귀인의 도움을 얻거나 유리한 동업/제휴를 맺기에 좋은 명조입니다.`;
+    } else {
+      commentText += `또한, 대인 관계의 주도권에서 기운의 소모가 클 수 있으니 동업이나 공동 투자는 지분을 명확히 하고 독립적으로 판단하는 것이 훨씬 안전합니다.`;
+    }
+
+    // Determine custom age ranges for wealth golden eras
+    const birthYearNum = parseInt(searchParams.get("year")) || 1990;
+    const birthMonthNum = parseInt(searchParams.get("month")) || 1;
+    const ageOffset = ((birthYearNum + birthMonthNum) % 7) - 3; // range -3 to +3
+
+    const era1_start = 28 + ageOffset;
+    const era1_end = 35 + ageOffset;
+    const era2_start = 42 + ageOffset;
+    const era2_end = 48 + ageOffset;
+    const era3_start = 55 + ageOffset;
+    const era3_end = 62 + ageOffset;
+
+    let era2Desc = "";
+    if (baseEl === "목") {
+      era2Desc = `사주의 대운 흐름 상, 부족한 토(재성)와 화(식상)의 기운이 조화를 이루어 나무가 무럭무럭 자라고 큰 숲을 이루는 대길한 시기입니다. 사업체를 소유했다면 매출이 급등하며, 투자했던 자산이 몇 배로 불어나 인생에서 가장 큰 재물 창고를 개방하게 되는 황금 종착지입니다.`;
+    } else if (baseEl === "화") {
+      era2Desc = `사주의 대운 흐름 상, 부족한 금(재성)의 결실 에너지가 조화를 이루어 활활 타오르는 불꽃이 황금 열매를 맺는 대길한 시기입니다. 사업체를 소유했다면 매출이 급등하며, 투자했던 자산이 몇 배로 불어나 인생에서 가장 큰 재물 창고를 개방하게 되는 황금 종착지입니다.`;
+    } else if (baseEl === "토") {
+      era2Desc = `사주의 대운 흐름 상, 부족한 수(재성)와 목(관성)의 흐름이 대지에 흐르며 메마른 땅이 비옥한 옥토로 변화하는 대길한 시기입니다. 사업체를 소유했다면 매출이 급등하며, 투자했던 자산이 몇 배로 불어나 인생에서 가장 큰 재물 창고를 개방하게 되는 황금 종착지입니다.`;
+    } else if (baseEl === "금") {
+      era2Desc = `사주의 대운 흐름 상, 부족한 화(관성)의 열기가 쇠붙이를 달구어 예리하고 진귀한 보검으로 제련해 내는 대길한 시기입니다. 사업체를 소유했다면 매출이 급등하며, 투자했던 자산이 몇 배로 불어나 인생에서 가장 큰 재물 창고를 개방하게 되는 황금 종착지입니다.`;
+    } else { // 수
+      era2Desc = `사주의 대운 흐름 상, 부족한 토(관성)와 화(재성)의 기운이 물길을 막아 댐처럼 거대한 재물을 조용히 가두고 축적하는 대길한 시기입니다. 사업체를 소유했다면 매출이 급등하며, 투자했던 자산이 몇 배로 불어나 인생에서 가장 큰 재물 창고를 개방하게 되는 황금 종착지입니다.`;
+    }
+
     // Determine wealth profile description based on base element
     let wealthTypeTitle = "";
     let wealthTypeDesc = "";
@@ -11532,35 +11581,35 @@ function ResultContent() {
             <div className="space-y-1">
               <div className="flex justify-between text-xs font-medium">
                 <span className="text-foreground">🚀 창업/사업적 돌파 및 추진력</span>
-                <span className="text-[#5F7A68] font-bold">85%</span>
+                <span className="text-[#5F7A68] font-bold">{driveScore}%</span>
               </div>
               <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-full bg-[#5F7A68] rounded-full" style={{ width: "85%" }} />
+                <div className="h-full bg-[#5F7A68] rounded-full" style={{ width: `${driveScore}%` }} />
               </div>
             </div>
 
             <div className="space-y-1">
               <div className="flex justify-between text-xs font-medium">
                 <span className="text-foreground">🛡️ 자산 안전 수호 및 리스크 통제력</span>
-                <span className="text-[#5F7A68] font-bold">60%</span>
+                <span className="text-[#5F7A68] font-bold">{patienceScore}%</span>
               </div>
               <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-full bg-yellow-600 rounded-full" style={{ width: "60%" }} />
+                <div className="h-full bg-yellow-600 rounded-full" style={{ width: `${patienceScore}%` }} />
               </div>
             </div>
 
             <div className="space-y-1">
               <div className="flex justify-between text-xs font-medium">
                 <span className="text-foreground">🤝 귀인 운세 및 동업 파트너십 상성</span>
-                <span className="text-[#5F7A68] font-bold">75%</span>
+                <span className="text-[#5F7A68] font-bold">{negotiationScore}%</span>
               </div>
               <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-full bg-[#5F7A68] rounded-full" style={{ width: "75%" }} />
+                <div className="h-full bg-[#5F7A68] rounded-full" style={{ width: `${negotiationScore}%` }} />
               </div>
             </div>
           </div>
           <p className="text-[10px] text-foreground-muted leading-relaxed font-light">
-            * 귀하는 사업 돌파력과 매출 생성 기운은 아주 강하게 타고났으나, 번 돈을 흘려보내지 않고 안전하게 묶어두는 통제력이 상대적으로 낮습니다. 금융 상품의 자동 이체 비중을 늘리고 투자를 결정할 때 3인 이상의 검증된 피드백을 받는 프로세스를 구축하십시오.
+            * {commentText}
           </p>
         </div>
 
@@ -11573,21 +11622,21 @@ function ResultContent() {
 
           <div className="space-y-3">
             <div className="border-l-2 border-[#5F7A68] pl-3">
-              <span className="text-xs font-bold text-[#A3845B] block">1차 황금기 (28세 ~ 35세) : 기초 자산 형성기</span>
+              <span className="text-xs font-bold text-[#A3845B] block">1차 황금기 ({era1_start}세 ~ {era1_end}세) : 기초 자산 형성기</span>
               <p className="text-[11px] text-foreground-muted font-light leading-relaxed">
                 사회 활동의 정착과 전문직/사업 기반의 성립으로 첫 자산이 모이는 시기입니다. 이 시기에 뿌려진 인맥과 배움이 중년 대박의 거름이 됩니다.
               </p>
             </div>
             
             <div className="border-l-2 border-[#5F7A68] pl-3">
-              <span className="text-xs font-bold text-[#A3845B] block">2차 황금기 (42세 ~ 48세) : 인생 최대의 수확기</span>
+              <span className="text-xs font-bold text-[#A3845B] block">2차 황금기 ({era2_start}세 ~ {era2_end}세) : 인생 최대의 수확기</span>
               <p className="text-[11px] text-foreground-muted font-light leading-relaxed">
-                사주의 대운 흐름 상, 부족한 재성 또는 관성이 보강되는 대운 교차기입니다. 사업체를 소유했다면 매출이 급등하며, 투자했던 자산이 몇 배로 불어나 인생에서 가장 큰 재물 창고를 개방하게 되는 황금 종착지입니다.
+                {era2Desc}
               </p>
             </div>
 
             <div className="border-l-2 border-[#5F7A68] pl-3">
-              <span className="text-xs font-bold text-[#A3845B] block">3차 황금기 (55세 ~ 62세) : 수동적 임대/연금 수익기</span>
+              <span className="text-xs font-bold text-[#A3845B] block">3차 황금기 ({era3_start}세 ~ {era3_end}세) : 수동적 임대/연금 수익기</span>
               <p className="text-[11px] text-foreground-muted font-light leading-relaxed">
                 무리한 실무 활동을 줄이고, 문서나 부동산, 로열티 등을 통해 시스템 소득이 매월 안정적으로 통장에 꽂히는 평온한 노후 소득 정착기입니다.
               </p>
