@@ -3602,7 +3602,7 @@ function ResultContent() {
         {activePages.map((page) => (
           <div
             key={page.page}
-            className="print-page-wrapper print:text-[13px] print:leading-relaxed relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-8 shadow-md print:border-none print:shadow-none print:p-0 print:m-0 print:min-h-screen"
+            className="print-page-wrapper print:text-[13px] print:leading-relaxed relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-8 shadow-md print:border-none print:shadow-none print:p-0 print:m-0"
           >
             <div>
               {/* Decorative Corner Seals (Inside page) */}
@@ -3753,7 +3753,7 @@ function ResultContent() {
       return (
         <div className="space-y-12 print:space-y-0">
           {/* SMS PAGE 1 - 운세 기조 및 4대 분야 요약 */}
-          <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-[#FDFBF7] border border-[#E2DDD5] rounded-xl p-2 shadow-md print:border-none print:shadow-none print:p-0 print:m-0 print:min-h-screen">
+          <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-[#FDFBF7] border border-[#E2DDD5] rounded-xl p-2 shadow-md print:border-none print:shadow-none print:p-0 print:m-0">
             <div className="border border-[#E2DDD5]/60 rounded-lg p-6 h-full flex flex-col justify-between">
               <div>
                 <div className="flex justify-between items-center border-b border-[#E2DDD5]/50 pb-2 mb-6 print:mb-8">
@@ -3927,7 +3927,7 @@ function ResultContent() {
           </div>
 
           {/* SMS PAGE 2 - 12개월 타임라인 및 솔루션 */}
-          <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-[#FDFBF7] border border-[#E2DDD5] rounded-xl p-2 shadow-md print:border-none print:shadow-none print:p-0 print:m-0 print:min-h-screen">
+          <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-[#FDFBF7] border border-[#E2DDD5] rounded-xl p-2 shadow-md print:border-none print:shadow-none print:p-0 print:m-0">
             <div className="border border-[#E2DDD5]/60 rounded-lg p-6 h-full flex flex-col justify-between">
               <div>
                 <div className="flex justify-between items-center border-b border-[#E2DDD5]/50 pb-2 mb-6 print:mb-8">
@@ -4191,7 +4191,7 @@ function ResultContent() {
     return (
       <div className="space-y-12 print:space-y-0">
         {/* PAGE 1 */}
-        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-[#FDFBF7] border border-[#E2DDD5] rounded-xl p-2 shadow-md print:border-none print:shadow-none print:p-0 print:m-0 print:min-h-screen">
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-[#FDFBF7] border border-[#E2DDD5] rounded-xl p-2 shadow-md print:border-none print:shadow-none print:p-0 print:m-0">
           <div className="border border-[#E2DDD5]/60 rounded-lg p-6 h-full flex flex-col justify-between">
             <div>
               <div className="flex justify-between items-center border-b border-[#E2DDD5]/50 pb-2 mb-6 print:mb-8">
@@ -4341,7 +4341,7 @@ function ResultContent() {
         </div>
       
       {/* PAGE 2 */}
-        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-8 shadow-md print:border-none print:shadow-none print:p-0 print:m-0 print:min-h-screen">
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-8 shadow-md print:border-none print:shadow-none print:p-0 print:m-0">
           <div>
             <div className="flex justify-between items-center border-b border-[#E2DDD5]/50 pb-2 mb-6 print:mb-8">
               <span className="text-[10px] font-bold text-[#A3845B] tracking-wider font-myeongjo">慧眼堂 寶鑑 · {reportTitle} 요약</span>
@@ -11277,7 +11277,7 @@ function ResultContent() {
         {activePages.map((page) => (
           <div
             key={page.page}
-            className="print-page-wrapper print:text-[13px] print:leading-relaxed relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-8 shadow-md print:border-none print:shadow-none print:p-0 print:m-0 print:min-h-screen"
+            className="print-page-wrapper print:text-[13px] print:leading-relaxed relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-8 shadow-md print:border-none print:shadow-none print:p-0 print:m-0"
           >
             <div>
               {/* Decorative Corner Seals (Inside page) */}
@@ -12591,7 +12591,7 @@ function ResultContent() {
         </div>
 
         {/* Cover Page (표지) - 인쇄 시 단독 1페이지 차지 */}
-        <div className="print:break-after-page min-h-[calc(100vh-120px)] print:min-h-screen flex flex-col justify-between py-16 px-6 border-b-2 border-dashed border-[#A3845B]/40 print:border-none relative">
+        <div className="print:break-after-page min-h-[calc(100vh-120px)] flex flex-col justify-between py-16 px-6 border-b-2 border-dashed border-[#A3845B]/40 print:border-none relative">
           
           {/* Top Branding */}
           <div className="text-center space-y-2 mt-4">

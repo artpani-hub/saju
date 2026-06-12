@@ -75,6 +75,7 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
     background-color: #FAF7F0 !important; /* 고전적인 한국 전통 한지 바탕색 */
     color: #1A1A1A !important;
     font-size: 11px; /* 전체적인 글꼴 크기를 콤팩트하게 보정 */
+    line-height: 1.45 !important; /* 인쇄 시 폰트 줄간격을 줄여서 쪼개짐 방지 */
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     display: block !important;
@@ -113,7 +114,7 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
     background: radial-gradient(circle, #FAF7F0 0%, #F4EFE6 100%) !important;
     background-color: #FAF7F0 !important;
     border: 4px double #A3845B !important;
-    padding: 16mm 18mm !important; /* 내부 여백으로 안정성 확보 */
+    padding: 10mm 12mm !important; /* 내부 여백 축소로 쪼개짐(오버플로우) 원천 차단 */
     margin: 0 !important; /* 페이지 사이 마진 제거 */
     box-shadow: none !important;
     box-sizing: border-box !important;
@@ -328,6 +329,61 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
 
 .animate-scroll-vertical:hover {
   animation-play-state: paused;
+}
+
+/* 인쇄 시 글꼴 크기 강제 축소 및 본문 넘침(쪼개짐) 완벽 방지 */
+@media print {
+  .print-page-wrapper p,
+  .print-page-wrapper span,
+  .print-page-wrapper div,
+  .print-page-wrapper td,
+  .print-page-wrapper th,
+  .print-page-wrapper li {
+    font-size: 9.3px !important; /* 텍스트 크기를 9.3px로 축소하여 내부 가용 공간 확보 */
+    line-height: 1.4 !important; /* 줄간격 압축 */
+  }
+
+  .print-page-wrapper h1 {
+    font-size: 17px !important;
+    margin-bottom: 6px !important;
+    margin-top: 2px !important;
+  }
+
+  .print-page-wrapper h2 {
+    font-size: 13px !important;
+    margin-bottom: 4px !important;
+    margin-top: 2px !important;
+  }
+
+  .print-page-wrapper h3,
+  .print-page-wrapper h4 {
+    font-size: 10.5px !important;
+    margin-bottom: 2px !important;
+    margin-top: 2px !important;
+  }
+
+  .print-page-wrapper .grid {
+    gap: 4px !important; /* 그리드 간격 축소 */
+  }
+
+  .print-page-wrapper .p-6,
+  .print-page-wrapper .p-5,
+  .print-page-wrapper .p-4,
+  .print-page-wrapper .p-8 {
+    padding: 6px !important; /* 내부 패딩 최소화 */
+  }
+  
+  .print-page-wrapper .space-y-6 > * + *,
+  .print-page-wrapper .space-y-5 > * + *,
+  .print-page-wrapper .space-y-4 > * + * {
+    margin-top: 4px !important; /* 문단 마진 최소화 */
+  }
+
+  /* 강제 스크롤바 높이 제한 제거 */
+  .print-page-wrapper .overflow-y-auto {
+    max-height: none !important;
+    overflow: visible !important;
+  }
 }
 
 
