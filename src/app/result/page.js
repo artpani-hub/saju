@@ -7565,79 +7565,103 @@ function ResultContent() {
           "신년 맞춤 행운 비방"
         );
 
-      case "ny_monthly":
-        const m = page.monthNum;
+      case "ny_monthly": {
+        const m = page.monthNum || 1;
+        const dayStemEl = sajuInfo?.day?.stemEl || "목";
+        const elements = sajuInfo?.elements || {};
+        
+        let monthlyPrescription = "";
+        if (m === 10) {
+          if (dayStemEl === "목") monthlyPrescription = " 수생목(水生木)의 기류가 뇌파를 안정시키니, 새로운 지식을 습득하고 명상을 통해 정신을 맑게 가다듬기에 최적의 시기입니다.";
+          else if (dayStemEl === "화") monthlyPrescription = " 수극화(水剋火)의 흐름 속에 심장의 열기가 조율되니, 흥분을 가라앉히고 냉정한 시각으로 계약서나 문서를 꼼꼼히 검토하십시오.";
+          else if (dayStemEl === "토") monthlyPrescription = " 토극수(土剋水)의 재성 기운이 활성화되니, 그동안 미뤄두었던 실질적인 자산 투자나 재정 관리에 착수하면 이롭습니다.";
+          else if (dayStemEl === "금") monthlyPrescription = " 금생수(金生水)의 설기 기운이 강해지니, 과도한 에너지 소모를 방지하기 위해 충분한 휴식을 취하고 체력 관리에 힘쓰십시오.";
+          else monthlyPrescription = " 수(水) 기운이 겹쳐 비겁이 강해지는 시기이니, 고집을 부리기보다 주변 조력자의 의견을 경청하는 포용력이 필요합니다.";
+        } else if (m === 11) {
+          if (dayStemEl === "목") monthlyPrescription = " 금생수-수생목의 관인상생(官印相生) 기류가 문서를 돕고 학문 성취를 길하게 하니, 중요한 시험이나 라이선스 획득에 집중하십시오.";
+          else if (dayStemEl === "화") monthlyPrescription = " 강한 관성의 압박이 들어오는 시기이므로, 무리한 운동이나 과로를 피하고 충분한 숙면을 통해 심혈관 건강을 지키십시오.";
+          else if (dayStemEl === "토") monthlyPrescription = " 금식상과 수재성이 어우러져 식상생재(食傷生財)를 이루니, 적극적으로 재능을 펼치고 창의적인 비즈니스 아이디어를 실천해보십시오.";
+          else if (dayStemEl === "금") monthlyPrescription = " 비겁의 굳건함과 식상의 활동성이 조화되니, 자신감을 바탕으로 업무적인 주도권을 잡고 일을 추진해 나가기 좋습니다.";
+          else monthlyPrescription = " 수(水) 기운이 극도로 왕성해져 차가운 냉기가 도니, 아랫배를 따뜻하게 유지하고 매일 따뜻한 물이나 생강차를 자주 마셔 보온하십시오.";
+        } else if (m === 12) {
+          if (dayStemEl === "목") monthlyPrescription = " 토재성과 금관성이 관인과 연결되는 교두보이므로, 불필요한 대인 관계 갈등을 줄이고 실리적인 비즈니스 조율에 힘쓰십시오.";
+          else if (dayStemEl === "화") monthlyPrescription = " 축토 식상의 습기와 신금 재성이 열기를 수렴하니, 감정적인 지출을 억제하고 안전자산 비중을 단단히 굳히는 것이 유리합니다.";
+          else if (dayStemEl === "토") monthlyPrescription = " 비겁과 식상의 기운이 응축되는 엄동설한이니, 새로운 판을 벌이기보다 기존 자산을 정밀하게 결산하고 신년 계획을 설계하십시오.";
+          else if (dayStemEl === "금") monthlyPrescription = " 인성과 비겁이 든든한 버팀목이 되어주니, 주변의 든든한 신뢰를 바탕으로 장기적인 투자나 계약의 기틀을 마련해보십시오.";
+          else monthlyPrescription = " 토관성이 관리를 돕고 금인성이 지혜를 채우니, 마음의 조급함을 버리고 차분히 자리를 지키며 실력을 배양하는 내실에 집중하십시오.";
+        }
+
         const monthTitles = {
-          1: "입춘(立春)과 우수(雨水)가 교차하며 얼어붙었던 대지가 녹고 새로운 나무의 기운이 싹트는 경인월(庚寅月)입니다. 올해 병오년의 불씨를 지피기 위해 땔감을 모으고 기초 설계를 다듬는 명리 서막의 시기입니다. 섣부른 계약이나 대규모 자금 투자는 운명적 마찰력을 높이므로 피하십시오. 직장 내에서는 새로운 기획서 작성, 시장 분석, 물밑 협상에 주력하는 것이 최고의 생존 전략입니다. 성급히 나섰다가는 경쟁자들에게 내 패를 읽혀 도중에 기류가 꺾일 수 있으니 주의해야 합니다.",
-          2: "경칩(驚蟄)과 춘분(春分)이 지나며 초목에 푸른 생명력이 가득 차오르는 신묘월(辛묘月)입니다. 목(木) 기운이 활성화되어 병오년의 화기(火氣)를 부채질하는 국면으로 진입합니다. 내면에서 강한 독립 의지와 이직, 창업 욕구가 샘솟아 마음이 웅장해지기 쉽습니다. 하지만 아직 지상의 온도가 충분치 않으므로 겉보기식 확장은 금물입니다. 특히 가까운 동료나 가족과의 사소한 대화 중 자존심을 건드리는 말실수로 인해 묵은 갈등이 폭발할 수 있으니 10초 묵언 수행을 철저히 실천하십시오.",
-          3: "청명(淸明)과 곡우(穀雨)를 거치며 비옥한 습토가 뜨거워지는 기류를 부드럽게 흡수해 주는 임진월(壬辰月)입니다. 물기를 머금은 흙(濕土)이 유입되어 운세 전반에 단비가 내리는 격입니다. 문서운, 계약운, 시험운이 대단히 안정을 찾게 되며 오랫동안 꼬여있던 복잡한 행정적 난제나 소송 시비가 조용히 타결되는 상서로운 흐름입니다. 평소 어려워했던 인맥에게 가벼운 안부를 전하며 도움을 요청하면 기대 이상의 든든한 백업을 받아 문제를 매끄럽게 처리할 수 있습니다.",
-          4: "입하(立夏)와 소만(小滿)이 도래하며 초여름의 뜨거운 사화(巳火) 기운이 세상을 뒤덮는 계사월(癸巳月)입니다. 공중의 수분이 빠르게 증발하여 기류가 건조해지고 심리적 피로도가 급격하게 증가하는 타이밍입니다. 의욕은 앞서지만 쉽게 지치고 만성 피로나 두통, 안구건조증이 나를 괴롭히기 쉽습니다. 무리한 장거리 이동이나 과도한 밤샘 업무는 신체 밸런스를 붕괴시키니 서늘한 실내에서 주기적으로 수분을 보충하고 머리를 식히는 습관을 기르십시오.",
-          5: "망종(芒종)과 하지(夏至)를 지나며 하늘과 땅에 가장 뜨거운 용광로의 불길이 중첩되는 갑오월(甲午月)입니다. 세운의 오화(午火)와 이번 달의 오화가 겹치며 스스로를 옭아매는 오오자형(午午自刑)의 흉조가 도사립니다. 사소한 일에 욱하고 감정이 폭발하여 오랫동안 쌓아온 평판을 한순간에 날려버리거나, 홧김에 중요한 직장에 사직서를 던지는 충동성이 극대화됩니다. 중대한 도장 찍기나 감정적 대화는 뒤로 미루고, 침착한 타협책을 찾는 것만이 액운을 피하는 방법입니다.",
-          6: "소서(小暑)와 대서(大暑)를 통과하며 대지가 한낮의 열기로 가득 차 숨이 턱턱 막히는 을미월(乙未月)입니다. 메마른 흙(燥土)이 화기를 가두어 팽창력이 극대화되므로 경제적 손재의 위험(군겁쟁재)이 도처에 깔려 있습니다. 남들의 솔깃한 투자 권유나 대박 루머에 휩쓸려 큰돈을 베팅했다가는 묶이거나 증발해 버리기 십상입니다. 지갑을 단단히 닫고 보수적인 적금 형태 위주로 자산을 갈무리하며 현상을 유지하는 수비적 전략이 백번 안전합니다.",
-          7: "입추(立秋)와 처서(處暑)를 맞이하며 마침내 서늘한 가을 바람이 불어와 타오르는 잔열을 정화해 주는 병신월(丙申月)입니다. 금(金)의 결실 에너지가 유입되어 나를 가두고 짓눌렀던 답답한 기류가 한순간에 트이는 극적인 터닝 포인트입니다. 막혔던 비즈니스 자금 흐름이 매끄럽게 정산되거나, 나에게 든든한 제안을 건네는 귀인이 서쪽 방면에서 찾아오는 상서로운 달입니다. 적극적으로 명함을 돌리고 내 아이디어를 공개 발표하여 운의 서광을 움켜쥐십시오.",
-          8: "백로(白露)와 추분(秋分)을 지나며 맑고 깨끗한 서리가 내려 알찬 오행의 열매를 완성해 주는 정유월(丁酉月)입니다. 금(金)의 기운이 최절정에 달하여 명예 상승, 승진 영전, 계약 체결 등 실질적인 보상과 경제적 이권이 주머니에 쓸어 담기는 최고의 달입니다. 평소 도전하고 싶었던 연봉 협상이나 중요한 문서상의 취득은 이번 달의 기운을 활용하여 과감하게 추진하십시오. 기대 이상의 매끄럽고 압도적인 성과가 보장됩니다.",
-          9: "한로(寒露)와 상강(霜降)을 거치며 수확을 끝낸 들판을 단단히 정리정돈하고 창고의 자물쇠를 채우는 무술월(戊戌月)입니다. 건조한 흙의 기운이 들어와 한 해 동안 거두었던 자산을 안전하게 갈무리하도록 유도합니다. 지출 관리에 만전을 기하고 충동적인 쇼핑이나 사치성 비용을 억제하며 내실을 다지십시오. 차분하게 통장 잔고를 확인하고 장기 자산 포트폴리오를 다각화하기에 최적의 이성적 타이밍입니다.",
-          10: "입동(立冬)과 소설(小雪)이 찾아와 지상의 모든 타오르던 불기를 흔적 없이 잠재우는 기해월(己亥月)입니다. 차갑고 깊은 해수(亥水)의 물줄기가 유입되어 그간 나를 피로하게 만들었던 구설수나 대인관계의 얽힌 실타래들이 시원하게 씻겨 내려갑니다. 그동안 나를 외롭게 만들거나 대립했던 상사, 동료들과의 오해가 눈 녹듯 풀리고, 편안한 대화의 물꼬가 열려 아늑한 정신적 평온을 되찾게 되는 귀한 시기입니다.",
-          11: "대설(大雪)과 동지(冬至)를 관통하며 차가운 한겨울의 강물이 세운의 불꽃과 격렬하게 마주치는 경자월(庚子月)입니다. 자오충(子午沖)의 충돌 기류가 월운에서도 중첩되므로 갑작스러운 이사, 해외 출장, 혹은 부서 재배치 등 급격한 물리적 공간의 변동수가 발생합니다. 급작스러운 변화를 두려워하지 말고 흐름을 즐기되, 빙판길 안전사고나 신체 급격한 온도차로 인한 면역력 저하에 특히 유의하며 스케줄을 조율하십시오.",
-          12: "소한(小寒)과 대한(大寒)을 통과하며 얼어붙은 겨울 흙이 온기를 품은 채 다가오는 정미년 새해의 서광을 준비하는 신축월(辛丑月)입니다. 1년간의 땀 방울과 성패를 엄숙히 정돈하고 마음의 휴식을 취하는 정돈의 계절입니다. 무리한 외부 활동을 전면 통제하고, 나만의 침실 조명을 낮춰 명상하며 다가올 새해의 3대 계획을 선명하게 다이어리에 적어 정리정돈하는 것이 가장 상서로운 액막이 행동입니다."
+          1: "음력 1월은 새로운 기운이 싹트는 무풍지대와 같으나, 세운의 갑작스러운 변화 기류를 감지해야 합니다.",
+          2: "음력 2월은 만물이 깨어나는 춘분기이나, 일시적인 꽃샘추위처럼 인간관계의 구설수를 주의하십시오.",
+          3: "음력 3월은 비옥한 황토 대지에 씨앗을 뿌리는 시기이니, 새로운 비즈니스 파트너십이 대길합니다.",
+          4: "음력 4월은 여름의 초입에서 만물이 울창해지듯, 내 능력을 적극 발산하고 제안서를 제출하기 최적입니다.",
+          5: "음력 5월은 화기가 극대화되는 시기이니, 심혈관계 피로와 충동적인 투자를 피하는 수성(守城) 전략을 쓰십시오.",
+          6: "음력 6월은 무더운 삼복더위처럼 갈등이 표출되기 쉬우니 감정적 대립을 억제하고 소통을 부드럽게 유지하십시오.",
+          7: "음력 7월은 선선한 가을바람이 불어와 열기를 내리듯, 묵은 문서나 계약 갈등이 순탄하게 조율되기 시작합니다.",
+          8: "음력 8월은 풍요로운 추수기이니, 노력했던 자산 성취나 승진 계약의 도장을 찍기 최고의 골든타임입니다.",
+          9: "음력 9월은 서리가 내리는 시기이니, 무리한 확장보다 기존 성과를 안전하게 결산하고 내실을 다지십시오.",
+          10: "음력 10월은 기해월(己亥月)로서 굳건한 토 기운과 풍부한 수 기운이 유입되어 차분한 성찰에 유리합니다." + monthlyPrescription,
+          11: "음력 11월은 경자월(庚子月)로서 싸늘한 금 기운과 응축된 수 기류가 천하를 덮어 조용히 기량을 닦아야 합니다." + monthlyPrescription,
+          12: "음력 12월은 신축월(辛丑月)로서 차갑고 단단한 금토 기운이 1년의 마지막 결실을 갈무리하며 다음 도약을 예비합니다." + monthlyPrescription
         };
         const monthDetailsEnriched = {
           1: {
-            wealth: "재정적으로는 지출 통제가 최우선 과제입니다. 겉보기에는 신규 거래나 수입 기회가 도래하는 듯 보이지만, 실질적인 입금까지는 마찰이 예상됩니다. 예산을 20% 보수적으로 잡으십시오.",
-            love: "연인 관계에서는 감정 조절이 조율의 핵심입니다. 내면의 조급함이 겉으로 표출되어 상대방을 다그치기 쉬우니 한 템포 물러서서 배려 어린 침묵을 유지하는 것이 사랑을 지키는 비법입니다.",
-            health: "겨울철 정체되었던 기혈 순환을 돕는 가벼운 스트레칭이 필수적입니다. 찬바람을 쐬며 기관지가 약해지기 쉬우니 외출 시 스카프나 목도리로 목을 보호하십시오.",
-            wealthVal: 2, loveVal: 3, healthVal: 2
+            wealth: "신년 초반에는 예상외의 지출이 생길 수 있으니 가계부를 철저히 점검하고 보수적으로 행동하십시오.",
+            love: "서로에게 바빠 소홀해질 수 있으니 주말에는 온전히 동반자에게 마음을 집중해 대화를 나누십시오.",
+            health: "겨울철 찬 바람으로 호흡기 면역력이 저하되기 쉬우니 충분한 미온수 음용과 휴식을 유지하십시오.",
+            wealthVal: 3, loveVal: 3, healthVal: 3
           },
           2: {
-            wealth: "독립적인 투자나 주식 투기에 손을 뻗기 쉬운 달이나 낙심할 우려가 큽니다. 확실한 전문가의 서류 검증 없이 지인의 말만 믿고 돈을 빌려주거나 투자하는 행위는 절대 엄금입니다.",
-            love: "연인 간의 데이트 시 자존심을 건드리는 농담이 큰 싸움으로 번집니다. '내가 맞고 네가 틀리다'는 식의 논쟁을 멈추고 부드러운 눈빛과 경청의 대화법을 실천하십시오.",
-            health: "목 기운의 팽창으로 간에 피로가 쉽게 누적됩니다. 늦은 시간의 불필요한 과음을 완전 차단하고, 녹색 채소와 수분이 풍부한 식단을 가까이 하십시오.",
+            wealth: "구설수로 인한 불필요한 위약금이나 손실이 있을 수 있으니 서류 상의 확인을 두 번 이상 반복하십시오.",
+            love: "작은 말다툼이 커져 신뢰에 금이 가기 쉽습니다. 상대가 먼저 불만을 말할 때 끝까지 들어주는 혜안이 필요합니다.",
+            health: "환절기 비염이나 알레르기 피부 질환을 겪기 쉬우니 실내 청결과 공기 정화에 정성을 기울이십시오.",
             wealthVal: 2, loveVal: 2, healthVal: 3
           },
           3: {
-            wealth: "문서와 계약으로 인한 재물적 이득이 보장되는 달입니다. 묶여 있던 전세금 반환, 계약금 입금 등 기분 좋은 목돈의 소식이 도래합니다. 부동산 계약이나 자격증 관련 비즈니스를 추진하기에 대단히 좋습니다.",
-            love: "싱글의 경우, 조력자의 주선이나 소개팅을 통해 나에게 편안한 정서적 지지를 건넬 진중한 인연을 만나게 될 운명의 서광이 강력하게 비춥니다. 적극적으로 나서십시오.",
-            health: "위장 장애와 소화 불량이 발생할 우려가 있으니 규칙적인 식사 시간을 유지하고, 식후 20분 동안 가볍게 대지를 딛으며 걷는 행동을 추천합니다.",
-            wealthVal: 5, loveVal: 4, healthVal: 3
-          },
-          4: {
-            wealth: "매출 증대나 보너스 기류가 잠시 보이지만 그만큼 품위 유지비나 돌발 지출이 함께 폭증하여 실속이 떨어집니다. 가계부를 꼼꼼히 적으며 불필요한 고정비를 과감히 다이어트하십시오.",
-            love: "연인의 사소한 거짓말이나 감춤으로 인해 내면의 예민함이 증폭될 수 있습니다. 윽박지르기보다는 차분히 대화를 유도하여 상대의 진짜 속마음을 조용히 확인해 보십시오.",
-            health: "체내 수분이 급격히 메말라 안구 건조 및 피부 가려움증이 심해집니다. 하루 8잔 이상의 맑은 물을 주기적으로 음용하여 세포에 수분을 공급하십시오.",
-            wealthVal: 3, loveVal: 2, healthVal: 2
-          },
-          5: {
-            wealth: "손재수와 관재 구설의 위험이 도처에 깔린 가장 위험한 달입니다. 동업이나 신규 확장 투자는 절대 파탄에 이르니 기존 자산을 완전히 잠금 계좌에 대피시켜 수비하십시오.",
-            love: "부부나 연인 사이에 홧김에 이별을 통보하거나 돌이킬 수 없는 상처를 주기 쉽습니다. 갈등 발생 시 즉시 자리를 피해 30분 동안 혼자만의 침묵 명상 시간을 가지십시오.",
-            health: "심혈관 질환이나 갑작스러운 가슴 두근거림, 혈압 상승에 각별히 유의해야 합니다. 땀을 뻘뻘 흘리는 격렬한 운동보다는 차분한 스트레칭과 요가를 권장합니다.",
-            wealthVal: 1, loveVal: 1, healthVal: 1
-          },
-          6: {
-            wealth: "부동산 청약이나 주식 시장의 뜬소문에 속아 재산을 탕진할 위험이 높습니다. 공격적인 재테크 대신 적금 비율을 15% 이상 높이고 내 자산의 실질적 잔고를 방어하는 데 올인하십시오.",
-            love: "상대방에 대한 집착이나 불필요한 의심이 깊어져 숨통을 조이게 만들기 쉽습니다. 서로에게 혼자만의 여유 시간을 허락하여 정서적 신뢰의 균형을 되찾으십시오.",
-            health: "만성 체증과 더위로 인한 탈수 증상이 요동치니 야외 활동 시 반드시 이온음료나 물병을 소지하시고, 기름지고 매운 식단을 최대한 멀리하십시오.",
-            wealthVal: 2, loveVal: 2, healthVal: 2
-          },
-          7: {
-            wealth: "기다리던 금전의 혈맥이 시원하게 뚫리며 사업적 파트너로부터 대대적인 투자를 받거나 미수금이 말끔히 입금되는 경사스러운 달입니다. 적극적으로 영업력을 발휘하십시오.",
-            love: "오랫동안 어긋났던 연인 관계의 갈등이 마법처럼 자연스럽게 풀려 애정이 다시 불타오릅니다. 연인에게 정성 가득한 손 편지나 작은 실버 선물을 건네보십시오.",
-            health: "그간 누적되었던 만성 피로가 해소되고 컨디션이 대대적으로 회복되는 시기입니다. 가벼운 유산소 운동으로 기초 근력을 한 단계 단단히 다져두기에 최적입니다.",
+            wealth: "좋은 협력자가 찾아와 유리한 조건의 비즈니스 계약을 제안하니 긍정적인 파트너십을 추진하십시오.",
+            love: "싱글이라면 뜻하지 않은 모임에서 품격 있는 인연을 만나며, 커플은 깊은 신뢰 관계가 형성됩니다.",
+            health: "겨울철에 움츠러들었던 신체 기맥을 깨워주는 스트레칭과 가벼운 하이킹으로 활력을 충전하십시오.",
             wealthVal: 4, loveVal: 4, healthVal: 4
           },
+          4: {
+            wealth: "내가 기획한 아이디어나 능력이 상사나 거래처의 호평을 받아 추가적인 인센티브나 기회가 도래합니다.",
+            love: "다정다감한 태도가 연인에게 큰 안정감을 선사하며, 가족 간의 화목이 배가되는 평화로운 운기입니다.",
+            health: "야외 활동이 잦아져 체력 소모가 빠르니 충분한 고단백 섭식과 숙면을 통해 에너지를 보충하십시오.",
+            wealthVal: 4, loveVal: 4, healthVal: 4
+          },
+          5: {
+            wealth: "화기가 팽창하여 충동적인 대출이나 리스크 높은 투자의 유혹이 생기나 무조건 지갑을 닫는 수성이 최선입니다.",
+            love: "마음속의 짜증이 연인에게 화풀이로 이어지기 쉽습니다. 감정이 격해질 때는 잠시 거리를 두는 것이 안전합니다.",
+            health: "심장의 열이 올라 불면증이나 두통이 생길 수 있으니 야간 카페인 섭취를 금하고 명상을 실천해 보십시오.",
+            wealthVal: 2, loveVal: 2, healthVal: 2
+          },
+          6: {
+            wealth: "상반기 재정을 종합 결산하며 새는 구멍을 막아야 하는 시기입니다. 고정 비용을 줄이는 구조조정을 단행하십시오.",
+            love: "오래 묵은 해묵은 갈등이 다시 떠오를 수 있습니다. 회피하지 말고 진심 어린 사과와 배려로 매듭을 지으십시오.",
+            health: "여름철 더위로 인한 탈수 및 비뇨기계 질환이 염려되니 짠 음식을 피하고 수분을 넉넉히 보충하십시오.",
+            wealthVal: 3, loveVal: 2, healthVal: 3
+          },
+          7: {
+            wealth: "지연되었던 거래대금이 입금되거나 문서 갈등이 극적으로 조율되어 한숨을 돌리는 안정 기류가 흐릅니다.",
+            love: "서로에 대한 불만이 오해였음을 깨닫고 편안한 정을 나눕니다. 가벼운 교외 드라이브가 연애운을 북돋웁니다.",
+            health: "소화기계 점막이 약해져 체기가 생기기 쉬우니 기름지고 차가운 맥주나 인스턴트 섭취를 조절하십시오.",
+            wealthVal: 4, loveVal: 4, healthVal: 3
+          },
           8: {
-            wealth: "직장인은 연봉 대폭 인상이나 상여금 수령, 비즈니스 사업가는 고수익 계약 성사가 완벽하게 담보됩니다. 2026년 중 자산을 가장 크게 불릴 수 있는 골든 먼스이므로 집중하십시오.",
-            love: "싱글은 나의 지적이고 고급스러운 매력에 반한 훌륭한 인성이 나에게 다가와 다정하게 고백할 흐름입니다. 연인은 양가 부모님께 인사를 드리거나 미래를 약속하기 좋습니다.",
-            health: "호흡기가 건조해지며 마른기침이나 환절기 감기가 찾아올 수 있으니, 도라지청이나 따뜻한 둥굴레차를 수시로 마셔 목을 촉촉하게 코팅해주십시오.",
-            wealthVal: 5, loveVal: 5, healthVal: 3
+            wealth: "상반기부터 땀 흘려 노력해 온 결과물이 금전적 계약이나 승진, 성과급의 형태로 확정되는 길한 시기입니다.",
+            love: "연인과 미래의 구체적인 약속을 하거나 부모님께 인사를 드리는 등 공인된 관계로 안착하기 좋은 달입니다.",
+            health: "신체 기운이 고르게 순환되어 가벼운 피로 외에는 최상의 컨디션을 유지하니 규칙적인 운동을 지속하십시오.",
+            wealthVal: 5, loveVal: 5, healthVal: 4
           },
           9: {
-            wealth: "수익을 수확하고 보관하는 창고 마감의 기간입니다. 충동적인 쇼핑이나 사치스러운 기분 내기용 소비를 억제하고 통장에 자금을 잠가 현명하게 내실을 지키십시오.",
-            love: "연인 간의 관계가 다소 정체되어 권태감을 느끼기 쉬운 시기입니다. 겉보기 화려한 장소 대신 조용하고 깊은 대화를 나눌 수 있는 호젓한 교외 데이트를 추천합니다.",
-            health: "관절과 뼈마디가 굳거나 근육이 경직되기 쉬운 시기이니 아침저녁으로 온열 찜질이나 가벼운 폼롤러 스트레칭을 생활화하여 부상을 미연에 예방하십시오.",
-            wealthVal: 4, loveVal: 3, healthVal: 2
+            wealth: "신규 무리한 투자는 손실의 징조가 짙으니 국채나 예적금 등 원금 보존형 구조를 단단히 잠그십시오.",
+            love: "서로에게 지나친 참견을 하기보다는 각자의 프라이버시를 존중하며 성숙한 거리를 지키는 것이 이롭습니다.",
+            health: "기온 차가 큰 환절기이므로 체온 유지를 위해 머플러를 착용하시고 가벼운 따뜻한 차 음용을 습관화하십시오.",
+            wealthVal: 3, loveVal: 3, healthVal: 3
           },
           10: {
-            wealth: "돈의 누수가 멈추고 자금 흐름이 대단히 안정화됩니다. 무리한 대출을 상환하거나 포트폴리오를 저위험 자산 위주로 리밸런싱하여 재정적 기초 체력을 다지기에 최고입니다.",
+            wealth: "풍부한 수기가 자금을 원활히 소통시켜 부차적인 이익을 창출하나, 동업 제안은 단호히 거절해야 자산을 지킵니다.",
             love: "대인관계와 연인 궁합에 은혜로운 평화가 도래합니다. 묵은 오해가 눈 녹듯 사그라들어 편안한 안락함을 공유하며 아늑한 정을 돈독하게 쌓아올립니다.",
             health: "신장과 비뇨기계 컨디션이 호전됩니다. 취침 전 따뜻한 핫팩을 아랫배에 올려 혈류를 덥혀주고 숙면을 취하면 다음 날 아침이 개운해질 것입니다.",
             wealthVal: 4, loveVal: 4, healthVal: 4
@@ -7656,7 +7680,47 @@ function ResultContent() {
           }
         };
         
-        const activeDetail = monthDetailsEnriched[m] || { wealth: "", love: "", health: "", wealthVal: 3, loveVal: 3, healthVal: 3 };
+        const activeDetailBase = monthDetailsEnriched[m] || { wealth: "", love: "", health: "", wealthVal: 3, loveVal: 3, healthVal: 3 };
+        
+        let wealthMod = 0;
+        let loveMod = 0;
+        let healthMod = 0;
+
+        const hwaCount = elements["화"] || 0;
+        const toCount = elements["토"] || 0;
+        const geumCount = elements["금"] || 0;
+        const waterCount = elements["수"] || 0;
+
+        if (m === 10) {
+          if (dayStemEl === "목") wealthMod = (toCount >= 1) ? 1 : 0;
+          else if (dayStemEl === "토") wealthMod = (toCount >= 2) ? 1 : 0;
+          else if (dayStemEl === "화") wealthMod = (waterCount >= 3) ? -1 : 0;
+          
+          if (dayStemEl === "토" || dayStemEl === "금") loveMod = 1;
+          else if (dayStemEl === "화" && waterCount >= 3) loveMod = -1;
+
+          if (hwaCount >= 3 && waterCount === 0) healthMod = -1;
+          else if (waterCount >= 1) healthMod = 1;
+        } else if (m === 11) {
+          if (dayStemEl === "목" && waterCount >= 1) wealthMod = 1;
+          else if (dayStemEl === "화") wealthMod = -1;
+          
+          if (dayStemEl === "목" || dayStemEl === "토") loveMod = 1;
+
+          if (hwaCount <= 1) healthMod = -1;
+          else if (hwaCount >= 2) healthMod = 1;
+        } else if (m === 12) {
+          if (toCount >= 1 && geumCount >= 1) wealthMod = 1;
+          if (dayStemEl === "화" || dayStemEl === "수") loveMod = 1;
+          if (geumCount >= 3 && (elements["목"] || 0) <= 1) healthMod = -1;
+        }
+
+        const activeDetail = {
+          ...activeDetailBase,
+          wealthVal: Math.max(1, Math.min(5, activeDetailBase.wealthVal + wealthMod)),
+          loveVal: Math.max(1, Math.min(5, activeDetailBase.loveVal + loveMod)),
+          healthVal: Math.max(1, Math.min(5, activeDetailBase.healthVal + healthMod))
+        };
         
         // 시각화: 별점 렌더러
         const renderStars = (val) => {
@@ -7709,7 +7773,49 @@ function ResultContent() {
           </div>,
           `음력 ${m}월 상세 신수비결`
         );
-      case "ny_wealth_fortune":
+      }
+
+
+      case "ny_wealth_fortune": {
+        const dayStemEl = sajuInfo?.day?.stemEl || "목";
+        const elements = sajuInfo?.elements || {};
+        const geumCount = elements["금"] || 0;
+        const hwaCount = elements["화"] || 0;
+        const waterCount = elements["수"] || 0;
+
+        let opportunityIndex = 80;
+        if (dayStemEl === "수") {
+          opportunityIndex = 85 + Math.floor(waterCount * 1.5);
+          if (opportunityIndex > 92) opportunityIndex = 92;
+        } else if (dayStemEl === "화") {
+          opportunityIndex = 75 - Math.floor(hwaCount * 2);
+          if (opportunityIndex < 65) opportunityIndex = 65;
+        } else {
+          opportunityIndex = 75 + Math.min(10, geumCount + waterCount * 2);
+        }
+
+        let leakRiskIndex = 70;
+        if (geumCount >= 3) {
+          leakRiskIndex = Math.max(45, 60 - (geumCount - 2) * 8);
+        } else if (geumCount === 0 || hwaCount >= 3) {
+          leakRiskIndex = 80 + Math.min(15, hwaCount * 4);
+        } else {
+          leakRiskIndex = 70 + (3 - geumCount) * 3 - Math.min(10, hwaCount * 2);
+        }
+
+        let safetyRulesText = "";
+        if (dayStemEl === "목") {
+          safetyRulesText = "목(木) 일간인 귀하는 성장과 팽창을 지향하는 성향이 강해 병오년의 화기(火氣)를 만나면 무리한 확장을 꾀하기 쉽습니다. 올해는 투자의 스케일을 키우기보다는 현재 보유한 현금 흐름을 재점검하고, 리스크가 높은 신흥 시장보다는 정기적 배당이 나오는 대형 가치주 위주로 방어망을 구축하십시오.";
+        } else if (dayStemEl === "화") {
+          safetyRulesText = "화(火) 일간인 귀하는 병오년의 불타오르는 기운이 강한 비겁으로 작용하여, 주위의 부추김이나 충동적인 투기 심리에 휘둘릴 가능성이 매우 높습니다. 동업이나 금전 대여, 레버리지를 활용한 무리한 베팅은 절대 금물이며, 자산의 70% 이상을 안정적인 은행 예적금이나 안전 국채에 묶어두는 수성(守城) 전략이 생명입니다.";
+        } else if (dayStemEl === "토") {
+          safetyRulesText = "토(土) 일간인 귀하는 화생토의 흐름으로 문서를 잡거나 자산을 고정하는 기운이 강하게 작용합니다. 다만 과도한 화기로 인해 부동산이나 실물 자산에 지나치게 묶여 유동성 위기를 겪을 수 있으니, 현금성 자산을 충분히 확보해 두고 안정성 높은 실물 리츠나 채권형 포트폴리오를 우선시하십시오.";
+        } else if (dayStemEl === "금") {
+          safetyRulesText = "금(金) 일간인 귀하는 화극금의 흐름으로 재물의 통제권(관성)이 과열되는 시기입니다. 섣부른 시장 예측으로 무리한 포지션을 취하면 큰 변동성에 노출될 수 있으니, 명확한 손절 원칙을 세우고 메탈이나 원자재, 미국 달러 등 달러 베이스의 안전 자산 비중을 늘려 방어력을 높이십시오.";
+        } else { // 수
+          safetyRulesText = "수(水) 일간인 귀하는 병오년의 화기가 재성(財星)으로 들어와 자산 획득 기회가 크게 늘어납니다. 다만, 사주 원국에 수 기운이 부족할 경우 들어온 재물을 감당하지 못하고 오히려 유출될 수 있으니, 수익이 날 때마다 즉시 달러나 채권, 예금 등 꺼내 쓰기 힘든 안전자산으로 강제 전환하여 이익을 확정 지으십시오.";
+        }
+
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
@@ -7729,22 +7835,32 @@ function ResultContent() {
                   <div className="space-y-1">
                     <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
                       <span>자산 획득 기회지수</span>
-                      <span className="text-[#8A6F4C]">80%</span>
+                      <span className="text-[#8A6F4C]">{opportunityIndex}%</span>
                     </div>
                     <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "80%" }} />
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: `${opportunityIndex}%` }} />
                     </div>
                   </div>
                   <div className="space-y-1">
                     <div className="flex justify-between text-[9px] font-semibold text-red-500">
                       <span>일시적 자산 누수 위험</span>
-                      <span className="text-red-700">70%</span>
+                      <span className="text-red-700">{leakRiskIndex}%</span>
                     </div>
                     <div className="w-full h-1.5 bg-red-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-red-400 rounded-full" style={{ width: "70%" }} />
+                      <div className="h-full bg-red-400 rounded-full" style={{ width: `${leakRiskIndex}%` }} />
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* 추가 개인화 수호 안전 수칙 텍스트 카드 */}
+              <div className="bg-amber-50/30 border border-amber-100 p-4 rounded-xl space-y-2 text-justify">
+                <span className="font-bold text-[#A3845B] text-[11px] block flex items-center gap-1">
+                  💡 의뢰인 사주 맞춤형 수호 안전 수칙
+                </span>
+                <p className="text-[10px] text-gray-700 font-light leading-relaxed">
+                  {safetyRulesText}
+                </p>
               </div>
 
               {/* 재물 수호 수칙 카드 */}
@@ -7754,12 +7870,15 @@ function ResultContent() {
                   <li>• <strong>투기성 고위험 자산 진입 금지:</strong> 올해의 기류는 변동 속도가 상상을 초월하여 뇌동 매매에 취약합니다. 상반기(음력 4~6월)에 순간적인 욕심으로 진입한 투자는 큰 손실로 이어질 확률이 높으니 보수적으로 가십시오.</li>
                   <li>• <strong>공동 투자 및 보증 절대 금지:</strong> 사주 내 비견/겁재가 세운의 화기를 만나면 동업자 간의 불화와 수익 분배 갈등이 촉발됩니다. 돈도 잃고 사람도 잃을 운이니 독자적 운영이나 현금 수성에 매진하십시오.</li>
                   <li>• <strong>재물 수렴 골든타임 활용:</strong> 음력 8월(계유월)은 금(金) 기운이 극에 달해 가장 유리한 재무 성과나 보상 합의가 가능하므로, 계약 도장은 이 시기에 찍는 것이 가장 길합니다.</li>
+                  <li>• <strong>보시(布施)와 기부의 개운 메커니즘:</strong> 화가 극성할 때는 타인을 위한 순수한 기부나 식사 대접을 통해 기운을 의도적으로 누설(설기)시키는 것이 예기치 못한 금전 유실 액난을 원천 방어하는 최고의 비방입니다.</li>
                 </ul>
               </div>
             </div>
           </div>,
-          "신년 재물 및 사업운"
-        )
+          "신년 재물 및 사업운 분석"
+        );
+      }
+
 
       case "ny_career_fortune":
         return wrapLock(
@@ -9451,7 +9570,66 @@ function ResultContent() {
           "겨울철 계절적 세부 기운과 전략"
         );
 
-      case "ny_wealth_portfolio":
+      case "ny_wealth_portfolio": {
+        const elements = sajuInfo?.elements || {};
+        const hwaCount = elements["화"] || 0;
+        
+        // 부족 오행 계산
+        const ohaengs = ["목", "화", "토", "금", "수"];
+        const counts = ohaengs.map(el => ({ el, count: elements[el] || 0 }));
+        const minCount = Math.min(...counts.map(c => c.count));
+        const deficientOhaengs = counts.filter(c => c.count === minCount).map(c => c.el);
+        const primaryDeficient = deficientOhaengs[0];
+
+        // 강한 오행 계산
+        const maxCount = Math.max(...counts.map(c => c.count));
+        const strongOhaengs = counts.filter(c => c.count === maxCount).map(c => c.el);
+        const primaryStrong = strongOhaengs[0];
+
+        // 부족 오행에 따른 자산 배분 비중
+        let safeRatio = 50;   // 안전 (수)
+        let incomeRatio = 30; // 배당 (금)
+        let equityRatio = 20; // 우량 (목)
+
+        if (primaryDeficient === "수") {
+          safeRatio = 60;
+          incomeRatio = 30;
+          equityRatio = 10;
+        } else if (primaryDeficient === "금") {
+          safeRatio = 45;
+          incomeRatio = 45;
+          equityRatio = 10;
+        } else if (primaryDeficient === "목") {
+          safeRatio = 45;
+          incomeRatio = 30;
+          equityRatio = 25;
+        } else { // 화/토 부족
+          safeRatio = 55;
+          incomeRatio = 35;
+          equityRatio = 10;
+        }
+
+        // 병오년의 특성을 반영해 화기가 강할 경우 안전자산 강제 보정
+        if (hwaCount >= 3) {
+          safeRatio = Math.min(70, safeRatio + 10);
+          equityRatio = Math.max(5, 100 - safeRatio - incomeRatio);
+          incomeRatio = 100 - safeRatio - equityRatio;
+        }
+
+        // 자산 수호 전략 텍스트 구성
+        let portfolioStrategy = "";
+        if (primaryStrong === "화" && primaryDeficient === "수") {
+          portfolioStrategy = "귀하의 명조는 타오르는 화(火) 기운이 과다하여 자산이 충동적으로 증발하기 쉽고, 이를 제어할 수(水) 기운이 매우 취약합니다. 뜨거운 불길을 차분히 끄고 금전을 수성하기 위해, 변동성 높은 성장주 비중을 줄이고 안전 자산인 정기 예적금 및 금 실물에 60% 이상을 고정 배분하십시오.";
+        } else if (primaryStrong === "화" && primaryDeficient === "금") {
+          portfolioStrategy = "귀하의 명조는 세운의 화(火)에 의해 금(金) 기운이 녹아내리는 화극금(火剋金) 리스크에 노출되어 있어, 재정의 결단력과 방어벽이 훼손되기 쉽습니다. 자산의 가치를 지탱해 주는 월배당 인컴형 채권이나 안전 등급 리츠 비중을 40% 이상으로 높여 안정적인 현금 쿠션을 확보하십시오.";
+        } else if (primaryStrong === "목" && primaryDeficient === "토") {
+          portfolioStrategy = "귀하의 명조는 솟구치는 목(木) 기운이 땅인 토(土) 기운을 헤치는 목극토(木剋土) 성향이 짙어 기반 다지기가 불안할 수 있습니다. 섣부른 확장을 자제하고, 확실하게 원금이 지켜지는 시중 예적금 비중을 높여 재정적 기초 체력을 굳건히 다지는 전략이 최우선입니다.";
+        } else if (primaryStrong === "토" && primaryDeficient === "목") {
+          portfolioStrategy = "귀하의 명조는 흙(土) 기운이 무거워 재정이 정체되기 쉽고 도약하는 목(木) 기운이 억제되어 있습니다. 자산의 정체 상태를 해소하고 성장성을 불어넣기 위해, 배당성이 탄탄하면서도 미래 성장 가치를 지닌 빅테크 우량 성장주의 비중을 다소 넓혀 장기 적립식으로 조율하십시오.";
+        } else {
+          portfolioStrategy = "귀하의 명조는 " + primaryStrong + "(으)로 향하는 기운이 가장 왕성하고 " + primaryDeficient + " 기운이 가장 부족한 구조를 지니고 있습니다. 세운의 격렬한 화기를 조율하고 부족한 오행을 메워주기 위해, 포트폴리오의 절반 이상을 원금 보장형 자산에 할당하고 고정 배당 인컴형 자산과 대형 우량 가치주를 적절히 분산하십시오.";
+        }
+
         return wrapLock(
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
@@ -9464,16 +9642,26 @@ function ResultContent() {
                 의뢰인 {name}님의 사주 오행 밸런스를 토대로 제안하는 2026년 최상의 자산 방어 및 투자 포트폴리오 비중 조율 제안서입니다. 화(火)의 팽창이 극에 달해 물이 쉽게 메마르고 쇳가루가 휘날리는 흐름 속에서 내 자산을 지켜내고 증식하기 위한 오행 처방입니다.
               </p>
 
+              {/* 추가 개인화 수호 전략 코멘트 카드 */}
+              <div className="bg-[#FAF8F5] border border-[#E2DDD5]/60 p-4 rounded-xl space-y-2 text-justify shadow-inner">
+                <span className="font-bold text-[#8A6F4C] text-[11px] block flex items-center gap-1">
+                  🛡️ 의뢰인 사주 맞춤형 자산 수호 전략
+                </span>
+                <p className="text-[10px] text-gray-700 font-light leading-relaxed">
+                  {portfolioStrategy}
+                </p>
+              </div>
+
               {/* 시각화: 자산 포트폴리오 비중 */}
               <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
                 <span className="font-bold text-xs text-[#8A6F4C] block">📊 제안 자산 구성 비율</span>
                 <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden flex text-[8px] font-bold text-white text-center leading-4">
-                  <div className="bg-[#8A6F4C]" style={{ width: "60%" }}>안전자산 60%</div>
-                  <div className="bg-[#A3845B]" style={{ width: "30%" }}>배당/채권 30%</div>
-                  <div className="bg-[#5F7A68]" style={{ width: "10%" }}>우량가치주 10%</div>
+                  <div className="bg-[#8A6F4C]" style={{ width: safeRatio + "%" }}>안전자산 {safeRatio}%</div>
+                  <div className="bg-[#A3845B]" style={{ width: incomeRatio + "%" }}>배당/채권 {incomeRatio}%</div>
+                  <div className="bg-[#5F7A68]" style={{ width: equityRatio + "%" }}>우량가치주 {equityRatio}%</div>
                 </div>
                 <p className="text-[9px] text-gray-400 font-light leading-snug">
-                  * 무리한 성장주 레버리지 투자는 70% 이상의 손실 확률을 가지므로 금지하며, 원금 보장형 예적금이나 미국 단기 채권 ETF에 60% 이상 집중하십시오.
+                  * 무리한 성장주 레버리지 투자는 70% 이상의 손실 확률을 가지므로 금지하며, 원금 보장형 예적금이나 미국 단기 채권 ETF에 {safeRatio}% 이상 집중하십시오.
                 </p>
               </div>
 
@@ -9482,17 +9670,17 @@ function ResultContent() {
                 <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3.5 rounded-xl text-center shadow-inner">
                   <span className="text-xl block mb-1">🌊</span>
                   <span className="font-bold text-[#8A6F4C] text-[10px] block">수(水) 기운: 수성</span>
-                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">예적금과 금 실물에 60%를 배분하여 원금을 굳건히 지킴</p>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">예적금과 금 실물에 {safeRatio}%를 배분하여 원금을 굳건히 지킴</p>
                 </div>
                 <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3.5 rounded-xl text-center shadow-inner">
                   <span className="text-xl block mb-1">🪙</span>
                   <span className="font-bold text-[#8A6F4C] text-[10px] block">금(金) 기운: 흐름</span>
-                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">미국 단기 채권 및 월배당 리츠 30%로 안정적 이자 획득</p>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">미국 단기 채권 및 월배당 리츠 {incomeRatio}%로 안정적 이자 획득</p>
                 </div>
                 <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3.5 rounded-xl text-center shadow-inner">
                   <span className="text-xl block mb-1">🌲</span>
                   <span className="font-bold text-[#8A6F4C] text-[10px] block">목(木) 기운: 성장</span>
-                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">글로벌 지수 ETF 및 대형 우량 가치주 10%로 방어적 투자</p>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">글로벌 지수 ETF 및 대형 우량 가치주 {equityRatio}%로 방어적 투자</p>
                 </div>
               </div>
 
@@ -9511,19 +9699,19 @@ function ResultContent() {
                     <tr className="border-b border-[#E2DDD5]/40">
                       <td className="p-2 font-semibold text-gray-800">🔒 안전성 보존 자산</td>
                       <td className="p-2 text-center">수(水) / 토(土)</td>
-                      <td className="p-2 text-center font-bold text-[#8A6F4C]">60%</td>
+                      <td className="p-2 text-center font-bold text-[#8A6F4C]">{safeRatio}%</td>
                       <td className="p-2">고금리 정기 예적금, 금(Gold) 현물 수성</td>
                     </tr>
                     <tr className="border-b border-[#E2DDD5]/40">
                       <td className="p-2 font-semibold text-gray-800">💵 고정 배당 자산</td>
                       <td className="p-2 text-center">금(金)</td>
-                      <td className="p-2 text-center font-bold text-[#8A6F4C]">30%</td>
+                      <td className="p-2 text-center font-bold text-[#8A6F4C]">{incomeRatio}%</td>
                       <td className="p-2">월배당 인컴형 리츠, 미국 하이일드/단기채 ETF</td>
                     </tr>
                     <tr>
                       <td className="p-2 font-semibold text-gray-800">📈 우량 가치 자산</td>
                       <td className="p-2 text-center">목(木)</td>
-                      <td className="p-2 text-center font-bold text-[#8A6F4C]">10%</td>
+                      <td className="p-2 text-center font-bold text-[#8A6F4C]">{equityRatio}%</td>
                       <td className="p-2">글로벌 지수 추종 ETF, 초우량 빅테크 가치 분할매수</td>
                     </tr>
                   </tbody>
@@ -9532,8 +9720,8 @@ function ResultContent() {
             </div>
           </div>,
           "오행별 추천 투자 스타일 및 재무 가이드"
-        )
-
+        );
+      }
       case "ny_career_detailed":
         return wrapLock(
           <div className="space-y-6 py-4">
