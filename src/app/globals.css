@@ -64,7 +64,7 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
    ---------------------------------------------------- */
 @media print {
   @page {
-    size: A4 portrait;
+    size: A4;
     margin: 0; /* 브라우저 기본 헤더/푸터(날짜, URL, 페이지 번호) 출력을 방지하기 위해 마진을 0으로 설정 */
   }
   
