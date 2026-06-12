@@ -68,17 +68,17 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
   }
   
   html, body {
-    width: 209.8mm !important;
-    height: 296.8mm !important;
     margin: 0 !important;
     padding: 0 !important;
     background-color: #FAF7F0 !important; /* 고전적인 한국 전통 한지 바탕색 */
     color: #1A1A1A !important;
     font-size: 11px; /* 전체적인 글꼴 크기를 콤팩트하게 보정 */
-    line-height: 1.45 !important; /* 인쇄 시 폰트 줄간격을 줄여서 쪼개짐 방지 */
+    line-height: 1.4 !important; /* 인쇄 시 폰트 줄간격을 줄여서 쪼개짐 방지 */
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     display: block !important;
+    width: auto !important;
+    height: auto !important;
   }
 
   /* 인쇄 시 모든 배경과 색상을 강제로 표시하도록 지시 */
@@ -94,13 +94,13 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
     margin: 0 !important;
     min-height: auto !important;
     background: transparent !important;
-    width: 209.8mm !important;
+    width: 100% !important;
     display: block !important;
   }
   
   .max-w-3xl {
-    max-width: 209.8mm !important;
-    width: 209.8mm !important;
+    max-width: 100% !important;
+    width: 100% !important;
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
@@ -114,7 +114,7 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
     background: radial-gradient(circle, #FAF7F0 0%, #F4EFE6 100%) !important;
     background-color: #FAF7F0 !important;
     border: 4px double #A3845B !important;
-    padding: 10mm 12mm !important; /* 내부 여백 축소로 쪼개짐(오버플로우) 원천 차단 */
+    padding: 8mm 10mm !important; /* 내부 여백 축소로 쪼개짐(오버플로우) 원천 차단 */
     margin: 0 !important; /* 페이지 사이 마진 제거 */
     box-shadow: none !important;
     box-sizing: border-box !important;
@@ -123,8 +123,10 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
     break-inside: avoid !important;
     break-after: page !important;
     position: relative !important;
-    width: 209.8mm !important;
-    height: 296.8mm !important; /* 정확히 A4 1페이지 크기로 세로 높이 고정 */
+    width: 206mm !important;
+    height: 290mm !important; /* 정확히 A4 1페이지 영역보다 획기적으로 낮춤 */
+    margin-left: auto !important;
+    margin-right: auto !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
