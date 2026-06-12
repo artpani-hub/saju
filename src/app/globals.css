@@ -64,13 +64,12 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
    ---------------------------------------------------- */
 @media print {
   @page {
-    size: A4;
     margin: 0; /* 브라우저 기본 헤더/푸터(날짜, URL, 페이지 번호) 출력을 방지하기 위해 마진을 0으로 설정 */
   }
   
   html, body {
-    width: 210mm !important;
-    height: 297mm !important;
+    width: 209.8mm !important;
+    height: 296.8mm !important;
     margin: 0 !important;
     padding: 0 !important;
     background-color: #FAF7F0 !important; /* 고전적인 한국 전통 한지 바탕색 */
@@ -94,13 +93,13 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
     margin: 0 !important;
     min-height: auto !important;
     background: transparent !important;
-    width: 210mm !important;
+    width: 209.8mm !important;
     display: block !important;
   }
   
   .max-w-3xl {
-    max-width: 210mm !important;
-    width: 210mm !important;
+    max-width: 209.8mm !important;
+    width: 209.8mm !important;
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
@@ -123,8 +122,8 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
     break-inside: avoid !important;
     break-after: page !important;
     position: relative !important;
-    width: 210mm !important;
-    height: 297mm !important; /* 정확히 A4 1페이지 크기로 세로 높이 고정 */
+    width: 209.8mm !important;
+    height: 296.8mm !important; /* 정확히 A4 1페이지 크기로 세로 높이 고정 */
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
