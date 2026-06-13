@@ -3514,7 +3514,7 @@ export const renderNewYearPageContent = (page, ctx) => {
                 <div className="space-y-1">
                   <div className="flex justify-between">
                     <span>에너지 융합 조화도</span>
-                    <span className="text-emerald-700">${harmonyVal}%</span>
+                    <span className="text-emerald-700">{harmonyVal}%</span>
                   </div>
                   <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
                     <div className="h-full bg-emerald-600 rounded-full" style={{ width: `${harmonyVal}%` }} />
@@ -3523,7 +3523,7 @@ export const renderNewYearPageContent = (page, ctx) => {
                 <div className="space-y-1">
                   <div className="flex justify-between">
                     <span>신년 기회 포착률</span>
-                    <span className="text-blue-700">${opportunityVal}%</span>
+                    <span className="text-blue-700">{opportunityVal}%</span>
                   </div>
                   <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
                     <div className="h-full bg-blue-600 rounded-full" style={{ width: `${opportunityVal}%` }} />
@@ -3532,7 +3532,7 @@ export const renderNewYearPageContent = (page, ctx) => {
                 <div className="space-y-1">
                   <div className="flex justify-between">
                     <span>기류 과열 스트레스</span>
-                    <span className="text-red-600">${stressVal}%</span>
+                    <span className="text-red-600">{stressVal}%</span>
                   </div>
                   <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
                     <div className="h-full bg-red-600 rounded-full" style={{ width: `${stressVal}%` }} />
