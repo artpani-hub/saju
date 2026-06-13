@@ -2437,9 +2437,12 @@ export const renderNewYearPageContent = (page, ctx) => {
                <p>
                  {dynamicAdvice}
                </p>
-              <p className="bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 text-amber-900 font-semibold text-center leading-relaxed">
-                "우매한 자는 닥쳐올 길흉에 일희일비하지만, 지혜로운 자는 다가올 흐름을 미리 파악해 스스로의 기운을 튜닝한다(趨吉避凶)."
-              </p>
+              <div className="bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 text-center space-y-1">
+                <span className="text-[10px] text-[#A3845B] font-bold block tracking-wider">— 명언 (名言) —</span>
+                <p className="text-amber-900 font-semibold leading-relaxed">
+                  "우매한 자는 닥쳐올 길흉에 일희일비하지만, 지혜로운 자는 다가올 흐름을 미리 파악해 스스로의 기운을 튜닝한다(趨吉避凶)."
+                </p>
+              </div>
               <p>
                 신년의 강렬한 화(火)의 팽창력은 우리에게 활발한 대외 성장의 기회를 주는 동시에 감정 과열과 충동이라는 어두운 그림자를 함께 던집니다. 올 한 해 수많은 선택의 갈림길에서 본 보감을 항상 곁에 두시고, 삶의 든든한 등대이자 최고의 전략적 플레이북으로 삼아 대길한 성취를 이루시길 간절히 기원합니다.
               </p>
