@@ -2359,36 +2359,56 @@ export const renderNewYearPageContent = (page, ctx) => {
         else if (mVal >= 9 && mVal <= 11) seasonText = "풍요로운 결실을 수확하고 준비하는 가을";
         else seasonText = "만물을 품고 조용히 갈무리하는 겨울";
 
-        let dynamicAdvice = "";
+        let dynamicAdvice = null;
         if (dayStemEl === "목") {
-          dynamicAdvice = `특히 의뢰인 ${name}님은 싱그러운 목(木) 기운을 본질로 품고 태어나셨습니다. 2026년 병오년의 타오르는 불꽃(火)은 목생화(木生火)의 흐름으로 귀하의 에너지를 밖으로 넓게 팽창시키고 재능을 펼치게 만듭니다. 그러나 나무의 수분이 메말라 번아웃되기 쉬운 기류를 내재하고 있으므로, 올 한 해는 무조건적인 돌진보다 내면의 수기를 수혈하는 현명한 완급 조절이 최고의 신년 등대가 될 것입니다.`;
+          dynamicAdvice = (
+            <span>
+              특히 의뢰인 <span style={{ color: "#8A6F4C" }} className="font-semibold">{name}</span>님은 <span style={{ color: "#8A6F4C" }} className="font-semibold">싱그러운 목(木) 기운</span>을 본질로 품고 태어나셨습니다. 2026년 병오년의 타오르는 불꽃(火)은 <span style={{ color: "#8A6F4C" }} className="font-semibold">목생화(木生火)의 흐름</span>으로 귀하의 에너지를 밖으로 넓게 팽창시키고 재능을 펼치게 만듭니다. 그러나 나무의 수분이 메말라 번아웃되기 쉬운 기류를 내재하고 있으므로, 올 한 해는 무조건적인 돌진보다 <span style={{ color: "#8A6F4C" }} className="font-semibold">내면의 수기를 수혈하는 현명한 완급 조절</span>이 최고의 신년 등대가 될 것입니다.
+            </span>
+          );
         } else if (dayStemEl === "화") {
-          dynamicAdvice = `특히 의뢰인 ${name}님은 정열적인 화(火) 기운을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(火)은 내 사주와 세운이 불로 하나되어 타오르는 비겁(比劫)의 강한 에너지를 만듭니다. 주체성과 독립심이 극대화되어 판을 주도적으로 흔드는 힘이 있으나, 불필요한 고집이나 과열된 자존심으로 인해 재물 누수나 대인 마찰을 부를 수 있으니, 올 한 해는 차분하게 불꽃을 제어하는 보수적 방어와 신중함이 최고의 신년 등대가 될 것입니다.`;
+          dynamicAdvice = (
+            <span>
+              특히 의뢰인 <span style={{ color: "#8A6F4C" }} className="font-semibold">{name}</span>님은 <span style={{ color: "#8A6F4C" }} className="font-semibold">정열적인 화(火) 기운</span>을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(火)은 내 사주와 세운이 불로 하나되어 타오르는 <span style={{ color: "#8A6F4C" }} className="font-semibold">비겁(比劫)의 강한 에너지</span>를 만듭니다. 주체성과 독립심이 극대화되어 판을 주도적으로 흔드는 힘이 있으나, 불필요한 고집이나 과열된 자존심으로 인해 재물 누수나 대인 마찰을 부를 수 있으니, 올 한 해는 <span style={{ color: "#8A6F4C" }} className="font-semibold">차분하게 불꽃을 제어하는 보수적 방어와 신중함</span>이 최고의 신년 등대가 될 것입니다.
+            </span>
+          );
         } else if (dayStemEl === "토") {
-          dynamicAdvice = `특히 의뢰인 ${name}님은 묵직하고 따뜻한 토(土) 기운을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(火)은 흙을 든든하게 생조해주는 화생토(火生土)의 인성(印星) 에너지를 만듭니다. 귀인과 문서 계약의 길함이 크게 돋보여 새로운 기반을 탄탄히 다지기에 적합한 조건입니다. 다만, 들어오는 에너지가 무거워 생각에만 잠겨 실천을 미루는 '생각의 감옥'에 갇힐 위험이 있으니, 올 한 해는 맑은 직관과 과감한 기동력이 최고의 신년 등대가 될 것입니다.`;
+          dynamicAdvice = (
+            <span>
+              특히 의뢰인 <span style={{ color: "#8A6F4C" }} className="font-semibold">{name}</span>님은 <span style={{ color: "#8A6F4C" }} className="font-semibold">묵직하고 따뜻한 토(土) 기운</span>을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(火)은 흙을 든든하게 생조해주는 <span style={{ color: "#8A6F4C" }} className="font-semibold">화생토(火生土)의 인성(印星) 에너지</span>를 만듭니다. 귀인과 문서 계약의 길함이 크게 돋보여 새로운 기반을 탄탄히 다지기에 적합한 조건입니다. 다만, 들어오는 에너지가 무거워 생각에만 잠겨 실천을 미루는 '생각의 감옥'에 갇힐 위험이 있으니, 올 한 해는 <span style={{ color: "#8A6F4C" }} className="font-semibold">맑은 직관과 과감한 기동력</span>이 최고의 신년 등대가 될 것입니다.
+            </span>
+          );
         } else if (dayStemEl === "금") {
-          dynamicAdvice = `특히 의뢰인 ${name}님은 결단력 있는 금(金) 기운을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(火)은 단단한 원석이나 무쇠를 제련하는 화극금(화극금)의 관성(官星) 기류를 이끌어냅니다. 직장에서의 승진, 명예의 획득, 큰 책임감이 주어져 한 단계 높은 사회적 위상을 다질 수 있는 시험대에 서게 됩니다. 다만, 과도한 책임 지움과 제련 스트레스로 인해 신체가 쉽게 건조해질 수 있으니, 올 한 해는 유연한 마음가짐과 규칙적인 휴식이 최고의 신년 등대가 될 것입니다.`;
+          dynamicAdvice = (
+            <span>
+              특히 의뢰인 <span style={{ color: "#8A6F4C" }} className="font-semibold">{name}</span>님은 <span style={{ color: "#8A6F4C" }} className="font-semibold">결단력 있는 금(金) 기운</span>을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(火)은 단단한 원석이나 무쇠를 제련하는 <span style={{ color: "#8A6F4C" }} className="font-semibold">화극금(화극금)의 관성(官星) 기류</span>를 이끌어냅니다. 직장에서의 승진, 명예의 획득, 큰 책임감이 주어져 한 단계 높은 사회적 위상을 다질 수 있는 시험대에 서게 됩니다. 다만, 과도한 책임 지움과 제련 스트레스로 인해 신체가 쉽게 건조해질 수 있으니, 올 한 해는 <span style={{ color: "#8A6F4C" }} className="font-semibold">유연한 마음가짐과 규칙적인 휴식</span>이 최고의 신년 등대가 될 것입니다.
+            </span>
+          );
         } else {
-          dynamicAdvice = `특히 의뢰인 ${name}님은 지혜로운 수(수) 기운을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(화)은 물이 불을 통제하며 성과를 거두는 수극화(수극화)의 재성(재성) 활력을 불어넣습니다. 막혔던 자금 흐름이 풀리고 경제적 실리를 확실하게 거둘 수 있는 역동적인 재물 기회가 주어지게 됩니다. 다만, 조급하게 서둘러 분수에 넘치는 투자를 감행하면 불길에 물이 모두 증발하여 오히려 패를 볼 수 있으니, 올 한 해는 이성적이고 차분한 자산 수성이 최고의 신년 등대가 될 것입니다.`;
+          dynamicAdvice = (
+            <span>
+              특히 의뢰인 <span style={{ color: "#8A6F4C" }} className="font-semibold">{name}</span>님은 <span style={{ color: "#8A6F4C" }} className="font-semibold">지혜로운 수(수) 기운</span>을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(화)은 물이 불을 통제하며 성과를 거두는 <span style={{ color: "#8A6F4C" }} className="font-semibold">수극화(수극화)의 재성(재성) 활력</span>을 불어넣습니다. 막혔던 자금 흐름이 풀리고 경제적 실리를 확실하게 거둘 수 있는 역동적인 재물 기회가 주어지게 됩니다. 다만, 조급하게 서둘러 분수에 넘치는 투자를 감행하면 불길에 물이 모두 증발하여 오히려 패를 볼 수 있으니, 올 한 해는 <span style={{ color: "#8A6F4C" }} className="font-semibold">이성적이고 차분한 자산 수성</span>이 최고의 신년 등대가 될 것입니다.
+            </span>
+          );
         }
-
-        return (
-          <div className="space-y-6 py-4">
-            <div className="text-center space-y-2 mb-8">
-              <span className="text-xs text-[#A3845B] font-bold block">명리 서막 (命理 序幕)</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">새해를 맞이하는 역학적 지혜와 혜안의 등대</h2>
-              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
-            </div>
-            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
-              <p>
-                동양 명리학의 근본 원리인 <strong>천인상응(天人相應: 하늘과 인간은 긴밀하게 소통하며 반응한다)</strong> 사상에 따르면, 1년의 운(運)이란 미리 정해진 고정된 시나리오가 아니라 매년 우리에게 새롭게 밀려오는 거대한 계절적 날씨와 기후에 비유됩니다. 폭풍우가 치는 한겨울에 억지로 봄 씨앗을 뿌리려 하거나, 땡볕이 내리쬐는 극심한 가뭄에 물을 주지 않고 방치한다면, 아무리 훌륭한 씨앗이라 한들 결실을 맺지 못하고 썩어버리는 자연의 이치와도 같습니다.
-              </p>
-              <p>
-                의뢰인 <strong>{name}</strong>님은 <strong>{seasonText}철</strong>에 태어나 사주 원국의 독자적인 우주 에너지를 품으셨기에, 올해 병오년의 불꽃 날씨와 만나는 양상이 매우 입체적이고 다각적입니다.
-              </p>
-              <p>
-                {dynamicAdvice}
-              </p>
+ 
+         return (
+           <div className="space-y-6 py-4">
+             <div className="text-center space-y-2 mb-8">
+               <span className="text-xs text-[#A3845B] font-bold block">명리 서막 (命理 序幕)</span>
+               <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">새해를 맞이하는 역학적 지혜와 혜안의 등대</h2>
+               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+             </div>
+             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-4 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+               <p>
+                 동양 명리학의 근본 원리인 <strong>천인상응(天人相應: 하늘과 인간은 긴밀하게 소통하며 반응한다)</strong> 사상에 따르면, 1년의 운(運)이란 미리 정해진 고정된 시나리오가 아니라 매년 우리에게 새롭게 밀려오는 거대한 계절적 날씨와 기후에 비유됩니다. 폭풍우가 치는 한겨울에 억지로 봄 씨앗을 뿌리려 하거나, 땡볕이 내리쬐는 극심한 가뭄에 물을 주지 않고 방치한다면, 아무리 훌륭한 씨앗이라 한들 결실을 맺지 못하고 썩어버리는 자연의 이치와도 같습니다.
+               </p>
+               <p>
+                 의뢰인 <strong style={{ color: "#8A6F4C" }} className="font-semibold">{name}</strong>님은 <strong style={{ color: "#8A6F4C" }} className="font-semibold">{seasonText}철</strong>에 태어나 사주 원국의 독자적인 우주 에너지를 품으셨기에, 올해 병오년의 불꽃 날씨와 만나는 양상이 매우 입체적이고 다각적입니다.
+               </p>
+               <p>
+                 {dynamicAdvice}
+               </p>
               <p className="bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60 text-amber-900 font-semibold text-center leading-relaxed">
                 "우매한 자는 닥쳐올 길흉에 일희일비하지만, 지혜로운 자는 다가올 흐름을 미리 파악해 스스로의 기운을 튜닝한다(趨吉避凶)."
               </p>
