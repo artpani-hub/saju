@@ -27,16 +27,16 @@ const getElementColor = (el) => {
 
         if (waterCount <= 1) {
           safeRatio = 70; incomeRatio = 20; growthRatio = 10;
-          portfolioAnalysis = `의뢰인 ${name}님의 사주에는 흘러가는 유연성과 자산 수성을 상징하는 수(水) 기운이 부족(${waterCount}개)합니다. 따라서 2026년에는 무리하게 투자금을 넓히기보다는 원금을 굳건히 지키는 안전성 보존 자산(예적금)을 70% 수준으로 크게 상향하는 자산 수성 전략이 최우선입니다.`;
+          portfolioAnalysis = `${name}님의 사주에는 흘러가는 유연성과 자산 수성을 상징하는 수(水) 기운이 부족(${waterCount}개)합니다. 따라서 2026년에는 무리하게 투자금을 넓히기보다는 원금을 굳건히 지키는 안전성 보존 자산(예적금)을 70% 수준으로 크게 상향하는 자산 수성 전략이 최우선입니다.`;
         } else if (woodCount <= 1) {
           safeRatio = 50; incomeRatio = 30; growthRatio = 20;
-          portfolioAnalysis = `의뢰인 ${name}님의 사주는 기획력과 결단을 상징하는 목(木) 기운이 약한 편(${woodCount}개)입니다. 지나치게 보수적인 성향으로 인플레이션을 방어하지 못할 위험이 있으니, 글로벌 지수 추종 ETF나 대형 우량 가치주 비중을 20%까지 늘려 성장의 끈을 놓지 않는 것이 중요합니다.`;
+          portfolioAnalysis = `${name}님의 사주는 기획력과 결단을 상징하는 목(木) 기운이 약한 편(${woodCount}개)입니다. 지나치게 보수적인 성향으로 인플레이션을 방어하지 못할 위험이 있으니, 글로벌 지수 추종 ETF나 대형 우량 가치주 비중을 20%까지 늘려 성장의 끈을 놓지 않는 것이 중요합니다.`;
         } else if (fireCount >= 3) {
           safeRatio = 65; incomeRatio = 25; growthRatio = 10;
-          portfolioAnalysis = `의뢰인 ${name}님의 사주에는 화(火) 기운이 과다(${fireCount}개)하여 일시적인 감정이나 충동에 따른 투기성 자산 배분 위험이 도사리고 있습니다. 안전자산 비중을 65%로 가져가며, 월배당 채권이나 리츠를 25% 확보해 원천적으로 현금이 묶이도록 통제하는 방어막을 구축하십시오.`;
+          portfolioAnalysis = `${name}님의 사주에는 화(火) 기운이 과다(${fireCount}개)하여 일시적인 감정이나 충동에 따른 투기성 자산 배분 위험이 도사리고 있습니다. 안전자산 비중을 65%로 가져가며, 월배당 채권이나 리츠를 25% 확보해 원천적으로 현금이 묶이도록 통제하는 방어막을 구축하십시오.`;
         } else {
           safeRatio = 60; incomeRatio = 30; growthRatio = 10;
-          portfolioAnalysis = `의뢰인 ${name}님의 오행 밸런스를 고려한 자산 방어형 전략입니다. 2026년 병오년 세운의 열기가 사주 전체를 자극하는 시기이므로, 안전자산 60%를 기본 뼈대로 잡고 배당 채권 30%, 우량 성장 가치주 10%로 유연한 현금 흐름을 창출하는 정석 자산 배분을 추천합니다.`;
+          portfolioAnalysis = `${name}님의 오행 밸런스를 고려한 자산 방어형 전략입니다. 2026년 병오년 세운의 열기가 사주 전체를 자극하는 시기이므로, 안전자산 60%를 기본 뼈대로 잡고 배당 채권 30%, 우량 성장 가치주 10%로 유연한 현금 흐름을 창출하는 정석 자산 배분을 추천합니다.`;
         }
 
         return wrapLock(
@@ -155,7 +155,7 @@ const getElementColor = (el) => {
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p className="text-justify font-light text-gray-600">
-                2026년 병오년은 세운의 강렬한 화(화) 기운이 의뢰인 {name}님의 관성(관성: 직장 및 조직 명예)과 인성(인성: 문서 및 계약) 기류를 격렬하게 뒤흔드는 변화의 해입니다. 상반기의 성급한 판단이나 충동적인 사직은 자칫 독이 될 수 있으나, 가을철 금(금) 기운의 조력이 본격화되는 <strong>골든타임</strong>을 조율해 움직인다면 연봉 상승과 더불어 신분을 한 단계 업그레이드할 수 있는 절호의 기회입니다. 아래의 다차원 역량 기류 및 분기별 타임라인을 고려하여 체계적인 이직/승진 로드맵을 수립하십시오.
+                2026년 병오년은 세운의 강렬한 화(화) 기운이 {name}님의 관성(관성: 직장 및 조직 명예)과 인성(인성: 문서 및 계약) 기류를 격렬하게 뒤흔드는 변화의 해입니다. 상반기의 성급한 판단이나 충동적인 사직은 자칫 독이 될 수 있으나, 가을철 금(금) 기운의 조력이 본격화되는 <strong>골든타임</strong>을 조율해 움직인다면 연봉 상승과 더불어 신분을 한 단계 업그레이드할 수 있는 절호의 기회입니다. 아래의 다차원 역량 기류 및 분기별 타임라인을 고려하여 체계적인 이직/승진 로드맵을 수립하십시오.
               </p>
 
               {/* 시각화: 커리어 역량 지표 게이지 */}
@@ -266,7 +266,7 @@ const getElementColor = (el) => {
           "토": { lucky: "뱀띠, 말띠, 닭띠", bad: "토끼띠", desc: "화생토의 에너지 순환과 금의 결실로 나의 문서 자산을 수호하고 신용도를 올려주는 귀인입니다." },
           "금": { lucky: "닭띠, 뱀띠, 용띠", bad: "범띠", desc: "뜨거운 제련을 견디도록 금의 뿌리를 지탱해주고 신년 문서 계약 체결 시 도장을 보증할 든든한 조력자입니다." },
           "수": { lucky: "원숭이띠, 쥐띠, 돼지띠", bad: "말띠 (수화 상쟁)", desc: "금생수로 물줄기의 근원을 살리고 자금 유통과 투자 협업 시 등대와 같은 현실 조언을 건넵니다." }
-        }[dayStemEl] || { lucky: "말띠, 양띠, 개띠", bad: "쥐띠", desc: "의뢰인님의 명조 기류를 조율하고 일시적인 대인관계 갈등을 지탱해줄 최상의 궁합 띠입니다." };
+        }[dayStemEl] || { lucky: "말띠, 양띠, 개띠", bad: "쥐띠", desc: "귀하의 명조 기류를 조율하고 일시적인 대인관계 갈등을 지탱해줄 최상의 궁합 띠입니다." };
 
         return wrapLock(
           <div className="space-y-6 py-4">
@@ -541,7 +541,7 @@ const getElementColor = (el) => {
           recommendAccDesc = "스틸/실버 주얼리나 깔끔한 실버 안경테를 활용하여 넘치는 화기를 차갑게 억제하는 금(金) 기운을 튜닝하십시오. 구설을 전면 차단하고 대인관계의 격을 높여줍니다.";
         } else if (dayStemEl === "토" || dayStemEl === "土") {
           recommendLook = "👔 웜톤 베이지 & 카멜 레이어드 룩";
-          recommendLookDesc = "안정감과 신뢰를 풍기는 옐로우 푸드 계열의 브라운, 베이지, 크림 톤 의상을 조화롭게 코디하십시오. 의뢰인님의 듬직한 중용과 포용의 아우라를 크게 상승시킵니다.";
+          recommendLookDesc = "안정감과 신뢰를 풍기는 옐로우 푸드 계열의 브라운, 베이지, 크림 톤 의상을 조화롭게 코디하십시오. 귀하의 듬직한 중용과 포용의 아우라를 크게 상승시킵니다.";
           recommendAcc = "💍 천연 원석 펜던트 & 가죽 주얼리";
           recommendAccDesc = "천연 마노나 호안석 등 황토색 원석 펜던트, 혹은 브라운 가죽 소품을 장착하여 사주 대지의 튼튼함을 강화하십시오. 계약 협상이나 중요한 도장 날인 시 운의 안정감을 부여합니다.";
         } else if (dayStemEl === "금" || dayStemEl === "金") {
@@ -565,7 +565,7 @@ const getElementColor = (el) => {
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p className="text-justify font-light text-gray-600">
-                옷차림과 컬러 배치는 가장 손쉽고 즉각적으로 내 주변의 개운 에너지를 자극하는 행동 풍수 실천법입니다. 의뢰인님의 사주 오행 맞춤형 럭키 코디 제안입니다.
+                옷차림과 컬러 배치는 가장 손쉽고 즉각적으로 내 주변의 개운 에너지를 자극하는 행동 풍수 실천법입니다. 귀하의 사주 오행 맞춤형 럭키 코디 제안입니다.
               </p>
 
               {/* 스타일 팁 카드 */}
@@ -758,7 +758,7 @@ const getElementColor = (el) => {
 
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p className="text-justify font-light text-gray-600">
-                매일 입으로 들어가는 음식의 오행 성질은 오장육부의 열과 한기를 조율하는 기초 한의학적 개운 처방입니다. 의뢰인 <strong>{name}</strong>님의 사주 일간 오행 성향을 분석한 결과, 아래와 같이 맞춤형 약선 섭생 처방이 제공됩니다.
+                매일 입으로 들어가는 음식의 오행 성질은 오장육부의 열과 한기를 조율하는 기초 한의학적 개운 처방입니다. <strong>{name}</strong>님의 사주 일간 오행 성향을 분석한 결과, 아래와 같이 맞춤형 약선 섭생 처방이 제공됩니다.
               </p>
 
               {/* 시각화 1: 개인 사주 맞춤 체질 진단 */}
@@ -847,7 +847,7 @@ const getPersonalizedSolution = (name, text, category, dayStemEl) => {
   let actionPlan = "";
 
   if (category === "business" || category === "startup" || category === "trade") {
-    analysis = `의뢰인 ${name}님의 신년 사업 및 창업 안건["${cleanedText}"]에 대한 정밀 비책입니다. 병오년의 타오르는 화(火) 기운 속에서 사업을 전개할 때는 내 사주의 불 기운과 물 기운의 균형이 가장 큰 성패를 가릅니다. `;
+    analysis = `${name}님의 신년 사업 및 창업 안건["${cleanedText}"]에 대한 정밀 비책입니다. 병오년의 타오르는 화(火) 기운 속에서 사업을 전개할 때는 내 사주의 불 기운과 물 기운의 균형이 가장 큰 성패를 가릅니다. `;
     if (el === "목" || el === "木") {
       analysis += "귀하의 목(木) 기운은 목생화로 에너지를 과도하게 빼앗기기 쉬운 흐름에 처해 있습니다. 따라서 무리한 사업 확장이나 공격적인 설비 투자는 자금 갈증을 부르니 내실을 기하는 자산 수비가 먼저입니다.";
       timing = "금(金)의 결실 에너지가 조력해 흐름을 잡아주는 <span style=\"color: #8A6F4C; font-weight: bold;\">음력 7~9월 가을철</span>이 사업의 숨통이 트이는 골든타임입니다.";
@@ -870,7 +870,7 @@ const getPersonalizedSolution = (name, text, category, dayStemEl) => {
       actionPlan = `1. 카운터에 검은 가죽 지갑(水)이나 어두운 톤의 포인트를 주어 재정적 안착을 도우십시오.\n2. 미팅 시 깔끔한 화이트(金) 상의를 조화시켜 금생수로 내 지혜를 든든히 보완해 주십시오.\n3. 매장 북쪽(北)을 깨끗이 정돈하고 정수기나 물병을 그 방향에 두십시오.`;
     }
   } else if (category === "facility") {
-    analysis = `의뢰인 ${name}님의 설비투자 및 사업장 확장 안건["${cleanedText}"]에 대한 처방입니다. 장비 구입이나 대형 리모델링은 사주의 <span style=\"color: #8A6F4C; font-weight: bold;\">문서운(인성)과 장비 계약운(관성)</span>의 흐름이 편안할 때 진행해야 고장이나 하자, 금융 비용의 폭증을 예방할 수 있습니다. `;
+    analysis = `${name}님의 설비투자 및 사업장 확장 안건["${cleanedText}"]에 대한 처방입니다. 장비 구입이나 대형 리모델링은 사주의 <span style=\"color: #8A6F4C; font-weight: bold;\">문서운(인성)과 장비 계약운(관성)</span>의 흐름이 편안할 때 진행해야 고장이나 하자, 금융 비용의 폭증을 예방할 수 있습니다. `;
     if (el === "목" || el === "木") {
       analysis += "목(木) 일간인 귀하의 경우 세운의 화 기운에 기운이 지나치게 방출되어 성급한 확장 결정을 내릴 리스크가 큽니다. 한 템포 조율이 필요합니다.";
       timing = "문서 기운이 탄탄해지고 계약의 길함이 도래하는 <span style=\"color: #8A6F4C; font-weight: bold;\">음력 9월~10월</span>이 최적의 골든타임입니다.";
@@ -893,7 +893,7 @@ const getPersonalizedSolution = (name, text, category, dayStemEl) => {
       actionPlan = `1. 계약서 사인 당일 흰색이나 실버(金) 톤 의상을 입어 금생수의 지혜를 발휘하십시오.\n2. 푸른 빛이 도는 잉크 펜으로 서명해 물의 기류를 자연스레 유통하십시오.\n3. 확장 대상 공간의 북쪽(北) 모서리에 정갈한 유리 물병을 두어 탁기를 정화하십시오.`;
     }
   } else if (category === "career") {
-    analysis = `의뢰인 ${name}님께서 고민 중이신 직장 생활 및 이직 안건["${cleanedText}"]에 대한 사주 매칭 정밀 처방입니다. `;
+    analysis = `${name}님께서 고민 중이신 직장 생활 및 이직 안건["${cleanedText}"]에 대한 사주 매칭 정밀 처방입니다. `;
     if (el === "목" || el === "木") {
       analysis += "목(木) 일간인 귀하는 세운의 강한 화기 탓에 현 직장에서 자존심 상하는 일로 홧김에 사표를 던질 이직 충동이 대단히 강합니다. 충동적 사직은 필히 삼가십시오.";
       timing = "직장운(관성)과 문서합격운이 편안하게 동행해 안정적인 문을 열어줄 <span style=\"color: #8A6F4C; font-weight: bold;\">음력 8월(酉월) 하반기 이후</span>가 최고의 골든타임입니다.";
@@ -916,7 +916,7 @@ const getPersonalizedSolution = (name, text, category, dayStemEl) => {
       actionPlan = `1. 사내 메신저나 이메일 작성 시 반드시 감정을 뺀 명문화된 서류 형태로 보존하십시오.\n2. 면접 날 흰색 상의를 입어 금생수로 본인의 직관적 판단과 순발력을 최고조로 올리십시오.\n3. 서쪽(西)이나 북쪽(北) 방향의 기업 리서치를 꼼꼼히 하시면 대길한 소식이 닿습니다.`;
     }
   } else if (category === "love") {
-    analysis = `의뢰인 ${name}님께서 겪고 계신 인연 및 연애/관계 갈등["${cleanedText}"]에 대한 명리학적 솔루션입니다. `;
+    analysis = `${name}님께서 겪고 계신 인연 및 연애/관계 갈등["${cleanedText}"]에 대한 명리학적 솔루션입니다. `;
     if (el === "목" || el === "木") {
       analysis += "목(木) 일간인 귀하는 자존심이 쉽게 곤두서고 사소한 의견 차이에도 '내가 맞고 네가 틀리다'는 논쟁을 벌이기 쉽습니다. 상대에게 정서적 숨구멍을 열어주어야 합니다.";
       timing = "애정 관계의 묵은 긴장이 풀리고 편안한 소통이 다시 흐르는 시기는 <span style=\"color: #8A6F4C; font-weight: bold;\">음력 10월~11월(수 기운의 달)</span>입니다.";
@@ -939,7 +939,7 @@ const getPersonalizedSolution = (name, text, category, dayStemEl) => {
       actionPlan = `1. 상대를 다그치며 실시간 해명을 요구하지 마시고, 혼자만의 온열 족욕이나 명상으로 마음을 진정시키십시오.\n2. 만남 시 화사한 화이트(金) 톤 코디를 통해 나를 소생시키고 상대에게 따스하고 유연한 매력을 비추십시오.\n3. 조용히 커피를 즐길 수 있는 재즈 음악이 흐르는 한적한 카페 데이트를 추천합니다.`;
     }
   } else if (category === "wealth") {
-    analysis = `의뢰인 ${name}님의 재정적 안건 및 자산 수성["${cleanedText}"]에 대한 정밀 비책입니다. `;
+    analysis = `${name}님의 재정적 안건 및 자산 수성["${cleanedText}"]에 대한 정밀 비책입니다. `;
     if (el === "목" || el === "木") {
       analysis += "목(木) 일간인 귀하는 세운의 화기에 금전 에너지가 소모되어 버는 수입보다 새어 나가는 누수 경로가 극심한 상태입니다. 귀가 얇아져 투기성 종목에 손을 대기 쉬우니 주의하십시오.";
       timing = "금(金)의 결실 에너지가 나를 보좌해 줄 <span style=\"color: #8A6F4C; font-weight: bold;\">가을철(음력 7~9월)</span>이 금전 회수 및 자산 방어에 최적의 시기입니다.";
@@ -962,7 +962,7 @@ const getPersonalizedSolution = (name, text, category, dayStemEl) => {
       actionPlan = `1. 고정 자산 비율을 60% 이상 예적금으로 안정화하고 충동적인 추가 불타기 투자는 영원히 봉인하십시오.\n2. 네이비/블루(水) 포인트 소품을 장착해 감정적 재테크 뇌동매매를 차분하게 가라앉히십시오.\n3. 거래 날인 당일에는 따뜻한 온수 족욕을 15분 거쳐 이성을 최고로 올린 뒤 최종 송금하십시오.`;
     }
   } else {
-    analysis = `의뢰인 ${name}님께서 기재해주신 소망 및 고민 안건["${cleanedText}"]에 대한 혜안당 정밀 처방입니다. `;
+    analysis = `${name}님께서 기재해주신 소망 및 고민 안건["${cleanedText}"]에 대한 혜안당 정밀 처방입니다. `;
     if (el === "목" || el === "木") {
       analysis += "목(木) 일간 특유의 위로 뻗어 나가는 강한 의지가 무리한 조급함이나 번아웃과 충돌해 심적인 피로감이 쌓인 형국입니다.";
       timing = "나를 편안하게 해 줄 목(木)과 수(水)의 조화 기운이 본격적으로 들어오는 <span style=\"color: #8A6F4C; font-weight: bold;\">음력 9월~10월 가을철</span>에 비로소 숨통이 트입니다.";
@@ -1145,7 +1145,7 @@ export const renderNewYearPageContent = (page, ctx) => {
             <div className="border border-[#E2DDD5] bg-white rounded-lg p-6 max-w-sm mx-auto space-y-4 text-xs shadow-sm text-left">
               <div className="grid grid-cols-2 gap-4 border-b border-[#E2DDD5]/50 pb-3">
                 <div>
-                  <span className="text-[#A3845B] font-bold block mb-1">의뢰인 성명</span>
+                  <span className="text-[#A3845B] font-bold block mb-1">성명</span>
                   <span className="font-semibold text-gray-800 text-sm">{name} 님 ({gender})</span>
                 </div>
                 <div>
@@ -1202,7 +1202,7 @@ export const renderNewYearPageContent = (page, ctx) => {
                 이지함 선생은 평생 동안 마포 강변의 흙집(土亭)에 머물며 스스로 가난한 삶을 자처하셨고, 길거리의 걸인들과 백성들의 고난을 직접 위로하셨습니다. 그분이 음양오행과 3대 상수(象數) 조합을 이용해 한 해의 길흉을 세밀하게 풀어낸 것은, 단순한 점술을 넘어 닥쳐올 고난을 미리 예방하고 지혜롭게 인생을 경영하고자 한 따뜻한 애민(愛民)정신의 발로였습니다.
               </p>
               <p>
-                일반적인 주역이 64괘를 기반으로 하는 반면, 토정비결은 일 년의 흐름에 최적화하여 <strong>총 144가지의 세밀한 괘(卦)</strong>로 인생의 사계절을 풀어냅니다. 의뢰인 <strong>{name}</strong>님의 생년월일시와 주역의 수학적 상수 계산을 결합하여, 올해 병오년의 길흉화복을 다스릴 전용 비방을 수립하였습니다.
+                일반적인 주역이 64괘를 기반으로 하는 반면, 토정비결은 일 년의 흐름에 최적화하여 <strong>총 144가지의 세밀한 괘(卦)</strong>로 인생의 사계절을 풀어냅니다. <strong>{name}</strong>님의 생년월일시와 주역의 수학적 상수 계산을 결합하여, 올해 병오년의 길흉화복을 다스릴 전용 비방을 수립하였습니다.
               </p>
             </div>
 
@@ -1278,7 +1278,7 @@ export const renderNewYearPageContent = (page, ctx) => {
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p>
-                의뢰인 <strong>{name}</strong>님이 태어난 우주적 순간의 여덟 글자(사주 원국) 배치입니다. 이는 의뢰인의 정신적 기틀이자 평생 변하지 않는 유전적 성향의 원형을 상징합니다.
+                <strong>{name}</strong>님이 태어난 우주적 순간의 여덟 글자(사주 원국) 배치입니다. 이는 정신적 기틀이자 평생 변하지 않는 유전적 성향의 원형을 상징합니다.
               </p>
               <div className="grid grid-cols-4 gap-2 text-center font-bold">
                 <div className="bg-[#FAF7F0] p-2.5 rounded border border-[#E2DDD5]/50">
@@ -1377,7 +1377,7 @@ export const renderNewYearPageContent = (page, ctx) => {
                 </div>
               </div>
               <p>
-                의뢰인 {name}님의 타고난 일간 오행과 대운 지지의 상생 관계는 현재 안정기에 놓여 있습니다. 2026년 병오년의 맹렬한 화(火) 기류는 이 안정적인 도로 위에 타오르는 태양처럼 작용합니다. 사주 원국에 목(木)이 있다면 불의 세기가 증폭되어 성급함이 앞서기 쉽고, 수(水)가 있다면 뜨거운 열기와 부딪쳐 일시적인 변화와 마찰이 유도될 수 있습니다. 대운의 순탄한 토대를 믿고 세운의 과열을 지혜롭게 제어하는 수성이 최선의 길입니다.
+                {name}님의 타고난 일간 오행과 대운 지지의 상생 관계는 현재 안정기에 놓여 있습니다. 2026년 병오년의 맹렬한 화(火) 기류는 이 안정적인 도로 위에 타오르는 태양처럼 작용합니다. 사주 원국에 목(木)이 있다면 불의 세기가 증폭되어 성급함이 앞서기 쉽고, 수(水)가 있다면 뜨거운 열기와 부딪쳐 일시적인 변화와 마찰이 유도될 수 있습니다. 대운의 순탄한 토대를 믿고 세운의 과열을 지혜롭게 제어하는 수성이 최선의 길입니다.
               </p>
             </div>
 
@@ -1463,9 +1463,9 @@ export const renderNewYearPageContent = (page, ctx) => {
               </p>
               
               <div className="bg-[#FAF8F5] border border-[#E2DDD5]/60 rounded-xl p-4 space-y-3">
-                <span className="font-bold text-xs text-[#8A6F4C] block">⚖️ 일간 오행별 병오년 세운 비방 (의뢰인 명조 맞춤)</span>
+                <span className="font-bold text-xs text-[#8A6F4C] block">⚖️ 일간 오행별 병오년 세운 비방 (명조 맞춤)</span>
                 <p className="text-[10px] text-gray-700 font-light leading-relaxed">
-                  의뢰인 <strong>{name}</strong>님의 대표 오행은 <strong>{dayStemEl}(日干)</strong> 기운입니다.<br />
+                  <strong>{name}</strong>님의 대표 오행은 <strong>{dayStemEl}(日干)</strong> 기운입니다.<br />
                   {targetAdvice}
                 </p>
               </div>
@@ -1711,7 +1711,7 @@ export const renderNewYearPageContent = (page, ctx) => {
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p>
-                <strong>솔로 의뢰인:</strong> 올해 하반기(음력 8월~10월)에 침착하고 지적인 이성을 소개받을 수 있는 강한 인연운이 들어옵니다. 예술이나 공부 모임 등 차분한 공간에서 인연이 시작될 확률이 높습니다.<br />
+                <strong>솔로 운세:</strong> 올해 하반기(음력 8월~10월)에 침착하고 지적인 이성을 소개받을 수 있는 강한 인연운이 들어옵니다. 예술이나 공부 모임 등 차분한 공간에서 인연이 시작될 확률이 높습니다.<br />
                 <strong>커플 및 부부:</strong> 세운의 뜨거운 화기로 인해 사소한 의견 대립이 큰 말다툼으로 번지기 쉽습니다. 특히 한여름에 자존심 대립을 조심해야 합니다.
               </p>
               
@@ -1925,7 +1925,7 @@ export const renderNewYearPageContent = (page, ctx) => {
                 </p>
               </div>
               <p className="text-[9px] text-[#A3845B]/60 font-light border-t border-gray-100 pt-2 text-justify leading-relaxed">
-                * 월간 운세 지수는 이지함 선생의 조언 괘를 바탕으로 의뢰인의 일간 오행과 해당 월의 절기 기류를 매칭한 연산 결과입니다. 지수가 다소 낮더라도 개운 수칙을 이행할 때 부정적 살(煞)을 유연하게 피해 갈 수 있습니다.
+                * 월간 운세 지수는 이지함 선생의 조언 괘를 바탕으로 일간 오행과 해당 월의 절기 기류를 매칭한 연산 결과입니다. 지수가 다소 낮더라도 개운 수칙을 이행할 때 부정적 살(煞)을 유연하게 피해 갈 수 있습니다.
               </p>
             </div>
           </div>
@@ -2459,13 +2459,13 @@ export const renderNewYearPageContent = (page, ctx) => {
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
               <span className="text-xs text-[#A3845B] font-bold block">수호 소품 (吉祥 裝飾)</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">의뢰인을 지켜주는 수호 행운 소품 리스트</h2>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">귀하를 지켜주는 수호 행운 소품 리스트</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
 
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p className="text-justify font-light text-gray-600">
-                일상에서 지니는 소품과 색상은 사주 원국의 부족한 에너지를 채우고 세운의 거친 충극을 완화하는 <strong>가장 즉각적이고 손쉬운 행동 풍수 실천법</strong>입니다. 의뢰인 <strong>{name}</strong>님의 사주 일간인 <strong>'{sajuInfo?.day?.stem}'({dayStemEl}의 기운)</strong>을 보완하여 액운을 막고 신년 운을 틔워주는 맞춤 수호 처방을 제안합니다.
+                일상에서 지니는 소품과 색상은 사주 원국의 부족한 에너지를 채우고 세운의 거친 충극을 완화하는 <strong>가장 즉각적이고 손쉬운 행동 풍수 실천법</strong>입니다. <strong>{name}</strong>님의 사주 일간인 <strong>'{sajuInfo?.day?.stem}'({dayStemEl}의 기운)</strong>을 보완하여 액운을 막고 신년 운을 틔워주는 맞춤 수호 처방을 제안합니다.
               </p>
 
               {/* 시각화 1: 럭키 컬러 칩 팔레트 (Glassmorphism Color Chips) */}
@@ -2767,7 +2767,7 @@ export const renderNewYearPageContent = (page, ctx) => {
 
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p className="text-justify font-light text-gray-600">
-                매일 입으로 섭취하는 약선 음식의 성질은 내부 장기의 한열(寒熱) 밸런스를 바로잡아 질병을 예방하는 가장 현명한 체내 개운법입니다. 의뢰인 <strong>{name}</strong>님의 사주 일간 오행과 올해 기류를 바탕으로 신체의 과열을 다스리는 수호 식단과 차 요법을 제안합니다.
+                매일 입으로 섭취하는 약선 음식의 성질은 내부 장기의 한열(寒熱) 밸런스를 바로잡아 질병을 예방하는 가장 현명한 체내 개운법입니다. <strong>{name}</strong>님의 사주 일간 오행과 올해 기류를 바탕으로 신체의 과열을 다스리는 수호 식단과 차 요법을 제안합니다.
               </p>
 
               {/* 체질 진단 카드 */}
@@ -2844,13 +2844,13 @@ export const renderNewYearPageContent = (page, ctx) => {
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
               <span className="text-xs text-[#A3845B] font-bold block">고민 해결 처방 (苦悶 處方)</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">의뢰인 맞춤형 고민 극복 정밀 솔루션</h2>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">맞춤형 고민 극복 정밀 솔루션</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
 
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p className="text-justify font-light text-gray-600">
-                의뢰인 <strong>{name}</strong>님께서 직접 남겨주신 고민에 대하여, 병오년의 절기적 기류와 명조의 오행 변화를 대입해 도출해 낸 혜안당의 독점적인 명리 극복 솔루션입니다.
+                <strong>{name}</strong>님께서 직접 남겨주신 고민에 대하여, 병오년의 절기적 기류와 명조의 오행 변화를 대입해 도출해 낸 혜안당의 독점적인 명리 극복 솔루션입니다.
               </p>
 
               {/* 고민 정보 헤더 */}
@@ -3154,7 +3154,7 @@ export const renderNewYearPageContent = (page, ctx) => {
               {/* 액자식 길조 수호 조언 */}
               <div className="bg-[#FAF8F5]/80 border border-[#E2DDD5]/70 rounded-xl p-6 shadow-inner text-justify text-xs font-traditional font-light text-gray-700 leading-relaxed space-y-4">
                 <p>
-                  천지합화(天地合火)의 맹렬한 불꽃 기류가 의뢰인 <strong>{name}</strong>님의 인생 앞길을 밝히는 광명의 횃불이 되기를 간절히 기원합니다. 올해의 뜨거운 에너지는 귀하를 지치게 하는 액난을 모두 소멸시키고, 굳건한 금빛 성공의 토양으로 환원될 것입니다.
+                  천지합화(天地合火)의 맹렬한 불꽃 기류가 <strong>{name}</strong>님의 인생 앞길을 밝히는 광명의 횃불이 되기를 간절히 기원합니다. 올해의 뜨거운 에너지는 귀하를 지치게 하는 액난을 모두 소멸시키고, 굳건한 금빛 성공의 토양으로 환원될 것입니다.
                 </p>
                 <p className="font-semibold text-[#8B221E] border-t border-[#E2DDD5]/40 pt-3 text-center">
                   ✨ {name}님을 위한 오행 수호 축원
@@ -3207,7 +3207,7 @@ export const renderNewYearPageContent = (page, ctx) => {
             <div className="border border-[#E2DDD5] bg-[#F9F8F6]/80 rounded-lg p-6 max-w-md mx-auto space-y-4 text-xs shadow-sm">
               <div className="grid grid-cols-2 gap-4 text-left border-b border-[#E2DDD5]/50 pb-3">
                 <div>
-                  <span className="text-[#A3845B] font-bold block mb-1">의뢰인 성명</span>
+                  <span className="text-[#A3845B] font-bold block mb-1">성명</span>
                   <span className="font-semibold text-gray-800 text-sm">{name} 님 ({gender})</span>
                 </div>
                 <div>
@@ -3248,31 +3248,31 @@ export const renderNewYearPageContent = (page, ctx) => {
         if (dayStemEl === "목") {
           dynamicAdvice = (
             <span>
-              특히 의뢰인 <span style={{ color: "#8A6F4C" }} className="font-semibold">{name}</span>님은 <span style={{ color: "#8A6F4C" }} className="font-semibold">싱그러운 목(木) 기운</span>을 본질로 품고 태어나셨습니다. 2026년 병오년의 타오르는 불꽃(火)은 <span style={{ color: "#8A6F4C" }} className="font-semibold">목생화(木生火)의 흐름</span>으로 귀하의 에너지를 밖으로 넓게 팽창시키고 재능을 펼치게 만듭니다. 그러나 나무의 수분이 메말라 번아웃되기 쉬운 기류를 내재하고 있으므로, 올 한 해는 무조건적인 돌진보다 <span style={{ color: "#8A6F4C" }} className="font-semibold">내면의 수기를 수혈하는 현명한 완급 조절</span>이 최고의 신년 등대가 될 것입니다.
+              특히 <span style={{ color: "#8A6F4C" }} className="font-semibold">{name}</span>님은 <span style={{ color: "#8A6F4C" }} className="font-semibold">싱그러운 목(木) 기운</span>을 본질로 품고 태어나셨습니다. 2026년 병오년의 타오르는 불꽃(火)은 <span style={{ color: "#8A6F4C" }} className="font-semibold">목생화(木生火)의 흐름</span>으로 귀하의 에너지를 밖으로 넓게 팽창시키고 재능을 펼치게 만듭니다. 그러나 나무의 수분이 메말라 번아웃되기 쉬운 기류를 내재하고 있으므로, 올 한 해는 무조건적인 돌진보다 <span style={{ color: "#8A6F4C" }} className="font-semibold">내면의 수기를 수혈하는 현명한 완급 조절</span>이 최고의 신년 등대가 될 것입니다.
             </span>
           );
         } else if (dayStemEl === "화") {
           dynamicAdvice = (
             <span>
-              특히 의뢰인 <span style={{ color: "#8A6F4C" }} className="font-semibold">{name}</span>님은 <span style={{ color: "#8A6F4C" }} className="font-semibold">정열적인 화(火) 기운</span>을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(火)은 내 사주와 세운이 불로 하나되어 타오르는 <span style={{ color: "#8A6F4C" }} className="font-semibold">비겁(比劫)의 강한 에너지</span>를 만듭니다. 주체성과 독립심이 극대화되어 판을 주도적으로 흔드는 힘이 있으나, 불필요한 고집이나 과열된 자존심으로 인해 재물 누수나 대인 마찰을 부를 수 있으니, 올 한 해는 <span style={{ color: "#8A6F4C" }} className="font-semibold">차분하게 불꽃을 제어하는 보수적 방어와 신중함</span>이 최고의 신년 등대가 될 것입니다.
+              특히 <span style={{ color: "#8A6F4C" }} className="font-semibold">{name}</span>님은 <span style={{ color: "#8A6F4C" }} className="font-semibold">정열적인 화(火) 기운</span>을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(火)은 내 사주와 세운이 불로 하나되어 타오르는 <span style={{ color: "#8A6F4C" }} className="font-semibold">비겁(比劫)의 강한 에너지</span>를 만듭니다. 주체성과 독립심이 극대화되어 판을 주도적으로 흔드는 힘이 있으나, 불필요한 고집이나 과열된 자존심으로 인해 재물 누수나 대인 마찰을 부를 수 있으니, 올 한 해는 <span style={{ color: "#8A6F4C" }} className="font-semibold">차분하게 불꽃을 제어하는 보수적 방어와 신중함</span>이 최고의 신년 등대가 될 것입니다.
             </span>
           );
         } else if (dayStemEl === "토") {
           dynamicAdvice = (
             <span>
-              특히 의뢰인 <span style={{ color: "#8A6F4C" }} className="font-semibold">{name}</span>님은 <span style={{ color: "#8A6F4C" }} className="font-semibold">묵직하고 따뜻한 토(土) 기운</span>을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(火)은 흙을 든든하게 생조해주는 <span style={{ color: "#8A6F4C" }} className="font-semibold">화생토(火生土)의 인성(印星) 에너지</span>를 만듭니다. 귀인과 문서 계약의 길함이 크게 돋보여 새로운 기반을 탄탄히 다지기에 적합한 조건입니다. 다만, 들어오는 에너지가 무거워 생각에만 잠겨 실천을 미루는 '생각의 감옥'에 갇힐 위험이 있으니, 올 한 해는 <span style={{ color: "#8A6F4C" }} className="font-semibold">맑은 직관과 과감한 기동력</span>이 최고의 신년 등대가 될 것입니다.
+              특히 <span style={{ color: "#8A6F4C" }} className="font-semibold">{name}</span>님은 <span style={{ color: "#8A6F4C" }} className="font-semibold">묵직하고 따뜻한 토(土) 기운</span>을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(火)은 흙을 든든하게 생조해주는 <span style={{ color: "#8A6F4C" }} className="font-semibold">화생토(火生土)의 인성(印星) 에너지</span>를 만듭니다. 귀인과 문서 계약의 길함이 크게 돋보여 새로운 기반을 탄탄히 다지기에 적합한 조건입니다. 다만, 들어오는 에너지가 무거워 생각에만 잠겨 실천을 미루는 '생각의 감옥'에 갇힐 위험이 있으니, 올 한 해는 <span style={{ color: "#8A6F4C" }} className="font-semibold">맑은 직관과 과감한 기동력</span>이 최고의 신년 등대가 될 것입니다.
             </span>
           );
         } else if (dayStemEl === "금") {
           dynamicAdvice = (
             <span>
-              특히 의뢰인 <span style={{ color: "#8A6F4C" }} className="font-semibold">{name}</span>님은 <span style={{ color: "#8A6F4C" }} className="font-semibold">결단력 있는 금(金) 기운</span>을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(火)은 단단한 원석이나 무쇠를 제련하는 <span style={{ color: "#8A6F4C" }} className="font-semibold">화극금(화극금)의 관성(官星) 기류</span>를 이끌어냅니다. 직장에서의 승진, 명예의 획득, 큰 책임감이 주어져 한 단계 높은 사회적 위상을 다질 수 있는 시험대에 서게 됩니다. 다만, 과도한 책임 지움과 제련 스트레스로 인해 신체가 쉽게 건조해질 수 있으니, 올 한 해는 <span style={{ color: "#8A6F4C" }} className="font-semibold">유연한 마음가짐과 규칙적인 휴식</span>이 최고의 신년 등대가 될 것입니다.
+              특히 <span style={{ color: "#8A6F4C" }} className="font-semibold">{name}</span>님은 <span style={{ color: "#8A6F4C" }} className="font-semibold">결단력 있는 금(金) 기운</span>을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(火)은 단단한 원석이나 무쇠를 제련하는 <span style={{ color: "#8A6F4C" }} className="font-semibold">화극금(화극금)의 관성(官星) 기류</span>를 이끌어냅니다. 직장에서의 승진, 명예의 획득, 큰 책임감이 주어져 한 단계 높은 사회적 위상을 다질 수 있는 시험대에 서게 됩니다. 다만, 과도한 책임 지움과 제련 스트레스로 인해 신체가 쉽게 건조해질 수 있으니, 올 한 해는 <span style={{ color: "#8A6F4C" }} className="font-semibold">유연한 마음가짐과 규칙적인 휴식</span>이 최고의 신년 등대가 될 것입니다.
             </span>
           );
         } else {
           dynamicAdvice = (
             <span>
-              특히 의뢰인 <span style={{ color: "#8A6F4C" }} className="font-semibold">{name}</span>님은 <span style={{ color: "#8A6F4C" }} className="font-semibold">지혜로운 수(수) 기운</span>을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(화)은 물이 불을 통제하며 성과를 거두는 <span style={{ color: "#8A6F4C" }} className="font-semibold">수극화(수극화)의 재성(재성) 활력</span>을 불어넣습니다. 막혔던 자금 흐름이 풀리고 경제적 실리를 확실하게 거둘 수 있는 역동적인 재물 기회가 주어지게 됩니다. 다만, 조급하게 서둘러 분수에 넘치는 투자를 감행하면 불길에 물이 모두 증발하여 오히려 패를 볼 수 있으니, 올 한 해는 <span style={{ color: "#8A6F4C" }} className="font-semibold">이성적이고 차분한 자산 수성</span>이 최고의 신년 등대가 될 것입니다.
+              특히 <span style={{ color: "#8A6F4C" }} className="font-semibold">{name}</span>님은 <span style={{ color: "#8A6F4C" }} className="font-semibold">지혜로운 수(수) 기운</span>을 본질로 품고 태어나셨습니다. 2026년 병오년의 불꽃(화)은 물이 불을 통제하며 성과를 거두는 <span style={{ color: "#8A6F4C" }} className="font-semibold">수극화(수극화)의 재성(재성) 활력</span>을 불어넣습니다. 막혔던 자금 흐름이 풀리고 경제적 실리를 확실하게 거둘 수 있는 역동적인 재물 기회가 주어지게 됩니다. 다만, 조급하게 서둘러 분수에 넘치는 투자를 감행하면 불길에 물이 모두 증발하여 오히려 패를 볼 수 있으니, 올 한 해는 <span style={{ color: "#8A6F4C" }} className="font-semibold">이성적이고 차분한 자산 수성</span>이 최고의 신년 등대가 될 것입니다.
             </span>
           );
         }
@@ -3289,7 +3289,7 @@ export const renderNewYearPageContent = (page, ctx) => {
                  동양 명리학의 근본 원리인 <strong>천인상응(天人相應: 하늘과 인간은 긴밀하게 소통하며 반응한다)</strong> 사상에 따르면, 1년의 운(運)이란 미리 정해진 고정된 시나리오가 아니라 매년 우리에게 새롭게 밀려오는 거대한 계절적 날씨와 기후에 비유됩니다. 폭풍우가 치는 한겨울에 억지로 봄 씨앗을 뿌리려 하거나, 땡볕이 내리쬐는 극심한 가뭄에 물을 주지 않고 방치한다면, 아무리 훌륭한 씨앗이라 한들 결실을 맺지 못하고 썩어버리는 자연의 이치와도 같습니다.
                </p>
                <p>
-                 의뢰인 <strong style={{ color: "#8A6F4C" }} className="font-semibold">{name}</strong>님은 <strong style={{ color: "#8A6F4C" }} className="font-semibold">{seasonText}철</strong>에 태어나 사주 원국의 독자적인 우주 에너지를 품으셨기에, 올해 병오년의 불꽃 날씨와 만나는 양상이 매우 입체적이고 다각적입니다.
+                 <strong style={{ color: "#8A6F4C" }} className="font-semibold">{name}</strong>님은 <strong style={{ color: "#8A6F4C" }} className="font-semibold">{seasonText}철</strong>에 태어나 사주 원국의 독자적인 우주 에너지를 품으셨기에, 올해 병오년의 불꽃 날씨와 만나는 양상이 매우 입체적이고 다각적입니다.
                </p>
                <p>
                  {dynamicAdvice}
@@ -3384,7 +3384,7 @@ export const renderNewYearPageContent = (page, ctx) => {
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p>
-                의뢰인 <strong>{name}</strong>님이 탄생하는 그 순간, 우주 공간을 채웠던 여덟 글자의 명조(命造: 사주 원국) 배치입니다. 명리학에서 사주 원국은 평생에 걸쳐 귀하를 구성하는 <strong>정신적 뼈대이자 유전적인 기질의 기본형</strong>을 상징합니다.
+                <strong>{name}</strong>님이 탄생하는 그 순간, 우주 공간을 채웠던 여덟 글자의 명조(命造: 사주 원국) 배치입니다. 명리학에서 사주 원국은 평생에 걸쳐 귀하를 구성하는 <strong>정신적 뼈대이자 유전적인 기질의 기본형</strong>을 상징합니다.
               </p>
               
               <div className="grid grid-cols-4 gap-2 text-center font-bold">
@@ -3421,7 +3421,7 @@ export const renderNewYearPageContent = (page, ctx) => {
                 <div className="bg-[#FAF8F5] border border-[#E2DDD5]/60 rounded-xl p-4 space-y-2.5">
                   <span className="font-bold text-xs text-[#8A6F4C] block">⚖️ {name}님의 사주 원국 오행 분석</span>
                   <p className="text-[11px] leading-relaxed text-gray-700">
-                    의뢰인님의 사주 원국에서 가장 왕성한 기맥을 형성하고 있는 주도 오행은 <strong>{dominantEl}({dominantEl === "목" ? "木" : dominantEl === "화" ? "火" : dominantEl === "토" ? "土" : dominantEl === "금" ? "金" : "水"})</strong> 기운으로, <strong>{dominantDesc}</strong>
+                    귀하의 사주 원국에서 가장 왕성한 기맥을 형성하고 있는 주도 오행은 <strong>{dominantEl}({dominantEl === "목" ? "木" : dominantEl === "화" ? "火" : dominantEl === "토" ? "土" : dominantEl === "금" ? "金" : "水"})</strong> 기운으로, <strong>{dominantDesc}</strong>
                   </p>
                   <p className="text-[11px] leading-relaxed text-gray-700 border-t border-gray-200/40 pt-2">
                     반면, 기맥의 보완이 가장 시급한 보완 대상 오행은 <strong>{deficientEl}({deficientEl === "목" ? "木" : deficientEl === "화" ? "火" : deficientEl === "토" ? "土" : deficientEl === "금" ? "金" : "水"})</strong> 기운으로, <strong>{deficientDesc}</strong>
@@ -3433,7 +3433,7 @@ export const renderNewYearPageContent = (page, ctx) => {
               </div>
             </div>
           </div>,
-          "의뢰인 명조 분석과 사주 원국"
+          "명조 분석과 사주 원국"
         );
       }
 
@@ -3462,13 +3462,13 @@ export const renderNewYearPageContent = (page, ctx) => {
 
         let daewunAnalysis = "";
         if (fireCount >= 3 || (fireCount + woodCount) >= 5) {
-          daewunAnalysis = `의뢰인 ${name}님의 사주 원국은 이미 목(木)과 화(火)의 에너지가 강성하여 내적인 열기와 양기가 매우 높은 구조를 나타냅니다. 여기에 2026년 병오년의 천지합화 불꽃이 가세하게 되면 사주 전체의 온도가 임계점 이상으로 치솟아 쉽게 조급해지고 성급하게 확장을 결정하거나 홧김에 직장을 이탈할 리스크가 짙어집니다. 따라서 대운의 순행 흐름 속에서 귀하가 수립해야 할 최고의 전략은 무리한 신규 판 벌이기를 철저히 지양하고, 감정을 제어하며 리스크 방어에 올인하는 보수적 수성 전술입니다.`;
+          daewunAnalysis = `${name}님의 사주 원국은 이미 목(木)과 화(火)의 에너지가 강성하여 내적인 열기와 양기가 매우 높은 구조를 나타냅니다. 여기에 2026년 병오년의 천지합화 불꽃이 가세하게 되면 사주 전체의 온도가 임계점 이상으로 치솟아 쉽게 조급해지고 성급하게 확장을 결정하거나 홧김에 직장을 이탈할 리스크가 짙어집니다. 따라서 대운의 순행 흐름 속에서 귀하가 수립해야 할 최고의 전략은 무리한 신규 판 벌이기를 철저히 지양하고, 감정을 제어하며 리스크 방어에 올인하는 보수적 수성 전술입니다.`;
         } else if (waterCount >= 2) {
-          daewunAnalysis = `의뢰인 ${name}님의 사주 원국에는 세운의 뜨거운 불길을 다스리고 냉철하게 조율해 줄 맑고 깊은 수(水) 기운이 든든하게 자리 잡고 있습니다. 이는 2026년의 거대한 용광로 불씨가 다가오더라도 귀하의 내적인 수기가 이를 수화기제(수화기제: 물과 불의 조화로운 안착)의 흐름으로 매끄럽게 통제하여, 혼란 속에서도 확실한 이익 마진을 선점하고 장기적인 문서 자산으로 치환해내는 인생의 실질적 번영과 도약의 무대가 열리게 됨을 뜻합니다. 자신감 있게 주도권을 쥐고 나아가십시오.`;
+          daewunAnalysis = `${name}님의 사주 원국에는 세운의 뜨거운 불길을 다스리고 냉철하게 조율해 줄 맑고 깊은 수(水) 기운이 든든하게 자리 잡고 있습니다. 이는 2026년의 거대한 용광로 불씨가 다가오더라도 귀하의 내적인 수기가 이를 수화기제(수화기제: 물과 불의 조화로운 안착)의 흐름으로 매끄럽게 통제하여, 혼란 속에서도 확실한 이익 마진을 선점하고 장기적인 문서 자산으로 치환해내는 인생의 실질적 번영과 도약의 무대가 열리게 됨을 뜻합니다. 자신감 있게 주도권을 쥐고 나아가십시오.`;
         } else if (metalCount >= 2) {
-          daewunAnalysis = `의뢰인 ${name}님의 사주 원국에는 단단하고 이성적인 금(金) 기운이 뼈대를 이루고 있습니다. 병오년의 맹렬한 불꽃은 귀하의 원석을 용광로에 넣어 명검으로 완성해나가는 관성(관성)의 제련 작용을 강력하게 시작합니다. 공적인 지위 획득, 책임의 막중함, 혹은 커리어 압박이 매우 거세게 주어지겠지만, 이 제련 기간을 끈기 있게 견디고 원칙을 지켜 버텨낸다면 연말에는 누구도 부정할 수 없는 찬란한 지위와 명예를 탈환하게 되는 대운의 통과의례입니다. 명검이 되는 고통을 즐기며 뚝심 있게 나아가십시오.`;
+          daewunAnalysis = `${name}님의 사주 원국에는 단단하고 이성적인 금(金) 기운이 뼈대를 이루고 있습니다. 병오년의 맹렬한 불꽃은 귀하의 원석을 용광로에 넣어 명검으로 완성해나가는 관성(관성)의 제련 작용을 강력하게 시작합니다. 공적인 지위 획득, 책임의 막중함, 혹은 커리어 압박이 매우 거세게 주어지겠지만, 이 제련 기간을 끈기 있게 견디고 원칙을 지켜 버텨낸다면 연말에는 누구도 부정할 수 없는 찬란한 지위와 명예를 탈환하게 되는 대운의 통과의례입니다. 명검이 되는 고통을 즐기며 뚝심 있게 나아가십시오.`;
         } else {
-          daewunAnalysis = `의뢰인 ${name}님의 사주 원국은 어느 한 기운이 무리하게 쏠리지 않고 음양오행의 에너지가 비교적 부드럽고 균형 있게 순환하는 명조입니다. 2026년의 거센 천지합화 불길이 찾아오더라도 사주 원국의 흙(土) 기운과 상생 기맥이 불길의 세기를 차분하게 흡수하여(화생토, 토생금), 일시적인 마찰이나 환경 변화가 유도되더라도 빠르게 원래의 안정을 되찾는 복원력을 유감없이 보여줄 것입니다. 큰 도박을 피하고 자신의 본업에 집중하면 가장 순탄한 성장을 이룰 것입니다.`;
+          daewunAnalysis = `${name}님의 사주 원국은 어느 한 기운이 무리하게 쏠리지 않고 음양오행의 에너지가 비교적 부드럽고 균형 있게 순환하는 명조입니다. 2026년의 거센 천지합화 불길이 찾아오더라도 사주 원국의 흙(土) 기운과 상생 기맥이 불길의 세기를 차분하게 흡수하여(화생토, 토생금), 일시적인 마찰이나 환경 변화가 유도되더라도 빠르게 원래의 안정을 되찾는 복원력을 유감없이 보여줄 것입니다. 큰 도박을 피하고 자신의 본업에 집중하면 가장 순탄한 성장을 이룰 것입니다.`;
         }
 
         return wrapLock(
@@ -3666,7 +3666,7 @@ case "ny_stem_harmony":
         const dayStem = sajuInfo.day.stem;
         
         if (dayStemEl === "목") {
-          stemHarmonyDesc = `의뢰인 ${name}님은 청량한 나무(木)의 일간(${dayStem}) 기질을 품고 계십니다. 나무가 병오년의 불꽃(화)을 만나면 자신의 잎과 꽃을 흐드러지게 피워내는 '식상(食傷)'의 작용이 일어납니다. 올해는 창의적인 아이디어가 번뜩이고 표현 능력이 극대화되어 나의 매력과 실력을 세상에 널리 알릴 최고의 기회입니다. 새로운 프로젝트의 기획이나 예술적 창작, 그리고 대외적인 마케팅 활동에서 누구보다 눈부신 두각을 나타내게 될 것입니다. 다만, 불이 맹렬해질수록 내 본연의 수분이 빠르게 고갈되므로 감정적 번아웃과 불만족(욱하는 감정)을 슬기롭게 다스려야 합니다. 특히 대인 관계에서 자존심을 앞세우기보다 한 템포 물러서서 상대의 의견을 경청하는 유연성이 올 한 해의 성패를 가를 것입니다.`;
+          stemHarmonyDesc = `${name}님은 청량한 나무(木)의 일간(${dayStem}) 기질을 품고 계십니다. 나무가 병오년의 불꽃(화)을 만나면 자신의 잎과 꽃을 흐드러지게 피워내는 '식상(食傷)'의 작용이 일어납니다. 올해는 창의적인 아이디어가 번뜩이고 표현 능력이 극대화되어 나의 매력과 실력을 세상에 널리 알릴 최고의 기회입니다. 새로운 프로젝트의 기획이나 예술적 창작, 그리고 대외적인 마케팅 활동에서 누구보다 눈부신 두각을 나타내게 될 것입니다. 다만, 불이 맹렬해질수록 내 본연의 수분이 빠르게 고갈되므로 감정적 번아웃과 불만족(욱하는 감정)을 슬기롭게 다스려야 합니다. 특히 대인 관계에서 자존심을 앞세우기보다 한 템포 물러서서 상대의 의견을 경청하는 유연성이 올 한 해의 성패를 가를 것입니다.`;
           relationGraph = (
             <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
               <div className="px-3 py-1 bg-[#5F7A68] text-white rounded font-bold text-xs shadow-sm">나 ({dayStem}木)</div>
@@ -3677,7 +3677,7 @@ case "ny_stem_harmony":
             </div>
           );
         } else if (dayStemEl === "화") {
-          stemHarmonyDesc = `의뢰인 ${name}님은 태양 혹은 횃불(화)의 일간(${dayStem}) 기질을 지니셨습니다. 내 기운과 동일한 병오년의 거대한 불꽃(화)을 조우하여 '비겁(比劫)'이 극에 달하는 주체적인 해가 됩니다. 자신감과 독립심이 극대화되어 신규 사업, 창업, 혹은 강력한 자립을 도모하려는 에너지가 솟구칩니다. 남의 눈치를 보지 않고 오롯이 내 주도하에 판을 짜고 리드할 수 있는 최적의 시기입니다. 다만, 강한 자존심끼리 마주쳐 동료, 배우자와 대립하거나 자만으로 손재수를 입기 쉬우니 한 걸음 양보가 운을 살리는 지름길입니다. 주변 사람들과의 공생을 먼저 고려하고, 지나친 확장을 경계하는 신중함이야말로 솟구치는 불길을 황금으로 바꾸는 연쇠가 될 것입니다.`;
+          stemHarmonyDesc = `${name}님은 태양 혹은 횃불(화)의 일간(${dayStem}) 기질을 지니셨습니다. 내 기운과 동일한 병오년의 거대한 불꽃(화)을 조우하여 '비겁(比劫)'이 극에 달하는 주체적인 해가 됩니다. 자신감과 독립심이 극대화되어 신규 사업, 창업, 혹은 강력한 자립을 도모하려는 에너지가 솟구칩니다. 남의 눈치를 보지 않고 오롯이 내 주도하에 판을 짜고 리드할 수 있는 최적의 시기입니다. 다만, 강한 자존심끼리 마주쳐 동료, 배우자와 대립하거나 자만으로 손재수를 입기 쉬우니 한 걸음 양보가 운을 살리는 지름길입니다. 주변 사람들과의 공생을 먼저 고려하고, 지나친 확장을 경계하는 신중함이야말로 솟구치는 불길을 황금으로 바꾸는 연쇠가 될 것입니다.`;
           relationGraph = (
             <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
               <div className="px-3 py-1 bg-red-500 text-white rounded font-bold text-xs shadow-sm">나 ({dayStem}火)</div>
@@ -3688,7 +3688,7 @@ case "ny_stem_harmony":
             </div>
           );
         } else if (dayStemEl === "토") {
-          stemHarmonyDesc = `의뢰인 ${name}님은 넉넉한 대지(토)의 일간(${dayStem}) 기질을 소유하고 계십니다. 불꽃(화)이 흙을 다정하게 익혀주고 단단히 다져주는 '인성(印星)'의 대단히 길한 기류가 도래합니다. 공부, 학업, 국가 고시, 자격증 취득 등 문서상의 경사가 따르며, 나를 후원해 주는 조력자나 은인(귀인)의 등장이 강력하게 보장되는 은혜롭고 든든한 한 해가 될 것입니다. 인생의 중요한 계약서 도장을 찍거나, 부동산 및 문서 형태의 자산을 확보하는 데 최고의 타이밍입니다. 다만, 들어오는 기운이 지나치게 강해지면 스스로 안일함에 빠지거나 행동하지 않고 생각만 많아지는 부작용이 생길 수 있으니, 계획을 세웠다면 지체 없이 실천으로 옮기는 기동력을 발휘하십시오.`;
+          stemHarmonyDesc = `${name}님은 넉넉한 대지(토)의 일간(${dayStem}) 기질을 소유하고 계십니다. 불꽃(화)이 흙을 다정하게 익혀주고 단단히 다져주는 '인성(印星)'의 대단히 길한 기류가 도래합니다. 공부, 학업, 국가 고시, 자격증 취득 등 문서상의 경사가 따르며, 나를 후원해 주는 조력자나 은인(귀인)의 등장이 강력하게 보장되는 은혜롭고 든든한 한 해가 될 것입니다. 인생의 중요한 계약서 도장을 찍거나, 부동산 및 문서 형태의 자산을 확보하는 데 최고의 타이밍입니다. 다만, 들어오는 기운이 지나치게 강해지면 스스로 안일함에 빠지거나 행동하지 않고 생각만 많아지는 부작용이 생길 수 있으니, 계획을 세웠다면 지체 없이 실천으로 옮기는 기동력을 발휘하십시오.`;
           relationGraph = (
             <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
               <div className="px-3 py-1 bg-[#A3845B] text-white rounded font-bold text-xs shadow-sm">나 ({dayStem}土)</div>
@@ -3699,7 +3699,7 @@ case "ny_stem_harmony":
             </div>
           );
         } else if (dayStemEl === "금") {
-          stemHarmonyDesc = `의뢰인 ${name}님은 단단한 바위나 보석(금)의 일간(${dayStem}) 기질을 타고나셨습니다. 맹렬한 불꽃(화)이 쇠붙이를 제련하고 쓸모 있는 도구로 다듬는 강력한 '관성(官星)'의 해를 지납니다. 직장에서 중책을 맡아 공적 위상이 올라가거나 승진 및 영전의 기회를 얻게 됩니다. 나의 명예와 신용도가 크게 올라가 주변의 존경을 받는 귀한 시기입니다. 다만 압박감과 책임감이 극에 달해 뼈, 호흡기 계통 건강 관리 및 상사와의 충돌 조절에 만전을 기해야 합니다. 지나친 완벽주의로 스스로를 옥죄기 쉬우니, 일과 휴식의 균형을 엄격하게 관리하고 사소한 실수에는 관대해지는 너그러운 마음가짐이 절대적으로 요구됩니다.`;
+          stemHarmonyDesc = `${name}님은 단단한 바위나 보석(금)의 일간(${dayStem}) 기질을 타고나셨습니다. 맹렬한 불꽃(화)이 쇠붙이를 제련하고 쓸모 있는 도구로 다듬는 강력한 '관성(官星)'의 해를 지납니다. 직장에서 중책을 맡아 공적 위상이 올라가거나 승진 및 영전의 기회를 얻게 됩니다. 나의 명예와 신용도가 크게 올라가 주변의 존경을 받는 귀한 시기입니다. 다만 압박감과 책임감이 극에 달해 뼈, 호흡기 계통 건강 관리 및 상사와의 충돌 조절에 만전을 기해야 합니다. 지나친 완벽주의로 스스로를 옥죄기 쉬우니, 일과 휴식의 균형을 엄격하게 관리하고 사소한 실수에는 관대해지는 너그러운 마음가짐이 절대적으로 요구됩니다.`;
           relationGraph = (
             <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
               <div className="px-3 py-1 bg-gray-400 text-gray-900 rounded font-bold text-xs shadow-sm">나 ({dayStem}金)</div>
@@ -3710,7 +3710,7 @@ case "ny_stem_harmony":
             </div>
           );
         } else {
-          stemHarmonyDesc = `의뢰인 ${name}님은 깊고 차가운 물(수)의 일간(${dayStem}) 기질을 지니고 태어나셨습니다. 차가운 물줄기가 2026년 병오년의 거대한 화기(화)를 통제하고 가두는 '재성(財星)'의 해가 열립니다. 막혔던 현금 흐름이 트이고 투자 소득, 연봉 협상 타결, 횡재수 등 경제적 기회가 요동칩니다. 내 노력의 결실이 눈에 보이는 성과물로 뚜렷하게 환원되는 가장 역동적인 한 해가 될 것입니다. 다만 불을 끄느라 내 수분이 소모되므로 건강을 챙기며 에너지를 완급 조절하십시오. 급격하게 늘어나는 지출이나 감정적 소비를 통제하고, 안정적인 저축 비중을 늘려야 연말에 새어나가는 자금 없이 든든한 금고를 지킬 수 있습니다.`;
+          stemHarmonyDesc = `${name}님은 깊고 차가운 물(수)의 일간(${dayStem}) 기질을 지니고 태어나셨습니다. 차가운 물줄기가 2026년 병오년의 거대한 화기(화)를 통제하고 가두는 '재성(財星)'의 해가 열립니다. 막혔던 현금 흐름이 트이고 투자 소득, 연봉 협상 타결, 횡재수 등 경제적 기회가 요동칩니다. 내 노력의 결실이 눈에 보이는 성과물로 뚜렷하게 환원되는 가장 역동적인 한 해가 될 것입니다. 다만 불을 끄느라 내 수분이 소모되므로 건강을 챙기며 에너지를 완급 조절하십시오. 급격하게 늘어나는 지출이나 감정적 소비를 통제하고, 안정적인 저축 비중을 늘려야 연말에 새어나가는 자금 없이 든든한 금고를 지킬 수 있습니다.`;
           relationGraph = (
             <div className="flex items-center justify-center gap-4 py-4 my-2 bg-[#FAF7F0] rounded-lg border border-[#E2DDD5]/50">
               <div className="px-3 py-1 bg-gray-800 text-white rounded font-bold text-xs shadow-sm">나 ({dayStem}水)</div>
@@ -3797,7 +3797,7 @@ case "ny_stem_harmony":
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-6 shadow-sm text-xs text-gray-700 font-traditional">
               <p className="leading-relaxed font-light">
-                의뢰인 {name}님의 타고난 사주 원국 8글자에 2026년 병오년의 <strong>강렬한 불(火) 기운 2개</strong>가 유입되었을 때의 종합 오행 저울 분포 상태입니다. 오행의 치우침 정도에 따라 한 해의 운명적 컨디션이 요동치게 됩니다.
+                {name}님의 타고난 사주 원국 8글자에 2026년 병오년의 <strong>강렬한 불(火) 기운 2개</strong>가 유입되었을 때의 종합 오행 저울 분포 상태입니다. 오행의 치우침 정도에 따라 한 해의 운명적 컨디션이 요동치게 됩니다.
               </p>
               
               <div className="space-y-3 bg-[#FAF7F0] p-4 rounded border border-[#E2DDD5]/60">
@@ -4178,7 +4178,7 @@ case "ny_stem_harmony":
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p className="text-gray-600 font-light text-justify">
-                2026년 병오년의 타오르는 불꽃 속에서 의뢰인 {name}님의 기운을 온전히 수호하고 재물운과 명예운을 팽창시켜 줄 행운 비방입니다. 일상 속에서 적극 활용하여 개운을 유도하십시오.
+                2026년 병오년의 타오르는 불꽃 속에서 {name}님의 기운을 온전히 수호하고 재물운과 명예운을 팽창시켜 줄 행운 비방입니다. 일상 속에서 적극 활용하여 개운을 유도하십시오.
               </p>
               
               <div className="grid grid-cols-3 gap-3 text-center py-4 bg-[#FAF7F0] rounded-xl border border-[#E2DDD5]/60 shadow-inner">
@@ -4905,7 +4905,7 @@ case "ny_stem_harmony":
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p className="text-justify font-light text-gray-600">
-                2026년 병오년은 세운의 강력한 화(火) 기운이 의뢰인 {name}님의 머리 쪽으로 열을 올리는 상열감(上熱感)을 자극하기 쉽습니다. 이로 인해 평소보다 가슴이 답답하고 집중력이 쉽게 흩어지며, 시험을 앞두고 불필요한 불안감이나 조급증이 유발될 수 있습니다. 엉덩이를 무겁게 하고 이성적인 루틴을 굳건히 유지하는 차분한 자기 제어가 신년 자격증 취득 및 공무원/승진 시험의 성공을 가르는 핵심 열쇠입니다. 학습 공간의 풍수 재배치와 행동 수칙을 결합하여 합격 기류를 수혈받으십시오.
+                2026년 병오년은 세운의 강력한 화(火) 기운이 {name}님의 머리 쪽으로 열을 올리는 상열감(上熱感)을 자극하기 쉽습니다. 이로 인해 평소보다 가슴이 답답하고 집중력이 쉽게 흩어지며, 시험을 앞두고 불필요한 불안감이나 조급증이 유발될 수 있습니다. 엉덩이를 무겁게 하고 이성적인 루틴을 굳건히 유지하는 차분한 자기 제어가 신년 자격증 취득 및 공무원/승진 시험의 성공을 가르는 핵심 열쇠입니다. 학습 공간의 풍수 재배치와 행동 수칙을 결합하여 합격 기류를 수혈받으십시오.
               </p>
 
               {/* 시각화: 학업/합격 역량 지표 게이지 */}
@@ -5227,12 +5227,12 @@ case "ny_stem_harmony":
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
               <span className="text-xs text-[#8A6F4C] font-bold block">고민 해결 솔루션 (苦悶 解決)</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">의뢰인의 현실적인 고민에 대한 정밀 비책</h2>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">현실적인 고민에 대한 정밀 비책</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
               <p className="text-justify font-light text-gray-600">
-                의뢰인 {name}님이 제출하신 현실적인 고민 안건에 대하여 명리 연구소의 정밀 운기 분석을 바탕으로 도출한 대안 및 행동 실천 로드맵입니다. 마음의 조급함과 불필요한 생각의 감옥(과다 인성)을 해제하고 선선한 가을철 금(金) 기운을 기점으로 자금과 계약서를 철저히 설계 및 조율해 나간다면, 리스크를 완벽하게 차단하고 원하는 결실의 대부분을 쟁취할 수 있습니다.
+                {name}님이 제출하신 현실적인 고민 안건에 대하여 명리 연구소의 정밀 운기 분석을 바탕으로 도출한 대안 및 행동 실천 로드맵입니다. 마음의 조급함과 불필요한 생각의 감옥(과다 인성)을 해제하고 선선한 가을철 금(金) 기운을 기점으로 자금과 계약서를 철저히 설계 및 조율해 나간다면, 리스크를 완벽하게 차단하고 원하는 결실의 대부분을 쟁취할 수 있습니다.
               </p>
 
               {/* 시각화: 고민 해결 성공률 및 조율 지표 */}
@@ -5347,7 +5347,7 @@ case "ny_stem_harmony":
           <div className="space-y-6 py-4">
             <div className="text-center space-y-2 mb-8">
               <span className="text-xs text-[#8A6F4C] font-bold block">고민 해결 정밀 처방 (苦悶 處方)</span>
-              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">의뢰인 입력 안건에 대한 혜안당 정밀 비책</h2>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">입력 안건에 대한 혜안당 정밀 비책</h2>
               <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
             </div>
 
@@ -5482,7 +5482,7 @@ case "ny_stem_harmony":
               </div>
             </div>
           </div>,
-          "의뢰인 맞춤형 고민 정밀 비책"
+          "맞춤형 고민 정밀 비책"
         );
       }
 
@@ -6095,7 +6095,7 @@ case "ny_stem_harmony":
                 흔들리는 대지 위에 굳건한 성이 세워집니다."
               </p>
               <p className="text-xs text-gray-500 leading-relaxed font-light font-traditional">
-                의뢰인 {name}님이 병오년의 타오르는 거대한 불꽃 속에서도 흔들림 없이 중심을 잡으시고, 액운은 지혜롭게 흘려보내며 대길한 복록만을 오롯이 움켜쥐시기를 혜안당 명리연구소가 온 마음으로 정성스레 축원합니다.
+                {name}님이 병오년의 타오르는 거대한 불꽃 속에서도 흔들림 없이 중심을 잡으시고, 액운은 지혜롭게 흘려보내며 대길한 복록만을 오롯이 움켜쥐시기를 혜안당 명리연구소가 온 마음으로 정성스레 축원합니다.
               </p>
             </div>
             
