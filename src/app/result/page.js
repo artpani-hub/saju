@@ -4803,7 +4803,6 @@ function ResultContent() {
     const isFree = reportGrade === "free" && !isPaid;
 
     const deepExcludeTypes = [
-      "ny_ilju_harmony",
       "ny_sinsal_active",
       "ny_warning_period",
       "ny_worry_solution",
