@@ -5,6 +5,28 @@ import { Scroll, Printer, ArrowLeft, Heart, Compass, Shield, Sparkles, DollarSig
 import JobTable from "./JobTable";
 import { getJobMatches } from "../utils";
 
+const getElementColor = (el) => {
+  switch (el) {
+    case "목": return "bg-[#5F7A68] text-white";
+    case "화": return "bg-red-600 text-white";
+    case "토": return "bg-[#A3845B] text-white";
+    case "금": return "bg-gray-400 text-gray-900";
+    case "수": return "bg-gray-800 text-white";
+    default: return "bg-gray-100 text-gray-500";
+  }
+};
+
+const getElementBarColor = (el) => {
+  switch (el) {
+    case "목": return "bg-[#5F7A68]";
+    case "화": return "bg-red-600";
+    case "토": return "bg-[#A3845B]";
+    case "금": return "bg-gray-400";
+    case "수": return "bg-gray-800";
+    default: return "bg-gray-200";
+  }
+};
+
 export const renderNewYearPageContent = (page, ctx) => {
     const {
       name,
