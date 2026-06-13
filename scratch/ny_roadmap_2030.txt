@@ -1,0 +1,72 @@
+      case "ny_roadmap_2030": {
+        const dayStemEl = sajuInfo?.day?.stemEl || "목";
+        const woodCount = sajuInfo?.elements?.["목"] || 0;
+        const fireCount = sajuInfo?.elements?.["화"] || 0;
+        const earthCount = sajuInfo?.elements?.["토"] || 0;
+        const metalCount = sajuInfo?.elements?.["금"] || 0;
+        const waterCount = sajuInfo?.elements?.["수"] || 0;
+
+        // 지표 계산
+        const careerHonor = Math.min(98, 70 + (earthCount + metalCount) * 4);
+        const organStability = Math.min(95, 75 + (woodCount + waterCount) * 3);
+
+        const advice2030 = {
+          "목": "목(木) 일간에게 경술년은 편관과 편재의 조합으로 책임감과 변동 기류가 크게 교차합니다. 조직 내 안정을 추구하십시오.",
+          "화": "화(火) 일간에게 경술년은 식상생재로 자금 회전력이 회복되는 해입니다. 적극적인 부업 창업 등으로 이득을 실현하십시오.",
+          "토": "토(土) 일간에게 경술년은 내 식상 능력을 널리 표출하고 평판을 올릴 수 있는 예술/기획 안건의 성공 기류입니다.",
+          "금": "금(金) 일간에게 경술년은 비겁과 술토 인성의 뒷받침으로 주체성이 강해져, 승진 및 권력 장악을 할 최고의 골든타임입니다.",
+          "수": "수(水) 일간에게 경술년은 굳건한 관성 기류의 작동으로 법적 정돈, 장기 근속, 라이센스 확보 등 신분의 도약이 깃듭니다."
+        }[dayStemEl] || "조직 내 주도권 획득과 문서 자산 통합에 매진하기에 가장 든든하고 상서로운 타이밍입니다.";
+
+        return wrapLock(
+          <div className="space-y-6 py-4">
+            <div className="text-center space-y-2 mb-8">
+              <span className="text-xs text-[#A3845B] font-bold block">2030 경술년(庚戌年) 세운</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2030년 경술년(庚戌年) 미래 기류 로드맵</h2>
+              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+            </div>
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2030년 경술년(庚戌年)은 가공되지 않은 백금 경금(庚金)과 단단하고 건조한 영토 술토(戌土)가 만나 토생금(土生金)의 결단력과 단단함을 선사하는 해입니다. 조직 내에서 내 발언권이 막강해지며, 흩어져 있던 리소스를 한 방향으로 통합하여 최종적인 권위와 신분을 확립하는 매듭의 절기입니다.
+              </p>
+
+              {/* 시각화: 기류 지표 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 경술년 운기 핵심 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>커리어 명예 및 권위 획득율</span>
+                      <span className="text-[#8A6F4C]">{careerHonor}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: `${careerHonor}%` }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>조직 정착도 & 기맥 안정도</span>
+                      <span className="text-[#8A6F4C]">{organStability}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: `${organStability}%` }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 미래 로드맵 처방 카드 */}
+              <div className="border border-[#E2DDD5] rounded-xl p-4 bg-[#FAF7F0]/40 text-justify space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">🧭 {dayStemEl}일간 경술년 대처 강령</span>
+                <p className="text-[10px] text-gray-500 leading-relaxed font-light">
+                  {advice2030}
+                </p>
+                <p className="text-[9px] text-[#A3845B] leading-normal border-t border-[#E2DDD5]/40 pt-2 font-light">
+                  * <strong>경술년 핵심 전략:</strong> 금(金)과 토(土)의 숙살 기운이 조화를 이루는 시기이므로, 조직 내 비효율을 과감하게 다이어트하고 정예 인프라만 선별하십시오.
+                </p>
+              </div>
+            </div>
+          </div>,
+          "2030년 경술년 세운 로드맵"
+        );
+      }

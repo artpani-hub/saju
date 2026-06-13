@@ -1,0 +1,209 @@
+      case "ny_monthly": {
+        const m = page.monthNum || 1;
+        const dayStemEl = sajuInfo?.day?.stemEl || "목";
+        const elements = sajuInfo?.elements || {};
+        
+        let monthlyPrescription = "";
+        if (m === 10) {
+          if (dayStemEl === "목") monthlyPrescription = " 수생목(水生木)의 기류가 뇌파를 안정시키니, 새로운 지식을 습득하고 명상을 통해 정신을 맑게 가다듬기에 최적의 시기입니다.";
+          else if (dayStemEl === "화") monthlyPrescription = " 수극화(水剋火)의 흐름 속에 심장의 열기가 조율되니, 흥분을 가라앉히고 냉정한 시각으로 계약서나 문서를 꼼꼼히 검토하십시오.";
+          else if (dayStemEl === "토") monthlyPrescription = " 토극수(土剋水)의 재성 기운이 활성화되니, 그동안 미뤄두었던 실질적인 자산 투자나 재정 관리에 착수하면 이롭습니다.";
+          else if (dayStemEl === "금") monthlyPrescription = " 금생수(金生水)의 설기 기운이 강해지니, 과도한 에너지 소모를 방지하기 위해 충분한 휴식을 취하고 체력 관리에 힘쓰십시오.";
+          else monthlyPrescription = " 수(水) 기운이 겹쳐 비겁이 강해지는 시기이니, 고집을 부리기보다 주변 조력자의 의견을 경청하는 포용력이 필요합니다.";
+        } else if (m === 11) {
+          if (dayStemEl === "목") monthlyPrescription = " 금생수-수생목의 관인상생(官印相生) 기류가 문서를 돕고 학문 성취를 길하게 하니, 중요한 시험이나 라이선스 획득에 집중하십시오.";
+          else if (dayStemEl === "화") monthlyPrescription = " 강한 관성의 압박이 들어오는 시기이므로, 무리한 운동이나 과로를 피하고 충분한 숙면을 통해 심혈관 건강을 지키십시오.";
+          else if (dayStemEl === "토") monthlyPrescription = " 금식상과 수재성이 어우러져 식상생재(食傷生財)를 이루니, 적극적으로 재능을 펼치고 창의적인 비즈니스 아이디어를 실천해보십시오.";
+          else if (dayStemEl === "금") monthlyPrescription = " 비겁의 굳건함과 식상의 활동성이 조화되니, 자신감을 바탕으로 업무적인 주도권을 잡고 일을 추진해 나가기 좋습니다.";
+          else monthlyPrescription = " 수(水) 기운이 극도로 왕성해져 차가운 냉기가 도니, 아랫배를 따뜻하게 유지하고 매일 따뜻한 물이나 생강차를 자주 마셔 보온하십시오.";
+        } else if (m === 12) {
+          if (dayStemEl === "목") monthlyPrescription = " 토재성과 금관성이 관인과 연결되는 교두보이므로, 불필요한 대인 관계 갈등을 줄이고 실리적인 비즈니스 조율에 힘쓰십시오.";
+          else if (dayStemEl === "화") monthlyPrescription = " 축토 식상의 습기와 신금 재성이 열기를 수렴하니, 감정적인 지출을 억제하고 안전자산 비중을 단단히 굳히는 것이 유리합니다.";
+          else if (dayStemEl === "토") monthlyPrescription = " 비겁과 식상의 기운이 응축되는 엄동설한이니, 새로운 판을 벌이기보다 기존 자산을 정밀하게 결산하고 신년 계획을 설계하십시오.";
+          else if (dayStemEl === "금") monthlyPrescription = " 인성과 비겁이 든든한 버팀목이 되어주니, 주변의 든든한 신뢰를 바탕으로 장기적인 투자나 계약의 기틀을 마련해보십시오.";
+          else monthlyPrescription = " 토관성이 관리를 돕고 금인성이 지혜를 채우니, 마음의 조급함을 버리고 차분히 자리를 지키며 실력을 배양하는 내실에 집중하십시오.";
+        }
+
+        const monthTitles = {
+          1: "음력 1월은 새로운 기운이 싹트는 무풍지대와 같으나, 세운의 갑작스러운 변화 기류를 감지해야 합니다.",
+          2: "음력 2월은 만물이 깨어나는 춘분기이나, 일시적인 꽃샘추위처럼 인간관계의 구설수를 주의하십시오.",
+          3: "음력 3월은 비옥한 황토 대지에 씨앗을 뿌리는 시기이니, 새로운 비즈니스 파트너십이 대길합니다.",
+          4: "음력 4월은 여름의 초입에서 만물이 울창해지듯, 내 능력을 적극 발산하고 제안서를 제출하기 최적입니다.",
+          5: "음력 5월은 화기가 극대화되는 시기이니, 심혈관계 피로와 충동적인 투자를 피하는 수성(守城) 전략을 쓰십시오.",
+          6: "음력 6월은 무더운 삼복더위처럼 갈등이 표출되기 쉬우니 감정적 대립을 억제하고 소통을 부드럽게 유지하십시오.",
+          7: "음력 7월은 선선한 가을바람이 불어와 열기를 내리듯, 묵은 문서나 계약 갈등이 순탄하게 조율되기 시작합니다.",
+          8: "음력 8월은 풍요로운 추수기이니, 노력했던 자산 성취나 승진 계약의 도장을 찍기 최고의 골든타임입니다.",
+          9: "음력 9월은 서리가 내리는 시기이니, 무리한 확장보다 기존 성과를 안전하게 결산하고 내실을 다지십시오.",
+          10: "음력 10월은 기해월(己亥月)로서 굳건한 토 기운과 풍부한 수 기운이 유입되어 차분한 성찰에 유리합니다." + monthlyPrescription,
+          11: "음력 11월은 경자월(庚子月)로서 싸늘한 금 기운과 응축된 수 기류가 천하를 덮어 조용히 기량을 닦아야 합니다." + monthlyPrescription,
+          12: "음력 12월은 신축월(辛丑月)로서 차갑고 단단한 금토 기운이 1년의 마지막 결실을 갈무리하며 다음 도약을 예비합니다." + monthlyPrescription
+        };
+        const monthDetailsEnriched = {
+          1: {
+            wealth: "신년 초반에는 예상외의 지출이 생길 수 있으니 가계부를 철저히 점검하고 보수적으로 행동하십시오.",
+            love: "서로에게 바빠 소홀해질 수 있으니 주말에는 온전히 동반자에게 마음을 집중해 대화를 나누십시오.",
+            health: "겨울철 찬 바람으로 호흡기 면역력이 저하되기 쉬우니 충분한 미온수 음용과 휴식을 유지하십시오.",
+            wealthVal: 3, loveVal: 3, healthVal: 3
+          },
+          2: {
+            wealth: "구설수로 인한 불필요한 위약금이나 손실이 있을 수 있으니 서류 상의 확인을 두 번 이상 반복하십시오.",
+            love: "작은 말다툼이 커져 신뢰에 금이 가기 쉽습니다. 상대가 먼저 불만을 말할 때 끝까지 들어주는 혜안이 필요합니다.",
+            health: "환절기 비염이나 알레르기 피부 질환을 겪기 쉬우니 실내 청결과 공기 정화에 정성을 기울이십시오.",
+            wealthVal: 2, loveVal: 2, healthVal: 3
+          },
+          3: {
+            wealth: "좋은 협력자가 찾아와 유리한 조건의 비즈니스 계약을 제안하니 긍정적인 파트너십을 추진하십시오.",
+            love: "싱글이라면 뜻하지 않은 모임에서 품격 있는 인연을 만나며, 커플은 깊은 신뢰 관계가 형성됩니다.",
+            health: "겨울철에 움츠러들었던 신체 기맥을 깨워주는 스트레칭과 가벼운 하이킹으로 활력을 충전하십시오.",
+            wealthVal: 4, loveVal: 4, healthVal: 4
+          },
+          4: {
+            wealth: "내가 기획한 아이디어나 능력이 상사나 거래처의 호평을 받아 추가적인 인센티브나 기회가 도래합니다.",
+            love: "다정다감한 태도가 연인에게 큰 안정감을 선사하며, 가족 간의 화목이 배가되는 평화로운 운기입니다.",
+            health: "야외 활동이 잦아져 체력 소모가 빠르니 충분한 고단백 섭식과 숙면을 통해 에너지를 보충하십시오.",
+            wealthVal: 4, loveVal: 4, healthVal: 4
+          },
+          5: {
+            wealth: "화기가 팽창하여 충동적인 대출이나 리스크 높은 투자의 유혹이 생기나 무조건 지갑을 닫는 수성이 최선입니다.",
+            love: "마음속의 짜증이 연인에게 화풀이로 이어지기 쉽습니다. 감정이 격해질 때는 잠시 거리를 두는 것이 안전합니다.",
+            health: "심장의 열이 올라 불면증이나 두통이 생길 수 있으니 야간 카페인 섭취를 금하고 명상을 실천해 보십시오.",
+            wealthVal: 2, loveVal: 2, healthVal: 2
+          },
+          6: {
+            wealth: "상반기 재정을 종합 결산하며 새는 구멍을 막아야 하는 시기입니다. 고정 비용을 줄이는 구조조정을 단행하십시오.",
+            love: "오래 묵은 해묵은 갈등이 다시 떠오를 수 있습니다. 회피하지 말고 진심 어린 사과와 배려로 매듭을 지으십시오.",
+            health: "여름철 더위로 인한 탈수 및 비뇨기계 질환이 염려되니 짠 음식을 피하고 수분을 넉넉히 보충하십시오.",
+            wealthVal: 3, loveVal: 2, healthVal: 3
+          },
+          7: {
+            wealth: "지연되었던 거래대금이 입금되거나 문서 갈등이 극적으로 조율되어 한숨을 돌리는 안정 기류가 흐릅니다.",
+            love: "서로에 대한 불만이 오해였음을 깨닫고 편안한 정을 나눕니다. 가벼운 교외 드라이브가 연애운을 북돋웁니다.",
+            health: "소화기계 점막이 약해져 체기가 생기기 쉬우니 기름지고 차가운 맥주나 인스턴트 섭취를 조절하십시오.",
+            wealthVal: 4, loveVal: 4, healthVal: 3
+          },
+          8: {
+            wealth: "상반기부터 땀 흘려 노력해 온 결과물이 금전적 계약이나 승진, 성과급의 형태로 확정되는 길한 시기입니다.",
+            love: "연인과 미래의 구체적인 약속을 하거나 부모님께 인사를 드리는 등 공인된 관계로 안착하기 좋은 달입니다.",
+            health: "신체 기운이 고르게 순환되어 가벼운 피로 외에는 최상의 컨디션을 유지하니 규칙적인 운동을 지속하십시오.",
+            wealthVal: 5, loveVal: 5, healthVal: 4
+          },
+          9: {
+            wealth: "신규 무리한 투자는 손실의 징조가 짙으니 국채나 예적금 등 원금 보존형 구조를 단단히 잠그십시오.",
+            love: "서로에게 지나친 참견을 하기보다는 각자의 프라이버시를 존중하며 성숙한 거리를 지키는 것이 이롭습니다.",
+            health: "기온 차가 큰 환절기이므로 체온 유지를 위해 머플러를 착용하시고 가벼운 따뜻한 차 음용을 습관화하십시오.",
+            wealthVal: 3, loveVal: 3, healthVal: 3
+          },
+          10: {
+            wealth: "풍부한 수기가 자금을 원활히 소통시켜 부차적인 이익을 창출하나, 동업 제안은 단호히 거절해야 자산을 지킵니다.",
+            love: "대인관계와 연인 궁합에 은혜로운 평화가 도래합니다. 묵은 오해가 눈 녹듯 사그라들어 편안한 안락함을 공유하며 아늑한 정을 돈독하게 쌓아올립니다.",
+            health: "신장과 비뇨기계 컨디션이 호전됩니다. 취침 전 따뜻한 핫팩을 아랫배에 올려 혈류를 덥혀주고 숙면을 취하면 다음 날 아침이 개운해질 것입니다.",
+            wealthVal: 4, loveVal: 4, healthVal: 4
+          },
+          11: {
+            wealth: "급작스러운 출장이나 환경적 변동으로 인해 부가적인 비용 지출이 발생할 수 있습니다. 비상금을 충분히 확보해 두고, 지인과의 금전 거래나 보증은 완전 거부하십시오.",
+            love: "물리적 공간 변동(이사, 장거리 출장 등)으로 인해 서로 소통의 부재가 발생할 수 있습니다. 매일 정해진 시간에 다정하게 목소리 전화를 나누어 안심을 선물하십시오.",
+            health: "빙판길 골절 사고나 심한 감기몸살의 위험이 상존하니 외출 시 따뜻하게 체온을 보존하시고 굽이 낮고 미끄러지지 않는 신발을 착용하십시오.",
+            wealthVal: 2, loveVal: 3, healthVal: 1
+          },
+          12: {
+            wealth: "1년의 재정 결산을 마무리하고 신년의 새로운 자금 계획을 세우는 시기입니다. 고정비를 줄이고 저축 비율을 한 단계 끌어올리는 알뜰한 재무 구조가 완성됩니다.",
+            love: "안정적이고 차분한 애정 전선이 흐릅니다. 서로를 존중하며 다가오는 새해의 공통 목표(내 집 마련, 장기 계획 등)를 다정하게 설계하기에 최적입니다.",
+            health: "체력을 고갈되기 쉬운 엄동설한의 시기이니 흰색 뿌리채소와 고단백 한식 요리로 신체 내부의 온기 센서를 채워 체력을 원천 보충해 주십시오.",
+            wealthVal: 3, loveVal: 3, healthVal: 3
+          }
+        };
+        
+        const activeDetailBase = monthDetailsEnriched[m] || { wealth: "", love: "", health: "", wealthVal: 3, loveVal: 3, healthVal: 3 };
+        
+        let wealthMod = 0;
+        let loveMod = 0;
+        let healthMod = 0;
+
+        const hwaCount = elements["화"] || 0;
+        const toCount = elements["토"] || 0;
+        const geumCount = elements["금"] || 0;
+        const waterCount = elements["수"] || 0;
+
+        if (m === 10) {
+          if (dayStemEl === "목") wealthMod = (toCount >= 1) ? 1 : 0;
+          else if (dayStemEl === "토") wealthMod = (toCount >= 2) ? 1 : 0;
+          else if (dayStemEl === "화") wealthMod = (waterCount >= 3) ? -1 : 0;
+          
+          if (dayStemEl === "토" || dayStemEl === "금") loveMod = 1;
+          else if (dayStemEl === "화" && waterCount >= 3) loveMod = -1;
+
+          if (hwaCount >= 3 && waterCount === 0) healthMod = -1;
+          else if (waterCount >= 1) healthMod = 1;
+        } else if (m === 11) {
+          if (dayStemEl === "목" && waterCount >= 1) wealthMod = 1;
+          else if (dayStemEl === "화") wealthMod = -1;
+          
+          if (dayStemEl === "목" || dayStemEl === "토") loveMod = 1;
+
+          if (hwaCount <= 1) healthMod = -1;
+          else if (hwaCount >= 2) healthMod = 1;
+        } else if (m === 12) {
+          if (toCount >= 1 && geumCount >= 1) wealthMod = 1;
+          if (dayStemEl === "화" || dayStemEl === "수") loveMod = 1;
+          if (geumCount >= 3 && (elements["목"] || 0) <= 1) healthMod = -1;
+        }
+
+        const activeDetail = {
+          ...activeDetailBase,
+          wealthVal: Math.max(1, Math.min(5, activeDetailBase.wealthVal + wealthMod)),
+          loveVal: Math.max(1, Math.min(5, activeDetailBase.loveVal + loveMod)),
+          healthVal: Math.max(1, Math.min(5, activeDetailBase.healthVal + healthMod))
+        };
+        
+        // 시각화: 별점 렌더러
+        const renderStars = (val) => {
+          return (
+            <div className="flex gap-0.5 text-amber-500 font-bold text-[13px] shrink-0">
+              {"★".repeat(val)}{"☆".repeat(5 - val)}
+            </div>
+          );
+        };
+
+        return wrapLock(
+          <div className="space-y-6 py-4">
+            <div className="text-center space-y-2 mb-8">
+              <span className="text-xs text-[#A3845B] font-bold block">월별 상세 신수비결</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2026년 음력 {m}월 정밀 운명 지도</h2>
+              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+            </div>
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="bg-[#FAF7F0] p-4 rounded-xl border border-[#E2DDD5]/60 text-[11px] font-semibold text-[#8B221E] leading-relaxed text-justify">
+                {monthTitles[m]}
+              </p>
+              
+              {/* 운기 정밀 지표 리스트 (시각화 보강) */}
+              <div className="space-y-4 pt-2">
+                <div className="bg-[#FCF9F5] border border-[#E2DDD5]/70 rounded-xl p-4 space-y-2 shadow-sm">
+                  <div className="flex justify-between items-center border-b border-[#E2DDD5]/40 pb-1.5">
+                    <span className="font-bold text-[#A3845B] flex items-center gap-1 text-[11px]">🪙 재물/비즈니스 전술</span>
+                    {renderStars(activeDetail.wealthVal)}
+                  </div>
+                  <p className="text-[10px] text-gray-500 font-light leading-relaxed">{activeDetail.wealth}</p>
+                </div>
+
+                <div className="bg-[#FFF5F5]/30 border border-red-100 rounded-xl p-4 space-y-2 shadow-sm">
+                  <div className="flex justify-between items-center border-b border-red-100/70 pb-1.5">
+                    <span className="font-bold text-red-700 flex items-center gap-1 text-[11px]">💕 애정/연인 전술</span>
+                    {renderStars(activeDetail.loveVal)}
+                  </div>
+                  <p className="text-[10px] text-gray-500 font-light leading-relaxed">{activeDetail.love}</p>
+                </div>
+
+                <div className="bg-[#F4FAF6] border border-[#D4E2D7] rounded-xl p-4 space-y-2 shadow-sm">
+                  <div className="flex justify-between items-center border-b border-[#D4E2D7]/70 pb-1.5">
+                    <span className="font-bold text-[#2D5A27] flex items-center gap-1 text-[11px]">🌿 건강/수호 처방</span>
+                    {renderStars(activeDetail.healthVal)}
+                  </div>
+                  <p className="text-[10px] text-gray-500 font-light leading-relaxed">{activeDetail.health}</p>
+                </div>
+              </div>
+            </div>
+          </div>,
+          `음력 ${m}월 상세 신수비결`
+        );
+      }

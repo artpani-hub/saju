@@ -1,0 +1,78 @@
+      case "ny_roadmap_2031":
+        return wrapLock(
+          <div className="space-y-6 py-4">
+            <div className="text-center space-y-2 mb-8">
+              <span className="text-xs text-[#A3845B] font-bold block">2031 신해년(辛亥年) 세운</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2031년 신해년(辛亥年) 미래 기류 로드맵</h2>
+              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+            </div>
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2031년 신해년(辛亥年)은 은은하고 고귀한 보석 신금(辛金)과 끝없는 겨울 바다 해수(亥水)가 결합하여 맑고 청아한 금수상생(金水相生)을 형성합니다. 지난 5년간 치열하게 추진해왔던 도전과 확장이 마침내 온전한 내적인 쉼표, 가족의 안온함, 그리고 고요한 자기 성찰로 회귀하는 복록이 깊은 해입니다.
+              </p>
+
+              {/* 시각화: 기류 지표 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 신해년 운기 핵심 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>생활 및 정신적 안락 지수</span>
+                      <span className="text-[#8A6F4C]">95%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "95%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>가정 안온도 및 복록 안착</span>
+                      <span className="text-[#8A6F4C]">90%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "90%" }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 pt-1">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>창의 및 직관적 안건 도출</span>
+                      <span className="text-[#8A6F4C]">85%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "85%" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>고정 배당/인컴 자산 안정도</span>
+                      <span className="text-[#8A6F4C]">80%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: "80%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 신해년 실천 3대 카드 */}
+              <span className="font-bold text-xs text-[#8A6F4C] block pt-2">🎯 신해년 성공을 위한 3대 전략</span>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-justify shadow-inner">
+                  <span className="font-bold text-[#8A6F4C] text-[10px] block">🌊 1. 내면의 정수</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">경쟁에서 한 걸음 비켜서서 명상과 수련을 즐기며 신진대사를 안정시켜 두뇌를 쉬게 하십시오.</p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-justify shadow-inner">
+                  <span className="font-bold text-[#8A6F4C] text-[10px] block">💸 2. 고정수익 편재</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">월세 흐름이나 고배당 펀드 등 고정 현금 인컴 포트폴리오를 다져 연금 기반을 닦으십시오.</p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-justify shadow-inner">
+                  <span className="font-bold text-[#8A6F4C] text-[10px] block">🎨 3. 격조 있는 취미</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">예술, 음악, 서예 등 정신을 다스리고 격조를 높일 수 있는 여가 활동을 충실히 향유하십시오.</p>
+                </div>
+              </div>
+            </div>
+          </div>,
+          "2031년 신해년(辛亥年) 세운 로드맵"
+        )

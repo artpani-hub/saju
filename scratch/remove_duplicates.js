@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const filePath = path.join('d:', '인터그리비티', 'saju', 'src', 'app', 'result', 'page.js');
+const filePath = path.join('d:', '인터그리비티', 'saju', 'src', 'app', 'result', 'components', 'renderNewYearPageContent.js');
 let content = fs.readFileSync(filePath, 'utf8');
 
 console.log("=== Removing duplicate new year page cases from page.js ===");

@@ -1,0 +1,102 @@
+      case "ny_wealth_fortune": {
+        const dayStemEl = sajuInfo?.day?.stemEl || "목";
+        const elements = sajuInfo?.elements || {};
+        const geumCount = elements["금"] || 0;
+        const hwaCount = elements["화"] || 0;
+        const waterCount = elements["수"] || 0;
+
+        let opportunityIndex = 80;
+        if (dayStemEl === "수") {
+          opportunityIndex = 85 + Math.floor(waterCount * 1.5);
+          if (opportunityIndex > 92) opportunityIndex = 92;
+        } else if (dayStemEl === "화") {
+          opportunityIndex = 75 - Math.floor(hwaCount * 2);
+          if (opportunityIndex < 65) opportunityIndex = 65;
+        } else {
+          opportunityIndex = 75 + Math.min(10, geumCount + waterCount * 2);
+        }
+
+        let leakRiskIndex = 70;
+        if (geumCount >= 3) {
+          leakRiskIndex = Math.max(45, 60 - (geumCount - 2) * 8);
+        } else if (geumCount === 0 || hwaCount >= 3) {
+          leakRiskIndex = 80 + Math.min(15, hwaCount * 4);
+        } else {
+          leakRiskIndex = 70 + (3 - geumCount) * 3 - Math.min(10, hwaCount * 2);
+        }
+
+        let safetyRulesText = "";
+        if (dayStemEl === "목") {
+          safetyRulesText = "목(木) 일간인 귀하는 성장과 팽창을 지향하는 성향이 강해 병오년의 화기(火氣)를 만나면 무리한 확장을 꾀하기 쉽습니다. 올해는 투자의 스케일을 키우기보다는 현재 보유한 현금 흐름을 재점검하고, 리스크가 높은 신흥 시장보다는 정기적 배당이 나오는 대형 가치주 위주로 방어망을 구축하십시오.";
+        } else if (dayStemEl === "화") {
+          safetyRulesText = "화(火) 일간인 귀하는 병오년의 불타오르는 기운이 강한 비겁으로 작용하여, 주위의 부추김이나 충동적인 투기 심리에 휘둘릴 가능성이 매우 높습니다. 동업이나 금전 대여, 레버리지를 활용한 무리한 베팅은 절대 금물이며, 자산의 70% 이상을 안정적인 은행 예적금이나 안전 국채에 묶어두는 수성(守城) 전략이 생명입니다.";
+        } else if (dayStemEl === "토") {
+          safetyRulesText = "토(土) 일간인 귀하는 화생토의 흐름으로 문서를 잡거나 자산을 고정하는 기운이 강하게 작용합니다. 다만 과도한 화기로 인해 부동산이나 실물 자산에 지나치게 묶여 유동성 위기를 겪을 수 있으니, 현금성 자산을 충분히 확보해 두고 안정성 높은 실물 리츠나 채권형 포트폴리오를 우선시하십시오.";
+        } else if (dayStemEl === "금") {
+          safetyRulesText = "금(金) 일간인 귀하는 화극금의 흐름으로 재물의 통제권(관성)이 과열되는 시기입니다. 섣부른 시장 예측으로 무리한 포지션을 취하면 큰 변동성에 노출될 수 있으니, 명확한 손절 원칙을 세우고 메탈이나 원자재, 미국 달러 등 달러 베이스의 안전 자산 비중을 늘려 방어력을 높이십시오.";
+        } else { // 수
+          safetyRulesText = "수(水) 일간인 귀하는 병오년의 화기가 재성(財星)으로 들어와 자산 획득 기회가 크게 늘어납니다. 다만, 사주 원국에 수 기운이 부족할 경우 들어온 재물을 감당하지 못하고 오히려 유출될 수 있으니, 수익이 날 때마다 즉시 달러나 채권, 예금 등 꺼내 쓰기 힘든 안전자산으로 강제 전환하여 이익을 확정 지으십시오.";
+        }
+
+        return wrapLock(
+          <div className="space-y-6 py-4">
+            <div className="text-center space-y-2 mb-8">
+              <span className="text-xs text-[#8A6F4C] font-bold block">신년 재물 및 사업운 (新年 財物運)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">2026년 금전 팽창 기회와 리스크 예방</h2>
+              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+            </div>
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                병오년의 급격한 화기(火氣) 팽창은 돈을 끌어당기는 일시적인 자석 역할을 하지만, 나무 땔감이 순식간에 활활 타버리고 한 줌의 재로 변하듯 과도한 팽창 뒤에 동반되는 급작스러운 자산 누수를 철저히 조율해야 합니다. 공격적인 투자보다는 단단한 방어를 무기로 삼는 한 해가 되어야 합니다.
+              </p>
+
+              {/* 시각화: 재물 흐름 지수 */}
+              <div className="bg-[#FAF7F0] border border-[#E2DDD5] rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">📊 신년 재물 운세 입출 기류</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#8A6F4C]">
+                      <span>자산 획득 기회지수</span>
+                      <span className="text-[#8A6F4C]">{opportunityIndex}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#A3845B] rounded-full" style={{ width: `${opportunityIndex}%` }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-red-500">
+                      <span>일시적 자산 누수 위험</span>
+                      <span className="text-red-700">{leakRiskIndex}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-red-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-red-400 rounded-full" style={{ width: `${leakRiskIndex}%` }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 추가 개인화 수호 안전 수칙 텍스트 카드 */}
+              <div className="bg-amber-50/30 border border-amber-100 p-4 rounded-xl space-y-2 text-justify">
+                <span className="font-bold text-[#A3845B] text-[11px] block flex items-center gap-1">
+                  💡 의뢰인 사주 맞춤형 수호 안전 수칙
+                </span>
+                <p className="text-[10px] text-gray-700 font-light leading-relaxed">
+                  {safetyRulesText}
+                </p>
+              </div>
+
+              {/* 재물 수호 수칙 카드 */}
+              <div className="border border-[#E2DDD5] rounded-xl p-4 bg-[#FAF7F0]/30 text-justify space-y-3">
+                <span className="font-bold text-xs text-[#8A6F4C] block">🛡️ 2026년 재물 수호 안전 수칙</span>
+                <ul className="space-y-2.5 text-[10px] text-gray-600 font-light">
+                  <li>• <strong>투기성 고위험 자산 진입 금지:</strong> 올해의 기류는 변동 속도가 상상을 초월하여 뇌동 매매에 취약합니다. 상반기(음력 4~6월)에 순간적인 욕심으로 진입한 투자는 큰 손실로 이어질 확률이 높으니 보수적으로 가십시오.</li>
+                  <li>• <strong>공동 투자 및 보증 절대 금지:</strong> 사주 내 비견/겁재가 세운의 화기를 만나면 동업자 간의 불화와 수익 분배 갈등이 촉발됩니다. 돈도 잃고 사람도 잃을 운이니 독자적 운영이나 현금 수성에 매진하십시오.</li>
+                  <li>• <strong>재물 수렴 골든타임 활용:</strong> 음력 8월(계유월)은 금(金) 기운이 극에 달해 가장 유리한 재무 성과나 보상 합의가 가능하므로, 계약 도장은 이 시기에 찍는 것이 가장 길합니다.</li>
+                  <li>• <strong>보시(布施)와 기부의 개운 메커니즘:</strong> 화가 극성할 때는 타인을 위한 순수한 기부나 식사 대접을 통해 기운을 의도적으로 누설(설기)시키는 것이 예기치 못한 금전 유실 액난을 원천 방어하는 최고의 비방입니다.</li>
+                </ul>
+              </div>
+            </div>
+          </div>,
+          "신년 재물 및 사업운 분석"
+        );
+      }

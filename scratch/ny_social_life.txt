@@ -1,0 +1,119 @@
+      case "ny_social_life": {
+        const dayStemEl = sajuInfo?.day?.stemEl || "목";
+        const woodCount = sajuInfo?.elements?.["목"] || 0;
+        const fireCount = sajuInfo?.elements?.["화"] || 0;
+        const earthCount = sajuInfo?.elements?.["토"] || 0;
+        const metalCount = sajuInfo?.elements?.["금"] || 0;
+        const waterCount = sajuInfo?.elements?.["수"] || 0;
+
+        // 지표 계산
+        const socialTrustScore = Math.min(95, 75 + earthCount * 4);
+        const connectionFrequency = Math.min(95, 70 + (woodCount + waterCount) * 4);
+        const relationshipFriction = Math.min(95, 40 + fireCount * 8);
+        const communicationEfficiency = Math.min(95, 75 + (waterCount + metalCount) * 3);
+
+        // 상생 귀인 및 경계 띠 (일간별 궁합 분석)
+        const affinityZodiacs = {
+          "목": { lucky: "돼지띠, 토끼띠, 양띠", bad: "쥐띠", desc: "나를 수생목/목해합으로 생조 및 조력하는 기운으로 계약서 검토 및 신규 인프라 획득에 최고의 파트너입니다." },
+          "화": { lucky: "개띠, 양띠, 호랑이띠", bad: "쥐띠 (자오충 충돌)", desc: "강한 불기를 설기시켜 이성을 찾아주고 동업적 제안 시 실익을 배가시켜주는 띠입니다." },
+          "토": { lucky: "뱀띠, 말띠, 닭띠", bad: "토끼띠", desc: "화생토의 에너지 순환과 금의 결실로 나의 문서 자산을 수호하고 신용도를 올려주는 귀인입니다." },
+          "금": { lucky: "닭띠, 뱀띠, 용띠", bad: "범띠", desc: "뜨거운 제련을 견디도록 금의 뿌리를 지탱해주고 신년 문서 계약 체결 시 도장을 보증할 든든한 조력자입니다." },
+          "수": { lucky: "원숭이띠, 쥐띠, 돼지띠", bad: "말띠 (수화 상쟁)", desc: "금생수로 물줄기의 근원을 살리고 자금 유통과 투자 협업 시 등대와 같은 현실 조언을 건넵니다." }
+        }[dayStemEl] || { lucky: "말띠, 양띠, 개띠", bad: "쥐띠", desc: "의뢰인님의 명조 기류를 조율하고 일시적인 대인관계 갈등을 지탱해줄 최상의 궁합 띠입니다." };
+
+        return wrapLock(
+          <div className="space-y-6 py-4">
+            <div className="text-center space-y-2 mb-8">
+              <span className="text-xs text-[#5F7A68] font-bold block">대인관계 조율 (人脈 關係)</span>
+              <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A]">신년 인맥 관리 및 대인관계 조율</h2>
+              <div className="w-16 h-0.5 bg-[#A3845B]/30 mx-auto my-1" />
+            </div>
+            <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 space-y-5 shadow-sm text-xs leading-relaxed font-light text-gray-700 font-traditional">
+              <p className="text-justify font-light text-gray-600">
+                2026년 병오년은 세운의 강력한 불꽃 기운이 인맥 생태계를 달구어, 대인관계 상에서 불필요한 대립과 리셋 기류를 자극하기 쉽습니다. 사소한 언행 하나로 평소 친했던 지인과의 마찰이 발생할 수 있으나, 귀하의 기운을 차분히 받아주고 상생을 이룰 수 있는 띠 인연과 미리 소통선을 닦아놓는다면 위기에서 등대와 같은 조력을 얻을 수 있습니다. 아래의 대인 조화 지표와 인맥 매칭 전략을 참고하여 감정의 낭비를 예방하십시오.
+              </p>
+
+              {/* 시각화: 관계 신용 및 네트워킹 지표 게이지 */}
+              <div className="bg-[#F6FAF7] border border-emerald-100 rounded-xl p-4 space-y-3">
+                <span className="font-bold text-xs text-[#5F7A68] block">📊 2026년 인맥 및 소통 에너지 지표</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#5F7A68]">
+                      <span>인맥 신용도 & 신뢰 안착률</span>
+                      <span className="text-[#5F7A68]">{socialTrustScore}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-emerald-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#5F7A68] rounded-full" style={{ width: `${socialTrustScore}%` }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#5F7A68]">
+                      <span>귀인 상생 주파수 호응도</span>
+                      <span className="text-[#5F7A68]">{connectionFrequency}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-emerald-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#5F7A68] rounded-full" style={{ width: `${connectionFrequency}%` }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 pt-1">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-gray-500">
+                      <span>불필요한 갈등 노출도</span>
+                      <span className="text-gray-600">{relationshipFriction}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-red-400 rounded-full" style={{ width: `${relationshipFriction}%` }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[9px] font-semibold text-[#5F7A68]">
+                      <span>사회적 소통 및 네트워킹 효율</span>
+                      <span className="text-[#5F7A68]">{communicationEfficiency}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-emerald-50 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#5F7A68] rounded-full" style={{ width: `${communicationEfficiency}%` }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 인연 매칭 인포그래픽 (3열 카드 형태) */}
+              <span className="font-bold text-xs text-[#5F7A68] block pt-2">👥 2026년 귀인 및 경계 인맥 조견표 ({dayStemEl}일간 맞춤)</span>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-[#F6FAF7] border border-emerald-100 p-3 rounded-xl text-justify shadow-inner">
+                  <span className="font-bold text-emerald-800 text-[10px] block">👍 올해의 상생 귀인</span>
+                  <span className="text-[9px] font-semibold text-emerald-950 block mt-0.5">{affinityZodiacs.lucky}</span>
+                  <p className="text-[8px] text-emerald-700 font-light mt-1 leading-snug">
+                    {affinityZodiacs.desc}
+                  </p>
+                </div>
+                <div className="bg-[#FCF6F6] border border-red-100 p-3 rounded-xl text-justify shadow-inner">
+                  <span className="font-bold text-red-800 text-[10px] block">⚠️ 경계해야 할 인연</span>
+                  <span className="text-[9px] font-semibold text-red-600 block mt-0.5">{affinityZodiacs.bad}</span>
+                  <p className="text-[8px] text-red-500 font-light mt-1 leading-snug">
+                    주요 계약 분쟁이 생기거나 감정적 부침을 겪기 쉬우니 한 템포 유보하는 태도가 좋습니다.
+                  </p>
+                </div>
+                <div className="bg-[#FAF7F0] border border-[#E2DDD5]/60 p-3 rounded-xl text-justify shadow-inner">
+                  <span className="font-bold text-[#8A6F4C] text-[10px] block">🧭 인맥 개운 요결</span>
+                  <span className="text-[9px] font-semibold text-gray-500 block mt-0.5">서북 방위 & 금색 조율</span>
+                  <p className="text-[8px] text-gray-400 font-light mt-1 leading-snug">
+                    서북쪽 방향의 인프라를 활용하고, 은빛 실버 액세서리나 정돈된 복장이 대화의 신뢰를 올립니다.
+                  </p>
+                </div>
+              </div>
+
+              {/* 갈등 조율을 위한 행동 수칙 */}
+              <div className="border border-emerald-100 rounded-xl p-4 bg-[#F6FAF7]/30 text-justify space-y-2">
+                <span className="font-bold text-xs text-[#5F7A68] block">🧭 인맥 갈등 차단 3대 강령</span>
+                <ul className="space-y-1.5 text-[9px] text-gray-600 font-light">
+                  <li>• <strong>공과 사의 완벽한 분리:</strong> 친분 관계에 기인한 구두 계약이나 차용은 기류의 팽창 속에서 분쟁으로 가기 쉬우니 명확한 서류를 마련하십시오.</li>
+                  <li>• <strong>의견 대립 시 3초 묵언:</strong> 음력 5월과 11월에 의견 대립이 시작되면 논리적 반박 대신 차가운 냉수를 한 잔 들이켜며 화기를 식히십시오.</li>
+                </ul>
+              </div>
+            </div>
+          </div>,
+          "신년 인맥 관리 및 대인관계 조율"
+        );
+      }

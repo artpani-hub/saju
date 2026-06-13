@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const filePath = path.join('d:', '인터그리비티', 'saju', 'src', 'app', 'result', 'page.js');
-const backupPath = path.join('d:', '인터그리비티', 'saju', 'src', 'app', 'result', 'page.js.bak_ny_4_to_8');
+const filePath = path.join('d:', '인터그리비티', 'saju', 'src', 'app', 'result', 'components', 'renderNewYearPageContent.js');
+const backupPath = path.join('d:', '인터그리비티', 'saju', 'src', 'app', 'result', 'components', 'renderNewYearPageContent.js.bak_ny_4_to_8');
 
 // 1. Read original content
 let content = fs.readFileSync(filePath, 'utf8');

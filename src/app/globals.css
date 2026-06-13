@@ -1,6 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 @import "tailwindcss";
 
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
 :root {
   --background: #F9F8F6;
   --background-secondary: #F6F3EC;
@@ -63,10 +68,6 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
    Print Media Styles: PDF & 인쇄 레이아웃 보정
    ---------------------------------------------------- */
 @media print {
-  @page {
-    margin: 0; /* 브라우저 기본 헤더/푸터(날짜, URL, 페이지 번호) 출력을 방지하기 위해 마진을 0으로 설정 */
-  }
-  
   html, body {
     margin: 0 !important;
     padding: 0 !important;
@@ -94,15 +95,19 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
     margin: 0 !important;
     min-height: auto !important;
     background: transparent !important;
-    width: 100% !important;
+    width: 210mm !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
     display: block !important;
   }
   
   .max-w-3xl {
-    max-width: 100% !important;
-    width: 100% !important;
+    max-width: 210mm !important;
+    width: 210mm !important;
     padding: 0 !important;
     margin: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
     border: none !important;
     background: transparent !important;
     box-shadow: none !important;
@@ -124,12 +129,14 @@ h1, h2, h3, h4, h5, h6, .font-traditional {
     break-after: page !important;
     position: relative !important;
     width: 206mm !important;
+    max-width: 206mm !important; /* 가로 방향 인쇄 시에도 강제 늘어남 방지 */
     height: 290mm !important; /* 정확히 A4 1페이지 영역보다 획기적으로 낮춤 */
     margin-left: auto !important;
     margin-right: auto !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
+    flex: none !important; /* 부모 요소의 flex stretch 무시 */
   }
 
   /* 웹용 여백 클래스(mb-12, space-y-10 등)를 인쇄 시 적정 압축 */
