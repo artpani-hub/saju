@@ -224,3 +224,12 @@
 - **52페이지 (`ny_final_blessing` - 병오년 성공 기원 마지막 축원문)**:
   - 액자식 고급 프레임과 공식 혜안당 낙관(SVG)을 결합하여 동양적 디자인의 서예 축원문 프레임을 연동했습니다.
   - 의뢰인의 일간 오행 성향에 매칭되는 개별 오행 수호 축원 구절(예: 목 일간의 경우 '푸른 거목처럼 굳건히 뿌리 내려...')을 동적으로 주입 완료했습니다.
+
+### 24. 6~52페이지 핵심 사주 분석 구문 텍스트 갈색 가독성 강조 및 템플릿 변수 런타임 오류 수정 [FEATURE 및 BUG FIX]
+- **템플릿 이스케이프 버그 수정**: `renderNewYearPageContent.js` 파일 내 `getPersonalizedSolution` 함수 본문의 백슬래시(`\`)가 템플릿 문자열 보간을 차단해 `${name}`이 텍스트 그대로 렌더링되던 오류와 `\n` 개행 문자 이중 이스케이프를 제거하여 정상화했습니다.
+- **6~52페이지 갈색 가독성 강조 적용**: 고민 해결 처방 페이지(39~40페이지, 41페이지) 등 6페이지부터 마지막 52페이지까지 사용자가 주목해야 할 핵심 사주 키워드들(예: 오행 보완법, 럭키 컬러, 방향, 음식 등)에 굵은 갈색 폰트 스타일(인라인 스타일 `style={{ color: "#8A6F4C", fontWeight: "bold" }}` 매핑 및 `dangerouslySetInnerHTML` 연동)을 적용하여 가독성을 극대화했습니다.
+- **도커 배포 및 원격 저장소 푸시**:
+  - Next.js 로컬 프로덕션 빌드 테스트 통과
+  - Docker Compose 서비스 재빌드 및 재배포 완료 (`docker-compose down && docker-compose up -d --build`)
+  - 포트 3000(프로덕션 도커 서버) 및 포트 3001(로컬 개발 서버) 교차 검증 및 브라우저 스크린샷 확보
+  - Git Push 완료 (`fix: resolve template literal escape issue and restore brown color styling in production build`)
