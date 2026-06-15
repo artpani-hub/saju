@@ -3202,6 +3202,8 @@ function ResultContent() {
 
   // Determine user's base element for 2026 compatibility (일간 오행 기준)
   const baseEl = sajuInfo.day.stemEl; // Representing birth day element (일간)
+  const gunghapType = searchParams.get("gunghapType") || "compatibility";
+
 
 
 
