@@ -6053,22 +6053,40 @@ function ResultContent() {
 
     const partnerMind = getPartnerMind(partnerStem);
 
-    // 재회 연락 황금 시기 (100% 동적 연산)
-    const getReunionTiming = (myBr, partnerBr) => {
-      const isWaterCouple = ["子", "亥"].includes(myBr) || ["子", "亥"].includes(partnerBr);
-      if (isWaterCouple) {
+    // 재회 연락 황금 시기 (100% 동적 연산 고도화)
+    const getReunionTiming = (myBr, partnerBr, myStEl, partnerStEl) => {
+      // 1. 수(水) 기류 부부 (일간 오행 중 하나라도 수이거나, 배우자 자리에 수가 있는 경우)
+      if (myStEl === "수" || partnerStEl === "수" || ["子", "亥"].includes(myBr) || ["子", "亥"].includes(partnerBr)) {
         return {
           month: "올해 음력 7월(申월) 또는 10월(亥월)",
-          reason: "지지 지장간의 수기운이 융합되어 두 사람의 얼어붙은 배우자궁에 강력한 정서적 윤화작용(소통의 통로)을 뚫어주는 시기입니다. 이 달에 조심스럽게 안부를 건넬 시 재회 성공률이 극대화됩니다."
+          reason: "지지 지장간의 수(水)기운이 융합되어 두 사람의 얼어붙은 배우자궁에 강력한 정서적 윤화작용(소통의 통로)을 뚫어주는 시기입니다. 이 시기에는 감성적인 호소와 따뜻한 안부 인사가 두 사람의 얼어붙었던 갈등을 녹이고 재회 성공률을 극대화하게 됩니다."
         };
       }
+      
+      // 2. 목(木) / 화(火) 기류 부부 (성장 및 열정의 기운)
+      if (myStEl === "목" || myStEl === "화" || partnerStEl === "목" || partnerStEl === "화") {
+        return {
+          month: "올해 음력 2월(卯월) 또는 5월(午월)",
+          reason: "목생화(木生火)의 생명력 넘치는 기운이 강하게 솟구치며 서로의 차가웠던 침묵을 깨우는 목화(木火) 상승 기류가 형성되는 달입니다. 굳어있던 자존심보다 서로를 향한 본능적인 끌림이 살아나 나의 적극적인 연락에 상대방이 가장 유연하고 따뜻하게 반응해 줄 최고의 타이밍입니다."
+        };
+      }
+      
+      // 3. 금(金) 기류 부부 (결단 및 책임감)
+      if (myStEl === "금" || partnerStEl === "금") {
+        return {
+          month: "올해 음력 8월(酉월) 또는 11월(子월)",
+          reason: "금생수(金生水)의 차분하고 투명한 기운이 작동하면서 서로 쌓여있던 오해와 불필요한 감정의 앙금을 말끔히 정화하고 이성적인 대화의 문을 여는 달입니다. 현실적인 해결책과 함께 가벼운 커피 한 잔을 청할 때 가장 높은 결실을 맺을 수 있습니다."
+        };
+      }
+
+      // 4. 토(土) 기류 부부 (신뢰와 안정감)
       return {
-        month: "올해 음력 9월(戌월) 또는 12월(丑월)",
-        reason: "메마른 사주의 기운을 촉촉하게 대변해 주며 서로의 자존심을 꺾는 토생금(土生金)의 합화 기류가 지지에 강하게 매핑되는 달입니다. 상대방이 먼저 연락을 해오거나 나의 연락에 가장 유연하게 반응해 줄 최고의 타이밍입니다."
+        month: "올해 음력 3월(辰월) 또는 9월(戌월)",
+        reason: "메마르고 단단해진 서로의 고집을 부드럽게 윤화시켜 주며, 토생금(土生金) 및 지지 육합(六合)의 안정적인 기류가 강하게 작동하는 달입니다. 급작스러운 접근보다는 공통의 관심사나 일상적인 소재를 토대로 천천히 다가갈 때 두 사람의 인연 끈이 가장 굳건히 연결될 것입니다."
       };
     };
 
-    const reunionTiming = getReunionTiming(myBranch, partnerBranch);
+    const reunionTiming = getReunionTiming(myBranch, partnerBranch, myStemEl, partnerStemEl);
 
     return (
       <div className="space-y-8 animate-fadeIn">
@@ -6112,6 +6130,48 @@ function ResultContent() {
             <strong>이별 원인 분석:</strong> {separationReason}
           </div>
         </div>
+
+        {/* 1.5. 운명의 끈 및 상극 여부 동적 분석 (신설) */}
+        {(() => {
+          // 일간 상생상극 분석
+          const getStemRelationship = (myStEl, partnerStEl) => {
+            const relationships = {
+              "목토": "목극토(木剋土)로 서로 강한 제어와 자극을 주며 끌어당기는 자석 같은 상극 관계입니다. 평소엔 강하게 충돌하여 갈등을 빚기 쉬우나, 서로에게 결핍된 현실성을 채워주는 강력한 보완적 인연입니다.",
+              "토목": "목극토(木剋土)로 서로 강한 제어와 자극을 주며 끌어당기는 자석 같은 상극 관계입니다. 평소엔 강하게 충돌하여 갈등을 빚기 쉬우나, 서로에게 결핍된 현실성을 채워주는 강력한 보완적 인연입니다.",
+              "화금": "화극금(火剋金)으로 한쪽이 한쪽을 강하게 통제하려는 극적(剋的)인 만남입니다. 서로의 주관이 뚜렷하여 부딪치면 깨지기 쉽지만, 기막힌 타이밍에 운명적인 영감과 강력한 텐션을 주고받아 쉽게 헤어 나오지 못하는 강렬한 끈을 지니고 있습니다.",
+              "금화": "화극금(火剋金)으로 한쪽이 한쪽을 강하게 통제하려는 극적(剋的)인 만남입니다. 서로의 주관이 뚜렷하여 부딪치면 깨지기 쉽지만, 기막힌 타이밍에 운명적인 영감과 강력한 텐션을 주고받아 쉽게 헤어 나오지 못하는 강렬한 끈을 지니고 있습니다.",
+              "토수": "토극수(土剋水)로 한쪽의 흐르는 감성을 다른 한쪽이 가로막아 가두는 상극 관계입니다. 정서적 소통에서 한계와 답답함을 자주 느꼈을 수 있으나, 명리학적으로는 무절제한 방황을 막아주고 서로의 자산을 굳건하게 모아주는 필연적 규칙의 끈입니다.",
+              "수토": "토극수(土剋水)로 한쪽의 흐르는 감성을 다른 한쪽이 가로막아 가두는 상극 관계입니다. 정서적 소통에서 한계와 답답함을 자주 느꼈을 수 있으나, 명리학적으로는 무절제한 방황을 막아주고 서로의 자산을 굳건하게 모아주는 필연적 규칙의 끈입니다.",
+              "금목": "금극목(金剋木)으로 예리한 칼끝이 나무를 다듬는 상극의 인연입니다. 거침없는 비판과 냉정한 대화 방식으로 깊은 상처를 주고받기 쉬우나, 도자기를 구워내듯 서로의 미성숙한 부분을 가장 명확하게 깎아서 다듬어주는 성장의 파트너십입니다.",
+              "목금": "금극목(金剋木)으로 예리한 칼끝이 나무를 다듬는 상극의 인연입니다. 거침없는 비판과 냉정한 대화 방식으로 깊은 상처를 주고받기 쉬우나, 도자기를 구워내듯 서로의 미성숙한 부분을 가장 명확하게 깎아서 다듬어주는 성장의 파트너십입니다.",
+              "수화": "수극화(水剋火)로 불과 물이 격렬하게 끓어오르는 대표적인 조후 상극입니다. 서로의 온도 차이가 극명하여 삶의 템포가 달라 삐걱거리지만, 서로가 가진 화려함과 깊은 어둠에 깊게 동조되어 이별 후에도 가장 잔상이 오래 남는 질긴 인연의 조화를 이룹니다.",
+              "화수": "수극화(水剋火)로 불과 물이 격렬하게 끓어오르는 대표적인 조후 상극입니다. 서로의 온도 차이가 극명하여 삶의 템포가 달라 삐걱거리지만, 서로가 가진 화려함과 깊은 어둠에 깊게 동조되어 이별 후에도 가장 잔상이 오래 남는 질긴 인연의 조화를 이룹니다."
+            };
+            const pair = myStEl + partnerStEl;
+            return relationships[pair] || "서로의 기운이 모나지 않게 상생하는 무난한 흐름이나, 갈등 시 대치 상태가 지속되기 쉽습니다. 상대적으로 자극은 덜하지만 평화와 편안함을 주는 관계입니다.";
+          };
+
+          const relationText = getStemRelationship(myStemEl, partnerStemEl);
+
+          return (
+            <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-lg p-6 shadow-sm space-y-3">
+              <h4 className="font-myeongjo text-sm font-bold text-red-800 flex items-center gap-1.5 border-b border-red-200 pb-2">
+                🔗 제 1.5장. 두 사람이 평생 함께해야 할 운명의 상대인가
+              </h4>
+              <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
+                고객님이 가장 깊게 궁금해하시는 <strong>'우리가 정말 평생을 함께할 인연의 고리를 가진 운명인가'</strong>에 대한 사주 매칭 해독 결과입니다.
+              </p>
+              <div className="p-4 bg-white rounded border border-[#E2DDD5]/60 text-xs text-[#2C2C2C] leading-relaxed space-y-2 font-light">
+                <p>
+                  <strong>사주 일간 및 조후 조화 진단:</strong> <span style={{ color: "#8A6F4C", fontWeight: "bold" }}>{relationText}</span>
+                </p>
+                <p className="border-t border-gray-100 pt-2.5 text-[11px] text-gray-500 font-traditional">
+                  ※ 명리학적으로 서로 상극(剋)인 인연은 나쁘기만 한 것이 아닙니다. 밋밋하게 흘러가는 상생(生)보다 오히려 인생의 굴곡진 대운에서 가장 깊숙이 얽히며 서로의 운명선을 격렬하게 끌어당기는 원동력이 됩니다. 상극의 마찰을 '개운(開運) 비책'으로 다스릴 때 비로소 헤어질 수 없는 단 하나의 운명적 동반자로 완성됩니다.
+                </p>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* 2. 상대방 현재 속마음 */}
         <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 shadow-sm space-y-4">
