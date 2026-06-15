@@ -103,11 +103,11 @@ export const renderPageContent = (page, ctx) => {
           <div className="border border-[#E2DDD5] bg-[#F9F8F6]/90 rounded-lg p-6 max-w-xl mx-auto w-full space-y-4 shadow-sm">
             <div className="grid grid-cols-2 gap-4 text-left">
               <div className="space-y-1">
-                <span className="text-[10px] text-[#A3845B] font-semibold block">의뢰인 성명</span>
+                <span className="text-[10px] text-[#A3845B] font-semibold block">성함</span>
                 <span className="font-myeongjo text-base font-bold text-[#1A1A1A]">{name} 님 ({gender})</span>
               </div>
               <div className="space-y-1">
-                <span className="text-[10px] text-[#A3845B] font-semibold block">의뢰인 출생 정보</span>
+                <span className="text-[10px] text-[#A3845B] font-semibold block">출생 정보</span>
                 <span className="text-xs font-semibold text-[#1A1A1A]">
                   {year}년 {month}월 {day}일 {hour} ({calendar === "solar" ? "양력" : "음력"})
                 </span>
@@ -115,7 +115,7 @@ export const renderPageContent = (page, ctx) => {
             </div>
             <div className="border-t border-[#E2DDD5]/70 pt-3 grid grid-cols-2 gap-4 text-left">
               <div className="space-y-1">
-                <span className="text-[10px] text-[#A3845B] font-semibold block">의뢰 구분 및 등급</span>
+                <span className="text-[10px] text-[#A3845B] font-semibold block">구분 및 등급</span>
                 <span className="text-xs font-bold text-[#A3845B]">평생 종합 사주 (초프리미엄 32페이지 보감)</span>
               </div>
               <div className="space-y-1">
@@ -189,11 +189,11 @@ export const renderPageContent = (page, ctx) => {
             </p>
           </div>
 
-          {/* 의뢰인님의 사주 명조 구성 상세 진단 */}
+          {/* {name}님의 사주 명조 구성 상세 진단 */}
           <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-3">
             <h4 className="font-bold text-[#A3845B] text-xs font-myeongjo">📝 {name}님의 사주팔자 명조 구성 요약</h4>
             <div className={`text-[11px] text-[#5F5F5F] font-light leading-relaxed ${blurClass}`}>
-              의뢰인님의 사주는 <strong>{sajuInfo.year.stemEl}{sajuInfo.year.branchEl}의 해</strong>, 
+              {name}님의 사주는 <strong>{sajuInfo.year.stemEl}{sajuInfo.year.branchEl}의 해</strong>, 
               <strong>{sajuInfo.month.stemEl}{sajuInfo.month.branchEl}의 달</strong>, 
               <strong>{sajuInfo.day.stemEl}{sajuInfo.day.branchEl}의 날</strong>, 
               <strong>{sajuInfo.hour.stemEl}{sajuInfo.hour.branchEl}의 시간</strong>에 태어난 
@@ -1420,7 +1420,7 @@ export const renderPageContent = (page, ctx) => {
       return (
         <div className="space-y-6">
           <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
-            💌 의뢰인 개별 고민 정밀 조율 솔루션
+            💌 {name}님 개별 고민 정밀 조율 솔루션
           </h3>
           <div className="bg-white border-2 border-[#A3845B]/40 rounded-lg p-6 space-y-4 shadow-md">
             <div className="bg-[#F9F8F6] border-l-4 border-[#A3845B] p-4 rounded text-xs">
@@ -1913,9 +1913,9 @@ export const renderPageContent = (page, ctx) => {
                   <span className="font-bold text-[#A3845B] block mb-1">🎯 내 사주 작용 현황:</span>
                   <p className={`text-[11px] text-[#5F5F5F] font-light ${blurClass}`}>
                     {dowhaCount > 0 ? (
-                      `의뢰인님의 사주 지지에는 도화살에 해당하는 글자(자/오/묘/유)가 ${dowhaCount}개 존재합니다. 남들의 시선을 자연스럽게 이끄는 훌륭한 매력과 대중 친화적인 기운이 강력하게 작동하고 있으므로 남들 앞에 자신을 드러낼 때 귀인의 도움을 얻거나 재물 기회를 포착하는 속도가 매우 빠릅니다.`
+                      `${name}님의 사주 지지에는 도화살에 해당하는 글자(자/오/묘/유)가 ${dowhaCount}개 존재합니다. 남들의 시선을 자연스럽게 이끄는 훌륭한 매력과 대중 친화적인 기운이 강력하게 작동하고 있으므로 남들 앞에 자신을 드러낼 때 귀인의 도움을 얻거나 재물 기회를 포착하는 속도가 매우 빠릅니다.`
                     ) : (
-                      "의뢰인님의 사주 지지에는 도화살에 해당하는 글자(자/오/묘/유)가 없습니다. 억지로 대중 앞에 나서 튀려고 하기보다, 탄탄한 전문성이나 정직함 및 진정성을 먼저 구축하여 사람들의 신뢰를 얻어가는 것이 훨씬 유리합니다."
+                      `${name}님의 사주 지지에는 도화살에 해당하는 글자(자/오/묘/유)가 없습니다. 억지로 대중 앞에 나서 튀려고 하기보다, 탄탄한 전문성이나 정직함 및 진정성을 먼저 구축하여 사람들의 신뢰를 얻어가는 것이 훨씬 유리합니다.`
                     )}
                   </p>
                 </div>
@@ -1950,9 +1950,9 @@ export const renderPageContent = (page, ctx) => {
                   <span className="font-bold text-[#A3845B] block mb-1">🎯 내 사주 작용 현황:</span>
                   <p className={`text-[11px] text-[#5F5F5F] font-light ${blurClass}`}>
                     {yeokmaCount > 0 ? (
-                      `의뢰인님의 사주 지지에는 역마살에 해당하는 글자(인/신/사/해)가 ${yeokmaCount}개 존재합니다. 활동 반경이 국내외로 매우 넓고, 스스로 개척하여 판도를 바꾸는 강력한 실행력과 임기응변 능력을 갖추고 있어 정적인 일보다는 끊임없이 환경에 변화를 주는 구조에서 운이 가장 발복합니다.`
+                      `${name}님의 사주 지지에는 역마살에 해당하는 글자(인/신/사/해)가 ${yeokmaCount}개 존재합니다. 활동 반경이 국내외로 매우 넓고, 스스로 개척하여 판도를 바꾸는 강력한 실행력과 임기응변 능력을 갖추고 있어 정적인 일보다는 끊임없이 환경에 변화를 주는 구조에서 운이 가장 발복합니다.`
                     ) : (
-                      "의뢰인님의 사주 지지에는 역마살에 해당하는 글자(인/신/사/해)가 없습니다. 잦은 이동이나 급격한 거주/직무 변화는 오히려 심신을 피로하게 하므로, 한 지역이나 안정된 고정 근무지에서 오랜 기간 뿌리를 내리고 숙련도를 키워가는 것이 재정 안정에 훨씬 적합합니다."
+                      `${name}님의 사주 지지에는 역마살에 해당하는 글자(인/신/사/해)가 없습니다. 잦은 이동이나 급격한 거주/직무 변화는 오히려 심신을 피로하게 하므로, 한 지역이나 안정된 고정 근무지에서 오랜 기간 뿌리를 내리고 숙련도를 키워가는 것이 재정 안정에 훨씬 적합합니다.`
                     )}
                   </p>
                 </div>
@@ -1987,9 +1987,9 @@ export const renderPageContent = (page, ctx) => {
                   <span className="font-bold text-[#A3845B] block mb-1">🎯 내 사주 작용 현황:</span>
                   <p className={`text-[11px] text-[#5F5F5F] font-light ${blurClass}`}>
                     {hwagaeCount > 0 ? (
-                      `의뢰인님의 사주 지지에는 화개살에 해당하는 글자(진/술/축/미)가 ${hwagaeCount}개 존재합니다. 복잡하고 눈에 보이는 현실 너머의 본질을 꿰뚫는 사색적 능력과 창작·문화예술에 깊은 안목이 있습니다. 타인의 지식이나 노하우를 그대로 답습하기보다 스스로 연구하여 독자적인 통찰을 끌어낼 때 재물이 화개 창고에 쌓이게 됩니다.`
+                      `${name}님의 사주 지지에는 화개살에 해당하는 글자(진/술/축/미)가 ${hwagaeCount}개 존재합니다. 복잡하고 눈에 보이는 현실 너머의 본질을 꿰뚫는 사색적 능력과 창작·문화예술에 깊은 안목이 있습니다. 타인의 지식이나 노하우를 그대로 답습하기보다 스스로 연구하여 독자적인 통찰을 끌어낼 때 재물이 화개 창고에 쌓이게 됩니다.`
                     ) : (
-                      "의뢰인님의 사주 지지에는 화개살에 해당하는 글자(진/술/축/미)가 없습니다. 생각에만 갇혀 우울감이나 고독에 허우적대는 일이 거의 없고, 현실적이며 행동주의적 사고를 좋아하지만 고유한 정신적 깊이나 영감을 얻는 인문학 독서 등에는 의식적인 할애가 보완되어야 합니다."
+                      `${name}님의 사주 지지에는 화개살에 해당하는 글자(진/술/축/미)가 없습니다. 생각에만 갇혀 우울감이나 고독에 허우적대는 일이 거의 없고, 현실적이며 행동주의적 사고를 좋아하지만 고유한 정신적 깊이나 영감을 얻는 인문학 독서 등에는 의식적인 할애가 보완되어야 합니다.`
                     )}
                   </p>
                 </div>
@@ -2125,7 +2125,7 @@ export const renderPageContent = (page, ctx) => {
                   👤 내 사주에 맞는 귀인은 누구인가?
                 </span>
                 <p className={`text-[11px] text-[#5F5F5F] font-light leading-relaxed ${blurClass}`}>
-                  의뢰인님의 일간은 <strong>{sajuInfo?.day?.stem} ({sajuInfo?.day?.stemEl}의 기운)</strong>입니다. 
+                  {name}님의 일간은 <strong>{sajuInfo?.day?.stem} ({sajuInfo?.day?.stemEl}의 기운)</strong>입니다. 
                   사주학적으로 귀하의 인생을 돕는 최고의 절대 귀인인 천을귀인은 <strong>{gwiinInfo.animals.join(" 및 ")}</strong>입니다.
                   <br />
                   <span className="text-[#8B221E] font-medium block mt-1">{gwiinInfo.description}</span>
@@ -2189,7 +2189,7 @@ export const renderPageContent = (page, ctx) => {
             💼 평생 직업 적성 처방 (조직 직장 vs 개인 사업)
           </h3>
           <p className="text-xs text-[#5F5F5F] leading-relaxed">
-            의뢰인 사주의 주체적 기질과 십신의 배치를 볼 때, 귀하에게 가장 적합한 최적의 직업 형태와 경영 방식은 다음과 같습니다.
+            {name}님 사주의 주체적 기질과 십신의 배치를 볼 때, 귀하에게 가장 적합한 최적의 직업 형태와 경영 방식은 다음과 같습니다.
           </p>
           <div className="grid md:grid-cols-2 gap-4 text-xs">
             <div className="bg-white border border-[#E2DDD5] rounded-lg p-5 shadow-sm space-y-3">
@@ -2218,7 +2218,7 @@ export const renderPageContent = (page, ctx) => {
                 🧠 나의 타고난 핵심 직업 기질 (어떤 기질이 있는가?)
               </span>
               <p className={`text-[11px] text-[#5F5F5F] font-light leading-relaxed ${blurClass}`}>
-                의뢰인님의 일간 기운은 <strong>{sajuInfo?.day?.stemEl}({sajuInfo?.day?.stem})</strong>에 기반하고 있습니다. 
+                {name}님의 일간 기운은 <strong>{sajuInfo?.day?.stemEl}({sajuInfo?.day?.stem})</strong>에 기반하고 있습니다. 
                 이 사주적 특징에 비추어 볼 때, {aptInfo.temperament}
               </p>
             </div>
