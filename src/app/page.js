@@ -397,8 +397,8 @@ export default function Home() {
               }`}
             >
               나만의 맞춤 운세
-              <span className="absolute -top-1.5 -right-2 bg-jade text-background text-[9px] font-bold px-1.5 py-0.5 rounded-full scale-90">
-                3,900원
+              <span className="absolute -top-1.5 -right-2 bg-jade text-background text-[9px] font-bold px-1.5 py-0.5 rounded-full scale-90 flex items-center gap-1">
+                <span className="line-through opacity-70">5,000원</span> 3,900원
               </span>
             </button>
           </div>
@@ -661,7 +661,7 @@ export default function Home() {
                     onClick={handleSubmitPremium}
                     className="w-full inline-flex items-center justify-center gap-2 bg-brass text-background py-3.5 rounded-lg text-sm font-bold hover:bg-brass-dark shadow-sm transition-all transform hover:-translate-y-0.5 cursor-pointer mt-2"
                   >
-                    오늘의 맞춤 운세 신청하기 (3,900원 결제)
+                    오늘의 맞춤 운세 신청하기 (<span className="line-through opacity-80 text-xs mr-1">5,000원</span> 3,900원 결제)
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>

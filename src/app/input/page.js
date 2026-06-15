@@ -57,6 +57,7 @@ const products = {
     title: "나만의 오늘의 운세",
     category: "오늘의 운세",
     price: 3900,
+    originalPrice: 5000,
     desc: "개인 인적사항과 출생 정보를 정밀 분석하여 오늘의 운세 핵심 요약을 문자로 즉시 발송해 드립니다.",
   },
 };
