@@ -5603,7 +5603,7 @@ function ResultContent() {
         <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 shadow-sm space-y-4">
           <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] flex items-center gap-1.5 border-b border-[#E2DDD5]/60 pb-2">
             <Compass className="w-4 h-4 text-[#A3845B]" />
-            제 2장. 천간(天干)과 지지(地支)의 정서적 상성 분석
+            제 2장. 천간(天干, 하늘의 기운)과 지지(地支, 땅의 기운)의 정서적 상성 분석
           </h4>
           <div className="space-y-4 font-traditional text-xs text-[#2C2C2C] font-light leading-relaxed">
             <div className="bg-[#FDFCF7] p-3 rounded border border-[#E2DDD5]/40">

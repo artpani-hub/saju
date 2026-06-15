@@ -1249,6 +1249,8 @@ function InputFormContent() {
                       <label htmlFor="worryText" className="block text-xs font-semibold text-foreground">
                         {productKey === "dream"
                           ? "꿈의 구체적인 내용 서술 (최대 500자)"
+                          : productKey === "gunghap"
+                          ? "두 사람의 구체적인 궁합/관계 고민 (최대 500자) *궁합 관련 고민만 작성해주세요"
                           : "구체적인 고민이나 현재 겪고 계신 상태 (최대 500자)"}
                       </label>
                       <span className="text-[10px] text-foreground-muted font-normal">{charCount} / 500자</span>
@@ -1262,6 +1264,8 @@ function InputFormContent() {
                       rows={5}
                       placeholder={productKey === "dream"
                         ? "예시: 어젯밤에 검은 덕치마가 나타나 나를 품어안는 꿈을 꽜었습니다. 덕치가 새끼하게 움직이지는 않았고 오히려 저를 감싸 안아주는 듯한 느낌이었습니다. 불로 타오르는 산과 수력이 보이는 꿈이었습니다. 이 꿈과 요즘 직장 이직 문제가 어떤 관계인지 알고 싶습니다..."
+                        : productKey === "gunghap"
+                        ? "예시: 이 사람과 성향 차이로 자주 다툽니다. 서로 극복할 방안이나 저희의 연애 궁합/속궁합 등 두 사람 사이의 고민을 적어주세요..."
                         : "예시: 다니고 있는 회사에서 올해 이직을 준비하고 있는데, 언제가 좋을지, 제 사주에 어떤 기운이 도움이 되는지 알려주세요. 또한 대인관계로 인한 스트레스가 많습니다..."}
                       className="w-full bg-background border border-border-custom rounded px-3 py-2 text-sm focus:outline-none focus:border-brass font-light leading-relaxed resize-none"
                       required
