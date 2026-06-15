@@ -5,7 +5,7 @@ import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Script from "next/script";
-import { Scroll, Printer, ArrowLeft, Heart, Compass, Shield, Sparkles, DollarSign, CalendarDays, Award, CheckSquare, AlertCircle } from "lucide-react";
+import { Scroll, Printer, ArrowLeft, Heart, Compass, Shield, Sparkles, DollarSign, CalendarDays, Calendar, Award, CheckSquare, AlertCircle } from "lucide-react";
 import JobTable from "./components/JobTable";
 import { getJobMatches } from "./utils";
 import { getCumulativeCount } from "../../utils/counter";
