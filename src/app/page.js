@@ -919,27 +919,27 @@ export default function Home() {
                 <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-2 font-light text-foreground-muted">
                   <div className="flex justify-between items-center gap-2">
                     <span className="flex items-center gap-1.5 text-foreground font-medium whitespace-nowrap">💕 궁합 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span></span>
-                    <span className="font-semibold text-brass whitespace-nowrap flex-shrink-0">30,000원</span>
+                    <span className="font-semibold text-brass whitespace-nowrap flex-shrink-0">26,900원</span>
                   </div>
                   <div className="flex justify-between items-center gap-2">
                     <span className="flex items-center gap-1.5 text-[#C2185B] font-medium whitespace-nowrap">🔥 속궁합 <span className="text-[8px] bg-[#C2185B]/15 text-[#C2185B] px-1.5 py-0.5 rounded font-normal">인기</span></span>
-                    <span className="font-semibold text-[#C2185B] whitespace-nowrap flex-shrink-0">30,000원</span>
+                    <span className="font-semibold text-[#C2185B] whitespace-nowrap flex-shrink-0">26,900원</span>
                   </div>
                   <div className="flex justify-between items-center gap-2">
                     <span className="flex items-center gap-1.5 text-[#5F7A68] font-medium whitespace-nowrap">🌿 재회운</span>
-                    <span className="font-semibold text-[#5F7A68] whitespace-nowrap flex-shrink-0">30,000원</span>
+                    <span className="font-semibold text-[#5F7A68] whitespace-nowrap flex-shrink-0">19,900원</span>
                   </div>
                 </div>
               </div>
               <div>
                 <div className="border-t border-border-custom pt-4 mb-4">
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-xs text-foreground-muted line-through">45,000원</span>
-                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">33% 할인</span>
+                    <span className="text-xs text-foreground-muted line-through">49,500원</span>
+                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">45% 할인</span>
                   </div>
                   <div className="flex items-baseline gap-1 mt-0.5">
-                    <span className="text-2xl font-bold text-foreground">30,000</span>
-                    <span className="text-xs text-foreground-muted">원</span>
+                    <span className="text-2xl font-bold text-foreground">26,900</span>
+                    <span className="text-xs text-foreground-muted">원~</span>
                   </div>
                 </div>
                 <Link

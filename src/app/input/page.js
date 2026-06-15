@@ -44,7 +44,8 @@ const products = {
   gunghap: {
     title: "연인 궁합",
     category: "연인 궁합",
-    price: 30000,
+    price: 26900,
+    originalPrice: 49500,
     desc: "두 사람의 타고난 오행 분포 조화, 속궁합/정서적 궁합, 백년해로 타이밍 및 관계 유지 솔루션 제공",
   },
   dream: {
@@ -491,7 +492,9 @@ function InputFormContent() {
       const traditionalTime = getTraditionalTimeName(formData.birthHour);
       const sajuGanji = `${formData.birthYear}년 ${formData.birthMonth}월 ${formData.birthDay}일 (${traditionalTime})`;
 
-      const base = products[productKey]?.price || 30000;
+      const base = productKey === "gunghap"
+        ? (gunghapType === "reunion" ? 19900 : 26900)
+        : (products[productKey]?.price || 30000);
       const finalPrice = reportGrade === "free" ? 0 : ((productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
         ? (reportGrade === "deep" 
           ? base + 15000 
@@ -711,7 +714,9 @@ function InputFormContent() {
 
     IMP.init(impCode);
 
-    const base = activeProduct.price;
+    const base = productKey === "gunghap" 
+      ? (gunghapType === "reunion" ? 19900 : 26900)
+      : activeProduct.price;
     const finalPrice = (productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
       ? (reportGrade === "deep" 
         ? base + 15000 
@@ -1407,7 +1412,7 @@ function InputFormContent() {
                                       두 사람의 오행 상성, 성격/가치관 궁합, 백년해로 지수
                                     </span>
                                   </div>
-                                  <span className="text-[10px] font-bold text-brass whitespace-nowrap flex-shrink-0 text-right">30,000원</span>
+                                  <span className="text-[10px] font-bold text-brass whitespace-nowrap flex-shrink-0 text-right">26,900원</span>
                                 </button>
 
                                 <button
@@ -1427,7 +1432,7 @@ function InputFormContent() {
                                       신체적 교감, 정서적 밀착도, 잠자리 궁합 상세 분석
                                     </span>
                                   </div>
-                                  <span className="text-[10px] font-bold text-[#C2185B] whitespace-nowrap flex-shrink-0 text-right">30,000원</span>
+                                  <span className="text-[10px] font-bold text-[#C2185B] whitespace-nowrap flex-shrink-0 text-right">26,900원</span>
                                 </button>
 
                                 <button
@@ -1447,7 +1452,7 @@ function InputFormContent() {
                                       헤어진 연인과의 재회 가능성, 재결합 시기 및 조언
                                     </span>
                                   </div>
-                                  <span className="text-[10px] font-bold text-[#5F7A68] whitespace-nowrap flex-shrink-0 text-right">30,000원</span>
+                                  <span className="text-[10px] font-bold text-[#5F7A68] whitespace-nowrap flex-shrink-0 text-right">19,900원</span>
                                 </button>
                               </div>
                             </div>
@@ -1489,7 +1494,9 @@ function InputFormContent() {
 
                   {/* Total invoice details */}
                   {(() => {
-                    const base = activeProduct.price;
+                    const base = productKey === "gunghap" 
+                      ? (gunghapType === "reunion" ? 19900 : 26900)
+                      : activeProduct.price;
                     const finalPrice = (productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
                       ? (reportGrade === "deep" 
                         ? base + 15000 
@@ -1601,7 +1608,9 @@ function InputFormContent() {
                   <span className="text-base font-bold text-foreground">혜안당 (慧眼堂)</span>
                 </div>
                 {(() => {
-                  const base = activeProduct.price;
+                  const base = productKey === "gunghap" 
+                    ? (gunghapType === "reunion" ? 19900 : 26900)
+                    : activeProduct.price;
                   const finalPrice = (productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
                     ? (reportGrade === "deep" 
                       ? base + 15000 
