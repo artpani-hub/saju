@@ -5876,7 +5876,7 @@ function ResultContent() {
   };
 
   // ----------------------------------------------------
-  // Render: 나만의 오늘의 운세 (today - 5,000원)
+  // Render: 나만의 오늘의 운세 (today - 3,900원)
   // ----------------------------------------------------
   const renderTodayContent = () => {
     const dayStem = sajuInfo.day.stem;

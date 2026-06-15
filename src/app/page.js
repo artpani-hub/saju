@@ -372,7 +372,7 @@ export default function Home() {
             </div>
             <h2 className="font-myeongjo text-3xl font-bold text-foreground mb-4">오늘의 운세를 확인해보세요</h2>
             <p className="text-sm text-foreground-muted leading-relaxed font-light">
-              가벼운 무료 띠별 운세부터 하루의 행운을 극대화해 줄 5,000원의 정밀 맞춤 운세까지, 오늘 하루의 흐름을 미리 확인하세요.
+              가벼운 무료 띠별 운세부터 하루의 행운을 극대화해 줄 3,900원의 정밀 맞춤 운세까지, 오늘 하루의 흐름을 미리 확인하세요.
             </p>
           </div>
 
@@ -398,7 +398,7 @@ export default function Home() {
             >
               나만의 맞춤 운세
               <span className="absolute -top-1.5 -right-2 bg-jade text-background text-[9px] font-bold px-1.5 py-0.5 rounded-full scale-90">
-                5,000원
+                3,900원
               </span>
             </button>
           </div>
@@ -661,7 +661,7 @@ export default function Home() {
                     onClick={handleSubmitPremium}
                     className="w-full inline-flex items-center justify-center gap-2 bg-brass text-background py-3.5 rounded-lg text-sm font-bold hover:bg-brass-dark shadow-sm transition-all transform hover:-translate-y-0.5 cursor-pointer mt-2"
                   >
-                    오늘의 맞춤 운세 신청하기 (5,000원 결제)
+                    오늘의 맞춤 운세 신청하기 (3,900원 결제)
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
