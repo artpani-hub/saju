@@ -221,7 +221,7 @@ const buildTodaySmsText = (name, gender, year, month, day, hour) => {
   return `[혜안당 명리연구소] ${name} 님 오늘의 수호 보감\n오늘의 일진: ${formattedToday} (${dayStem}${dayBranch}일 - ${dayStemEl}의 기운)\n\n● 총운: ${analysis.summary}\n● 금전운: ${analysis.wealth.score}% (${analysis.wealth.desc})\n● 연애운: ${analysis.love.score}% (${analysis.love.desc})\n● 대인관계: ${analysis.social.score}% (${analysis.social.desc})\n\n행운의 개운 비법:\n- 수호 색상: ${myPresc.color}\n- 수호 숫자: ${myPresc.number}\n- 수호 방향: ${myPresc.direction}\n- 조언: ${analysis.advice}\n\n상세한 분석 및 만세력 결과는 아래 링크에서 확인하실 수 있습니다.\n▶ 결과 보기: ${origin}/result?name=${encodeURIComponent(name)}&gender=${gender === "female" ? "female" : "male"}&type=today&year=${year}&month=${month}&day=${day}&hour=${encodeURIComponent(hour)}&reportGrade=sms`;
 };
 
-const buildGeneralSmsText = (name, productName, email, phone, productKey, formData) => {
+const buildGeneralSmsText = (name, productName, email, phone, productKey, formData, gunghapType = "compatibility") => {
   const queryParams = new URLSearchParams({
     name: formData.name,
     gender: formData.gender,
@@ -239,7 +239,8 @@ const buildGeneralSmsText = (name, productName, email, phone, productKey, formDa
     partnerYear: formData.partnerBirthYear || "1995",
     partnerMonth: formData.partnerBirthMonth || "08",
     partnerDay: formData.partnerBirthDay || "25",
-    partnerHour: formData.partnerBirthHour || "unknown"
+    partnerHour: formData.partnerBirthHour || "unknown",
+    gunghapType: gunghapType
   });
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -631,7 +632,8 @@ function InputFormContent() {
                 formData.email,
                 formData.phone,
                 productKey,
-                formData
+                formData,
+                gunghapType
               );
             }
 
@@ -1828,7 +1830,7 @@ function InputFormContent() {
 
             <div className="flex flex-col gap-3">
               <Link
-                href={`/result?name=${encodeURIComponent(formData.name || "이지혜")}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendarType}&year=${formData.birthYear}&month=${formData.birthMonth}&day=${formData.birthDay}&hour=${encodeURIComponent(formData.birthHour)}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText || "오늘의 운세")}&cards=${selectedCards.join(",")}&partnerName=${encodeURIComponent(formData.partnerName)}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendarType}&partnerYear=${formData.partnerBirthYear}&partnerMonth=${formData.partnerBirthMonth}&partnerDay=${formData.partnerBirthDay}&partnerHour=${encodeURIComponent(formData.partnerBirthHour)}&reportGrade=${productKey === "today" ? "sms" : (productKey === "saju" || productKey === "newyear" || productKey === "tojeong") ? reportGrade : "premium"}`}
+                href={`/result?name=${encodeURIComponent(formData.name || "이지혜")}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendarType}&year=${formData.birthYear}&month=${formData.birthMonth}&day=${formData.birthDay}&hour=${encodeURIComponent(formData.birthHour)}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText || "오늘의 운세")}&cards=${selectedCards.join(",")}&partnerName=${encodeURIComponent(formData.partnerName)}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendarType}&partnerYear=${formData.partnerBirthYear}&partnerMonth=${formData.partnerBirthMonth}&partnerDay=${formData.partnerBirthDay}&partnerHour=${encodeURIComponent(formData.partnerBirthHour)}&reportGrade=${productKey === "today" ? "sms" : (productKey === "saju" || productKey === "newyear" || productKey === "tojeong") ? reportGrade : "premium"}&gunghapType=${gunghapType}`}
                 className="w-full py-3 bg-jade text-background rounded font-semibold text-sm hover:bg-jade-dark transition-all block text-center"
               >
                 생성된 결과서 미리보기 (샘플)

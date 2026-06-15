@@ -5430,6 +5430,208 @@ function ResultContent() {
     return geukPairs[geukKey] || `${name}님의 ${myStem} 기운과 상대방의 ${partnerStem} 기운이 서로 다른 성향으로 만나, 각자의 고유한 삶의 가치를 새롭게 일깨워주며 다채로운 개성을 조화롭게 맞춰가는 배움의 상성입니다.`;
   };
 
+  const getDynamicWorryResponse = (worryText, myBranch, partnerBranch) => {
+    if (!worryText) return "";
+    const decoded = decodeURIComponent(worryText);
+
+    // 1. 카테고리 판별
+    let category = "일반";
+    if (decoded.match(/소통|대화|말|소외|이야기|소통이|대화가|말투/)) {
+      category = "소통";
+    } else if (decoded.match(/애정|사랑|바람|외도|마음|식음|감정|좋아|연애/)) {
+      category = "애정";
+    } else if (decoded.match(/돈|재물|결혼|혼인|자금|집|경제|현실|직업|일/)) {
+      category = "재물결혼";
+    } else if (decoded.match(/갈등|성격|싸움|다툼|화|분노|성질|마찰|차이/)) {
+      category = "갈등성격";
+    }
+
+    // 2. 지지 관계 판별
+    const hap = ["子丑", "寅亥", "卯戌", "辰酉", "巳申", "午未"];
+    const chung = ["子午", "丑未", "寅申", "卯酉", "辰戌", "巳亥"];
+    const wonjin = ["子未", "丑午", "寅酉", "卯申", "辰亥", "巳戌", "丑오"];
+
+    const currentPair = myBranch + partnerBranch;
+    const revPair = partnerBranch + myBranch;
+
+    let relation = "일반";
+    if (hap.includes(currentPair) || hap.includes(revPair)) {
+      relation = "합";
+    } else if (chung.includes(currentPair) || chung.includes(revPair)) {
+      relation = "충";
+    } else if (wonjin.includes(currentPair) || wonjin.includes(revPair)) {
+      relation = "원진";
+    }
+
+    // 3. 20가지 매핑 테이블
+    const responses = {
+      "소통": {
+        "합": `고민하신 소통 문제에 대해 두 분의 일지 지지를 대조해보면 다정한 '합(合)'의 관계를 맺고 있습니다. 이는 근본적으로 서로 대화가 깊이 통할 수 있는 정서적 주파수를 가졌음을 의미합니다. 다만 관계가 가까워 표현을 생략하여 생긴 일시적 오해일 뿐이니, 가벼운 대화로 풀어가시면 금세 신뢰를 회복하실 것입니다.`,
+        "충": `대화와 소통 문제로 하신 고민은 일지 지지가 서로 마주 보고 부딪히는 '충(冲)'의 작용과 관련이 있습니다. 각자의 대화 스타일이 뚜렷하고 개성이 강해 오해가 빚어지기 쉽습니다. 한쪽이 감정적으로 굳어 있을 때 섣불리 설득하려 하지 말고, 30분 정도의 냉각기를 가진 뒤 이성적으로 소통하시는 것이 솔루션입니다.`,
+        "원진": `소통의 어려움으로 적어주신 고민은 일지 지지가 서로 엇갈리는 '원진(怨嗔)'의 기류와 닿아 있습니다. 마음에 묵혀둔 서운함이 엉뚱한 말씨로 표출되기 쉬운 상성이니, 서운함이 생겼을 때 미루지 마시고 다정하고 직설적인 어조로 바로 털어내시는 연습이 필요합니다.`,
+        "일반": `소통에 관한 고민은 일지의 특별한 기류 충돌보다는 일시적인 대화 방식의 차이에서 비롯된 것입니다. 두 사람의 배우자궁은 평온하게 흐르고 있으니, 상대방이 피곤하거나 예민한 시간대를 피해 부드러운 분위기 속에서 대화를 나누시면 차분하게 조율될 수 있습니다.`
+      },
+      "애정": {
+        "합": `애정과 정서적 유대에 대한 고민을 분석해보면, 두 사람의 일지가 따뜻한 '합(合)'으로 묶여 있어 근본적인 애정 전선이나 인연의 깊이는 무척 돈독합니다. 일시적인 외부 요인이나 일상의 피로로 인해 관계가 다소 정체된 느낌을 받을 수 있으나, 둘만의 여행이나 추억의 장소 방문을 통해 금방 뜨거운 애정을 되찾으실 수 있습니다.`,
+        "충": `애정 전선이나 마음의 흔들림에 관한 고민은 일지가 부딪히는 '충(冲)'의 역동적 기류가 반영된 결과입니다. 서로 사랑하는 마음은 크나 애정을 표현하고 확인받고 싶어 하는 방식이 서로 달라 서운함이 생기기 쉽습니다. 성향이 다름을 인정하고 서로의 방식을 존중해주는 것이 중요합니다.`,
+        "원진": `애정에 관한 고민은 서로 간의 서운함이 애증으로 변하기 쉬운 '원진(怨嗔)'의 영향권에 있습니다. 미워하면서도 깊이 신경 쓰이는 끈끈한 인연입니다. 서로를 향해 날을 세우기보다는 '고맙다', '수고했다'는 긍정적인 애정 언어를 의식적으로 표현해주는 것이 관계 극복의 핵심 열쇠입니다.`,
+        "일반": `애정과 정서적 안정에 대한 고민은 배우자궁에 특별한 살이 끼지 않아 평탄한 기반 위에 서 있습니다. 서로에 대한 신뢰가 굳건하니 조급해하지 마시고, 잔잔하고 따뜻하게 일상을 함께 나누다 보면 자연스럽게 애정의 깊이가 더욱 단단해질 것입니다.`
+      },
+      "재물결혼": {
+        "합": `결혼 및 재물 준비 과정에서의 고민은 일지가 긴밀한 '합(合)'을 이루어 공동의 목표를 향할 때 가장 시너지가 납니다. 재정적 계획이나 결혼 준비에서 의견 차이가 발생하더라도 서로가 배려하고 아끼는 힘이 강해 조화로운 합의점을 원만하게 찾을 수 있으니 안심하고 나아가셔도 좋습니다.`,
+        "충": `결혼이나 현실적인 재물 관리 고민은 서로 다른 경제 관념이나 일지 '충(冲)'의 성향 차이에서 비롯됩니다. 돈을 쓰고 모으는 방식이나 인생 설계의 템포가 달라 마찰을 겪기 쉬우니, 중요한 재정 결정이나 결혼 계획은 확실한 기준을 서면으로 정해두어 갈등 요소를 사전에 방지해야 합니다.`,
+        "원진": `결혼이나 현실적인 기반 마련 과정에서의 고민은 서로 조율되지 않은 속마음이 '원진(怨嗔)'의 애증으로 작용하기 쉽습니다. 돈이나 결혼식 준비 등 예민한 주제일수록 감정적으로 논쟁하기보다, 객관적인 수치와 이성적인 계획을 바탕으로 솔직하게 털어놓고 의논하는 것이 중요합니다.`,
+        "일반": `결혼 및 재물 관련 고민에 있어 두 분의 일지는 특별한 충살 없이 잔잔한 관계입니다. 큰 풍파나 갑작스러운 현실적 파탄 위험이 적으며, 둘이 성실하게 기초부터 쌓아 올리면 무난하고 안정적인 가정을 꾸려나갈 수 있는 모범적인 흐름입니다.`
+      },
+      "갈등성격": {
+        "합": `성격 차이나 빈번한 갈등에 관한 고민은 일지가 '합(合)'으로 묶여 있는 만큼, 사실 다툼 뒤에 화해하기도 매우 쉬운 구조입니다. 자존심 때문에 서로 먼저 다가가지 못해 냉전이 길어질 뿐이니, 사소한 다툼 이후에는 먼저 부드러운 화법으로 손을 내밀면 즉각적으로 갈등이 눈 녹듯 사라질 것입니다.`,
+        "충": `자주 부딪히는 성격 마찰이나 갈등 고민은 일지가 강력하게 충돌하는 '충(冲)'의 영향입니다. 서로 살아온 방식과 신념 체계가 판이하게 달라 불씨가 쉽게 튀게 됩니다. 갈등 상황에서는 마주 앉아 시시비비를 가리기보다, 즉시 공간을 분리하여 화를 가라앉히는 습관을 기르는 것이 최선의 솔루션입니다.`,
+        "원진": `성격이나 습관 차이로 깊어지는 갈등 고민은 서로에게 오해와 서운함을 품기 쉬운 '원진(怨嗔)' 기류의 현상입니다. 상대방의 사소한 행동도 꼬아 보기 쉬우니, 갈등이 발생했을 때는 주관적 해석을 멈추고 사실에만 집중하여 대화하는 훈련을 적극 권장합니다.`,
+        "일반": `성격이나 갈등에 대한 고민은 일시적인 스트레스나 피로 누적으로 인한 것입니다. 사주상으로는 격렬하게 대립하는 사주가 아니므로, 평소 취미 생활을 함께 공유하거나 충분한 휴식을 통해 심리적 여유를 확보해주면 사소한 짜증과 마찰은 자연스레 해소됩니다.`
+      },
+      "일반": {
+        "합": `의뢰하신 고민에 대해 두 사람의 일지 지지를 대조해 보았을 때, 따뜻한 '합(合)'의 관계가 강하게 작동하고 있습니다. 기재하신 걱정은 일시적인 기류 변화 때문일 뿐이며, 서로에 대한 믿음을 굳건히 지키고 가벼운 대화로 풀어가신다면 시간이 갈수록 관계가 더욱 탄단해질 것입니다.`,
+        "충": `의뢰하신 고민에 대해 두 분의 배우자궁을 분석해보면 일지끼리 마주 부딪히는 '충(冲)'의 영향이 보입니다. 서로 성향과 기질이 달라 순간적인 의견 대립이 잦아질 수 있으니, 대립이 발생할 때는 잠시 대화를 멈추고 15분 이상 마음을 가라앉힌 후에 다정하게 다시 이야기해보시길 권합니다.`,
+        "원진": `의뢰하신 고민에 대해 두 사람의 일지 기류를 분석해보면 '원진(怨嗔)'의 기류가 감돌고 있습니다. 사소한 말에 쉽게 서운해지고 마음에 응어리가 남기 쉬우니, 서로 대화할 때 부정적인 의심이나 억측은 내려놓고 솔직하고 따뜻하게 속마음을 공유하시는 지혜가 필요합니다.`,
+        "일반": `의뢰하신 고민에 대해 두 분의 일지 지지는 큰 충돌이나 파탄살 없이 담백하고 조화로운 관계를 보여줍니다. 일시적인 의견 충돌은 서로를 깊이 이해해가는 배움의 과정일 뿐이니, 조급해하지 말고 서로에 대한 신뢰를 키워가신다면 지혜롭게 극복할 수 있습니다.`
+      }
+    };
+
+    return responses[category][relation];
+  };
+
+  const getDynamicNormalScores = (myEl, partnerEl, myStem, partnerStem, myBranch, partnerBranch) => {
+    // 1. 오행 조화성
+    let ohaengScore = 75;
+    const elements = ["목", "화", "토", "금", "수"];
+    elements.forEach(el => {
+      const myCount = myEl[el] || 0;
+      const partnerCount = partnerEl[el] || 0;
+      if (myCount === 0 && partnerCount >= 2) ohaengScore += 7;
+      if (partnerCount === 0 && myCount >= 2) ohaengScore += 7;
+      if (myCount > 0 && partnerCount > 0) ohaengScore += 2;
+    });
+    ohaengScore = Math.min(98, Math.max(60, ohaengScore));
+
+    // 2. 정서적 밀착도
+    let affinityScore = 78;
+    const cheonganHap = ["甲己", "己甲", "乙庚", "庚乙", "丙辛", "辛丙", "丁壬", "壬丁", "戊癸", "癸戊"];
+    const pairStem = myStem + partnerStem;
+    if (cheonganHap.includes(pairStem)) {
+      affinityScore += 15;
+    } else {
+      const stemElMap = {
+        "甲": "목", "乙": "목", "丙": "화", "丁": "화", "戊": "토", "己": "토", "庚": "금", "辛": "금", "壬": "수", "癸": "수"
+      };
+      const myStemEl = stemElMap[myStem];
+      const partnerStemEl = stemElMap[partnerStem];
+      const saengPairs = ["목화", "화목", "화토", "토화", "토금", "금토", "금수", "수금", "수목", "목수"];
+      if (saengPairs.includes(myStemEl + partnerStemEl)) {
+        affinityScore += 8;
+      }
+    }
+
+    const hap = ["子丑", "寅亥", "卯戌", "辰酉", "巳申", "午未"];
+    const chung = ["子午", "丑未", "寅申", "卯酉", "辰戌", "巳亥"];
+    const wonjin = ["子未", "丑午", "寅酉", "卯申", "辰亥", "巳戌", "丑오"];
+    const pairBranch = myBranch + partnerBranch;
+    const revBranch = partnerBranch + myBranch;
+
+    if (hap.includes(pairBranch) || hap.includes(revBranch)) {
+      affinityScore += 10;
+    } else if (chung.includes(pairBranch) || chung.includes(revBranch)) {
+      affinityScore -= 12;
+    } else if (wonjin.includes(pairBranch) || wonjin.includes(revBranch)) {
+      affinityScore -= 15;
+    }
+    affinityScore = Math.min(98, Math.max(55, affinityScore));
+
+    // 3. 백년해로 확률
+    let foreverScore = Math.round((ohaengScore + affinityScore) / 2);
+    if (hap.includes(pairBranch) || hap.includes(revBranch)) {
+      foreverScore += 3;
+    } else if (chung.includes(pairBranch) || chung.includes(revBranch) || wonjin.includes(pairBranch) || wonjin.includes(revBranch)) {
+      foreverScore -= 5;
+    }
+    foreverScore = Math.min(98, Math.max(50, foreverScore));
+
+    let ohaengGrade = "상생 배합 우수";
+    if (ohaengScore >= 90) ohaengGrade = "상생 배합 최상";
+    else if (ohaengScore < 75) ohaengGrade = "조율 필요 상태";
+
+    let affinityGrade = "교감 지수 보통";
+    if (affinityScore >= 90) affinityGrade = "교감 지수 훌륭";
+    else if (affinityScore < 70) affinityGrade = "감정 마찰 주의";
+
+    let foreverGrade = "인연의 끈 보통";
+    if (foreverScore >= 90) foreverGrade = "인연의 끈 굳건";
+    else if (foreverScore < 70) foreverGrade = "주의 기류 감지";
+
+    return {
+      ohaengScore,
+      ohaengGrade,
+      affinityScore,
+      affinityGrade,
+      foreverScore,
+      foreverGrade
+    };
+  };
+
+  const getDynamicDeepScores = (myStem, partnerStem, myBranch, partnerBranch, myStemEl, partnerStemEl) => {
+    const isMyYang = ["甲", "丙", "戊", "庚", "壬"].includes(myStem);
+    const isPartnerYang = ["甲", "丙", "戊", "庚", "壬"].includes(partnerStem);
+    let umyangScore = 80;
+    let umyangGrade = "음양 조화 무난";
+
+    if (isMyYang !== isPartnerYang) {
+      umyangScore = 95;
+      umyangGrade = "신체 밸런스 우수";
+    } else if (isMyYang && isPartnerYang) {
+      umyangScore = 86;
+      umyangGrade = "양기 충만 역동";
+    } else {
+      umyangScore = 82;
+      umyangGrade = "음기 조화 차분";
+    }
+
+    let attractionScore = 84;
+    let attractionGrade = "보통의 끌림";
+    const hap = ["子丑", "寅亥", "卯戌", "辰酉", "巳申", "午未"];
+    const chung = ["子午", "丑未", "寅申", "卯酉", "辰戌", "巳亥"];
+    const wonjin = ["子未", "丑오", "寅酉", "卯申", "辰亥", "巳戌", "丑오"];
+    const pairBranch = myBranch + partnerBranch;
+    const revBranch = partnerBranch + myBranch;
+
+    if (hap.includes(pairBranch) || hap.includes(revBranch)) {
+      attractionScore = 96;
+      attractionGrade = "끌림 지수 최상";
+    } else if (chung.includes(pairBranch) || chung.includes(revBranch)) {
+      attractionScore = 74;
+      attractionGrade = "의견 조율 필요";
+    } else if (wonjin.includes(pairBranch) || wonjin.includes(revBranch)) {
+      attractionScore = 68;
+      attractionGrade = "속궁합 마찰 주의";
+    }
+
+    let bondingScore = Math.round((umyangScore + attractionScore) / 2);
+    if (myStemEl !== partnerStemEl) {
+      bondingScore += 4;
+    }
+    bondingScore = Math.min(98, Math.max(60, bondingScore));
+    let bondingGrade = "교감 지수 보통";
+    if (bondingScore >= 90) bondingGrade = "교감 지수 훌륭";
+    else if (bondingScore < 75) bondingGrade = "소통 강화 처방";
+
+    return {
+      umyangScore,
+      umyangGrade,
+      attractionScore,
+      attractionGrade,
+      bondingScore,
+      bondingGrade
+    };
+  };
+
   const getJijiHarmonyText = (myBranch, partnerBranch) => {
     const hap = ["子丑", "寅亥", "卯戌", "辰酉", "巳申", "午未"];
     const chung = ["子午", "丑未", "寅申", "卯酉", "辰戌", "巳亥"];
@@ -5542,6 +5744,8 @@ function ResultContent() {
 
     const worrySol = getWorrySolutionText(worryCategory);
 
+    const scores = getDynamicNormalScores(myEl, partnerEl, myStem, partnerStem, myBranch, partnerBranch);
+
     return (
       <div className="space-y-8 animate-fadeIn">
         {/* Title Block */}
@@ -5557,18 +5761,18 @@ function ResultContent() {
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
             <span className="text-[10px] text-[#5F5F5F] block mb-1">오행 조화성</span>
-            <div className="text-2xl font-bold text-red-600 font-myeongjo">88%</div>
-            <span className="text-[9px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded mt-1 inline-block">상생 배합 최상</span>
+            <div className="text-2xl font-bold text-red-600 font-myeongjo">{scores.ohaengScore}%</div>
+            <span className="text-[9px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded mt-1 inline-block">{scores.ohaengGrade}</span>
           </div>
           <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
             <span className="text-[10px] text-[#5F5F5F] block mb-1">정서적 밀착도</span>
-            <div className="text-2xl font-bold text-amber-600 font-myeongjo">92%</div>
-            <span className="text-[9px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded mt-1 inline-block">교감 지수 훌륭</span>
+            <div className="text-2xl font-bold text-amber-600 font-myeongjo">{scores.affinityScore}%</div>
+            <span className="text-[9px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded mt-1 inline-block">{scores.affinityGrade}</span>
           </div>
           <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
             <span className="text-[10px] text-[#5F5F5F] block mb-1">백년해로 확률</span>
-            <div className="text-2xl font-bold text-rose-600 font-myeongjo">94%</div>
-            <span className="text-[9px] text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded mt-1 inline-block">인연의 끈 굳건</span>
+            <div className="text-2xl font-bold text-rose-600 font-myeongjo">{scores.foreverScore}%</div>
+            <span className="text-[9px] text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded mt-1 inline-block">{scores.foreverGrade}</span>
           </div>
         </div>
 
@@ -5648,7 +5852,7 @@ function ResultContent() {
           {worryText && (
             <div className="text-xs text-[#5F5F5F] leading-relaxed font-light font-traditional border-t border-[#E2DDD5]/40 pt-2.5">
               <strong>의뢰하신 고민에 대한 명리 해답:</strong><br />
-              현재 기재하신 고민인 "{decodeURIComponent(worryText)}"에 관하여 두 분의 사주 구조를 대조해 보았을 때, 조급한 결정이나 갈등 유발은 일시적인 기류 충돌일 뿐입니다. {name}님이 조금 더 부드러운 화법으로 귀를 기울여 주신다면, 두 분의 관계는 시간이 갈수록 더욱 단단하고 견고해질 것입니다. 안심하고 서로를 믿고 가셔도 좋습니다.
+              {getDynamicWorryResponse(worryText, myBranch, partnerBranch)}
             </div>
           )}
         </div>
@@ -5710,6 +5914,8 @@ function ResultContent() {
 
     const fengshui = getDeepFengshui(myStemEl, partnerStemEl);
 
+    const deepScores = getDynamicDeepScores(myStem, partnerStem, myBranch, partnerBranch, myStemEl, partnerStemEl);
+
     return (
       <div className="space-y-8 animate-fadeIn">
         {/* Title Block */}
@@ -5725,18 +5931,18 @@ function ResultContent() {
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
             <span className="text-[10px] text-[#5F5F5F] block mb-1">음양 조화도</span>
-            <div className="text-2xl font-bold text-purple-600 font-myeongjo">90%</div>
-            <span className="text-[9px] text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded mt-1 inline-block">신체 밸런스 우수</span>
+            <div className="text-2xl font-bold text-purple-600 font-myeongjo">{deepScores.umyangScore}%</div>
+            <span className="text-[9px] text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded mt-1 inline-block">{deepScores.umyangGrade}</span>
           </div>
           <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
             <span className="text-[10px] text-[#5F5F5F] block mb-1">본능적 인력</span>
-            <div className="text-2xl font-bold text-red-600 font-myeongjo">95%</div>
-            <span className="text-[9px] text-red-700 bg-red-50 px-1.5 py-0.5 rounded mt-1 inline-block">끌림 지수 최상</span>
+            <div className="text-2xl font-bold text-red-600 font-myeongjo">{deepScores.attractionScore}%</div>
+            <span className="text-[9px] text-red-700 bg-red-50 px-1.5 py-0.5 rounded mt-1 inline-block">{deepScores.attractionGrade}</span>
           </div>
           <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
             <span className="text-[10px] text-[#5F5F5F] block mb-1">유대감 안착률</span>
-            <div className="text-2xl font-bold text-pink-600 font-myeongjo">88%</div>
-            <span className="text-[9px] text-pink-700 bg-pink-50 px-1.5 py-0.5 rounded mt-1 inline-block">교감 지수 훌륭</span>
+            <div className="text-2xl font-bold text-pink-600 font-myeongjo">{deepScores.bondingScore}%</div>
+            <span className="text-[9px] text-pink-700 bg-pink-50 px-1.5 py-0.5 rounded mt-1 inline-block">{deepScores.bondingGrade}</span>
           </div>
         </div>
 
@@ -5790,13 +5996,19 @@ function ResultContent() {
         </div>
 
         {/* 4. 유대감 강화 솔루션 */}
-        <div className="bg-[#F5F2EB] border border-[#E2DDD5] rounded-lg p-5 space-y-3 shadow-sm">
-          <h4 className="font-myeongjo text-sm font-bold text-red-700 flex items-center gap-1.5 border-b border-[#E2DDD5]/60 pb-2">
-            💌 제 4장. 성적 유대 및 갈등 예방 1:1 행동 솔루션
+        <div className="bg-[#FAF6FF] border border-purple-200 rounded-lg p-5 space-y-3 shadow-sm">
+          <h4 className="font-myeongjo text-sm font-bold text-purple-700 flex items-center gap-1.5 border-b border-purple-200 pb-2">
+            💜 제 4장. 성적 유대 및 침실 갈등 예방 1:1 행동 비책
           </h4>
           <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
             속궁합의 마찰을 줄이기 위해서는 잠자리 전후의 감정적 안전거리가 중요합니다. 서로의 다름을 비난하기보다 "오늘 함께해서 정말 따뜻하고 행복했어"라는 언어적 지지를 반드시 나누는 습관을 기르십시오. 이 사소한 행동이 두 분의 침실 속 부정적인 기운과 불안감을 완벽히 정화해 줄 묘책이 될 것입니다.
           </p>
+          {worryText && (
+            <div className="text-xs text-[#6F5B85] leading-relaxed font-light font-traditional border-t border-purple-200/50 pt-2.5">
+              <strong>의뢰하신 고민의 침실/속궁합적 혜안:</strong><br />
+              현재 적어주신 고민을 두 분의 음양 주파수와 지장간 암합으로 짚어보면, 낮의 말다툼이 밤의 서먹함으로 이어지기 쉬운 흐름입니다. 잠자리에 들기 전에는 무거운 화제나 현실적 고민에 대한 대화를 피하고, 오롯이 두 분의 따뜻한 온기 교감에만 집중하는 리셋 규칙을 세우는 것이 꼬인 실타래를 푸는 혜안입니다.
+            </div>
+          )}
         </div>
       </div>
     );

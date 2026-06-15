@@ -172,13 +172,16 @@ const buildGeneralSmsTextFromOrder = (order) => {
     type: order.productName.includes("오늘") || order.productName.includes("오늘의") ? "today" :
           order.productName.includes("사주") ? "saju" : 
           order.productName.includes("재물") ? "wealth" : 
-          order.productName.includes("신년") ? "newyear" : "tarot",
+          order.productName.includes("신년") ? "newyear" : 
+          order.productName.includes("궁합") ? "gunghap" : "tarot",
     calendar: order.calendar || "solar",
     year: order.year || "1995",
     month: order.month || "8",
     day: order.day || "25",
     hour: order.hour || "10:00",
-    worryText: order.worryText || ""
+    worryText: order.worryText || "",
+    gunghapType: order.productName.includes("속궁합") ? "deep_compatibility" :
+                 order.productName.includes("재회") ? "reunion" : "compatibility"
   });
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -903,7 +906,8 @@ export default function AdminPage() {
                                     order.productName.includes("오늘") || order.productName.includes("오늘의") ? "today" :
                                     order.productName.includes("사주") ? "saju" : 
                                     order.productName.includes("재물") ? "wealth" : 
-                                    order.productName.includes("신년") ? "newyear" : "tarot"
+                                    order.productName.includes("신년") ? "newyear" : 
+                                    order.productName.includes("궁합") ? "gunghap" : "tarot"
                                   }&year=${
                                     order.year || (order.id === 1004 ? "1995" : order.id === 1003 ? "1990" : "1993")
                                   }&month=${
@@ -918,7 +922,10 @@ export default function AdminPage() {
                                       order.id === 1003 ? "최근에 동업 제안을 받아 쇼핑몰 창업을 계획하고 있는데, 지금 시기에 돈을 대출받아 투자해도 괜찮을지 알고 싶습니다." :
                                       "올해 유독 회사 일이 안 풀려서 스트레스가 많고 이직 준비를 하려는데 자격증 합격이나 다른 곳으로의 기운이 따를지 조언을 부탁드립니다."
                                     )
-                                  )}`}
+                                  )}&gunghapType=${
+                                    order.productName.includes("속궁합") ? "deep_compatibility" :
+                                    order.productName.includes("재회") ? "reunion" : "compatibility"
+                                  }`}
                                   className="inline-flex items-center gap-1 border border-jade/50 text-jade px-2 py-1 rounded hover:bg-jade hover:text-background transition-all text-[10px] font-medium cursor-pointer"
                                 >
                                   결과 보기
