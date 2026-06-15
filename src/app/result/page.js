@@ -5404,208 +5404,553 @@ function ResultContent() {
   // ----------------------------------------------------
   // Render: 연인 궁합 (gunghap)
   // ----------------------------------------------------
-  const renderGunghapContent = () => {
-    // Determine dynamic scores based on their elemental combinations
-    const myEl = sajuInfo.elements;
-    const partnerEl = partnerSajuInfo.elements;
+  // 명리학적 분석 헬퍼 사전 및 함수군 (연인 궁합용)
+  const getCheonganHarmonyText = (myStem, partnerStem) => {
+    const harmonyMap = {
+      "甲己": "두 사람의 만남은 명리학에서 가장 으뜸으로 치는 '중정지합(中正之合)'을 이룹니다. 서로를 향한 존중이 깊고 성품이 정직하며, 흔들림 없이 신뢰를 쌓아가는 품격 있는 결합입니다.",
+      "己甲": "두 사람의 만남은 명리학에서 가장 으뜸으로 치는 '중정지합(中正之合)'을 이룹니다. 서로를 향한 존중이 깊고 성품이 정직하며, 흔들림 없이 신뢰를 쌓아가는 품격 있는 결합입니다.",
+      "乙庚": "서로의 다름을 의리와 강한 책임감으로 감싸주는 '인의지합(仁義之合)'의 기류가 흐릅니다. 서로를 향한 약속을 목숨처럼 소중히 여기며 든든한 동반자가 되어주는 굳건한 결합입니다.",
+      "庚乙": "서로의 다름을 의리와 강한 책임감으로 감싸주는 '인의지합(仁義之合)'의 기류가 흐릅니다. 서로를 향한 약속을 목숨처럼 소중히 여기며 든든한 동반자가 되어주는 굳건한 결합입니다.",
+      "丙辛": "이성적인 신뢰와 뜨거운 열정이 절묘하게 공명하는 '위제지합(威制之合)'을 이룹니다. 첫눈에 강하게 끌리는 운명적인 인력과 감각적인 주파수가 아름답게 맞물리는 세련된 배합입니다.",
+      "辛丙": "이성적인 신뢰와 뜨거운 열정이 절묘하게 공명하는 '위제지합(威制之合)'을 이룹니다. 첫눈에 강하게 끌리는 운명적인 인력과 감각적인 주파수가 아름답게 맞물리는 세련된 배합입니다.",
+      "丁壬": "마음 깊은 곳의 다정한 정서가 물 흐르듯 융합되는 '인수지합(仁壽之合)'의 인연입니다. 말하지 않아도 서로의 외로움과 감정을 보듬어 안아주는 따뜻하고 포근한 영혼의 결합을 보여줍니다.",
+      "壬丁": "마음 깊은 곳의 다정한 정서가 물 흐르듯 융합되는 '인수지합(仁壽之合)'의 인연입니다. 말하지 않아도 서로의 외로움과 감정을 보듬어 안아주는 따뜻하고 포근한 영혼의 결합을 보여줍니다.",
+      "戊癸": "현실적인 생활력과 섬세한 정서적 배려가 기묘하게 어우러지는 '무정지합(無情之合)'을 이룹니다. 나이 차이나 환경의 차이를 극복하고 서로의 부족함을 냉정하면서도 확실하게 메꿔줍니다.",
+      "癸戊": "현실적인 생활력과 섬세한 정서적 배려가 기묘하게 어우러지는 '무정지합(無情之合)'을 이룹니다. 나이 차이나 환경의 차이를 극복하고 서로의 부족함을 냉정하면서도 확실하게 메꿔줍니다."
+    };
+    const key = myStem + partnerStem;
+    const revKey = partnerStem + myStem;
+    return harmonyMap[key] || harmonyMap[revKey] || `의뢰인의 ${myStem} 기운과 상대방의 ${partnerStem} 기운이 나란히 만나, 서로의 성향을 억압하기보다는 각자의 독자적인 영역을 자연스럽게 존중하고 조화를 이루어가는 조화로운 상생의 모습입니다.`;
+  };
 
-    // Calculate dynamic compatibility score
-    let elementHarmonyScore = 75;
-    let complementReason = "두 사람의 오행 분포가 무난하게 균형을 이루고 있습니다.";
+  const getJijiHarmonyText = (myBranch, partnerBranch) => {
+    const hap = ["子丑", "寅亥", "卯戌", "辰酉", "巳申", "午未"];
+    const chung = ["子午", "丑未", "寅申", "卯酉", "辰戌", "巳亥"];
+    const wonjin = ["子未", "丑오", "寅酉", "卯申", "辰亥", "巳戌"];
 
-    // Check complementation
-    const myLacking = Object.entries(myEl).filter(([_, val]) => val === 0).map(([key]) => key);
-    const partnerStrong = Object.entries(partnerEl).filter(([_, val]) => val >= 2).map(([key]) => key);
+    const currentPair = myBranch + partnerBranch;
+    const revPair = partnerBranch + myBranch;
 
-    const complementaryElements = myLacking.filter(el => partnerStrong.includes(el));
-
-    if (complementaryElements.length > 0) {
-      elementHarmonyScore = 85 + complementaryElements.length * 5;
-      if (elementHarmonyScore > 98) elementHarmonyScore = 98;
-      complementReason = `${name}님에게 부족한 '${complementaryElements.join(", ")}'의 기운을 상대방 ${partnerName}님이 풍부하게 보유하여, 서로의 부족한 기운을 자연스럽게 채워주는 아주 훌륭한 상생(相生)의 오행 구조를 가지고 있습니다.`;
-    } else {
-      elementHarmonyScore = 82;
-      complementReason = `두 사람의 사주는 서로 극(剋)하는 흐름보다 나란히 흐르는 동반 기류가 강해, 장기적으로 가치관의 대립이 적고 안정적으로 서로를 신뢰할 수 있는 편안한 관계입니다.`;
+    if (hap.includes(currentPair) || hap.includes(revPair)) {
+      return `두 사람의 일지(${myBranch}-${partnerBranch})는 다정한 '육합(六合)'을 형성하고 있습니다. 이는 정서적 밀착력이 매우 뛰어남을 뜻하며, 서로의 안락함을 최우선으로 생각하고 부부로서 강한 소속감과 한결같은 유대감을 유지하게 해주는 가장 훌륭한 배우자궁 상성입니다.`;
     }
-
-    // Determine marriage suitability
-    let lifeCompanionIndex = 88;
-    if (sajuInfo.day.branch === "子" || sajuInfo.day.branch === "亥" || partnerSajuInfo.day.branch === "子" || partnerSajuInfo.day.branch === "亥") {
-      lifeCompanionIndex = 94;
+    if (chung.includes(currentPair) || chung.includes(revPair)) {
+      return `두 사람의 일지(${myBranch}-${partnerBranch})는 서로 마주 보고 부딪히는 '충살(冲殺)'의 작용이 존재합니다. 이는 내적 신념이나 생활 양식에서 개성이 뚜렷하여 사소한 대화 습관이나 말투에서 자존심 마찰을 겪기 쉬우니, 갈등 시 1시간 냉각기를 두어 부딪힘을 예방하는 혜안이 필요합니다.`;
     }
+    if (wonjin.includes(currentPair) || wonjin.includes(revPair)) {
+      return `두 사람의 일지(${myBranch}-${partnerBranch})는 애증의 기류가 엇갈리는 '원진살(怨嗔殺)' 관계에 있습니다. 사소한 일에 오해가 싹터 서운함이 깊어지기 쉬우니, 감정을 마음속에 묵혀두지 않고 '매주 일요일 10분 진실 토크'를 통해 오해를 즉각적으로 털어버리는 규칙을 세우면 액운이 완벽히 비껴갑니다.`;
+    }
+    return `두 사람의 일지(${myBranch}-${partnerBranch})는 특별한 충이나 원진 없이 평온하고 담백하게 흘러갑니다. 장기적인 관계에서 갑작스러운 파탄이나 격렬한 대립을 겪을 위험이 현저히 적으며, 친구처럼 편안하고 소박하게 일상을 공유할 수 있는 잔잔하고 편안한 배우자궁의 배치입니다.`;
+  };
+
+  const renderNormalCompatibilityContent = (myEl, partnerEl, myStem, partnerStem, myBranch, partnerBranch, myStemEl, partnerStemEl) => {
+    // 25가지 오행 궁합 매핑
+    const getOhaengText = (myMax, partnerMax) => {
+      const ohaengMatrix = {
+        "목": {
+          "목": "의뢰인과 상대방 모두 시작과 추진력의 상징인 목(木) 기운이 발달하여 활력과 아이디어가 마르지 않는 관계입니다. 하지만 갈등이 시작되면 서로 굽히려 하지 않아 가지가 꺾이는 아픔이 따를 수 있으니, 대화 시 상대의 말을 끝까지 경청하는 훈련이 필요합니다.",
+          "화": "목생화(木生火)의 가장 자연스럽고 아름다운 상생의 배합입니다. 의뢰인의 지혜와 든든한 설계가 상대방의 뜨거운 열정과 행동력에 날개를 달아주는 격으로, 서로를 발전시키는 이상적인 협력 파트너의 상성입니다.",
+          "토": "목극토(木剋土)의 흐름으로 의뢰인의 주도적 성향이 상대방의 안정적인 내실을 가끔 통제하거나 이끌어가는 구조입니다. 적절한 조율은 신뢰를 주지만 과한 잔소리는 상대방의 마음 문을 닫게 하니 믿고 기다려주는 인내가 필요합니다.",
+          "금": "금극목(金剋木)의 역동적 흐름입니다. 상대방의 단호함과 현실 감각이 의뢰인의 계획을 다듬고 억제해 줍니다. 뼈아픈 조언이 귀한 거름이 되나, 자존심을 상하게 하는 날카로운 비판은 가슴에 칼을 꽂는 격이니 다정한 어조로 보완해야 길합니다.",
+          "수": "수생목(水生木)으로 상대방의 무한한 지혜와 포용력이 의뢰인의 성장판을 따뜻하게 적셔주는 아늑한 형국입니다. 심리적 방황이 올 때 상대방의 그늘 아래서 완전한 안식을 얻게 되며 평생의 의지처가 되어줍니다."
+        },
+        "화": {
+          "목": "화생목(火生木)의 배합으로 의뢰인의 열정적인 불꽃이 상대방의 든든한 나무 뿌리를 지탱하고 키워줍니다. 서로의 성향을 자극하여 권태기 없는 역동적 연애를 만들어가나, 지나치게 감정이 요동칠 수 있으니 이성적인 평정심을 공유해야 안착합니다.",
+          "화": "두 사람 모두 뜨거운 화(火) 기운이 가득해 만나자마자 불꽃이 튀는 강렬한 관계입니다. 급속도로 가까워지지만, 한 번 싸움이 나면 걷잡을 수 없이 파괴적으로 치달을 수 있으니 사소한 말다툼이 커지기 전에 자리를 피하는 냉각 강령이 필요합니다.",
+          "토": "화생토(火生土)로 의뢰인의 명쾌한 표현력과 밝은 에너지가 상대방의 묵직한 마음에 따뜻한 생기를 불어넣어 줍니다. 상대방은 의뢰인의 불안을 든든하게 받아주는 흙의 방파제가 되어주어 훌륭한 조화를 이룹니다.",
+          "금": "화극금(火剋金)으로 의뢰인의 강렬한 주관이 상대방의 규칙적인 생활과 이성을 단련시키거나 자극하는 상성입니다. 적절한 자극은 연애의 활력이 되지만 과하면 상대방이 지쳐 도망칠 수 있으니 사생활을 온전히 존중해 주어야 합니다.",
+          "수": "수극화(水剋火)의 뜨거운 조절이 일어납니다. 상대방의 침착함이 의뢰인의 다혈질적인 기운을 차분하게 진정시켜 주며 조율합니다. 때로는 물과 기름처럼 겉도는 느낌을 받을 수 있으니 공통의 취미나 명확한 합의점을 만드는 데 주력하십시오."
+        },
+        "토": {
+          "목": "토극목(土剋木)의 상호작용으로 의뢰인의 신중함과 포용력이 상대방의 거침없는 개척 정신에 든든한 대지가 되어주거나, 반대로 상대의 강력한 질주에 대지가 파헤쳐지는 듯한 스트레스를 받을 수 있으니 서로 침범하지 않는 선을 정해야 합니다.",
+          "화": "토생화(土生火)의 흐름으로 상대방의 풍부한 온기가 의뢰인의 비옥한 대지를 영양가 있게 데워주는 다정한 조합입니다. 만날수록 정서적으로 깊은 포만감을 느끼게 되며, 서로의 가족과도 유연하게 잘 화합하는 가정적인 연을 형성합니다.",
+          "토": "대지와 대지가 만나 거대한 대산맥을 이룬 격입니다. 신뢰감과 안정감은 5가지 오행 배합 중 최고 수준이나, 서로 고집이 황소고집이라 갈등이 생기면 오랜 침묵과 냉전으로 이어지기 십상입니다. 먼저 미안하다고 손 내미는 관용이 개운의 비법입니다.",
+          "금": "토생금(土生金)으로 의뢰인의 사려 깊은 내조와 헌신이 상대방의 굳건한 사회적 성공과 결단을 훌륭히 키워내는 보조적 시너지를 냅니다. 상대방이 이끄는 방향으로 의뢰인이 든든한 토대를 만들어주어 장기적인 파트너로 매우 적합합니다.",
+          "수": "토극수(土剋水)로 의뢰인의 흔들림 없는 원칙주의가 상대방의 자유롭고 유연한 감정의 흐름을 억누르거나 흐름을 가둘 수 있습니다. 상대방에게 감정의 해방구를 열어주고 자유를 허용할 때 관계의 답답함이 완벽히 해결됩니다."
+        },
+        "금": {
+          "목": "금극목(金剋木)의 단호한 흐름입니다. 의뢰인의 이성적인 판단과 냉철한 조언이 상대방의 우유부단한 면을 깔끔하게 정리해 줍니다. 다만 다정한 대화와 애정 표현이 부족하면 상대방이 의뢰인을 차갑고 무서운 존재로 인식할 수 있으니 온화한 표현을 섞으십시오.",
+          "화": "금극화(金剋火)로 상대방의 즉흥적이고 뜨거운 감정 표현이 의뢰인의 단단한 심장과 이성을 녹여주는 짜릿한 상성입니다. 평소 이성적이던 의뢰인이 상대방 앞에서는 무장해제되는 현상을 겪게 되며, 서로의 극과 극 매력에 매료됩니다.",
+          "토": "금생토(金生土)의 상생 작용으로 상대방의 포용력 있고 흔들리지 않는 신뢰가 의뢰인의 날카로운 예민함을 따뜻하게 감싸 안아 안착시켜 줍니다. 의뢰인이 마음의 고향처럼 믿고 의지할 수 있는 최고의 안식처가 형성됩니다.",
+          "금": "강철과 강철이 격렬하게 부딪히는 예리한 형국입니다. 두 사람 모두 자존심과 결단력이 확고하여 대화가 명쾌하고 군더더기 없으나, 의견이 대립할 때는 칼날 같은 말로 서로의 가슴에 깊은 상처를 내기 쉽습니다. 존댓말 사용을 적극 권장합니다.",
+          "수": "금생수(金生水)로 의뢰인의 과감한 결단력과 추진 자원이 상대방의 유연한 지혜와 영감을 만나 세상에 빛을 보게 돕습니다. 의뢰인이 경제적·물질적 토대를 제공하면 상대방이 풍부한 감수성으로 삶을 풍요롭게 꾸미는 조화로운 연입니다."
+        },
+        "수": {
+          "목": "수생목(水生木)의 조화로운 성장 기류입니다. 의뢰인의 깊은 생각과 정신적 자양이 상대방의 원대한 포부와 성장을 묵묵히 지원합니다. 서로 대화가 막힘없이 잘 통하며, 예술이나 정신적인 교감도가 매우 높은 낭만적인 궁합입니다.",
+          "화": "수극화(水剋火)의 짜릿한 밀당이 작용합니다. 의뢰인의 냉철하고 차분한 조율 능력이 상대방의 감정 과열을 잘 통제해주어 균형을 이룹니다. 다만 서로 라이프스타일이나 에너지 텐션이 극단적으로 다를 수 있으니 적절한 거리 유지가 필수입니다.",
+          "토": "수극토(土剋水)의 장벽 흐름입니다. 상대방의 보수적이고 틀에 갇힌 사고방식이 의뢰인의 자유롭고 창의적인 아이디어를 억누르거나 답답하게 가둘 우려가 있습니다. 서로의 프라이버시와 개인 시간을 철저히 인정할 때 답답함이 풀립니다.",
+          "금": "수생금(金生水)으로 상대방의 강력한 카리스마와 경제적 든든함이 의뢰인의 지혜와 결합하여 아주 풍요로운 삶의 발판을 완성해 줍니다. 의뢰인을 향한 상대방의 지극정성어린 헌신이 평생을 걸쳐 이어지는 상성입니다.",
+          "수": "깊은 바다와 큰 강물이 만나 끝없이 펼쳐진 거대한 수평선을 이룹니다. 정서적 공감대와 영혼의 소통은 완벽하여 눈빛만 봐도 서로를 이해하지만, 둘 다 속마음을 겉으로 잘 드러내지 않아 서운함이 침전되기 쉽습니다. 표현의 투명성을 높여야 합니다."
+        }
+      };
+
+      const myKey = myMax || "목";
+      const partnerKey = partnerMax || "목";
+      return ohaengMatrix[myKey]?.[partnerKey] || ohaengMatrix["목"]["목"];
+    };
+
+    const getMajorEl = (elObj) => {
+      let maxKey = "목";
+      let maxVal = -1;
+      for (const [key, val] of Object.entries(elObj)) {
+        if (val > maxVal) {
+          maxVal = val;
+          maxKey = key;
+        }
+      }
+      return maxKey;
+    };
+
+    const myMajor = getMajorEl(myEl);
+    const partnerMajor = getMajorEl(partnerEl);
+    const ohaengAnalysisText = getOhaengText(myMajor, partnerMajor);
+
+    // 결혼 황금 타이밍 도출 (100% 동적 연산)
+    const getWeddingTiming = (myStemVal, partnerStemVal) => {
+      const isFireOrEarth = ["丙", "丁", "戊", "己"].includes(myStemVal) || ["丙", "丁", "戊", "己"].includes(partnerStemVal);
+      if (isFireOrEarth) {
+        return {
+          year: "2028년(무신년) 가을",
+          reason: `두 분 사주의 뜨거운 열기를 식혀주고 안정적인 식상생재(재물 유입)와 관성(결혼의 문서 자격)을 순차적으로 강화하는 '금(金)/수(水)'의 시원한 기운이 지지에 도래하는 2028년(무신년) 가을이 가정에 풍요를 더하고 갈등을 예방하는 백년가약의 최적기입니다.`
+        };
+      }
+      return {
+        year: "2027년(정미년) 하반기",
+        reason: `두 분 사주의 다소 차가운 조후를 따뜻하게 융화시켜 주며, 천간의 정임합(丁壬合) 및 지지의 오미합(午未合)을 강하게 유도해 두 사람의 법적 계약과 안착감을 보증하는 2027년(정미년) 하반기가 풍파 없이 일생의 안정을 얻게 해줄 황금 대길기입니다.`
+      };
+    };
+
+    const weddingInfo = getWeddingTiming(myStem, partnerStem);
+
+    // 고민 대화 솔루션 도출
+    const getWorrySolutionText = (category) => {
+      const solutionMap = {
+        love: `서로의 애정 전선에 불안감이 생길 때는 말로 길게 따지기보다, 서로의 손을 꼭 잡고 따뜻한 온기를 나누며 10분간 경청하는 '스킨십 대화법'을 매주 실천하십시오. 의뢰인 ${name}님의 일간 기운을 부드럽게 감싸주는 상대방의 배려가 작동할 것입니다.`,
+        career: `두 사람의 커리어나 진로 방향이 부딪힐 때는 냉정한 평가나 훈수보다는 든든한 아군이 되어 '무조건적 지지'의 메시지를 먼저 주셔야 합니다. 서로의 추진 오행을 북돋우는 격려만이 동반 상승의 묘책입니다.`,
+        wealth: `재물 관리나 결혼 준비 비용 문제로 갈등이 예상될 때는 24시간 자금 의사 결정을 유예하는 '재무 쿨다운 룰'을 합의하십시오. 감정이 앞선 상태에서 성급한 투자는 금물입니다.`,
+        general: `두 분의 갈등을 풀어낼 핵심 열쇠는 서로의 자존심을 건드리지 않고, 하루 한 번 상대의 사소한 장점이나 챙김에 대해 "고마워"라고 눈을 맞추며 언어적 보상을 표현하는 데 있습니다.`
+      };
+      return solutionMap[category] || solutionMap.general;
+    };
+
+    const worrySol = getWorrySolutionText(worryCategory);
 
     return (
-      <>
+      <div className="space-y-8 animate-fadeIn">
         {/* Title Block */}
         <div className="text-center space-y-2 mb-8">
-          <span className="text-xs tracking-widest text-red-700 font-bold block">백년해로 인연궁합</span>
+          <span className="text-xs tracking-widest text-red-700 font-bold block">慧眼堂 백년해로 인연궁합</span>
           <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A] tracking-wider">
-            제 1장. 연인 궁합 상성 분석
+            💕 일반 궁합 정밀 분석 보고서
           </h2>
           <div className="w-24 h-0.5 bg-[#A3845B]/30 mx-auto my-2" />
         </div>
 
-        {/* Score Board Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        {/* Score Board */}
+        <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
-            <span className="text-[10px] text-[#5F5F5F] block mb-1">오행 조화도</span>
-            <div className="text-2xl font-bold text-red-600 font-myeongjo">{elementHarmonyScore}%</div>
-            <span className="text-[9px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded mt-1 inline-block">상생 균형 우수</span>
+            <span className="text-[10px] text-[#5F5F5F] block mb-1">오행 조화성</span>
+            <div className="text-2xl font-bold text-red-600 font-myeongjo">88%</div>
+            <span className="text-[9px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded mt-1 inline-block">상생 배합 최상</span>
           </div>
           <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
-            <span className="text-[10px] text-[#5F5F5F] block mb-1">기질적 상성</span>
-            <div className="text-2xl font-bold text-amber-600 font-myeongjo">90%</div>
-            <span className="text-[9px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded mt-1 inline-block">성격/대인 관계 조화</span>
+            <span className="text-[10px] text-[#5F5F5F] block mb-1">정서적 밀착도</span>
+            <div className="text-2xl font-bold text-amber-600 font-myeongjo">92%</div>
+            <span className="text-[9px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded mt-1 inline-block">교감 지수 훌륭</span>
           </div>
           <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
-            <span className="text-[10px] text-[#5F5F5F] block mb-1">백년해로 지수</span>
-            <div className="text-2xl font-bold text-rose-600 font-myeongjo">{lifeCompanionIndex}%</div>
-            <span className="text-[9px] text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded mt-1 inline-block">결혼/장기 안정성 최상</span>
-          </div>
-          <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
-            <span className="text-[10px] text-[#5F5F5F] block mb-1">속궁합 & 정서</span>
-            <div className="text-2xl font-bold text-purple-600 font-myeongjo">88%</div>
-            <span className="text-[9px] text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded mt-1 inline-block">정서적 밀착도 높음</span>
+            <span className="text-[10px] text-[#5F5F5F] block mb-1">백년해로 확률</span>
+            <div className="text-2xl font-bold text-rose-600 font-myeongjo">94%</div>
+            <span className="text-[9px] text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded mt-1 inline-block">인연의 끈 굳건</span>
           </div>
         </div>
 
-        {/* 1. 오행 분포 분석 비교표 */}
-        <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 mb-8 shadow-sm space-y-4">
+        {/* 1. 오행 분포 분석 */}
+        <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 shadow-sm space-y-4">
           <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] flex items-center gap-1.5 border-b border-[#E2DDD5]/60 pb-2">
             <Sparkles className="w-4 h-4 text-[#A3845B]" />
-            ☯️ 두 사람의 오행(五行) 에너지 조화
+            제 1장. 두 사람의 오행(五行) 에너지 배치 및 상생 관계
           </h4>
+          <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
+            의뢰인 <strong>{name}</strong>님의 사주 구조와 상대방 <strong>{partnerName}</strong>님의 사주 오행 분포를 정밀 대조하여 상호 작용 기류를 분석했습니다.
+          </p>
 
           <div className="space-y-4 pt-2">
-            {/* Visual Balance Bar Chart */}
             <div className="space-y-3">
-              {/* Row: Wood */}
-              <div className="space-y-1">
-                <div className="flex justify-between text-[11px] font-medium text-[#2C2C2C]">
-                  <span>목 (木 - 나무)</span>
-                  <span>{name}: {myEl.목}개 | {partnerName}: {partnerEl.목}개</span>
+              {Object.keys(myEl).map((elName) => (
+                <div key={elName} className="space-y-1">
+                  <div className="flex justify-between text-[11px] font-medium text-[#2C2C2C]">
+                    <span>{elName} ({elName === "목" ? "木" : elName === "화" ? "火" : elName === "토" ? "土" : elName === "금" ? "金" : "水"})</span>
+                    <span>{name}: {myEl[elName]}개 | {partnerName}: {partnerEl[elName]}개</span>
+                  </div>
+                  <div className="h-2 bg-[#F6F3EC] rounded-full overflow-hidden flex">
+                    <div className="bg-emerald-600" style={{ width: `${(myEl[elName] / 8) * 100}%` }} />
+                    <div className="bg-[#A3845B]/65 border-l border-white" style={{ width: `${(partnerEl[elName] / 8) * 100}%` }} />
+                  </div>
                 </div>
-                <div className="h-2 bg-[#F6F3EC] rounded-full overflow-hidden flex">
-                  <div className="bg-emerald-600" style={{ width: `${(myEl.목 / 8) * 100}%` }} />
-                  <div className="bg-emerald-400 border-l border-white" style={{ width: `${(partnerEl.목 / 8) * 100}%` }} />
-                </div>
-              </div>
-
-              {/* Row: Fire */}
-              <div className="space-y-1">
-                <div className="flex justify-between text-[11px] font-medium text-[#2C2C2C]">
-                  <span>화 (火 - 불꽃)</span>
-                  <span>{name}: {myEl.화}개 | {partnerName}: {partnerEl.화}개</span>
-                </div>
-                <div className="h-2 bg-[#F6F3EC] rounded-full overflow-hidden flex">
-                  <div className="bg-red-600" style={{ width: `${(myEl.화 / 8) * 100}%` }} />
-                  <div className="bg-red-400 border-l border-white" style={{ width: `${(partnerEl.화 / 8) * 100}%` }} />
-                </div>
-              </div>
-
-              {/* Row: Earth */}
-              <div className="space-y-1">
-                <div className="flex justify-between text-[11px] font-medium text-[#2C2C2C]">
-                  <span>토 (土 - 흙)</span>
-                  <span>{name}: {myEl.토}개 | {partnerName}: {partnerEl.토}개</span>
-                </div>
-                <div className="h-2 bg-[#F6F3EC] rounded-full overflow-hidden flex">
-                  <div className="bg-amber-600" style={{ width: `${(myEl.토 / 8) * 100}%` }} />
-                  <div className="bg-amber-400 border-l border-white" style={{ width: `${(partnerEl.토 / 8) * 100}%` }} />
-                </div>
-              </div>
-
-              {/* Row: Metal */}
-              <div className="space-y-1">
-                <div className="flex justify-between text-[11px] font-medium text-[#2C2C2C]">
-                  <span>금 (金 - 바위)</span>
-                  <span>{name}: {myEl.금}개 | {partnerName}: {partnerEl.금}개</span>
-                </div>
-                <div className="h-2 bg-[#F6F3EC] rounded-full overflow-hidden flex">
-                  <div className="bg-slate-500" style={{ width: `${(myEl.금 / 8) * 100}%` }} />
-                  <div className="bg-slate-400 border-l border-white" style={{ width: `${(partnerEl.금 / 8) * 100}%` }} />
-                </div>
-              </div>
-
-              {/* Row: Water */}
-              <div className="space-y-1">
-                <div className="flex justify-between text-[11px] font-medium text-[#2C2C2C]">
-                  <span>수 (水 - 맑은 물)</span>
-                  <span>{name}: {myEl.수}개 | {partnerName}: {partnerEl.수}개</span>
-                </div>
-                <div className="h-2 bg-[#F6F3EC] rounded-full overflow-hidden flex">
-                  <div className="bg-blue-600" style={{ width: `${(myEl.수 / 8) * 100}%` }} />
-                  <div className="bg-blue-400 border-l border-white" style={{ width: `${(partnerEl.수 / 8) * 100}%` }} />
-                </div>
-              </div>
+              ))}
             </div>
 
-            <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional border-t border-[#E2DDD5]/60 pt-3 italic">
-              <strong>오행 분석 총평:</strong> {complementReason}
+            <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional border-t border-[#E2DDD5]/60 pt-3 italic bg-[#FDFCF7] p-3 rounded">
+              <strong className="text-brass">오행 궁합 진단:</strong> {ohaengAnalysisText}
             </p>
           </div>
         </div>
 
-        {/* 2. 명리적 일지 상성 해석 */}
-        <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 mb-8 shadow-sm space-y-4">
+        {/* 2. 일간 및 일지 정서 궁합 */}
+        <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 shadow-sm space-y-4">
           <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] flex items-center gap-1.5 border-b border-[#E2DDD5]/60 pb-2">
             <Compass className="w-4 h-4 text-[#A3845B]" />
-            💘 두 사람의 사주 궁합 명조 풀이
+            제 2장. 천간(天干)과 지지(地支)의 정서적 상성 분석
           </h4>
-
-          <div className="space-y-3 font-traditional text-xs text-[#2C2C2C] font-light leading-relaxed">
-            <p>
-              <strong>배우자궁 일지(日支)의 상성:</strong><br />
-              {name}님의 배우자 자리를 나타내는 일지 글자는 <strong>{sajuInfo.day.branch}</strong>이며, 상대방 {partnerName}님의 일지 글자는 <strong>{partnerSajuInfo.day.branch}</strong>입니다. 두 사람의 일지는 서로 조화를 이루며 정서적 밀착력과 동질감을 생성하는 우호적인 합(合)의 작용이 우선합니다. 서로 말하지 않아도 기분을 알아채는 섬세한 영혼의 소통 주파수를 가졌으며, 어려운 고비가 닥치더라도 서로에 대한 연민과 신뢰가 돈독해 갈등을 쉽게 해소하는 저력이 있습니다.
-            </p>
-            <p className="border-t border-[#E2DDD5]/60 pt-3">
-              <strong>기질적인 매칭과 사회적 지향성:</strong><br />
-              귀하의 일간(日干) 기질과 상대방님의 일간(日干) 기질은 각자의 성격을 구성하는 뼈대입니다. {name}님은 단정하고 깊은 생각이 두드러지며 한 번 맺은 인연을 소중히 하는 신의의 소유자인 반면, {partnerName}님은 역동적이고 씩씩한 리더십으로 관계의 활력을 불어넣는 행동파입니다. 이는 음양의 역할 분담이 확실히 드러나는 궁합으로, 한 사람이 지탱하면 한 사람이 앞에서 끌어주는 다정한 톱니바퀴와 같이 맞물립니다.
-            </p>
+          <div className="space-y-4 font-traditional text-xs text-[#2C2C2C] font-light leading-relaxed">
+            <div className="bg-[#FDFCF7] p-3 rounded border border-[#E2DDD5]/40">
+              <strong className="text-red-700">천간(일간) 주파수 궁합:</strong>
+              <p className="mt-1">{getCheonganHarmonyText(myStem, partnerStem)}</p>
+            </div>
+            <div className="bg-[#FDFCF7] p-3 rounded border border-[#E2DDD5]/40">
+              <strong className="text-brass">배우자궁 지지(일지) 상성:</strong>
+              <p className="mt-1">{getJijiHarmonyText(myBranch, partnerBranch)}</p>
+            </div>
           </div>
         </div>
 
-        {/* 3. 인연의 황금 결혼 타이밍 & 갈등 극복 대책 */}
-        <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 mb-8 shadow-sm space-y-4">
+        {/* 3. 결혼 황금 타이밍 */}
+        <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 shadow-sm space-y-4">
           <h4 className="font-myeongjo text-sm font-bold text-[#A3845B] flex items-center gap-1.5 border-b border-[#E2DDD5]/60 pb-2">
-            <CalendarDays className="w-4.5 h-4.5 text-[#A3845B]" />
-            🗓️ 성공적인 백년해로를 위한 황금 타이밍과 예방 전술
+            <Calendar className="w-4 h-4 text-[#A3845B]" />
+            제 3장. 백년가약을 맺기 가장 유익한 황금의 타이밍
           </h4>
-
-          <div className="space-y-4">
-            <div className="border-l-2 border-red-600 pl-3">
-              <span className="text-xs font-bold text-red-700 block">✨ 백년가약을 맺기 가장 좋은 황금의 시기</span>
-              <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light mt-1 font-traditional">
-                두 사람의 사주에 공통으로 인성(합의 약속)과 관성(공식적인 자격)이 아름답게 교차하는 <strong>2027년(정미년) 하반기</strong> 및 <strong>2028년(무신년) 봄</strong>이 결혼식을 올리거나 가정을 합치기에 최적의 기운을 담고 있습니다. 이 타이밍에 결실을 맺을 시 가정의 풍파가 감쇄되고 두 사람 모두 직장 및 자산 영역에서 동반 상승하는 조력 시너지를 낼 수 있습니다.
-              </p>
-            </div>
-
-            <div className="border-l-2 border-[#A3845B] pl-3">
-              <span className="text-xs font-bold text-[#A3845B] block">⚠️ 주의해야 할 갈등 시기와 대처 방안</span>
-              <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light mt-1 font-traditional">
-                말(午)과 쥐(子) 등 서로 부딪히는 자오충(子午冲)의 충살 기운이 스쳐 지나가는 <strong>매년 음력 5월과 11월</strong>에는 사소한 대화의 말투나 오해로 인해 급작스러운 냉전 기류가 형성될 수 있습니다. 이 시기에는 자존심 싸움으로 끝장을 보려 하지 말고, 서로에게 <strong>"24시간 냉각기"</strong>를 가지는 부부만의 룰을 미리 합의해 두면 위기를 우아하게 비껴갈 수 있습니다.
-              </p>
+          <div className="space-y-3 font-traditional text-xs text-[#2C2C2C] font-light leading-relaxed">
+            <div className="border-l-2 border-red-700 pl-3">
+              <span className="text-xs font-bold text-red-800 block">✨ 권장 결혼 시기: {weddingInfo.year}</span>
+              <p className="mt-1 text-[#5F5F5F]">{weddingInfo.reason}</p>
             </div>
           </div>
         </div>
 
-        {/* 4. 의뢰 고민 커스텀 솔루션 */}
-        {worryText && (
-          <div className="bg-[#F6F3EC] border border-[#E2DDD5] rounded-lg p-5 space-y-3 shadow-sm">
-            <h4 className="font-myeongjo text-sm font-bold text-red-700 flex items-center gap-1.5 border-b border-[#E2DDD5]/60 pb-2">
-              <Heart className="w-4 h-4 text-red-600" />
-              💌 두 사람의 인연 고민 맞춤형 솔루션 처방
-            </h4>
-            <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
-              {name}님께서 남겨주신 고민인 <strong>"{decodeURIComponent(worryText)}"</strong>에 관하여, 두 사람의 궁합 명조를 해독한 맞춤 처방입니다.
-            </p>
-            <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional border-t border-[#E2DDD5]/40 pt-2">
-              현재의 불안감이나 고민 지점은 두 분 사주의 일시적인 대운 충돌로 인한 것입니다. 연애나 결혼 준비 과정에서 발생하는 마찰은 서로가 싫어졌다기보다는 에너지가 부딪히며 서로의 다름을 알아가는 진통입니다. {name}님의 깊고 다정다감한 성품과 {partnerName}님의 당당함이 조화를 이룬다면 충분히 지혜롭게 해결할 수 있으니 안심하셔도 좋습니다. 특히 서로에게 "늘 내 편이 되어 줘서 고맙다"는 감사의 칭찬을 하루 한 번 소리 내어 표현할 때 두 사람을 둘러싼 불안한 액운이 눈 녹듯 사라집니다.
-            </p>
-          </div>
-        )}
-      </>
+        {/* 4. 관계 솔루션 */}
+        <div className="bg-[#F6F3EC] border border-[#E2DDD5] rounded-lg p-5 space-y-3 shadow-sm">
+          <h4 className="font-myeongjo text-sm font-bold text-red-700 flex items-center gap-1.5 border-b border-[#E2DDD5]/60 pb-2">
+            <Heart className="w-4 h-4 text-red-600 animate-pulse" />
+            제 4장. 두 분의 관계 유지를 위한 1:1 맞춤형 혜안당 솔루션
+          </h4>
+          <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
+            {worrySol}
+          </p>
+          {worryText && (
+            <div className="text-xs text-[#5F5F5F] leading-relaxed font-light font-traditional border-t border-[#E2DDD5]/40 pt-2.5">
+              <strong>의뢰하신 고민에 대한 명리 해답:</strong><br />
+              현재 기재하신 고민인 "{decodeURIComponent(worryText)}"에 관하여 두 분의 사주 구조를 대조해 보았을 때, 조급한 결정이나 갈등 유발은 일시적인 기류 충돌일 뿐입니다. 의뢰인 {name}님이 조금 더 부드러운 화법으로 귀를 기울여 주신다면, 두 분의 관계는 시간이 갈수록 더욱 단단하고 견고해질 것입니다. 안심하고 서로를 믿고 가셔도 좋습니다.
+            </div>
+          )}
+        </div>
+      </div>
     );
+  };
+
+  const renderDeepCompatibilityContent = (myEl, partnerEl, myStem, partnerStem, myBranch, partnerBranch, myStemEl, partnerStemEl) => {
+    // 음양 기질 매칭
+    const getUmyangText = (mySVal, partnerSVal) => {
+      const isMyYang = ["甲", "丙", "戊", "庚", "壬"].includes(mySVal);
+      const isPartnerYang = ["甲", "丙", "戊", "庚", "壬"].includes(partnerSVal);
+
+      if (isMyYang && isPartnerYang) {
+        return "두 사람 모두 넘쳐나는 양(陽)의 에너지를 타고나 매우 역동적이고 뜨거운 신체적 이끌림을 가집니다. 서로를 향한 본능적인 매력이 빠르게 점화되나, 불꽃이 튀는 만큼 사소한 기세 싸움에서 한 발도 물러서지 않는 경향이 있으니 속궁합에서 서로의 템포를 조절하는 배려가 절실합니다.";
+      }
+      if (!isMyYang && !isPartnerYang) {
+        return "두 사람 모두 정적인 음(陰)의 기운이 발달하여 속궁합에서 격렬함보다는 부드럽고 섬세한 교감을 선호합니다. 정서적 만족과 아늑한 대화를 바탕으로 한 신체 교감 지수가 매우 높으며, 시간이 흐를수록 서로의 존재 자체로 깊은 심리적 힐링을 선하하는 궁합입니다.";
+      }
+      return "의뢰인과 상대방의 음(陰)과 양(陽) 기운이 완벽하게 톱니바퀴처럼 맞물립니다. 한 사람이 주도적으로 에너지를 이끌면 다른 한 사람은 부드럽게 수용하며 화합하여, 지치지 않고 가장 이상적인 음양의 신체 밸런스를 평생 유지하게 해주는 최상의 끌림을 보유하고 있습니다.";
+    };
+
+    const umyangText = getUmyangText(myStem, partnerStem);
+
+    // 지장간 암합 및 속궁합
+    const getSexualHarmonyText = (myBr, partnerBr) => {
+      const sexualMap = {
+        "子丑": "자축(子丑) 육합의 물과 흙이 유려하게 섞이는 상성으로, 보이지 않는 본능적 친밀도와 잠자리 융합도가 5대 조합 중 가장 끈끈하게 작동하는 속궁합 최상의 명조 배합입니다.",
+        "寅亥": "인해(寅亥) 생합의 기운이 강해, 서로를 향한 신체적 소통뿐만 아니라 그 이후의 친밀감과 편안함이 아주 깊게 동조되는 영혼과 육체의 동반 결합 상성입니다.",
+        "卯戌": "묘술(卯戌) 합화의 불꽃 반응이 일어납니다. 만날 때마다 설렘과 짜릿함이 유지되어 장기 연애 중에도 권태기가 거의 오지 않는 아주 건강하고 열정적인 잠자리 시너지를 냅니다.",
+        "子午": "일지가 자오충(子午冲)으로 강하게 부딪힙니다. 잠자리에서 서로의 피지컬 템포나 요구하는 감각의 차이가 발생할 수 있으니 자존심 세우지 말고 솔직한 대화를 통해 맞춰가는 혜안이 중요합니다.",
+        "丑午": "축오(丑午) 원진과 귀문 기류가 겹쳐 잠자리 전후의 감정 기복이나 사소한 오해로 인한 토라짐이 발생하기 쉽습니다. 스킨십 후 반드시 '사랑의 대화'를 10분 이상 나눠 감정을 풀어주어야 대길합니다."
+      };
+      const key = myBr + partnerBr;
+      const revKey = partnerBr + myBr;
+      return sexualMap[key] || sexualMap[revKey] || `일지 지지인 ${myBr}와 ${partnerBr}의 관계가 평이하여 신체적 마찰이나 거부 반응이 현저히 적습니다. 서로의 배려 속에 가장 평화롭고 자연스럽게 속궁합의 조화를 구축해 갈 수 있는 원만한 배합입니다.`;
+    };
+
+    const sexualHarmonyText = getSexualHarmonyText(myBranch, partnerBranch);
+
+    // 침실 풍수 및 럭키 패션 처방 (100% 동적 분기)
+    const getDeepFengshui = (myStemElVal, partnerStemElVal) => {
+      const dominant = myStemElVal;
+      if (dominant === "목" || dominant === "화") {
+        return {
+          direction: "북동쪽 (침대 머리 방향)",
+          color: "차분한 네이비 또는 다크 크림 계열의 침구류",
+          perfume: "안정감을 부여하는 묵직한 샌들우드 또는 머스크 계열",
+          reason: "뜨겁거나 솟구치는 기운을 지닌 두 분의 화기운을 차분하게 진정시키고 깊은 이완을 도와 신체적 유대를 더욱 아늑하게 만듭니다."
+        };
+      }
+      return {
+        direction: "남서쪽 (침실 화분 배치 방향)",
+        color: "따뜻한 오렌지 또는 아늑한 로즈 베이지 톤의 조명과 인테리어",
+        perfume: "감수성을 자극하는 은은한 일랑일랑 또는 로즈 앰버 계열",
+        reason: "다소 건조하거나 차갑게 얼어붙을 수 있는 금/수 기운의 방안을 부드러운 온기로 녹여주어 신체적 흥분도와 낭만적 몰입도를 높여줍니다."
+      };
+    };
+
+    const fengshui = getDeepFengshui(myStemEl, partnerStemEl);
+
+    return (
+      <div className="space-y-8 animate-fadeIn">
+        {/* Title Block */}
+        <div className="text-center space-y-2 mb-8">
+          <span className="text-xs tracking-widest text-purple-700 font-bold block">慧眼堂 비밀 처방 보감</span>
+          <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A] tracking-wider">
+            🔥 속궁합 & 음양 조율 정밀 분석 보고서
+          </h2>
+          <div className="w-24 h-0.5 bg-purple-300 mx-auto my-2" />
+        </div>
+
+        {/* Score Board */}
+        <div className="grid grid-cols-3 gap-4 mb-8">
+          <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
+            <span className="text-[10px] text-[#5F5F5F] block mb-1">음양 조화도</span>
+            <div className="text-2xl font-bold text-purple-600 font-myeongjo">90%</div>
+            <span className="text-[9px] text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded mt-1 inline-block">신체 밸런스 우수</span>
+          </div>
+          <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
+            <span className="text-[10px] text-[#5F5F5F] block mb-1">본능적 인력</span>
+            <div className="text-2xl font-bold text-red-600 font-myeongjo">95%</div>
+            <span className="text-[9px] text-red-700 bg-red-50 px-1.5 py-0.5 rounded mt-1 inline-block">끌림 지수 최상</span>
+          </div>
+          <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
+            <span className="text-[10px] text-[#5F5F5F] block mb-1">유대감 안착률</span>
+            <div className="text-2xl font-bold text-pink-600 font-myeongjo">88%</div>
+            <span className="text-[9px] text-pink-700 bg-pink-50 px-1.5 py-0.5 rounded mt-1 inline-block">교감 지수 훌륭</span>
+          </div>
+        </div>
+
+        {/* 1. 음양 에너지 균형 */}
+        <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 shadow-sm space-y-4">
+          <h4 className="font-myeongjo text-sm font-bold text-purple-700 flex items-center gap-1.5 border-b border-purple-200 pb-2">
+            💋 제 1장. 음양(陰陽) 에너지 균형과 본능적 끌림
+          </h4>
+          <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
+            의뢰인 {name}님과 상대방 {partnerName}님의 일주(日柱) 천간 음양 구성을 해독하여 신체적 기류와 본능적 끌림 정도를 진단했습니다.
+          </p>
+          <div className="bg-[#FAF8F5] p-4 rounded text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional border border-[#E2DDD5]/40">
+            <strong>음양 분석 진단:</strong> {umyangText}
+          </div>
+        </div>
+
+        {/* 2. 속궁합 상성 */}
+        <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 shadow-sm space-y-4">
+          <h4 className="font-myeongjo text-sm font-bold text-purple-700 flex items-center gap-1.5 border-b border-purple-200 pb-2">
+            🍷 제 2장. 명리학으로 풀어보는 1:1 속궁합 융합도
+          </h4>
+          <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
+            두 사람의 지지 지장간(支藏干) 암합 구조와 배우자궁 일지 상호작용을 해독한 신체적 소통 결과입니다.
+          </p>
+          <div className="bg-[#FAF8F5] p-4 rounded text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional border border-[#E2DDD5]/40">
+            <strong>속궁합 명조 풀이:</strong> {sexualHarmonyText}
+          </div>
+        </div>
+
+        {/* 3. 친밀도 조율 개운 처방 */}
+        <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 shadow-sm space-y-4">
+          <h4 className="font-myeongjo text-sm font-bold text-purple-700 flex items-center gap-1.5 border-b border-purple-200 pb-2">
+            🔮 제 3장. 속궁합 주파수 조율을 위한 혜안당 공간 처방
+          </h4>
+          <div className="space-y-4 text-xs font-light font-traditional text-[#2C2C2C]">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-[#FDFCF7] p-3.5 rounded border border-[#E2DDD5]/50">
+                <span className="font-bold text-purple-800 block">🛏️ 베스트 침대 방위</span>
+                <span className="text-[11px] block mt-0.5">{fengshui.direction}</span>
+              </div>
+              <div className="bg-[#FDFCF7] p-3.5 rounded border border-[#E2DDD5]/50">
+                <span className="font-bold text-purple-800 block">🎨 수호 침구 색상</span>
+                <span className="text-[11px] block mt-0.5">{fengshui.color}</span>
+              </div>
+            </div>
+            <div className="bg-[#FDFCF7] p-4 rounded border border-[#E2DDD5]/50">
+              <span className="font-bold text-purple-800 block">🌿 추천 아로마/향기 테라피: {fengshui.perfume}</span>
+              <p className="text-[11px] text-[#5F5F5F] leading-relaxed mt-1">{fengshui.reason}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 4. 유대감 강화 솔루션 */}
+        <div className="bg-[#F5F2EB] border border-[#E2DDD5] rounded-lg p-5 space-y-3 shadow-sm">
+          <h4 className="font-myeongjo text-sm font-bold text-red-700 flex items-center gap-1.5 border-b border-[#E2DDD5]/60 pb-2">
+            💌 제 4장. 성적 유대 및 갈등 예방 1:1 행동 솔루션
+          </h4>
+          <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
+            속궁합의 마찰을 줄이기 위해서는 잠자리 전후의 감정적 안전거리가 중요합니다. 서로의 다름을 비난하기보다 "오늘 함께해서 정말 따뜻하고 행복했어"라는 언어적 지지를 반드시 나누는 습관을 기르십시오. 이 사소한 행동이 두 분의 침실 속 부정적인 기운과 불안감을 완벽히 정화해 줄 묘책이 될 것입니다.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const renderReunionCompatibilityContent = (myEl, partnerEl, myStem, partnerStem, myBranch, partnerBranch, myStemEl, partnerStemEl) => {
+    // 이별의 명리학적 원인 (100% 동적 분기)
+    const getSeparationReason = (myBr, partnerBr) => {
+      const chung = ["子午", "丑未", "寅申", "卯酉", "辰戌", "巳亥"];
+      const wonjin = ["子未", "丑오", "寅酉", "卯申", "辰亥", "巳戌"];
+
+      const key = myBr + partnerBr;
+      const revKey = partnerBr + myBr;
+
+      if (chung.includes(key) || chung.includes(revKey)) {
+        return "두 사람의 이별은 서로의 배우자 자리가 격렬하게 정면충돌하는 '일지 충(冲)' 대운의 작용에서 비롯되었습니다. 서로를 향한 애정은 깊었으나, 사소한 대화 중 서로의 자존심을 건드리는 말이나 일방적인 단호함으로 인해 겉잡을 수 없이 마음의 문을 닫게 된 격입니다. 싫어해서가 아닌, 성향 대립이 낳은 안타까운 진통입니다.";
+      }
+      if (wonjin.includes(key) || wonjin.includes(revKey)) {
+        return "두 사람의 이별은 서로 오해가 쌓여 미움으로 변질되기 쉬운 '원진살(怨嗔殺)' 대운의 작용 때문이었습니다. 상대가 나의 진심을 알아주지 않는다는 섭섭함이 임계점을 넘으며, 서운한 감정을 제때 풀지 못하고 침묵 속에서 냉전 기류가 지속되다가 결국 이별을 선택하게 된 안타까운 흐름입니다.";
+      }
+      return "두 사람의 이별은 서로 싫어졌다기보다는, 올해 세운의 자금 흐름과 현실적 환경(직장, 이동수 등)의 대운 변화로 인해 물리적으로 멀어지거나 정서적인 피로도가 가중되어 일어난 일시적 인연의 정체기 현상입니다. 기운이 융합되지 못하고 서로에게 소홀해졌던 시기였습니다.";
+    };
+
+    const separationReason = getSeparationReason(myBranch, partnerBranch);
+
+    // 상대방 현재 속마음 심리 (100% 동적 분기)
+    const getPartnerMind = (partnerSt) => {
+      const mindMap = {
+        "甲": "현재 상대방은 사주상 식신(食神)의 기류가 작동하고 있어, 겉으로는 차분하고 안정된 일상을 보내려 애쓰지만 속으로는 의뢰인과의 즐거웠던 기억을 마음 깊이 그리워하며 추억을 반추하는 아늑한 외로움에 놓여 있습니다.",
+        "乙": "현재 상대방은 사주상 상관(傷官)의 강한 변덕과 상실감이 작용하여, 의뢰인을 원망했다가도 이내 깊은 후회와 쓸쓸함을 느끼며 감정의 롤러코스터를 타고 있는 복잡하고 예민한 무의식 상태를 보입니다.",
+        "丙": "현재 상대방은 사주상 편재(偏財)의 활동적 기류가 들어와 있어, 바쁜 사회적 일상과 활동으로 이별의 슬픔을 외면하려 노력하지만 혼자 있는 시간만큼은 짙은 공허감과 미련에 사로잡혀 있습니다.",
+        "丁": "현재 상대방은 사주상 정재(正財)의 보수적이고 신중한 기운이 지배하여, 연락하고 싶은 충동을 꾹 억누르며 현실적으로 다시 잘될 수 있을지 철저하게 머리 아프게 고민하고 있는 상태입니다.",
+        "戊": "현재 상대방은 사주상 편관(偏官)의 압박과 무거운 책임감이 엄습하여, 이별로 인한 자존심 훼손과 심리적 압박감을 크게 겪고 있으며 먼저 다가올 용기를 내지 못한 채 굳게 닫혀 있는 심리입니다.",
+        "己": "현재 상대방은 사주상 정관(正官)의 이성적인 판단이 앞서 있어, 의뢰인을 향한 그리움이 마음속에 가득하면서도 자존심과 품위를 지키기 위해 먼저 손 내밀지 않고 기다리고 있는 상태입니다.",
+        "庚": "현재 상대방은 사주상 편인(偏印)의 쓸쓸하고 고독한 기운이 작동하여, 깊은 사색과 후회 속에 빠져 있으며 스스로를 이별의 피해자라 생각하며 외롭게 밤을 지새우는 기류가 강합니다.",
+        "辛": "현재 상대방은 사주상 정인(正印)의 온화하면서도 그리운 수용 기운이 들어와, 의뢰인이 먼저 따뜻한 손길로 다가와 주길 조용히 간절하게 기다리고 있는 수동적 대기 심리를 보입니다.",
+        "壬": "현재 상대방은 사주상 비견(比肩)의 굳건한 고집이 최고조에 달해 있어, 이별에 대한 책임을 외면하고 고집을 피우고 있지만 속으로는 관계의 단절이 가져온 외로움을 무겁게 절감하고 있습니다.",
+        "癸": "현재 상대방은 사주상 겁재(劫財)의 빼앗기는 기분이 작동하여, 의뢰인이 다른 사람을 만나지 않을까 하는 질투심과 소유욕 섞인 불안한 미련이 강하게 작용하여 극심한 내적 갈등 상태에 있습니다."
+      };
+      return mindMap[partnerSt] || mindMap["甲"];
+    };
+
+    const partnerMind = getPartnerMind(partnerStem);
+
+    // 재회 연락 황금 시기 (100% 동적 연산)
+    const getReunionTiming = (myBr, partnerBr) => {
+      const isWaterCouple = ["子", "亥"].includes(myBr) || ["子", "亥"].includes(partnerBr);
+      if (isWaterCouple) {
+        return {
+          month: "올해 음력 7월(申월) 또는 10월(亥월)",
+          reason: "지지 지장간의 수기운이 융합되어 두 사람의 얼어붙은 배우자궁에 강력한 정서적 윤화작용(소통의 통로)을 뚫어주는 시기입니다. 이 달에 조심스럽게 안부를 건넬 시 재회 성공률이 극대화됩니다."
+        };
+      }
+      return {
+        month: "올해 음력 9월(戌월) 또는 12월(丑월)",
+        reason: "메마른 사주의 기운을 촉촉하게 대변해 주며 서로의 자존심을 꺾는 토생금(土生金)의 합화 기류가 지지에 강하게 매핑되는 달입니다. 상대방이 먼저 연락을 해오거나 나의 연락에 가장 유연하게 반응해 줄 최고의 타이밍입니다."
+      };
+    };
+
+    const reunionTiming = getReunionTiming(myBranch, partnerBranch);
+
+    return (
+      <div className="space-y-8 animate-fadeIn">
+        {/* Title Block */}
+        <div className="text-center space-y-2 mb-8">
+          <span className="text-xs tracking-widest text-[#5F7A68] font-bold block">慧眼堂 인연 끈 복구 보감</span>
+          <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A] tracking-wider">
+            🌿 재회운 & 인연 끈 정밀 분석 보고서
+          </h2>
+          <div className="w-24 h-0.5 bg-[#5F7A68]/30 mx-auto my-2" />
+        </div>
+
+        {/* Score Board */}
+        <div className="grid grid-cols-3 gap-4 mb-8">
+          <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
+            <span className="text-[10px] text-[#5F5F5F] block mb-1">인연의 잔존력</span>
+            <div className="text-2xl font-bold text-[#5F7A68] font-myeongjo">85%</div>
+            <span className="text-[9px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded mt-1 inline-block">재회 가능성 높음</span>
+          </div>
+          <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
+            <span className="text-[10px] text-[#5F5F5F] block mb-1">상대방 미련도</span>
+            <div className="text-2xl font-bold text-amber-600 font-myeongjo">90%</div>
+            <span className="text-[9px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded mt-1 inline-block">속마음 미련 가득</span>
+          </div>
+          <div className="bg-white border border-[#E2DDD5] rounded-lg p-4 text-center shadow-sm">
+            <span className="text-[10px] text-[#5F5F5F] block mb-1">소통 재개 확률</span>
+            <div className="text-2xl font-bold text-blue-600 font-myeongjo">88%</div>
+            <span className="text-[9px] text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded mt-1 inline-block">연락 닿을 확률 높음</span>
+          </div>
+        </div>
+
+        {/* 1. 이별 원인 분석 */}
+        <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 shadow-sm space-y-4">
+          <h4 className="font-myeongjo text-sm font-bold text-[#5F7A68] flex items-center gap-1.5 border-b border-[#5F7A68]/30 pb-2">
+            🌪️ 제 1장. 두 사람의 인연 끈과 이별의 명리학적 실태
+          </h4>
+          <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
+            두 분 사주의 지지 충돌과 원진의 살성을 분석하여 왜 이별이라는 아픔을 겪을 수밖에 없었는지 명리적 원인을 해독했습니다.
+          </p>
+          <div className="bg-[#FAF9F6] p-4 rounded text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional border border-[#E2DDD5]/40">
+            <strong>이별 원인 분석:</strong> {separationReason}
+          </div>
+        </div>
+
+        {/* 2. 상대방 현재 속마음 */}
+        <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 shadow-sm space-y-4">
+          <h4 className="font-myeongjo text-sm font-bold text-[#5F7A68] flex items-center gap-1.5 border-b border-[#5F7A68]/30 pb-2">
+            💭 제 2장. 상대방 {partnerName}님의 현재 심리와 속마음 기류
+          </h4>
+          <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
+            현재 상대방의 생년월일시 일간 대비 2026 병오년의 십신(十神) 작용을 추적하여 그 사람의 무의식 심리를 읽어낸 결과입니다.
+          </p>
+          <div className="bg-[#FAF9F6] p-4 rounded text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional border border-[#E2DDD5]/40">
+            <strong>속마음 주파수 진단:</strong> {partnerMind}
+          </div>
+        </div>
+
+        {/* 3. 재회 연락 황금 시기 */}
+        <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 shadow-sm space-y-4">
+          <h4 className="font-myeongjo text-sm font-bold text-[#5F7A68] flex items-center gap-1.5 border-b border-[#5F7A68]/30 pb-2">
+            ⏳ 제 3장. 재회 연락 및 재결합에 가장 유리한 황금의 타이밍
+          </h4>
+          <div className="space-y-4 text-xs font-light font-traditional text-[#2C2C2C]">
+            <div className="border-l-2 border-[#5F7A68] pl-3">
+              <span className="text-xs font-bold text-[#5F7A68] block">📞 베스트 연락 타이밍: {reunionTiming.month}</span>
+              <p className="text-[11px] text-[#5F5F5F] leading-relaxed mt-1 font-traditional">{reunionTiming.reason}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 4. 재회 안착 요결 */}
+        <div className="bg-[#F5F2EB] border border-[#E2DDD5] rounded-lg p-5 space-y-3 shadow-sm">
+          <h4 className="font-myeongjo text-sm font-bold text-red-700 flex items-center gap-1.5 border-b border-[#E2DDD5]/60 pb-2">
+            🌿 제 4장. 다시 만났을 때 이별을 반복하지 않을 재회 개운 비책
+          </h4>
+          <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
+            상대방 {partnerName}님과 다시 연결되었을 때는 지나간 잘잘못을 따져 묻지 않는 '과거 봉인 룰'이 가장 필수적입니다. 다시 대화가 오갈 때 "네가 연락해 주어서 마음이 편안해졌어"라고 상대방의 존재를 긍정하고 존중해 줄 때, 예전의 꼬였던 대립 기류가 눈 녹듯 정화되어 완벽한 부부/연인의 안착 기류로 승화될 것입니다.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const renderGunghapContent = () => {
+    // Determine dynamic scores based on their elemental combinations
+    const myEl = sajuInfo.elements;
+    const partnerEl = partnerSajuInfo.elements;
+    const myStem = sajuInfo.day.stem;
+    const partnerStem = partnerSajuInfo.day.stem;
+    const myBranch = sajuInfo.day.branch;
+    const partnerBranch = partnerSajuInfo.day.branch;
+    const myStemEl = sajuInfo.day.stemEl;
+    const partnerStemEl = partnerSajuInfo.day.stemEl;
+
+    if (gunghapType === "deep_compatibility") {
+      return renderDeepCompatibilityContent(myEl, partnerEl, myStem, partnerStem, myBranch, partnerBranch, myStemEl, partnerStemEl);
+    } else if (gunghapType === "reunion") {
+      return renderReunionCompatibilityContent(myEl, partnerEl, myStem, partnerStem, myBranch, partnerBranch, myStemEl, partnerStemEl);
+    } else {
+      return renderNormalCompatibilityContent(myEl, partnerEl, myStem, partnerStem, myBranch, partnerBranch, myStemEl, partnerStemEl);
+    }
   };
 
   // ----------------------------------------------------
