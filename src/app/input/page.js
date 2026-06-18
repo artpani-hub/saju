@@ -905,7 +905,6 @@ function InputFormContent() {
                         onChange={handleInputChange}
                         placeholder="홍길동"
                         className="w-full bg-background border border-border-custom rounded px-3 py-2 text-sm focus:outline-none focus:border-brass transition-colors"
-                        required
                       />
                     </div>
 
@@ -940,7 +939,8 @@ function InputFormContent() {
                 </div>
 
                 {/* 2. Birth Date and Time */}
-                <div className="bg-background-secondary/30 border border-border-custom rounded-lg p-6 space-y-4">
+                {productKey !== "tarot" && (
+                  <div className="bg-background-secondary/30 border border-border-custom rounded-lg p-6 space-y-4">
                   <h3 className="font-myeongjo text-base font-bold text-foreground flex items-center gap-2 border-b border-border-custom/50 pb-2">
                     <Calendar className="w-4 h-4 text-jade" />
                     출생 정보 (생년월일시)
@@ -1035,8 +1035,9 @@ function InputFormContent() {
                     </div>
                   </div>
                 </div>
+              )}
 
-                {/* 2.2 Partner Information (Only for gunghap) */}
+              {/* 2.2 Partner Information (Only for gunghap) */}
                 {productKey === "gunghap" && (
                   <div className="bg-background-secondary/30 border border-[#A3845B]/50 rounded-lg p-6 space-y-4">
                     <h3 className="font-myeongjo text-base font-bold text-[#A3845B] flex items-center gap-2 border-b border-[#A3845B]/30 pb-2">
@@ -1266,7 +1267,6 @@ function InputFormContent() {
                         onChange={handleInputChange}
                         placeholder="example@hyeandang.com"
                         className="w-full bg-background border border-border-custom rounded px-3 py-2 text-sm focus:outline-none focus:border-brass"
-                        required
                       />
                     </div>
                     <div>
@@ -1279,7 +1279,6 @@ function InputFormContent() {
                         onChange={handleInputChange}
                         placeholder="010-0000-0000"
                         className="w-full bg-background border border-border-custom rounded px-3 py-2 text-sm focus:outline-none focus:border-brass"
-                        required
                       />
                     </div>
                   </div>
@@ -1354,7 +1353,6 @@ function InputFormContent() {
                         ? "예시: 이 사람과 성향 차이로 자주 다툽니다. 서로 극복할 방안이나 저희의 연애 궁합/속궁합 등 두 사람 사이의 고민을 적어주세요..."
                         : "예시: 다니고 있는 회사에서 올해 이직을 준비하고 있는데, 언제가 좋을지, 제 사주에 어떤 기운이 도움이 되는지 알려주세요. 또한 대인관계로 인한 스트레스가 많습니다..."}
                       className="w-full bg-background border border-border-custom rounded px-3 py-2 text-sm focus:outline-none focus:border-brass font-light leading-relaxed resize-none"
-                      required
                     ></textarea>
                   </div>
                 </div>
