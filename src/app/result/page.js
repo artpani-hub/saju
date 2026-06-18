@@ -274,27 +274,85 @@ const getCharacterMetrics = (sajuInfo) => {
   let rarity = "3.2%";
   let description = "스스로 힘을 기르고 시기를 기다려 세상을 놀라게 할 사주입니다.";
 
-  if (dayStem === "甲" || dayStem === "乙") {
-    nickname = "광야를 지키는 푸른 거목형";
-    rarity = "2.4%";
-    description = "어떤 모진 비바람에도 흔들리지 않고 스스로의 뿌리를 깊게 내려 **주체적 독립과 성장**을 이루어 내는 명조입니다.";
-  } else if (dayStem === "丙" || dayStem === "丁") {
-    nickname = "어둠을 밝히는 태양의 불꽃형";
-    rarity = "2.1%";
-    description = "어둡고 얼어붙은 대지를 녹이고 타인에게 따뜻한 열정과 용기를 나누어주며 **세상을 주도하는 등불**과 같은 귀한 사주입니다.";
-  } else if (dayStem === "戊" || dayStem === "己") {
-    nickname = "만물을 품는 황금빛 대지형";
-    rarity = "2.8%";
-    description = "세상의 모든 생명을 품어주고 끈기 있게 결실을 지켜내며 **사람들의 신뢰와 재물**을 거두어들이는 넉넉한 황토의 품을 가진 격입니다.";
-  } else if (dayStem === "庚" || dayStem === "辛") {
-    nickname = "안개 속을 꿰뚫는 은빛 검사형";
-    rarity = "1.9%";
-    description = "불필요한 미련을 과감히 잘라내고 매사에 칼날 같은 결단력을 발휘하여 **인생의 결정적 기회를 쟁취**해 내는 의리 있는 사주입니다.";
-  } else if (dayStem === "壬" || dayStem === "癸") {
-    nickname = "심연을 흐르는 지혜의 물결형";
-    rarity = "1.5%";
-    description = "겉은 잔잔해 보이나 그 속에 한없는 깊이의 지혜와 통찰을 품고 있어, **세상의 본질을 꿰뚫고 판을 흔드는 전략가**의 명조입니다.";
-  }
+  const iljuKey = `${dayStem}${dayBranch}`;
+  const iljuDestinyDatabase = {
+    "甲子": { nickname: "지혜의 비를 품은 푸른 선구자형", rarity: "1.4%", description: "깊고 투명한 밤의 샘물(子)을 수혈받아 마르지 않는 학문적 총명함과 **독창적인 기획 전략**으로 세상을 이끄는 선구자의 기류를 지녔습니다." },
+    "甲寅": { nickname: "광야를 개척하는 거목의 포효형", rarity: "1.8%", description: "스스로 거대한 기둥(寅)으로 우뚝 솟아 어떠한 타협이나 외압 없이 독자적인 영역을 장악하는 **강인한 독립과 자수성가**의 화신입니다." },
+    "甲辰": { nickname: "푸른 숲을 거느린 대지의 제왕형", rarity: "2.1%", description: "자양분이 깃든 비옥한 봄의 땅(辰)에 곧게 뿌리를 뻗쳐, 주변인들에게 그늘을 제공하고 **거대한 재물과 권위**를 움켜쥐는 안락한 거목의 품입니다." },
+    "甲午": { nickname: "하늘을 찌를 듯 솟구친 불꽃 나무형", rarity: "1.9%", description: "뜨겁고 찬란한 여름 태양의 빛(午)을 향해 뻗어나가는 형상으로, **빛나는 창의성과 거침없는 예술적 추진력**으로 트렌드를 리드합니다." },
+    "甲申": { nickname: "절벽 위를 견고히 지키는 청솔형", rarity: "1.6%", description: "단단한 바위 절벽(申)을 뚫고 뿌리내려 매섭고 냉철한 풍파 속에서도 자신을 제련하고 **명예와 강건한 기상**을 지켜내는 영웅의 명조입니다." },
+    "甲戌": { nickname: "금맥을 휘감은 황금빛 거목형", rarity: "1.7%", description: "용광로의 열기를 품은 마른 흙(戌) 속에 숨겨진 금고를 굳건히 딛고 서서, **안정된 자산 수성과 영리한 실리 추구**에 탁월한 보물창고를 지녔습니다." },
+    "乙丑": { nickname: "눈 속을 뚫고 싹트는 인내의 들꽃형", rarity: "1.5%", description: "차가운 겨울 눈밭(丑)의 혹독한 기류 속에서도 기어코 생명의 싹을 틔워내는 **경이로운 생명력과 끈기**로 험난한 고비를 돌파하는 끈기형입니다." },
+    "乙卯": { nickname: "대지를 초록으로 뒤덮는 생명의 꽃밭형", rarity: "2.2%", description: "완연한 봄날의 들판(卯)에 흐드러진 넝쿨처럼, 유연하고 다정한 친화력과 **강한 사교성 및 유연한 융통성**으로 대중의 인기를 끕니다." },
+    "乙巳": { nickname: "불꽃 속에서 피어오른 붉은 넝쿨형", rarity: "1.7%", description: "화려하게 번지는 불꽃(巳)을 휘감고 올라가 자신의 재능을 최고조로 노출시키는 형세로, **언변이 수려하고 미적 감각이 대단한 스타형** 사주입니다." },
+    "乙未": { nickname: "백사장을 지키는 불굴의 선인장형", rarity: "1.8%", description: "뜨거운 여름 모래밭(未)에서도 마르지 않고 생존하는 선인장의 형상으로, **강인한 생활력과 꼼꼼한 마진 수리 감각**으로 마침내 성공을 지켜냅니다." },
+    "乙酉": { nickname: "은장도를 품은 서슬 퍼런 꽃바람형", rarity: "1.3%", description: "차갑고 단단한 보석 칼날(酉) 위에 아슬아슬하게 핀 꽃처럼, **예민하고 직관적인 예술성**과 타협 없는 고결한 자존심을 무기로 섭니다." },
+    "乙亥": { nickname: "푸른 바다 위를 떠다니는 수련형", rarity: "1.6%", description: "끝없는 겨울의 바다(亥)를 표류하며 스스로 상생의 길을 찾는 연꽃처럼, **순수한 영혼과 학문적 깊이**를 품어 예술과 종교적 통찰이 깊습니다." },
+    "丙子": { nickname: "호수 위를 환히 비추는 윤슬 태양형", rarity: "1.5%", description: "조용하고 맑은 물빛(子) 위에 쏟아지는 찬란한 태양광처럼, **수려한 카리스마와 정갈한 품위**로 조직의 명예를 공고히 다지는 리더입니다." },
+    "丙寅": { nickname: "동트는 아침 하늘을 가르는 붉은 태양형", rarity: "1.9%", description: "새벽녘 숲속(寅)의 기운을 수혈받아 떠오르는 찬란한 서광처럼, **강력한 학습 능력과 후원자 귀인의 은덕**을 품고 도약하는 귀한 명조입니다." },
+    "丙辰": { nickname: "비를 촉촉이 머금은 붉은 대지형", rarity: "2.1%", description: "비옥하고 넓은 습토(辰)에 태양빛을 고르게 나누어주는 상생의 기맥으로, **다정한 이타심과 재능 표출력(식상)**이 뛰어나 대인관계가 깊습니다." },
+    "丙午": { nickname: "천하를 녹일 듯 타오르는 태양의 심장형", rarity: "2.4%", description: "한여름 난공불락의 불기둥(午)처럼 거침없는 주체성과 **폭발적인 에너지 및 정열적인 카리스마**로 대중의 판세를 단숨에 제압합니다." },
+    "丙申": { nickname: "서산 낙조에 금빛으로 빛나는 태양형", rarity: "1.8%", description: "금을 제련하는 가을의 기맥(申) 위에 빛나는 형상으로, **비즈니스적 이권 개입과 발 빠른 투자 기회 포착**에 극도로 특화된 금전 귀인입니다." },
+    "丙戌": { nickname: "노을빛 아래 보석을 품은 붉은 산형", rarity: "1.6%", description: "금고를 소중히 소장한 붉은 산(戌)의 모습으로, 겉은 화려하나 속은 차분하게 **실리를 저장하고 재정을 수성**하는 백호의 든든한 리더십이 돋보입니다." },
+    "丁丑": { nickname: "겨울철 촛불 아래 보석을 제련하는 촛불형", rarity: "1.4%", description: "눈 덮인 논밭(丑) 아래 화로처럼 조용히 에너지를 숨긴 형상으로, **예리한 분석력และ 남모를 재정 수완**을 바탕으로 조용히 자산을 불립니다." },
+    "丁寅": { nickname: "아늑한 숲을 훈훈하게 가꾸는 모닥불형", rarity: "1.7%", description: "마른 장작(寅)을 머금어 마르지 않는 모닥불처럼, **깊은 학습 능력과 예술적 통찰**을 지녔으며 인생 전반에 든든한 학문운이 따릅니다." },
+    "丁卯": { nickname: "달빛 아래 수줍게 피어난 푸른 넝쿨형", rarity: "1.8%", description: "봄바람 부는 숲속(卯)의 작은 모닥불로, **다정한 감수성과 날카로운 예지력**을 활용하여 기획과 카운셀링 분야에서 두각을 나타냅니다." },
+    "丁巳": { nickname: "천지를 태울 듯 이글거리는 모닥불꽃형", rarity: "2.0%", description: "화려하고 활발하게 확산하는 불(巳)의 기운을 지녀, **사교성이 출중하고 자의식이 대단히 견고**하며 추진하고자 하는 일을 끝까지 이룹니다." },
+    "丁未": { nickname: "뜨거운 황토 가마를 지키는 횃불형", rarity: "1.9%", description: "한여름 가마솥 흙(未)을 굽는 열기처럼, **엄청난 뚝심과 끈기**를 보유하여 어떤 위기와 과적 상태가 와도 스스로 자수성가해 냅니다." },
+    "丁酉": { nickname: "옥쟁반 위에 영롱하게 빛나는 황금 등불형", rarity: "1.1%", description: "맑고 차가운 귀금속(酉) 위에 켜진 촛불이자 천을귀인(天乙貴인)의 상징으로, **독보적인 예술 감각과 평생 재물 및 귀인의 인덕**이 깊습니다." },
+    "丁亥": { nickname: "밤바다 위를 잔잔하게 비추는 달빛형", rarity: "1.5%", description: "검고 넓은 바다(亥)를 고요히 밝히는 달빛처럼, **천성적으로 도덕적이고 정갈하며 법 없이도 살 명예 지향적**인 선비의 기상을 품었습니다." },
+    "戊子": { nickname: "겨울철 깊은 산골의 보물 샘물형", rarity: "1.6%", description: "거대한 흙산(戊) 아래 맑은 온천수(子)가 도사린 재성 귀인형으로, **실리 포착이 칼 같고 재테크 감각이 대단히 명확**하여 평생 부유합니다." },
+    "戊寅": { nickname: "푸른 거목을 우뚝 품은 황금산형", rarity: "1.8%", description: "바위산(戊)에 곧게 자란 소나무(寅)의 장엄한 풍경으로, **대단히 묵직한 관직 지향성과 책임감**을 통해 마침내 우두머리 직위를 얻습니다." },
+    "戊辰": { nickname: "봄비 내리는 비옥한 황금 벌판형", rarity: "2.2%", description: "수분을 가득 머금어 만물을 기르는 대지(辰)와 백호살의 기운이 깃들어, **엄청난 스케일의 사업 수완과 대인 포용력**을 한껏 과시합니다." },
+    "戊午": { nickname: "화산의 뜨거운 마그마를 품은 바위산형", rarity: "1.9%", description: "태양열로 가득 찬 용암 산(午)의 기세로, **최고조의 고집과 타협 없는 강인함**을 자랑하며, 학문적 깊이와 전문 지식이 대단히 견고합니다." },
+    "戊申": { nickname: "황금 광산을 품은 거대한 대산형", rarity: "2.1%", description: "가을철 알짜배기 쇠광산(申)을 소유한 형상으로, **기발한 창의력과 언어 능력(식상)**을 무기로 삼아 무에서 유를 창출하는 비즈니스 특화형입니다." },
+    "戊戌": { nickname: "우주를 품은 굳건한 첩첩산중형", rarity: "1.7%", description: "끝이 보이지 않는 광활한 황토 산맥(戌)의 모습으로, **우직한 신용과 뚝심**을 지녔으며 괴강의 무서운 결단력으로 난세를 극복하는 보스입니다." },
+    "己丑": { nickname: "눈 덮인 논밭을 지키는 묵묵한 개척자형", rarity: "1.5%", description: "차가운 겨울 대지(丑)를 묵묵히 갈아엎는 보이지 않는 개척자처럼, **강인한 성실함과 견고한 은근성**으로 자산을 착실하게 축적해 나갑니다." },
+    "己寅": { nickname: "황토 밭에 단단한 거목을 키우는 농부형", rarity: "1.6%", description: "초봄 대지(己) 위에 곧게 솟은 나무(寅)처럼, **매우 바르고 도덕적인 책임감**을 삶의 가치관으로 삼으며 조직 내 핵심 인재로 도약합니다." },
+    "己卯": { nickname: "푸른 새싹을 가꾸는 따스한 텃밭형", rarity: "1.7%", description: "들풀(卯)이 무성하게 자라나는 대지의 형상으로, **섬세하고 남을 배려하는 카운셀링 본능**이 깊으나 외부의 억압(관살)에 예민하게 방어합니다." },
+    "己巳": { nickname: "여름 볕에 무르익는 풍요로운 황금 들판형", rarity: "1.8%", description: "이글거리는 뱀의 화기(巳)를 품어 대지를 비옥하게 개량하는 형상으로, **다재다능하고 예술과 무형 자산 취득**에 뛰어난 기량을 뽐냅니다." },
+    "己未": { nickname: "사막 한가운데 굳건히 서 있는 옥토성형", rarity: "1.9%", description: "단단하고 건조한 한여름의 흙(未)이 뭉친 성으로, **남다른 자존심과 자립성**을 장착하여 어떠한 역경이 닥쳐도 스스로 헤쳐 나가는 해결사입니다." },
+    "己酉": { nickname: "보석 광산을 수호하는 황금 텃밭형", rarity: "1.4%", description: "맑은 닭(酉)의 보석 광석을 대지 아래에 조용히 소장한 모습으로, **수리 연산 감각이 대단히 명확하고 맛과 멋의 예술적 감성**이 유달리 뛰어납니다." },
+    "己亥": { nickname: "물이 고요히 흐르는 옥토 벌판형", rarity: "1.6%", description: "겨울철 비옥한 들판에 물(亥)이 순환하는 재성 귀인형으로, **겉은 소박해 보이지만 속으로 현금 시재를 빈틈없이 저축하는 알짜배기 부자**의 명조입니다." },
+    "庚子": { nickname: "맑은 물에 씻긴 예리한 강철 검사형", rarity: "1.5%", description: "바위틈에서 용솟음치는 맑은 샘물(子)의 형세로, **직관적인 예리함과 수려한 미적 표현력**을 갖추어 기획 및 비판적 분석에 최고입니다." },
+    "庚寅": { nickname: "황금 사막을 질주하는 포효하는 호랑이형", rarity: "1.8%", description: "바위(庚) 아래 봄의 숲(寅)을 거느린 형상으로, **대단히 역동적인 개척 정신과 편재(재물) 쟁취 본능**을 장착하여 큰돈을 움직이는 무사입니다." },
+    "庚辰": { nickname: "금맥을 품은 수호룡의 강철 기상형", rarity: "2.1%", description: "수분을 머금은 대지(辰)가 쇠를 소생시키는 기운과 괴강살이 깃들어, **독보적인 지혜와 좌중을 장악하는 뚝심의 사령관 기질**을 지녔습니다." },
+    "庚오": { nickname: "용광로에 단단히 제련되는 명검의 기상형", rarity: "1.7%", description: "단단한 무쇠(庚)가 용광로 불빛(午)에 제련되어 최고급 검이 되는 형상으로, **법과 규율을 정교하게 다스리는 공직/대기업 리더**의 기상을 품었습니다." },
+    "庚申": { nickname: "하늘을 찌를 듯한 서슬 퍼런 강철 바위형", rarity: "2.3%", description: "위아래가 온통 바위와 강철(申)로 뭉친 간여지동의 표본으로, **의리가 지극하고 누구도 꺾지 못할 추진력**으로 세상을 돌파합니다." },
+    "庚戌": { nickname: "금고를 굳건히 지키는 은빛 수호신형", rarity: "1.6%", description: "뜨거운 화로 흙(戌) 속에 은신한 쇳덩이와 괴강의 기운으로, **무서운 집념과 공사 구분이 칼 같은 정확성**을 자랑하는 해결사 사주입니다." },
+    "辛丑": { nickname: "얼어붙은 진흙 속을 보관하는 귀한 보석형", rarity: "1.4%", description: "겨울철 차가운 흙(丑) 속에 숨겨진 광석 보석처럼, **차분하게 실력을 수련하고 문서를 확보**하여 기어코 내실 있는 결실을 얻어냅니다." },
+    "辛寅": { nickname: "보석 칼날로 거목을 깎아내는 장인형", rarity: "1.6%", description: "보석 칼(辛)이 봄의 숲(寅)에 닿아 재물을 수확하는 정재 귀인형으로, **세밀한 예산 관리와 정확한 실리 설계**로 인생의 부를 차근차근 이룩합니다." },
+    "辛卯": { nickname: "봄비 속에 가위를 든 정원사형", rarity: "1.7%", description: "작은 보석(辛)이 풀밭(卯)을 정교하게 조율하는 형세로, **남다른 손재주나 직관적인 안목, 예술성**이 빛을 발해 독특한 기획을 내놓습니다." },
+    "辛巳": { nickname: "햇살 아래 반짝이는 영롱한 귀걸이형", rarity: "1.5%", description: "뜨거운 태양빛(巳)을 받아 보석의 명예를 더욱 눈부시게 밝히는 형상으로, **예의가 바르고 명예와 직권을 중시하는 엘리트 관직형**입니다." },
+    "辛未": { nickname: "사막 속의 마른 진흙으로 빚은 보석형", rarity: "1.8%", description: "뜨거운 사막 흙(未) 속에 견고하게 정제된 보석처럼, **대단히 날카롭고 자존심이 세며 학문과 라이선스를 바탕으로 우뚝 서는 전문가**입니다." },
+    "辛酉": { nickname: "상자 속에 정교하게 세공된 은빛 다이아몬드형", rarity: "2.0%", description: "티 없이 맑은 은빛 보석과 가위(酉)가 위아래로 뭉친 형상으로, **완벽주의적 깔끔함과 극도의 정밀함**으로 칼같이 프로젝트를 완성합니다." },
+    "辛亥": { nickname: "맑은 시냇물에 영롱하게 씻긴 옥빛 구슬형", rarity: "1.6%", description: "겨울의 바다 물결(亥)에 반짝이는 보석처럼, **머리가 대단히 비상하고 감수성이 수려하며 예술과 학문**에서 독보적 존재감을 과시합니다." },
+    "壬子": { nickname: "심연을 소용돌이치며 흐르는 밤의 해일형", rarity: "2.2%", description: "끝을 모를 겨울의 거대한 물줄기(子)가 융합되어, **천하를 덮을 듯한 배포와 뛰어난 두뇌 지략**으로 거대한 세력을 규합하고 이끕니다." },
+    "壬寅": { nickname: "숲속 계곡에서 포효하며 도약하는 수호 호랑이형", rarity: "1.9%", description: "넓은 강물(壬)이 봄의 숲(寅)을 기르고 생조하는 식신(창의성) 귀인형으로, **언변이 청산유수며 교육과 인프라 구축**에서 대길합니다." },
+    "壬辰": { nickname: "비구름 속을 뚫고 승천하는 수호룡형", rarity: "2.0%", description: "드넓은 댐의 호수(辰)와 괴강살이 결합한 리더십으로, **뛰어난 위기 돌파 능력과 거대 자산을 쥐고 조율하는 보스**의 운명을 타고났습니다." },
+    "壬午": { nickname: "밤바다 위에 붉은 등대를 켜둔 형상형", rarity: "1.6%", description: "넓은 호수(壬)가 여름철 불꽃(午)과 속으로 합(合)을 이루는 재성 기맥으로, **현실 타협과 실리 추구가 유연하고 수완이 탁월한 금전운**입니다." },
+    "壬申": { nickname: "거대한 철광산에서 발원하는 마르지 않는 강물형", rarity: "1.8%", description: "바위산(申)에서 솟구쳐 평생 끊이지 않고 흐르는 큰 물줄기처럼, **학습과 계약(인성)의 복이 대단하여 장기 문서 자산**을 수성합니다." },
+    "壬戌": { nickname: "댐 속에 대규모 금고를 간직한 수호신형", rarity: "1.7%", description: "용광로 흙(戌) 속에 물을 채워 화기를 조율하는 백호의 형상으로, **정치적 조율 감각과 강인한 결단력을 통해 마침내 자수성가**합니다." },
+    "癸丑": { nickname: "겨울 얼음판 아래 묵묵히 흐르는 샘물형", rarity: "1.4%", description: "눈 덮인 논밭(丑) 아래 고요하게 기맥을 조율하며 흐르는 물처럼, **대단히 끈질긴 승부욕과 강단을 지닌 침묵의 실력가**입니다." },
+    "癸寅": { nickname: "봄 이슬을 머금고 화사하게 피어난 푸른 거목형", rarity: "1.8%", description: "겨울 이슬(癸)이 봄 나무(寅)에 닿아 기운을 내뿜는 상관 귀인형으로, **기획력과 예술적 재치가 뛰어나며 언변과 교육적 수완**이 빛납니다." },
+    "癸卯": { nickname: "새벽 이슬을 머금고 자라는 파릇한 새싹형", rarity: "1.5%", description: "새벽녘 정원(卯)에 내리는 촉촉한 이슬이자 천을귀인의 표본으로, **품성이 맑고 단아하며 주변의 사랑과 평생 귀인의 조력**을 받습니다." },
+    "癸巳": { nickname: "소나기 그친 뒤 무지개 뜬 꽃밭형", rarity: "1.2%", description: "맑은 옹달샘(癸)이 꽃밭의 불(巳)과 천을귀인으로 공존하는 형태로, **비상한 현실 감각과 동업 상성, 인덕의 복을 받아 평생 의식이 풍족**합니다." },
+    "癸未": { nickname: "마른 모래사막을 촉촉이 적시는 오아시스형", rarity: "1.7%", description: "건조한 모래밭(未)에 수분을 조율하는 오아시스처럼, **남다른 인내력과 명예 지향성을 가지며 조직 내의 어려운 갈등을 우아하게 해결**합니다." },
+    "癸申": { nickname: "정교한 보석 바위에서 솟구치는 맑은 샘물형", rarity: "1.6%", description: "보석(申)이 평생 깨끗한 온천수를 용출시켜 주는 형상으로, **머리가 비상하고 문서 취득 및 학문적 계약의 성취율**이 유달리 대길합니다." },
+    "癸酉": { nickname: "금 항아리 속에 정갈하게 보존된 지혜의 이슬형", rarity: "1.8%", description: "보석 항아리(酉)에 담긴 맑은 이슬처럼, **완벽주의적이고 예민하며 남다른 영적 예지력과 학문적 깊이**로 무형의 통찰력을 행사합니다." },
+    "癸亥": { nickname: "온 천하를 향해 유유히 흐르는 맑은 은빛 바다형", rarity: "2.1%", description: "위아래가 맑은 물(亥)로만 가득 찬 우람한 수생 기류로, **유연하면서도 절대 기가 꺾이지 않는 남다른 배포와 통찰력의 전략가**입니다." }
+  };
+
+  const defaultDestiny = {
+    nickname: "보이지 않는 길을 걷는 개척자형",
+    rarity: "3.2%",
+    description: "스스로 힘을 기르고 시기를 기다려 세상을 놀라게 할 사주입니다."
+  };
+
+  const currentDestiny = iljuDestinyDatabase[iljuKey] || defaultDestiny;
+  nickname = currentDestiny.nickname;
+  rarity = currentDestiny.rarity;
+  description = currentDestiny.description;
 
   return {
     scores: {
@@ -751,56 +809,66 @@ const renderPageContent = (page, ctx) => {
       );
     }
 
-      case "character":
-      return (
-        <div className="space-y-6">
-          <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
-            ✨ 나의 타고난 천명 성향 유형 분석
-          </h3>
-          <div className="bg-gradient-to-br from-[#2D3A30] to-[#1E2620] border-4 border-[#A3845B] rounded-xl p-8 text-center text-[#FAF7F0] space-y-4 shadow-xl relative overflow-hidden">
-            <span className="text-[10px] tracking-[0.3em] text-[#A3845B] font-bold block">MY DESTINY TYPE</span>
-            <h4 className="font-myeongjo text-2xl md:text-3xl font-extrabold text-[#A3845B] tracking-wider animate-pulse">
-              "{metrics.nickname}"
-            </h4>
-            <div className="inline-block bg-[#8B221E] px-4 py-1.5 rounded-full text-xs font-bold tracking-widest text-white shadow-md">
-              유형 희귀도: 상위 {metrics.rarity} 극희귀 사주 🌟
+      case "character": {
+        const bgGradients = {
+          "목": "from-[#2D3A30] to-[#1E2620]", // 차분한 딥 그린
+          "화": "from-[#4A1E1B] to-[#2B100E]", // 따뜻하고 깊은 버건디/레드 브라운
+          "토": "from-[#3E3325] to-[#241D15]", // 고급스러운 다크 브라운/골드 토조
+          "금": "from-[#33383B] to-[#1E2122]", // 은은하고 세련된 차콜/실버 그레이
+          "수": "from-[#1D2A3A] to-[#111924]"  // 깊은 심연의 네이비/미드나잇 블루
+        };
+        const activeBg = bgGradients[sajuInfo.day.stemEl] || bgGradients["목"];
+
+        return (
+          <div className="space-y-6">
+            <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2">
+              ✨ 나의 타고난 천명 성향 유형 분석
+            </h3>
+            <div className={`bg-gradient-to-br ${activeBg} border-4 border-[#A3845B] rounded-xl p-8 text-center text-[#FAF7F0] space-y-4 shadow-xl relative overflow-hidden`}>
+              <span className="text-[10px] tracking-[0.3em] text-[#A3845B] font-bold block">MY DESTINY TYPE</span>
+              <h4 className="font-myeongjo text-2xl md:text-3xl font-extrabold text-[#A3845B] tracking-wider animate-pulse">
+                "{metrics.nickname}"
+              </h4>
+              <div className="inline-block bg-[#8B221E] px-4 py-1.5 rounded-full text-xs font-bold tracking-widest text-white shadow-md">
+                유형 희귀도: 상위 {metrics.rarity} 극희귀 사주 🌟
+              </div>
+              <p className="text-xs md:text-sm leading-relaxed font-light font-traditional pt-4 border-t border-[#A3845B]/30 max-w-md mx-auto" dangerouslySetInnerHTML={{ __html: metrics.description }} />
             </div>
-            <p className="text-xs md:text-sm leading-relaxed font-light font-traditional pt-4 border-t border-[#A3845B]/30 max-w-md mx-auto" dangerouslySetInnerHTML={{ __html: metrics.description }} />
-          </div>
-          <div className="bg-[#F6F3EC] border border-[#E2DDD5] rounded-lg p-5 text-xs space-y-3 leading-relaxed text-[#5F5F5F]">
-            <h4 className="font-bold text-[#A3845B] font-myeongjo">💡 타고난 천명 성향이 시사하는 운명의 방향성</h4>
-            <p className="font-light">
-              여기서 설명해 드리는 <strong>천명 성향(명조 유형)과 희귀도</strong>는 예로부터 전해 내려오는 전통 명리학의 심오한 간지 분석을 현대적인 관점에서 직관적으로 이해하실 수 있도록 재구성한 것입니다. 귀하의 사주가 보여주는 궁극적인 삶의 방향성은 단순히 다수가 걷는 보편적이고 평범한 길을 맹목적으로 따르는 것이 결코 아닙니다.
-            </p>
-            <p className="font-light">
-              오히려 귀하의 명조는 <strong>본인만이 지닌 고유한 전문 지식, 국가 공인 자격(라이선스), 혹은 아무나 흉내 낼 수 없는 특수한 기술적 역량</strong>을 갈고닦아 자신만의 단단하고 독립적인 영역을 선점해야 합니다. 조직에 종속되더라도 단순 대직자 역할에 머무르기보다는, 핵심적인 열쇠를 쥔 독보적인 전문가로 활동할 때 인생의 막힌 운이 비로소 시원하게 뚫리게 됩니다.
-            </p>
-            <p className="font-light">
-              남들의 속도에 휩쓸려 조급해하기보다 본인이 가장 잘할 수 있는 전문 분야를 묵묵히 개발하고 축적해 나가십시오. 이처럼 스스로가 하나의 브랜드가 되어 독립적인 영역을 개척하는 전략을 취할 때, 귀하의 사주가 품고 있는 재물과 명예의 그릇이 막힘없이 넓어지며 인생 후반기로 갈수록 더 크고 단단한 성공 가도에 안착하게 될 것입니다.
-            </p>
-          </div>
-          <div className="border border-[#E2DDD5]/60 rounded-lg p-4 bg-white text-xs space-y-3 shadow-sm">
-            <h4 className="font-bold text-[#1A1A1A] font-myeongjo">🏆 나와 같은 천명 성향의 역사적 성공 패턴</h4>
-            <div className="text-[#5F5F5F] leading-relaxed font-light space-y-1.5">
-              <p>
-                • <strong>나무(木) 계열:</strong> 정주영 회장처럼 척박한 무에서 유를 일궈내는 불도저형 독립가 기질로, 남이 가지 않은 신규 시장의 선두주자로 설 때 극적인 성장을 보장받습니다.
+            <div className="bg-[#F6F3EC] border border-[#E2DDD5] rounded-lg p-5 text-xs space-y-3 leading-relaxed text-[#5F5F5F]">
+              <h4 className="font-bold text-[#A3845B] font-myeongjo">💡 타고난 천명 성향이 시사하는 운명의 방향성</h4>
+              <p className="font-light">
+                여기서 설명해 드리는 <strong>천명 성향(명조 유형)과 희귀도</strong>는 예로부터 전해 내려오는 전통 명리학의 심오한 간지 분석을 현대적인 관점에서 직관적으로 이해하실 수 있도록 재구성한 것입니다. 귀하의 사주가 보여주는 궁극적인 삶의 방향성은 단순히 다수가 걷는 보편적이고 평범한 길을 맹목적으로 따르는 것이 결코 아닙니다.
               </p>
-              <p>
-                • <strong>불(火) 계열:</strong> 스티브 잡스 같은 혁신가형 선동가 기질로, 대중 앞에 자신을 드러내고 세상을 디자인하는 화려한 트렌드 리더로 설 때 성공이 빠릅니다.
+              <p className="font-light">
+                오히려 귀하의 명조는 <strong>본인만이 지닌 고유한 전문 지식, 국가 공인 자격(라이선스), 혹은 아무나 흉내 낼 수 없는 특수한 기술적 역량</strong>을 갈고닦아 자신만의 단단하고 독립적인 영역을 선점해야 합니다. 조직에 종속되더라도 단순 대직자 역할에 머무르기보다는, 핵심적인 열쇠를 쥔 독보적인 전문가로 활동할 때 인생의 막힌 운이 비로소 시원하게 뚫리게 됩니다.
               </p>
-              <p>
-                • <strong>대지(土) 계열:</strong> 워런 버핏 같은 묵묵하고 듬직한 투자자 기질로, 한 번 맺은 신뢰와 안정적인 자산을 끝까지 지켜내 큰 자산가 반열에 오릅니다.
-              </p>
-              <p>
-                • <strong>바위(金) 계열:</strong> 이순신 장군 같은 원칙과 칼날 같은 결단력의 군인 기질로, 복잡한 이해관계를 명확히 쳐내고 흔들림 없는 조직의 수장으로 섭니다.
-              </p>
-              <p>
-                • <strong>맑은 물(水) 계열:</strong> 세종대왕 같은 깊은 학문적 직관과 조용한 전략가 기질로, 판세를 뒤흔드는 거대한 기획이나 시스템을 설계하여 명성을 날립니다.
+              <p className="font-light">
+                남들의 속도에 휩쓸려 조급해하기보다 본인이 가장 잘할 수 있는 전문 분야를 묵묵히 개발하고 축적해 나가십시오. 이처럼 스스로가 하나의 브랜드가 되어 독립적인 영역을 개척하는 전략을 취할 때, 귀하의 사주가 품고 있는 재물과 명예의 그릇이 막힘없이 넓어지며 인생 후반기로 갈수록 더 크고 단단한 성공 가도에 안착하게 될 것입니다.
               </p>
             </div>
+            <div className="border border-[#E2DDD5]/60 rounded-lg p-4 bg-white text-xs space-y-3 shadow-sm">
+              <h4 className="font-bold text-[#1A1A1A] font-myeongjo">🏆 나와 같은 천명 성향의 역사적 성공 패턴</h4>
+              <div className="text-[#5F5F5F] leading-relaxed font-light space-y-1.5">
+                <p>
+                  • <strong>나무(木) 계열:</strong> 정주영 회장처럼 척박한 무에서 유를 일궈내는 불도저형 독립가 기질로, 남이 가지 않은 신규 시장의 선두주자로 설 때 극적인 성장을 보장받습니다.
+                </p>
+                <p>
+                  • <strong>불(火) 계열:</strong> 스티브 잡스 같은 혁신가형 선동가 기질로, 대중 앞에 자신을 드러내고 세상을 디자인하는 화려한 트렌드 리더로 설 때 성공이 빠릅니다.
+                </p>
+                <p>
+                  • <strong>대지(土) 계열:</strong> 워런 버핏 같은 묵묵하고 듬직한 투자자 기질로, 한 번 맺은 신뢰와 안정적인 자산을 끝까지 지켜내 큰 자산가 반열에 오릅니다.
+                </p>
+                <p>
+                  • <strong>바위(金) 계열:</strong> 이순신 장군 같은 원칙과 칼날 같은 결단력의 군인 기질로, 복잡한 이해관계를 명확히 쳐내고 흔들림 없는 조직의 수장으로 섭니다.
+                </p>
+                <p>
+                  • <strong>맑은 물(水) 계열:</strong> 세종대왕 같은 깊은 학문적 직관과 조용한 전략가 기질로, 판세를 뒤흔드는 거대한 기획이나 시스템을 설계하여 명성을 날립니다.
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
 
     case "metrics_chart": {
       const chartItems = [
@@ -2619,8 +2687,10 @@ const renderPageContent = (page, ctx) => {
     
         return { analysis, timing, actionPlan };
       };
-    
+      
       const personalizedText = getPersonalizedSolution(name, worryText, worryCategory, sajuInfo?.day?.stemEl);
+      const ilgan = sajuInfo?.day?.stem || "甲";
+      const gwiinInfo = gwiinMap[ilgan] || gwiinMap["甲"];
 
       return (
         <div className="space-y-6">
@@ -3168,19 +3238,26 @@ function ResultContent() {
     });
   };
 
-  // Parsing inputs
+  // Parsing inputs with NaN safety fallback
+  const parseQueryInt = (val, fallback) => {
+    const parsed = parseInt(val);
+    return isNaN(parsed) ? fallback : parsed;
+  };
+
   const name = searchParams.get("name") || "이지혜";
   const genderVal = searchParams.get("gender");
   const gender = (genderVal === "male" || genderVal === "남" || genderVal === "남성") ? "남성" : "여성";
   const typeParam = searchParams.get("type") || "saju"; // saju, newyear, tojeong, wealth, tarot, gunghap
   const type = typeParam === "tojeong" ? "newyear" : typeParam;
   const calendar = searchParams.get("calendar") || "solar";
-  const year = parseInt(searchParams.get("year")) || 1995;
-  const month = parseInt(searchParams.get("month")) || 8;
-  const day = parseInt(searchParams.get("day")) || 25;
+  const year = parseQueryInt(searchParams.get("year"), 1995);
+  const month = parseQueryInt(searchParams.get("month"), 8);
+  const day = parseQueryInt(searchParams.get("day"), 25);
   const hour = searchParams.get("hour") || "10:00";
   const worryCategory = searchParams.get("worryCategory") || "general";
   const worryText = searchParams.get("worryText") || "";
+  const emailParam = searchParams.get("email") || "";
+  const phoneParam = searchParams.get("phone") || "";
   const reportGrade = searchParams.get("reportGrade") || "premium"; // premium(고급), deep(심화)
   const currentGrade = reportGrade;
 
@@ -3188,9 +3265,9 @@ function ResultContent() {
   const partnerName = searchParams.get("partnerName") || "강민우";
   const partnerGender = searchParams.get("partnerGender") === "female" ? "여성" : "남성";
   const partnerCalendar = searchParams.get("partnerCalendar") || "solar";
-  const partnerYear = parseInt(searchParams.get("partnerYear")) || 1993;
-  const partnerMonth = parseInt(searchParams.get("partnerMonth")) || 11;
-  const partnerDay = parseInt(searchParams.get("partnerDay")) || 12;
+  const partnerYear = parseQueryInt(searchParams.get("partnerYear"), 1993);
+  const partnerMonth = parseQueryInt(searchParams.get("partnerMonth"), 11);
+  const partnerDay = parseQueryInt(searchParams.get("partnerDay"), 12);
   const partnerHour = searchParams.get("partnerHour") || "unknown";
 
   // Dynamic Saju Calculation
@@ -3211,24 +3288,33 @@ function ResultContent() {
   const [hasCheckedPayment, setHasCheckedPayment] = useState(false);
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // reportGrade가 free가 아니거나 debugUnlock이 활성화되어 있으면 즉시 잠금 해제
-      if (debugUnlock || reportGrade !== "free") {
+      // debugUnlock이 활성화되어 있으면 즉시 잠금 해제
+      if (debugUnlock) {
+        setIsPaid(true);
+        return;
+      }
+      if (reportGrade !== "free") {
         setIsPaid(true);
         return;
       }
       try {
-        const existingStr = localStorage.getItem("hyeandang_orders");
-        if (existingStr) {
-          const orders = JSON.parse(existingStr);
-          const matched = orders.find(o => 
-            o.name === name && 
-            o.status === "paid" &&
-            o.year === String(year) &&
-            o.month === String(month) &&
-            o.day === String(day)
-          );
-          if (matched) {
-            setIsPaid(true);
+        // 무료(free) 리포트일 때는 기존에 결제 통과하여 'paid' 상태로 저장된 다른 주문(예: 같은 이름, 생일)이 
+        // 로컬스토리지에 있더라도 이를 무시하고 결제 유도창(Lock)이 무조건 정상적으로 뜨도록 분기 처리합니다.
+        if (reportGrade === "free") {
+          const existingStr = localStorage.getItem("hyeandang_orders");
+          if (existingStr) {
+            const orders = JSON.parse(existingStr);
+            const matched = Array.isArray(orders) ? orders.find(o => 
+              o &&
+              o.name === name && 
+              o.status === "paid" &&
+              o.year === String(year) &&
+              o.month === String(month) &&
+              o.day === String(day)
+            ) : null;
+            if (matched) {
+              setIsPaid(true);
+            }
           }
         }
       } catch (e) {
@@ -3243,12 +3329,13 @@ function ResultContent() {
       const existingStr = localStorage.getItem("hyeandang_orders");
       if (existingStr) {
         const orders = JSON.parse(existingStr);
-        const matchedIdx = orders.findIndex(o => 
+        const matchedIdx = Array.isArray(orders) ? orders.findIndex(o => 
+          o &&
           o.name === name && 
           o.year === String(year) &&
           o.month === String(month) &&
           o.day === String(day)
-        );
+        ) : -1;
         if (matchedIdx > -1) {
           orders[matchedIdx].status = "paid";
           localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
@@ -3299,13 +3386,6 @@ function ResultContent() {
     const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
     const pgCode = process.env.NEXT_PUBLIC_PORTONE_PG || "html5_inicis";
 
-    // 테스트 가맹점 코드이면 IMP 모듈 없이도 모의 결제 진행
-    if (impCode === "imp00000000") {
-      alert(`[개발자 테스트 안내] 모의 업그레이드 결제를 즉시 실행합니다.\n\n확인을 누르시면 ${grade === "premium" ? "고급" : "프리미엄"} 리포트로 업그레이드됩니다.`);
-      performUpgrade();
-      return;
-    }
-
     if (!window.IMP) {
       alert("결제 모듈이 아직 로드되지 않았습니다. 인터넷 연결을 확인하시거나, 브라우저의 광고 차단 확장 프로그램(AdBlock 등)이 활성화되어 있다면 해제한 후 새로고침(F5)을 해주세요.");
       return;
@@ -3317,11 +3397,12 @@ function ResultContent() {
 
       IMP.request_pay({
         pg: pgCode,
-        pay_method: "card",
         merchant_uid: `merchant_${new Date().getTime()}`,
         name: `${name}님 ${typeParam === "tojeong" ? "토정비결" : "신수비결"} ${grade === "premium" ? "고급" : "프리미엄"} 업그레이드`,
         amount: amount,
         buyer_name: name,
+        buyer_email: emailParam || "today_sms@hyeandang.com",
+        buyer_tel: phoneParam || "010-0000-0000",
       }, function (rsp) {
         if (rsp.success) {
           setIsProcessing(true);
@@ -3332,7 +3413,126 @@ function ResultContent() {
             currentProgress += 10;
             if (currentProgress >= 100) {
               clearInterval(interval);
-              setTimeout(() => {
+              setTimeout(async () => {
+                // 이메일 자동 발송 트리거 연동
+                const targetEmail = emailParam || (rsp && rsp.buyer_email);
+                if (targetEmail && targetEmail.includes("@") && targetEmail !== "today_sms@hyeandang.com") {
+                  try {
+                    const queryParams = new URLSearchParams({
+                      name: name,
+                      gender: genderVal || "female",
+                      type: typeParam,
+                      calendar: calendar,
+                      year: String(year),
+                      month: String(month),
+                      day: String(day),
+                      hour: hour,
+                      worryCategory: worryCategory,
+                      worryText: worryText || "",
+                      partnerName: partnerName || "",
+                      partnerGender: partnerGender === "여성" ? "female" : "male",
+                      partnerCalendar: partnerCalendar,
+                      partnerYear: String(partnerYear),
+                      partnerMonth: String(partnerMonth),
+                      partnerDay: String(partnerDay),
+                      partnerHour: partnerHour,
+                      gunghapType: gunghapType
+                    });
+
+                    const origin = "https://saju.artpani.com";
+                    const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=${grade}`;
+                    
+                    const mailSubject = `[혜안당 명리연구소] ${name} 님 주문하신 [정통 사주 업그레이드 보고서] 분석결과서가 도착했습니다.`;
+                    const mailHtml = `
+                      <div style="font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; border: 1px solid #E2DDD5; border-radius: 12px; background-color: #F9F8F6;">
+                        <div style="text-align: center; margin-bottom: 30px;">
+                          <span style="font-size: 24px; font-weight: bold; color: #A3845B; letter-spacing: 2px;">慧眼堂</span>
+                          <p style="font-size: 12px; color: #888; margin-top: 5px;">지혜로운 눈으로 밝히는 운명</p>
+                        </div>
+                        <div style="background-color: #ffffff; padding: 30px; border-radius: 8px; border: 1px solid #E1E1E1; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                          <h2 style="font-size: 18px; font-weight: bold; color: #1A1A1A; margin-top: 0; border-bottom: 2px solid #A3845B; padding-bottom: 15px;">운세 분석 보고서 완료 안내</h2>
+                          <p style="font-size: 14px; color: #333; line-height: 1.6; margin-top: 20px;">
+                            안녕하세요, <strong>${name}</strong> 님.<br />
+                            혜안당 명리연구소에 의뢰해 주신 <strong>[정통 사주 업그레이드 보고서]</strong> 분석 작업이 정교한 명리 해석을 거쳐 최종 완료되었습니다.
+                          </p>
+                          <p style="font-size: 14px; color: #333; line-height: 1.6;">
+                            작성된 정밀 보감 보고서는 아래의 '결과 확인하기' 버튼을 누르시면 온라인 결과 화면으로 즉시 연결되어 열람 및 가이드를 확인해 보실 수 있습니다.
+                          </p>
+                          <div style="text-align: center; margin: 35px 0;">
+                            <a href="${resultUrl}" target="_blank" style="display: inline-block; background-color: #A3845B; color: #ffffff; text-decoration: none; padding: 14px 35px; border-radius: 6px; font-size: 15px; font-weight: bold; box-shadow: 0 4px 6px rgba(163,132,91,0.25);">결과 확인하기</a>
+                          </div>
+                          <p style="font-size: 12px; color: #666; line-height: 1.5; background-color: #F3F3F3; padding: 15px; border-radius: 6px; margin-bottom: 0;">
+                            ※ 본 메일은 발신전용으로 회신이 되지 않습니다.<br />
+                            ※ 문의 사항은 홈페이지 하단 대표번호 혹은 아트파니 고객센터로 연락 주시기 바랍니다.
+                          </p>
+                        </div>
+                        <div style="text-align: center; margin-top: 30px; font-size: 11px; color: #888; line-height: 1.6;">
+                          © 2026 혜안당. All rights reserved.
+                        </div>
+                      </div>
+                    `;
+
+                    await fetch("/api/email", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        to: targetEmail,
+                        subject: mailSubject,
+                        html: mailHtml,
+                      }),
+                    });
+                  } catch (mailErr) {
+                    console.error("결제 후 이메일 전송 실패:", mailErr);
+                  }
+                }
+
+                // SMS 자동 발송 트리거 연동
+                const targetPhone = phoneParam || (rsp && rsp.buyer_tel);
+                if (targetPhone && targetPhone.replace(/[^0-9]/g, "").length >= 9) {
+                  try {
+                    const smsQueryParams = new URLSearchParams({
+                      name: name,
+                      gender: genderVal || "female",
+                      type: typeParam,
+                      calendar: calendar,
+                      year: String(year),
+                      month: String(month),
+                      day: String(day),
+                      hour: hour,
+                      worryCategory: worryCategory,
+                      worryText: worryText || "",
+                      partnerName: partnerName || "",
+                      partnerGender: partnerGender === "여성" ? "female" : "male",
+                      partnerCalendar: partnerCalendar,
+                      partnerYear: String(partnerYear),
+                      partnerMonth: String(partnerMonth),
+                      partnerDay: String(partnerDay),
+                      partnerHour: partnerHour,
+                      gunghapType: gunghapType
+                    });
+
+                    const origin = "https://saju.artpani.com";
+                    const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=${grade}`;
+                    const smsContent = `[혜안당 명리연구소] ${name} 님, 주문하신 정통 사주 업그레이드 분석이 완료되었습니다.\n\n적어주신 이메일(${targetEmail || "지정 이메일"})로 상세 보감 PDF가 전송되었으며, 아래 온라인 보감 링크로도 즉시 열람이 가능합니다.\n\n▶ 결과 보기: ${mobileResultUrl}\n\n감사합니다.`;
+
+                    await fetch("/api/sms", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        receiver: targetPhone,
+                        msg: smsContent,
+                        title: "[혜안당 사주분석]"
+                      }),
+                    });
+                  } catch (smsErr) {
+                    console.error("결제 후 SMS 문자 전송 실패:", smsErr);
+                  }
+                }
+
                 setIsProcessing(false);
                 performUpgrade();
               }, 300);
@@ -3355,13 +3555,24 @@ function ResultContent() {
     const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
     const pgCode = process.env.NEXT_PUBLIC_PORTONE_PG || "html5_inicis";
 
-    // 테스트 가맹점 코드이면 IMP 모듈 없이도 모의 결제 진행
-    if (impCode === "imp00000000") {
+    // 로컬 환경에서도 포트원 카드결제창을 띄우기 위해 기존 모의결제 우회 로직을 주석 처리합니다.
+    /*
+    const isLocal = (typeof window !== "undefined" && (
+      window.location.hostname === "localhost" || 
+      window.location.hostname === "127.0.0.1" ||
+      window.location.hostname.startsWith("192.168.") ||
+      window.location.hostname.startsWith("10.") ||
+      window.location.port === "3000" ||
+      window.location.port === "3001"
+    ));
+
+    if (impCode === "imp00000000" || isLocal) {
       alert("[개발자 테스트 안내] 모의 결제를 즉시 실행합니다.\n\n확인을 누르시면 결제완료 처리되고 상세 보고서 잠금이 풀립니다.");
       setIsPaid(true);
       updateLocalStorageOrderToPaid();
       return;
     }
+    */
     
     if (!window.IMP) {
       alert("결제 모듈이 아직 로드되지 않았습니다. 인터넷 연결을 확인하시거나, 브라우저의 광고 차단 확장 프로그램(AdBlock 등)이 활성화되어 있다면 해제한 후 새로고침(F5)을 해주세요.");
@@ -3374,11 +3585,12 @@ function ResultContent() {
 
       IMP.request_pay({
         pg: pgCode,
-        pay_method: "card",
         merchant_uid: `merchant_${new Date().getTime()}`,
         name: `${name}님 정통 사주 풀이 보고서`,
         amount: 34900,
         buyer_name: name,
+        buyer_email: emailParam || "today_sms@hyeandang.com",
+        buyer_tel: phoneParam || "010-0000-0000",
       }, function (rsp) {
         if (rsp.success) {
           // 결제 성공 시 1.8초 동안 만세력 정밀 보조 빌드 애니메이션 시작
@@ -3390,10 +3602,129 @@ function ResultContent() {
             currentProgress += 10;
             if (currentProgress >= 100) {
               clearInterval(interval);
-              setTimeout(() => {
+              setTimeout(async () => {
                 setIsProcessing(false);
                 setIsPaid(true);
                 updateLocalStorageOrderToPaid();
+
+                // 이메일 자동 발송 트리거 연동 (결제 정보에서 입력한 이메일 주소 사용)
+                const targetEmail = emailParam || (rsp && rsp.buyer_email);
+                if (targetEmail && targetEmail.includes("@") && targetEmail !== "today_sms@hyeandang.com") {
+                  try {
+                    const queryParams = new URLSearchParams({
+                      name: name,
+                      gender: genderVal || "female",
+                      type: typeParam,
+                      calendar: calendar,
+                      year: String(year),
+                      month: String(month),
+                      day: String(day),
+                      hour: hour,
+                      worryCategory: worryCategory,
+                      worryText: worryText || "",
+                      partnerName: partnerName || "",
+                      partnerGender: partnerGender === "여성" ? "female" : "male",
+                      partnerCalendar: partnerCalendar,
+                      partnerYear: String(partnerYear),
+                      partnerMonth: String(partnerMonth),
+                      partnerDay: String(partnerDay),
+                      partnerHour: partnerHour,
+                      gunghapType: gunghapType
+                    });
+
+                    const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
+                    const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=premium`;
+                    
+                    const mailSubject = `[혜안당 명리연구소] ${name} 님 주문하신 [정통 사주 풀이 보고서] 분석결과서가 도착했습니다.`;
+                    const mailHtml = `
+                      <div style="font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; border: 1px solid #E2DDD5; border-radius: 12px; background-color: #F9F8F6;">
+                        <div style="text-align: center; margin-bottom: 30px;">
+                          <span style="font-size: 24px; font-weight: bold; color: #A3845B; letter-spacing: 2px;">慧眼堂</span>
+                          <p style="font-size: 12px; color: #888; margin-top: 5px;">지혜로운 눈으로 밝히는 운명</p>
+                        </div>
+                        <div style="background-color: #ffffff; padding: 30px; border-radius: 8px; border: 1px solid #E1E1E1; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                          <h2 style="font-size: 18px; font-weight: bold; color: #1A1A1A; margin-top: 0; border-bottom: 2px solid #A3845B; padding-bottom: 15px;">운세 분석 보고서 완료 안내</h2>
+                          <p style="font-size: 14px; color: #333; line-height: 1.6; margin-top: 20px;">
+                            안녕하세요, <strong>${name}</strong> 님.<br />
+                            혜안당 명리연구소에 의뢰해 주신 <strong>[정통 사주 풀이 보고서]</strong> 분석 작업이 정교한 명리 해석을 거쳐 최종 완료되었습니다.
+                          </p>
+                          <p style="font-size: 14px; color: #333; line-height: 1.6;">
+                            작성된 정밀 보감 보고서는 아래의 '결과 확인하기' 버튼을 누르시면 온라인 결과 화면으로 즉시 연결되어 열람 및 가이드를 확인해 보실 수 있습니다.
+                          </p>
+                          <div style="text-align: center; margin: 35px 0;">
+                            <a href="${resultUrl}" target="_blank" style="display: inline-block; background-color: #A3845B; color: #ffffff; text-decoration: none; padding: 14px 35px; border-radius: 6px; font-size: 15px; font-weight: bold; box-shadow: 0 4px 6px rgba(163,132,91,0.25);">결과 확인하기</a>
+                          </div>
+                          <p style="font-size: 12px; color: #666; line-height: 1.5; background-color: #F3F3F3; padding: 15px; border-radius: 6px; margin-bottom: 0;">
+                            ※ 본 메일은 발신전용으로 회신이 되지 않습니다.<br />
+                            ※ 문의 사항은 홈페이지 하단 대표번호 혹은 아트파니 고객센터로 연락 주시기 바랍니다.
+                          </p>
+                        </div>
+                        <div style="text-align: center; margin-top: 30px; font-size: 11px; color: #888; line-height: 1.6;">
+                          © 2026 혜안당. All rights reserved.
+                        </div>
+                      </div>
+                    `;
+
+                    await fetch("/api/email", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        to: targetEmail,
+                        subject: mailSubject,
+                        html: mailHtml,
+                      }),
+                    });
+                  } catch (mailErr) {
+                    console.error("결제 후 이메일 전송 실패:", mailErr);
+                  }
+                }
+
+                // SMS 자동 발송 트리거 연동 (유료 결제 성공 시 발송)
+                const targetPhone = phoneParam || (rsp && rsp.buyer_tel);
+                if (targetPhone && targetPhone.replace(/[^0-9]/g, "").length >= 9) {
+                  try {
+                    const smsQueryParams = new URLSearchParams({
+                      name: name,
+                      gender: genderVal || "female",
+                      type: typeParam,
+                      calendar: calendar,
+                      year: String(year),
+                      month: String(month),
+                      day: String(day),
+                      hour: hour,
+                      worryCategory: worryCategory,
+                      worryText: worryText || "",
+                      partnerName: partnerName || "",
+                      partnerGender: partnerGender === "여성" ? "female" : "male",
+                      partnerCalendar: partnerCalendar,
+                      partnerYear: String(partnerYear),
+                      partnerMonth: String(partnerMonth),
+                      partnerDay: String(partnerDay),
+                      partnerHour: partnerHour,
+                      gunghapType: gunghapType
+                    });
+
+                    const origin = "https://saju.artpani.com";
+                    const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=premium`;
+                    const smsContent = `[혜안당 명리연구소] ${name} 님, 주문하신 정통 사주 분석이 완료되었습니다.\n\n적어주신 이메일(${targetEmail || "지정 이메일"})로 상세 보감 PDF가 전송되었으며, 아래 온라인 보감 링크로도 즉시 열람이 가능합니다.\n\n▶ 결과 보기: ${mobileResultUrl}\n\n감사합니다.`;
+
+                    await fetch("/api/sms", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        receiver: targetPhone,
+                        msg: smsContent,
+                        title: "[혜안당 사주분석]"
+                      }),
+                    });
+                  } catch (smsErr) {
+                    console.error("결제 후 SMS 문자 전송 실패:", smsErr);
+                  }
+                }
               }, 300);
             } else {
               setProgress(currentProgress);
@@ -3843,29 +4174,15 @@ function ResultContent() {
               </p>
 
               {/* 카운트다운 타이머 및 가격 */}
-              <div className="flex items-center justify-center gap-3 text-xs mb-6 bg-black/40 py-2.5 px-4 rounded-lg max-w-xs mx-auto">
+              <div className="flex flex-row items-center justify-center gap-3 text-xs mb-6 bg-black/40 py-2.5 px-4 rounded-lg max-w-md mx-auto whitespace-nowrap overflow-x-auto">
                 <span className="text-red-500 font-bold">⏰ {timeLeft} · 단 1회 한정</span>
-                <span className="text-gray-400 line-through whitespace-nowrap">54,600원</span>
-                <span className="text-white font-bold text-sm whitespace-nowrap">34,900원</span>
+                <span className="text-gray-400 line-through">54,600원</span>
+                <span className="text-white font-bold text-sm">34,900원</span>
                 <span className="text-[#A3845B] font-bold">36%↓</span>
               </div>
 
-              {/* 행동 유도 결제 버튼 */}
+              {/* 행동 유도 결제 버튼 제거 */}
               <div className="space-y-3 max-w-sm mx-auto">
-                <button
-                  type="button"
-                  onClick={handlePortonePayment}
-                  className="w-full py-4 bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] rounded font-bold text-sm shadow-xl transition-all tracking-widest cursor-pointer"
-                >
-                  {name}님 정통 사주 풀이 ({metrics.nickname}) →
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsPaid(true)}
-                  className="w-full py-2 bg-[#FAF7F0]/10 hover:bg-[#FAF7F0]/20 text-[#FAF7F0] rounded text-[10px] font-semibold tracking-wider transition-all"
-                >
-                  ⚙️ [개발자 테스트] 결제 없이 즉시 잠금해제 확인하기
-                </button>
               </div>
 
               <div className="mt-6 flex flex-col items-center justify-center gap-1.5 text-[10px] text-gray-400 font-sans">
@@ -4753,13 +5070,11 @@ function ResultContent() {
 
     const isNewYear = type === "newyear" && typeParam !== "tojeong";
 
-    const activePages = isNewYear
+    const activePages = (reportGrade === "free" || reportGrade === "premium")
       ? pages
-      : (reportGrade === "premium"
-          ? pages
-              .filter(p => !deepExcludeTypes.includes(p.type))
-              .map((p, idx) => ({ ...p, page: idx + 1 }))
-          : pages);
+          .filter(p => !deepExcludeTypes.includes(p.type))
+          .map((p, idx) => ({ ...p, page: idx + 1 }))
+      : pages;
 
     return (
       <div className="space-y-12 print:space-y-0">
@@ -6890,21 +7205,43 @@ function ResultContent() {
               onClick={handlePortonePayment}
               className="w-full bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] py-4 px-6 rounded-xl font-myeongjo font-bold text-xs sm:text-sm md:text-base flex items-center justify-between shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#A3845B]/20"
             >
-              <span>{name}님 정통 {typeParam === "tojeong" ? "토정비결" : (type === "newyear" ? "신년운세" : "사주 풀이")} ({metrics.nickname})</span>
+              <span>{name}님 정통사주풀이(프리미엄확인하기)</span>
               <span className="text-lg">➔</span>
             </button>
           </div>
         )}
 
-        {/* 신년운세 고급 리포트일 때 프리미엄 업그레이드 하단 고정 플로팅 바 */}
-        {!isFree && type === "newyear" && typeParam !== "tojeong" && currentGrade === "premium" && (
+        {/* SMS 요약 보고서일 때 유료 결제 유도 하단 고정 플로팅 바 */}
+        {reportGrade === "sms" && (
+          <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp flex gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={() => handleUpgradeFromSms("premium", 20000)}
+              className="flex-1 bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] py-3.5 px-4 rounded-xl font-myeongjo font-bold text-xs sm:text-sm flex items-center justify-center gap-1 shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#A3845B]/20"
+            >
+              <span>고급 리포트 업그레이드 (+20,000원)</span>
+              <span className="text-[10px] sm:text-xs">➔</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleUpgradeFromSms("deep", 35000)}
+              className="flex-1 bg-[#2C2420] hover:bg-[#3d322c] text-[#E2DDD5] py-3.5 px-4 rounded-xl font-myeongjo font-bold text-xs sm:text-sm flex items-center justify-center gap-1 shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#A3845B]/30"
+            >
+              <span>👑 프리미엄 리포트 (+35,000원)</span>
+              <span className="text-[10px] sm:text-xs text-[#A3845B]">➔</span>
+            </button>
+          </div>
+        )}
+
+        {/* 고급 리포트일 때 프리미엄 업그레이드 하단 고정 플로팅 바 */}
+        {!isFree && (type === "saju" || (type === "newyear" && typeParam !== "tojeong")) && currentGrade === "premium" && (
           <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
             <button
               type="button"
               onClick={handleUpgradePayment}
               className="w-full bg-[#5F7A68] hover:bg-[#465A4B] text-white py-4 px-6 rounded-xl font-myeongjo font-bold text-xs sm:text-sm md:text-base flex items-center justify-between shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#5F7A68]/20"
             >
-              <span>👑 {name}님 신년운세 프리미엄 리포트로 업그레이드 (+15,000원)</span>
+              <span>👑 {name}님 {type === "newyear" ? "신년운세" : "평생종합사주"} 프리미엄 리포트로 업그레이드 (+15,000원)</span>
               <span className="text-lg">➔</span>
             </button>
           </div>

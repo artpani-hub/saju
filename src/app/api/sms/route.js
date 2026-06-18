@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 // 테스트 중 실제 문자 발송 여부 제어 (true: 실제 발송 안 함 / false: 실제 발송)
-const IS_TEST_MODE = true;
+const IS_TEST_MODE = false;
 
 export async function POST(request) {
   try {

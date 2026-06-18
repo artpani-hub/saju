@@ -216,7 +216,7 @@ const buildTodaySmsText = (name, gender, year, month, day, hour) => {
   const analysis = stemAnalysis[dayStem] || stemAnalysis["甲"];
   const myPresc = elementPrescriptions[dayStemEl] || elementPrescriptions["목"];
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const origin = "https://saju.artpani.com";
 
   return `[혜안당 명리연구소] ${name} 님 오늘의 수호 보감\n오늘의 일진: ${formattedToday} (${dayStem}${dayBranch}일 - ${dayStemEl}의 기운)\n\n● 총운: ${analysis.summary}\n● 금전운: ${analysis.wealth.score}% (${analysis.wealth.desc})\n● 연애운: ${analysis.love.score}% (${analysis.love.desc})\n● 대인관계: ${analysis.social.score}% (${analysis.social.desc})\n\n행운의 개운 비법:\n- 수호 색상: ${myPresc.color}\n- 수호 숫자: ${myPresc.number}\n- 수호 방향: ${myPresc.direction}\n- 조언: ${analysis.advice}\n\n상세한 분석 및 만세력 결과는 아래 링크에서 확인하실 수 있습니다.\n▶ 결과 보기: ${origin}/result?name=${encodeURIComponent(name)}&gender=${gender === "female" ? "female" : "male"}&type=today&year=${year}&month=${month}&day=${day}&hour=${encodeURIComponent(hour)}&reportGrade=sms`;
 };
@@ -243,7 +243,7 @@ const buildGeneralSmsText = (name, productName, email, phone, productKey, formDa
     gunghapType: gunghapType
   });
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const origin = "https://saju.artpani.com";
 
   return `[혜안당 명리연구소] ${name} 님, 주문하신 [${productName}] 분석이 무사히 완료되었습니다.\n\n적어주신 이메일(${email})로 상세 보고서 PDF 가이드를 전송해 드렸습니다. 혹은 아래의 온라인 결과 보감 링크를 통해 즉시 확인해 보실 수 있습니다.\n\n▶ 모바일 결과 보기: ${origin}/result?${queryParams.toString()}&reportGrade=premium\n\n귀하의 앞날에 늘 지혜의 빛이 함께하기를 기원합니다. 감사합니다.`;
 };
@@ -285,6 +285,8 @@ function InputFormContent() {
   const [paymentSuccessData, setPaymentSuccessData] = useState(null);
   const [selectedCards, setSelectedCards] = useState([]);
   const [progress, setProgress] = useState(0);
+  const [privacyAgreed, setPrivacyAgreed] = useState(false);
+  const [payMethod, setPayMethod] = useState("card");
 
   // step === "processing" 진행 상황 실시간 타이머
   useEffect(() => {
@@ -298,32 +300,32 @@ function InputFormContent() {
         if (prev >= 100) {
           clearInterval(interval);
           setTimeout(() => {
-            if (reportGrade === "free") {
-              const queryParams = new URLSearchParams({
-                name: formData.name,
-                gender: formData.gender,
-                type: productKey,
-                calendar: formData.calendarType,
-                year: formData.birthYear,
-                month: formData.birthMonth,
-                day: formData.birthDay,
-                hour: formData.birthHour,
-                worryCategory: formData.worryCategory,
-                worryText: formData.worryText || "",
-                partnerName: formData.partnerName || "",
-                partnerGender: formData.partnerGender || "male",
-                partnerCalendar: formData.partnerCalendarType || "solar",
-                partnerYear: formData.partnerBirthYear || "1995",
-                partnerMonth: formData.partnerBirthMonth || "08",
-                partnerDay: formData.partnerBirthDay || "25",
-                partnerHour: formData.partnerBirthHour || "unknown",
-                gunghapType: gunghapType || "compatibility",
-                reportGrade: "free"
-              });
-              router.push(`/result?${queryParams.toString()}`);
-            } else {
-              setStep("success");
+            const queryParams = new URLSearchParams({
+              name: formData.name,
+              gender: formData.gender,
+              type: productKey,
+              calendar: formData.calendarType,
+              year: formData.birthYear,
+              month: formData.birthMonth,
+              day: formData.birthDay,
+              hour: formData.birthHour,
+              worryCategory: formData.worryCategory,
+              worryText: formData.worryText || "",
+              partnerName: formData.partnerName || "",
+              partnerGender: formData.partnerGender || "male",
+              partnerCalendar: formData.partnerCalendarType || "solar",
+              partnerYear: formData.partnerBirthYear || "1995",
+              partnerMonth: formData.partnerBirthMonth || "08",
+              partnerDay: formData.partnerBirthDay || "25",
+              partnerHour: formData.partnerBirthHour || "unknown",
+              gunghapType: gunghapType || "compatibility",
+              reportGrade: reportGrade === "free" ? "free" : (productKey === "today" ? "sms" : (productKey === "tarot" ? "premium" : reportGrade))
+            });
+            // 만약 타로카드 선택 내역이 있다면 전달
+            if (selectedCards.length > 0) {
+              queryParams.set("cards", selectedCards.join(","));
             }
+            router.push(`/result?${queryParams.toString()}`);
           }, 600);
           return 100;
         }
@@ -456,13 +458,14 @@ function InputFormContent() {
 
   const validateForm = () => {
     if (!formData.name.trim()) return "성명을 입력해 주세요.";
-    if (productKey !== "today" && reportGrade !== "free") {
+    if (productKey !== "today") {
       if (!formData.email.trim() || !formData.email.includes("@")) return "올바른 이메일 주소를 입력해 주세요.";
     }
     if (!formData.phone.trim() || formData.phone.length < 9) return "올바른 연락처를 입력해 주세요.";
     if (productKey === "tarot" && selectedCards.length < 3) return "속마음 타로 카드를 3장 선택해 주세요.";
     if (productKey === "gunghap" && !formData.partnerName.trim()) return "상대방의 성명을 입력해 주세요.";
-    if (productKey !== "today" && reportGrade !== "free" && !formData.worryText.trim()) return "고민하고 계시는 구체적인 내용을 적어주세요.";
+    if (productKey !== "today" && !formData.worryText.trim()) return "고민하고 계시는 구체적인 내용을 적어주세요.";
+    if (!privacyAgreed) return "개인정보 수집 및 이용에 동의해 주세요.";
     return null;
   };
 
@@ -649,6 +652,78 @@ function InputFormContent() {
               }),
             });
 
+            // 이메일 발송 자동 연동 (오늘의 운세를 제외한 사주/궁합 등 이메일 기반 상품)
+            if (productKey !== "today" && formData.email && formData.email.includes("@")) {
+              try {
+                const queryParams = new URLSearchParams({
+                  name: formData.name,
+                  gender: formData.gender,
+                  type: productKey,
+                  calendar: formData.calendarType,
+                  year: formData.birthYear,
+                  month: formData.birthMonth,
+                  day: formData.birthDay,
+                  hour: formData.birthHour,
+                  worryCategory: formData.worryCategory,
+                  worryText: formData.worryText || "",
+                  partnerName: formData.partnerName || "",
+                  partnerGender: formData.partnerGender || "male",
+                  partnerCalendar: formData.partnerCalendarType || "solar",
+                  partnerYear: formData.partnerBirthYear || "1995",
+                  partnerMonth: formData.partnerBirthMonth || "08",
+                  partnerDay: formData.partnerBirthDay || "25",
+                  partnerHour: formData.partnerBirthHour || "unknown",
+                  gunghapType: gunghapType
+                });
+
+                const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
+                const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=premium`;
+                const mailSubject = `[혜안당 명리연구소] ${formData.name} 님 주문하신 [${products[productKey]?.title || "정통 사주 풀이"}] 분석결과서가 도착했습니다.`;
+                const mailHtml = `
+                  <div style="font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; border: 1px solid #E2DDD5; border-radius: 12px; background-color: #F9F8F6;">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                      <span style="font-size: 24px; font-weight: bold; color: #A3845B; letter-spacing: 2px;">慧眼堂</span>
+                      <p style="font-size: 12px; color: #888; margin-top: 5px;">지혜로운 눈으로 밝히는 운명</p>
+                    </div>
+                    <div style="background-color: #ffffff; padding: 30px; border-radius: 8px; border: 1px solid #E1E1E1; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                      <h2 style="font-size: 18px; font-weight: bold; color: #1A1A1A; margin-top: 0; border-bottom: 2px solid #A3845B; padding-bottom: 15px;">운세 분석 보고서 완료 안내</h2>
+                      <p style="font-size: 14px; color: #333; line-height: 1.6; margin-top: 20px;">
+                        안녕하세요, <strong>${formData.name}</strong> 님.<br />
+                        혜안당 명리연구소에 의뢰해 주신 <strong>[${products[productKey]?.title || "정통 사주 풀이"}]</strong> 분석 작업이 정교한 명리 해석을 거쳐 최종 완료되었습니다.
+                      </p>
+                      <p style="font-size: 14px; color: #333; line-height: 1.6;">
+                        작성된 정밀 보감 보고서는 아래의 '결과 확인하기' 버튼을 누르시면 온라인 결과 화면으로 즉시 연결되어 열람 및 가이드를 확인해 보실 수 있습니다.
+                      </p>
+                      <div style="text-align: center; margin: 35px 0;">
+                        <a href="${resultUrl}" target="_blank" style="display: inline-block; background-color: #A3845B; color: #ffffff; text-decoration: none; padding: 14px 35px; border-radius: 6px; font-size: 15px; font-weight: bold; box-shadow: 0 4px 6px rgba(163,132,91,0.25);">결과 확인하기</a>
+                      </div>
+                      <p style="font-size: 12px; color: #666; line-height: 1.5; background-color: #F3F3F3; padding: 15px; border-radius: 6px; margin-bottom: 0;">
+                        ※ 본 메일은 발신전용으로 회신이 되지 않습니다.<br />
+                        ※ 문의 사항은 홈페이지 하단 대표번호 혹은 아트파니 고객센터로 연락 주시기 바랍니다.
+                      </p>
+                    </div>
+                    <div style="text-align: center; margin-top: 30px; font-size: 11px; color: #888; line-height: 1.6;">
+                      © 2026 혜안당. All rights reserved.
+                    </div>
+                  </div>
+                `;
+
+                await fetch("/api/email", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    to: formData.email,
+                    subject: mailSubject,
+                    html: mailHtml,
+                  }),
+                });
+              } catch (mailErr) {
+                console.error("주문 생성 후 이메일 전송 실패:", mailErr);
+              }
+            }
+
             const resData = await response.json();
             console.log("알리고 발송 결과:", resData);
             
@@ -675,7 +750,11 @@ function InputFormContent() {
           }
         };
 
-        sendSmsMessage();
+        if (reportGrade !== "free") {
+          sendSmsMessage();
+        } else {
+          console.log("무료 체험판 주문은 SMS 발송을 생략합니다.");
+        }
       } catch (err) {
         console.error("Local storage/SMS error:", err);
       }
@@ -683,21 +762,6 @@ function InputFormContent() {
 
   // 실제 포트원 결제창 호출 및 처리
   const handlePortonePayment = () => {
-    // 로컬 환경(localhost) 또는 개발 모드일 경우 결제 모듈 로드 여부와 상관없이 즉시 시뮬레이션 실행
-    const isLocal = (typeof window !== "undefined" && (
-      window.location.hostname === "localhost" || 
-      window.location.hostname === "127.0.0.1" ||
-      window.location.hostname.startsWith("192.168.") ||
-      window.location.hostname.startsWith("10.") ||
-      window.location.port === "3000"
-    )) || process.env.NODE_ENV === "development";
-
-    if (isLocal) {
-      alert("[개발자 테스트 안내] 개발 환경(Local/Dev)이 감지되어 모의 결제 성공 시뮬레이션을 즉시 실행합니다.\n\n확인을 누르시면 분석 화면으로 넘어갑니다.");
-      startAnalysis();
-      return;
-    }
-
     const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
     const pgChannel = process.env.NEXT_PUBLIC_PORTONE_PG || "html5_inicis";
 
@@ -727,16 +791,36 @@ function InputFormContent() {
         : base)
       : base;
 
-    IMP.request_pay({
-      pg: pgChannel,
-      pay_method: "card",
+    // 결제수단 매핑 (card, kakaopay, payco, tosspay, naverpay 등)
+    let selectedPayMethod = "card";
+    if (payMethod === "kakaopay") selectedPayMethod = "kakaopay";
+    else if (payMethod === "naverpay") selectedPayMethod = "naverpay";
+    else if (payMethod === "tosspay") selectedPayMethod = "tosspay";
+
+    const payData = {
+      pg: selectedPayMethod !== "card" ? `${pgChannel.split(".")[0]}.${selectedPayMethod}` : pgChannel,
+      pay_method: selectedPayMethod === "naverpay" ? "card" : selectedPayMethod, // NaverPay는 이니시스 경유 시 card/point 처리 등 PG 세부설정에 맞춰 매핑
       merchant_uid: `merchant_${new Date().getTime()}`,
       name: `${formData.name || "의뢰인"}님 ${activeProduct.title}`,
       amount: finalPrice,
       buyer_name: formData.name,
       buyer_tel: formData.phone,
       buyer_email: formData.email || "test@example.com",
-    }, function (rsp) {
+    };
+
+    // 만약 네이버페이, 카카오페이, 토스페이 전용 간편결제 채널이 pgChannel에 정의되어 있다면 1순위 사용
+    if (selectedPayMethod === "kakaopay") {
+      payData.pg = "kakaopay";
+      payData.pay_method = "card";
+    } else if (selectedPayMethod === "naverpay") {
+      payData.pg = "naverpay";
+      payData.pay_method = "card";
+    } else if (selectedPayMethod === "tosspay") {
+      payData.pg = "tosspay";
+      payData.pay_method = "card";
+    }
+
+    IMP.request_pay(payData, function (rsp) {
       if (rsp.success) {
         startAnalysis(); // 결제 완료 시 분석 진행
       } else {
@@ -1275,6 +1359,30 @@ function InputFormContent() {
                   </div>
                 </div>
 
+                {/* 4. Privacy Policy Agreement */}
+                <div className="bg-background-secondary/30 border border-border-custom rounded-lg p-5 space-y-3">
+                  <h4 className="font-myeongjo text-xs font-bold text-foreground">개인정보 수집 및 이용 동의</h4>
+                  <div className="max-h-20 overflow-y-auto text-[10px] text-foreground-muted bg-background/50 border border-border-custom/80 rounded p-2.5 leading-relaxed font-light">
+                    혜안당 명리연구소는 서비스 제공을 위해 성명, 성별, 생년월일시, 이메일, 연락처, 고민 세부 사항을 수집합니다. 수집된 개인정보는 운세 분석 결과 발송(이메일/SMS) 및 마케팅 자료(SMS 발송 등) 목적으로 활용되며, 수집 및 이용 목적이 달성된 후 혹은 관련 법령에 따른 보유 기간이 경과한 후 지체 없이 파기됩니다. 귀하는 이에 동의하지 않을 권리가 있으나, 동의하지 않으실 경우 운세 분석 서비스 이용이 불가합니다.
+                  </div>
+                  <label className="flex items-center gap-2 cursor-pointer select-none py-1">
+                    <input
+                      type="checkbox"
+                      checked={privacyAgreed}
+                      onChange={(e) => setPrivacyAgreed(e.target.checked)}
+                      className="hidden"
+                    />
+                    <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
+                      privacyAgreed 
+                        ? "bg-brass border-brass text-background" 
+                        : "border-border-custom bg-background hover:border-brass"
+                    }`}>
+                      {privacyAgreed && <Check className="w-3 h-3 stroke-[3]" />}
+                    </div>
+                    <span className="text-[11px] text-foreground font-medium">개인정보 수집 및 이용에 동의합니다. <span className="text-red-500">(필수)</span></span>
+                  </label>
+                </div>
+
                 {/* Submitting button */}
                 <button
                   type="submit"
@@ -1640,20 +1748,52 @@ function InputFormContent() {
                   );
                 })()}
 
-                {/* Options of paying */}
+                 {/* Options of paying */}
                 <div className="border-t border-border-custom pt-4 text-left">
                   <span className="text-xs font-semibold text-foreground block mb-2">결제수단 선택</span>
                   <div className="grid grid-cols-2 gap-2">
-                    <button type="button" className="py-2.5 text-xs text-center border border-brass bg-brass/5 rounded hover:bg-brass/10 font-medium">
+                    <button
+                      type="button"
+                      onClick={() => setPayMethod("card")}
+                      className={`py-2.5 text-xs text-center border rounded font-medium transition-all ${
+                        payMethod === "card"
+                          ? "border-brass bg-brass/5 text-brass"
+                          : "border-border-custom hover:border-brass"
+                      }`}
+                    >
                       신용/체크카드
                     </button>
-                    <button type="button" className="py-2.5 text-xs text-center border border-border-custom rounded hover:border-brass font-medium">
+                    <button
+                      type="button"
+                      onClick={() => setPayMethod("kakaopay")}
+                      className={`py-2.5 text-xs text-center border rounded font-medium transition-all ${
+                        payMethod === "kakaopay"
+                          ? "border-brass bg-brass/5 text-brass"
+                          : "border-border-custom hover:border-brass"
+                      }`}
+                    >
                       카카오페이
                     </button>
-                    <button type="button" className="py-2.5 text-xs text-center border border-border-custom rounded hover:border-brass font-medium">
+                    <button
+                      type="button"
+                      onClick={() => setPayMethod("naverpay")}
+                      className={`py-2.5 text-xs text-center border rounded font-medium transition-all ${
+                        payMethod === "naverpay"
+                          ? "border-brass bg-brass/5 text-brass"
+                          : "border-border-custom hover:border-brass"
+                      }`}
+                    >
                       네이버페이
                     </button>
-                    <button type="button" className="py-2.5 text-xs text-center border border-border-custom rounded hover:border-brass font-medium">
+                    <button
+                      type="button"
+                      onClick={() => setPayMethod("tosspay")}
+                      className={`py-2.5 text-xs text-center border rounded font-medium transition-all ${
+                        payMethod === "tosspay"
+                          ? "border-brass bg-brass/5 text-brass"
+                          : "border-border-custom hover:border-brass"
+                      }`}
+                    >
                       토스페이
                     </button>
                   </div>

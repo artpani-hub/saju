@@ -137,6 +137,7 @@ export default function Home() {
   const [cumulativeCount, setCumulativeCount] = useState(14820);
   const [todayCount, setTodayCount] = useState(412);
   const [activeUsers, setActiveUsers] = useState(18);
+  const [isRefundPolicyOpen, setIsRefundPolicyOpen] = useState(false);
 
   useEffect(() => {
     setCumulativeCount(getCumulativeCount());
@@ -266,7 +267,7 @@ export default function Home() {
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#8B221E] hover:bg-[#6D1B18] text-white px-8 py-4 rounded-md text-base font-medium shadow-md transition-all duration-300 transform hover:-translate-y-0.5 font-traditional tracking-wider"
             >
               <Scroll className="w-5 h-5 text-brass-light" />
-              내 사주 등급 확인하기 ➔
+              내 사주 무료 확인하기 ➔
             </Link>
             <a
               href="#services"
@@ -1049,14 +1050,14 @@ export default function Home() {
             <div className="border border-border-custom bg-background rounded-lg p-5">
               <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 리포트는 언제 이메일로 받아볼 수 있나요?</h3>
               <p className="text-sm text-foreground-muted leading-relaxed font-light">
-                결제 완료 즉시 만세력 산출 및 AI 맞춤 분석 엔진이 작동합니다. 대기자 수에 따라 다르나 보통 결제 완료 후 5분에서 최대 15분 내에 입력하신 이메일 주소로 전송됩니다.
+                결제 완료 즉시 만세력 산출 및 혜안당 맞춤 분석 솔루션이 작동합니다. 대기자 수에 따라 다르나 보통 결제 완료 후 5분에서 최대 15분 내에 입력하신 이메일 주소로 전송됩니다.
               </p>
             </div>
 
             <div className="border border-border-custom bg-background rounded-lg p-5">
-              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. AI가 생성한 결과는 신뢰할 수 있나요?</h3>
+              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 제공되는 분석 결과는 신뢰할 수 있나요?</h3>
               <p className="text-sm text-foreground-muted leading-relaxed font-light">
-                혜안당은 검증된 사주 명리학의 연주, 월주, 일주, 시주 계산 공식을 데이터화하여 1차 분석을 한 뒤, AI의 정교한 자연어 처리 기술을 더하여 읽기 편안하고 풍부한 문맥을 완성합니다. 정밀 프롬프트 튜닝을 통해 타 역학 이론과의 마찰을 방지하고 있습니다.
+                혜안당은 검증된 사주 명리학의 연주, 월주, 일주, 시주 계산 공식을 정밀 데이터화하여 1차 분석을 한 뒤, 혜안당 고유의 정교한 해설 기술을 더하여 읽기 편안하고 풍부한 문맥을 완성합니다. 정밀 튜닝된 로직을 통해 정통 명리학 이론을 왜곡 없이 정확하게 전달하고 있습니다.
               </p>
             </div>
           </div>
@@ -1064,20 +1065,72 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-background border-t border-border-custom py-12">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2">
-            <span className="font-myeongjo text-lg font-bold tracking-widest text-foreground">慧眼堂</span>
-            <span className="text-xs text-foreground-muted">© 2026 혜안당. All rights reserved.</span>
+      <footer className="bg-background border-t border-border-custom py-12 text-xs text-foreground-muted">
+        <div className="max-w-6xl mx-auto px-6 space-y-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-border-custom/50 pb-6">
+            <div className="flex items-center gap-2">
+              <span className="font-myeongjo text-lg font-bold tracking-widest text-foreground">慧眼堂</span>
+              <span>© 2026 혜안당. All rights reserved.</span>
+            </div>
+            <div className="flex gap-6">
+              <Link href="/admin" className="hover:text-brass transition-colors font-bold text-brass">관리자 페이지</Link>
+              <button 
+                onClick={() => setIsRefundPolicyOpen(true)} 
+                className="hover:text-brass transition-colors cursor-pointer"
+              >
+                배송 및 교환환불 정책
+              </button>
+              <a href="#" className="hover:text-brass transition-colors">이용약관</a>
+              <a href="#" className="hover:text-brass transition-colors">개인정보처리방침</a>
+              <a href="#" className="hover:text-brass transition-colors">고객지원</a>
+            </div>
           </div>
-          <div className="flex gap-6 text-xs text-foreground-muted">
-            <Link href="/admin" className="hover:text-brass transition-colors font-bold text-brass">관리자 페이지</Link>
-            <a href="#" className="hover:text-brass transition-colors">이용약관</a>
-            <a href="#" className="hover:text-brass transition-colors">개인정보처리방침</a>
-            <a href="#" className="hover:text-brass transition-colors">고객지원</a>
+          <div className="space-y-1 font-light leading-relaxed">
+            <p className="font-semibold text-foreground">아트파니 | 대표자: 노은경</p>
+            <p>주소: 인천 미추홀구 염전로 262 3층 | 대표번호: 070-4432-9156</p>
+            <p>사업자등록번호: 364-11-02010 | 통신판매업 신고번호: 제2022-인천미추홀-0420호</p>
           </div>
         </div>
       </footer>
+
+      {/* 배송 및 교환/환불 정책 모달 */}
+      {isRefundPolicyOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-background border border-border-custom rounded-xl max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl flex flex-col">
+            <div className="p-6 border-b border-border-custom flex items-center justify-between">
+              <h3 className="font-myeongjo text-lg font-bold text-foreground">배송 및 교환/환불 정책</h3>
+              <button 
+                onClick={() => setIsRefundPolicyOpen(false)}
+                className="text-foreground-muted hover:text-foreground p-1 text-sm font-semibold transition-colors cursor-pointer"
+              >
+                닫기 ✕
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto space-y-6 text-xs text-foreground-muted leading-relaxed font-light">
+              <div className="space-y-2">
+                <h4 className="font-myeongjo font-bold text-foreground text-sm">1. 서비스 제공 및 배송 안내</h4>
+                <p>• 본 서비스는 실물이 발송되지 않는 <strong>온라인 디지털 리포트 서비스</strong>입니다.</p>
+                <p>• 결제가 성공적으로 완료되면 만세력 데이터 연산 및 사주 분석 솔루션이 가동되며, 입력하신 고객님의 이메일 및 문자(SMS) 주소로 <strong>5분에서 최대 15분 내</strong>에 리포트 링크가 자동으로 전송됩니다.</p>
+                <p>• 발송 대기열 지연, 이메일 용량 초과 또는 스팸 차단 등으로 인해 리포트를 받아보지 못하신 경우, 즉시 고객지원센터(070-4432-9156)로 연락 주시면 1회용 대체 전송 또는 재발송 처리를 즉시 도와드립니다.</p>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-myeongjo font-bold text-foreground text-sm">2. 교환 및 환불 규정</h4>
+                <p>• <strong>디지털 콘텐츠 청약철회 제한:</strong> 전자상거래 등에서의 소비자보호에 관한 법률 제17조 제2항 제5호(용역 또는 디지털콘텐츠의 제공이 개시된 경우)에 의거하여, 리포트 생성이 완료되어 메일/문자로 발송(제공)된 이후에는 고객님의 단순 변심에 의한 주문 취소, 반품 또는 환불이 불가능합니다.</p>
+                <p>• <strong>예외적 환불 조건:</strong> 결제 후 시스템적인 심각한 오류로 인하여 24시간 내에 리포트가 전혀 생성되지 않았거나, 파일 분석 결함 등으로 리포트 내용을 객관적으로 읽을 수 없는 불완전한 서비스를 제공받으신 경우, 즉시 결제 취소 및 전액 환불 처리를 보장합니다.</p>
+                <p>• <strong>정보 수정 및 재발송:</strong> 생년월일이나 성별, 성명 등을 입력 단계에서 오기입하신 경우, 메일 열람 또는 분석 완료 리포트를 전송받기 전(혹은 전송 직후 24시간 이내)에 고객센터로 요청해 주시면 1회에 한하여 무료로 정보 수정 후 재발송을 지원해 드립니다.</p>
+              </div>
+            </div>
+            <div className="p-4 border-t border-border-custom bg-background-secondary/20 flex justify-end">
+              <button 
+                onClick={() => setIsRefundPolicyOpen(false)}
+                className="px-5 py-2 bg-brass text-background text-xs font-semibold rounded hover:bg-brass-dark transition-colors cursor-pointer"
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

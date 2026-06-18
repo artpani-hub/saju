@@ -37,6 +37,7 @@ export const renderPageContent = (page, ctx) => {
 
   const blurClass = isFree ? "blur-[5px] select-none pointer-events-none" : "";
 
+  const { getSipsinList, getLifeStyleStrategyData } = ctx;
   const sipsinData = getSipsinList(sajuInfo);
   const { counts: sipsinCounts, sipsins: sipsinItems } = sipsinData;
 

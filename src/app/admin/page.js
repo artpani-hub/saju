@@ -160,7 +160,7 @@ const buildTodaySmsText = (name, gender, year, month, day, hour) => {
   const analysis = stemAnalysis[dayStem] || stemAnalysis["甲"];
   const myPresc = elementPrescriptions[dayStemEl] || elementPrescriptions["목"];
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const origin = "https://saju.artpani.com";
 
   return `[혜안당 명리연구소] ${name} 님 오늘의 수호 보감\n오늘의 일진: ${formattedToday} (${dayStem}${dayBranch}일 - ${dayStemEl}의 기운)\n\n● 총운: ${analysis.summary}\n● 금전운: ${analysis.wealth.score}% (${analysis.wealth.desc})\n● 연애운: ${analysis.love.score}% (${analysis.love.desc})\n● 대인관계: ${analysis.social.score}% (${analysis.social.desc})\n\n행운의 개운 비법:\n- 수호 색상: ${myPresc.color}\n- 수호 숫자: ${myPresc.number}\n- 수호 방향: ${myPresc.direction}\n- 조언: ${analysis.advice}\n\n상세한 분석 및 만세력 결과는 아래 링크에서 확인하실 수 있습니다.\n▶ 결과 보기: ${origin}/result?name=${encodeURIComponent(name)}&gender=${gender === "female" ? "female" : "male"}&type=today&year=${year}&month=${month}&day=${day}&hour=${encodeURIComponent(hour)}&reportGrade=sms`;
 };
@@ -184,7 +184,7 @@ const buildGeneralSmsTextFromOrder = (order) => {
                  order.productName.includes("재회") ? "reunion" : "compatibility"
   });
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const origin = "https://saju.artpani.com";
 
   return `[혜안당 명리연구소] ${order.name} 님, 주문하신 [${order.productName}] 분석이 무사히 완료되었습니다.\n\n적어주신 이메일(${order.email})로 상세 보고서 PDF 가이드를 재전송해 드렸습니다. 혹은 아래의 온라인 결과 보감 링크를 통해 즉시 확인해 보실 수 있습니다.\n\n▶ 모바일 결과 보기: ${origin}/result?${queryParams.toString()}&reportGrade=premium\n\n귀하의 앞날에 늘 지혜의 빛이 함께하기를 기원합니다. 감사합니다.`;
 };
@@ -342,7 +342,7 @@ export default function AdminPage() {
   }, []);
 
   const handleLogin = () => {
-    if (passwordInput === "hyean1004") {
+    if (passwordInput === "artpani1234") {
       setIsLoggedIn(true);
       setLoginError("");
       sessionStorage.setItem("hyeandang_admin_auth", "true");
@@ -390,52 +390,137 @@ export default function AdminPage() {
     }
 
     try {
-      let smsContent = "";
-      const isTodayProduct = targetOrder.productName.includes("오늘") || targetOrder.productName.includes("오늘의");
-      
-      if (isTodayProduct) {
-        smsContent = buildTodaySmsText(
-          targetOrder.name,
-          targetOrder.gender || "female",
-          targetOrder.year || "1995",
-          targetOrder.month || "8",
-          targetOrder.day || "25",
-          targetOrder.hour || "10:00"
-        );
-      } else {
-        smsContent = buildGeneralSmsTextFromOrder(targetOrder);
-      }
+      // 메일 전송 대상 여부 체크
+      const isEmailProduct = 
+        (targetOrder.productName.includes("사주") || targetOrder.productName.includes("신년") || targetOrder.productName.includes("토정")) &&
+        (targetOrder.productName.includes("고급") || targetOrder.productName.includes("프리미엄"));
 
-      const response = await fetch("/api/sms", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          receiver: targetOrder.phone,
-          msg: smsContent,
-          title: isTodayProduct ? "[혜안당 오늘의운세]" : "[혜안당 사주분석]"
-        }),
-      });
-
-      const resData = await response.json();
-      
-      if (resData.success) {
-        setOrders(prev => {
-          const updated = prev.map(order =>
-            order.id === id ? { ...order, emailStatus: "sent" } : order
-          );
-          try {
-            localStorage.setItem("hyeandang_orders", JSON.stringify(updated));
-          } catch (e) {}
-          return updated;
+      if (isEmailProduct) {
+        const queryParams = new URLSearchParams({
+          name: targetOrder.name,
+          gender: targetOrder.gender || "female",
+          type: targetOrder.productName.includes("사주") ? "saju" : 
+                targetOrder.productName.includes("신년") ? "newyear" : "tojeong",
+          calendar: targetOrder.calendar || "solar",
+          year: targetOrder.year || "1995",
+          month: targetOrder.month || "8",
+          day: targetOrder.day || "25",
+          hour: targetOrder.hour || "10:00",
+          worryText: targetOrder.worryText || "",
+          gunghapType: targetOrder.productName.includes("속궁합") ? "deep_compatibility" :
+                       targetOrder.productName.includes("재회") ? "reunion" : "compatibility"
         });
-        alert(`[주문번호 ${id}] 고객 휴대폰(${targetOrder.phone})으로 분석 결과 문자메시지를 성공적으로 재발송하였습니다.`);
+
+        const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
+        const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=premium`;
+        
+        const mailSubject = `[혜안당 명리연구소] ${targetOrder.name} 님 주문하신 [${targetOrder.productName}] 분석결과서가 재도착했습니다.`;
+        const mailHtml = `
+          <div style="font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; border: 1px solid #E2DDD5; border-radius: 12px; background-color: #F9F8F6;">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <span style="font-size: 24px; font-weight: bold; color: #A3845B; letter-spacing: 2px;">慧眼堂</span>
+              <p style="font-size: 12px; color: #888; margin-top: 5px;">지혜로운 눈으로 밝히는 운명</p>
+            </div>
+            <div style="background-color: #ffffff; padding: 30px; border-radius: 8px; border: 1px solid #E1E1E1; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+              <h2 style="font-size: 18px; font-weight: bold; color: #1A1A1A; margin-top: 0; border-bottom: 2px solid #A3845B; padding-bottom: 15px;">운세 분석 보고서 재전송 안내</h2>
+              <p style="font-size: 14px; color: #333; line-height: 1.6; margin-top: 20px;">
+                안녕하세요, <strong>${targetOrder.name}</strong> 님.<br />
+                요청하신 <strong>[${targetOrder.productName}]</strong> 분석결과서 보고서를 재전송해 드립니다.
+              </p>
+              <p style="font-size: 14px; color: #333; line-height: 1.6;">
+                아래의 '결과 확인하기' 버튼을 누르시면 온라인 결과 화면으로 즉시 연결되어 열람 및 가이드를 확인해 보실 수 있습니다.
+              </p>
+              <div style="text-align: center; margin: 35px 0;">
+                <a href="${resultUrl}" target="_blank" style="display: inline-block; background-color: #A3845B; color: #ffffff; text-decoration: none; padding: 14px 35px; border-radius: 6px; font-size: 15px; font-weight: bold; box-shadow: 0 4px 6px rgba(163,132,91,0.25);">결과 확인하기</a>
+              </div>
+              <p style="font-size: 12px; color: #666; line-height: 1.5; background-color: #F3F3F3; padding: 15px; border-radius: 6px; margin-bottom: 0;">
+                ※ 본 메일은 발신전용으로 회신이 되지 않습니다.<br />
+                ※ 문의 사항은 홈페이지 하단 대표번호 혹은 아트파니 고객센터로 연락 주시기 바랍니다.
+              </p>
+            </div>
+            <div style="text-align: center; margin-top: 30px; font-size: 11px; color: #888; line-height: 1.6;">
+              © 2026 혜안당. All rights reserved.
+            </div>
+          </div>
+        `;
+
+        const response = await fetch("/api/email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            to: targetOrder.email,
+            subject: mailSubject,
+            html: mailHtml,
+          }),
+        });
+
+        const resData = await response.json();
+        
+        if (resData.success) {
+          setOrders(prev => {
+            const updated = prev.map(order =>
+              order.id === id ? { ...order, emailStatus: "sent" } : order
+            );
+            try {
+              localStorage.setItem("hyeandang_orders", JSON.stringify(updated));
+            } catch (e) {}
+            return updated;
+          });
+          alert(`[주문번호 ${id}] 고객 이메일(${targetOrder.email})로 분석 결과 보고서 메일을 성공적으로 재발송하였습니다.`);
+        } else {
+          throw new Error(resData.message || "메일 발송에 실패했습니다.");
+        }
       } else {
-        throw new Error(resData.message || "문자 발송에 실패했습니다.");
+        // 문자 전송 진행
+        let smsContent = "";
+        const isTodayProduct = targetOrder.productName.includes("오늘") || targetOrder.productName.includes("오늘의");
+        
+        if (isTodayProduct) {
+          smsContent = buildTodaySmsText(
+            targetOrder.name,
+            targetOrder.gender || "female",
+            targetOrder.year || "1995",
+            targetOrder.month || "8",
+            targetOrder.day || "25",
+            targetOrder.hour || "10:00"
+          );
+        } else {
+          smsContent = buildGeneralSmsTextFromOrder(targetOrder);
+        }
+
+        const response = await fetch("/api/sms", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            receiver: targetOrder.phone,
+            msg: smsContent,
+            title: isTodayProduct ? "[혜안당 오늘의운세]" : "[혜안당 사주분석]"
+          }),
+        });
+
+        const resData = await response.json();
+        
+        if (resData.success) {
+          setOrders(prev => {
+            const updated = prev.map(order =>
+              order.id === id ? { ...order, emailStatus: "sent" } : order
+            );
+            try {
+              localStorage.setItem("hyeandang_orders", JSON.stringify(updated));
+            } catch (e) {}
+            return updated;
+          });
+          alert(`[주문번호 ${id}] 고객 휴대폰(${targetOrder.phone})으로 분석 결과 문자메시지를 성공적으로 재발송하였습니다.`);
+        } else {
+          throw new Error(resData.message || "문자 발송에 실패했습니다.");
+        }
       }
     } catch (error) {
-      console.error("SMS 재전송 오류:", error);
+      console.error("재전송 오류:", error);
       setOrders(prev => {
         const updated = prev.map(order =>
           order.id === id ? { ...order, emailStatus: "failed" } : order
@@ -445,7 +530,7 @@ export default function AdminPage() {
         } catch (e) {}
         return updated;
       });
-      alert(`[주문번호 ${id}] 문자 발송 실패: ${error.message || "서버 통신 오류가 발생했습니다."}`);
+      alert(`[주문번호 ${id}] 발송 실패: ${error.message || "서버 통신 오류가 발생했습니다."}`);
     } finally {
       setRefreshingId(null);
     }
@@ -583,7 +668,7 @@ export default function AdminPage() {
               <label className="block text-xs font-semibold text-foreground mb-1.5">관리자 비밀번호</label>
               <input
                 type="password"
-                placeholder="비밀번호를 입력하세요 (힌트: hyean1004)"
+                placeholder="비밀번호를 입력하세요"
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleLogin()}
