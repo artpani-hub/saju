@@ -36,10 +36,10 @@ const products = {
     desc: "평생의 재물 성향, 재운이 도래하는 시기 및 커리어/투자 제언",
   },
   tarot: {
-    title: "그 사람의 속마음 (타로)",
-    category: "퀵 타로",
+    title: "1:1 맞춤 타로 상담사",
+    category: "타로 상담",
     price: 10000,
-    desc: "타로 카드로 읽어내는 상대방의 심리와 향후 조언",
+    desc: "선택하신 가장 고민인 분야를 중점으로 타로 카드가 제시하는 미래와 조언",
   },
   gunghap: {
     title: "연인 궁합",
@@ -61,6 +61,27 @@ const products = {
     originalPrice: 5000,
     desc: "개인 인적사항과 출생 정보를 정밀 분석하여 오늘의 운세 핵심 요약을 문자로 즉시 발송해 드립니다.",
   },
+};
+
+const getTarotGuideText = (category) => {
+  switch (category) {
+    case "love":
+      return "상대방의 얼굴이나 이름을 마음속으로 깊이 떠올리며, 아래 뒷면이 보이는 카드들 중 가장 끌리는 3장의 카드를 순서대로 하나씩 터치해 주세요.";
+    case "job":
+    case "career":
+      return "내가 앞으로 일하게 될 일터나 내 커리어의 도약을 마음속으로 깊이 떠올리며, 아래 뒷면이 보이는 카드들 중 가장 끌리는 3장의 카드를 순서대로 하나씩 터치해 주세요.";
+    case "business":
+    case "wealth":
+      return "내가 쟁취하게 될 풍요로운 재물과 성공한 내 모습을 마음속으로 깊이 떠올리며, 아래 뒷면이 보이는 카드들 중 가장 끌리는 3장의 카드를 순서대로 하나씩 터치해 주세요.";
+    case "move":
+      return "새로 이사하게 될 주거지나 새로운 생활 환경으로 도약하는 모습을 마음속으로 깊이 떠올리며, 아래 뒷면이 보이는 카드들 중 가장 끌리는 3장의 카드를 순서대로 하나씩 터치해 주세요.";
+    case "relation":
+      return "나와 얽혀있는 사람들과 갈등이 원만하게 풀리는 평온한 관계를 마음속으로 깊이 떠올리며, 아래 뒷면이 보이는 카드들 중 가장 끌리는 3장의 카드를 순서대로 하나씩 터치해 주세요.";
+    case "health":
+      return "내 몸과 마음의 기력이 활기차게 회복되는 건강한 에너지를 마음속으로 깊이 떠올리며, 아래 뒷면이 보이는 카드들 중 가장 끌리는 3장의 카드를 순서대로 하나씩 터치해 주세요.";
+    default:
+      return "내가 간절히 바라는 목표나 고민의 실타래가 술술 풀리는 미래를 마음속으로 깊이 떠올리며, 아래 뒷면이 보이는 카드들 중 가장 끌리는 3장의 카드를 순서대로 하나씩 터치해 주세요.";
+  }
 };
 
 // ========================================================
@@ -369,6 +390,13 @@ function InputFormContent() {
             ? prev.worryCategory
             : "animal_plant"
         }));
+      } else if (prod === "tarot") {
+        setFormData(prev => ({
+          ...prev,
+          worryCategory: ["love", "job", "career", "business", "wealth", "move", "relation", "health", "exam", "general"].includes(prev.worryCategory)
+            ? prev.worryCategory
+            : "love"
+        }));
       } else {
         setFormData(prev => ({
           ...prev,
@@ -445,6 +473,13 @@ function InputFormContent() {
         worryCategory: ["animal_plant", "people_family", "death_blood", "nature_weather", "wealth_jewel", "general"].includes(prev.worryCategory)
           ? prev.worryCategory
           : "animal_plant"
+      }));
+    } else if (key === "tarot") {
+      setFormData(prev => ({
+        ...prev,
+        worryCategory: ["love", "job", "career", "business", "wealth", "move", "relation", "health", "exam", "general"].includes(prev.worryCategory)
+          ? prev.worryCategory
+          : "love"
       }));
     } else {
       setFormData(prev => ({
@@ -1183,10 +1218,10 @@ function InputFormContent() {
                   <div className="bg-background-secondary/30 border-2 border-brass/50 rounded-lg p-6 space-y-4">
                     <h3 className="font-myeongjo text-base font-bold text-[#A3845B] flex items-center gap-2 border-b border-border-custom/50 pb-2">
                       <Sparkles className="w-4 h-4 text-brass" />
-                      🔮 [타로 카드 선택] 상대방의 속마음 읽기
+                      🔮 [타로 카드 선택] 1:1 맞춤 타로 상담
                     </h3>
                     <p className="text-xs text-foreground-muted leading-relaxed font-light">
-                      상대방의 얼굴이나 이름을 마음속으로 깊이 떠올리며, 아래 뒷면이 보이는 카드들 중 직관적으로 가장 끌리는 <strong>3장의 카드</strong>를 순서대로 하나씩 터치해 주세요.
+                      {getTarotGuideText(formData.worryCategory)}
                     </p>
 
                     <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 pt-2">
@@ -1304,6 +1339,19 @@ function InputFormContent() {
                             { key: "nature_weather", label: "자연 / 날씨" },
                             { key: "wealth_jewel", label: "재물 / 보석" },
                             { key: "general", label: "일반 / 기타" },
+                          ]
+                        : productKey === "tarot"
+                        ? [
+                            { key: "love", label: "연애 / 속마음" },
+                            { key: "job", label: "취업 / 진로" },
+                            { key: "career", label: "이직 / 퇴사" },
+                            { key: "business", label: "사업 / 창업" },
+                            { key: "wealth", label: "금전 / 재물" },
+                            { key: "move", label: "이동수 / 이사" },
+                            { key: "relation", label: "인간관계" },
+                            { key: "health", label: "건강운" },
+                            { key: "exam", label: "학업 / 시험" },
+                            { key: "general", label: "각종 고민" },
                           ]
                         : [
                             { key: "love", label: "연애 / 속마음" },
