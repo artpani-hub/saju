@@ -66,21 +66,24 @@ const products = {
 const getTarotGuideText = (category) => {
   switch (category) {
     case "love":
-      return "상대방의 얼굴이나 이름을 마음속으로 깊이 떠올리며, 아래 뒷면이 보이는 카드들 중 가장 끌리는 3장의 카드를 순서대로 하나씩 터치해 주세요.";
+      return "💡 [연애 / 속마음] 고민을 깊이 생각하면서, 상대방의 얼굴이나 이름을 마음속으로 떠올려 주세요. 그 다음 아래의 카드 중 가장 끌리는 3장을 순서대로 터치해 주세요.";
     case "job":
     case "career":
-      return "내가 앞으로 일하게 될 일터나 내 커리어의 도약을 마음속으로 깊이 떠올리며, 아래 뒷면이 보이는 카드들 중 가장 끌리는 3장의 카드를 순서대로 하나씩 터치해 주세요.";
+      return "💡 [취업 / 진로 / 이직] 고민을 깊이 생각하면서, 내가 일하게 될 미래의 일터와 커리어 도약을 마음속으로 그려주세요. 그 다음 아래의 카드 중 가장 끌리는 3장을 순서대로 터치해 주세요.";
     case "business":
+      return "💡 [사업 / 창업] 고민을 깊이 생각하면서, 내 비즈니스의 성공과 번창하는 모습을 마음속으로 그려주세요. 그 다음 아래의 카드 중 가장 끌리는 3장을 순서대로 터치해 주세요.";
     case "wealth":
-      return "내가 쟁취하게 될 풍요로운 재물과 성공한 내 모습을 마음속으로 깊이 떠올리며, 아래 뒷면이 보이는 카드들 중 가장 끌리는 3장의 카드를 순서대로 하나씩 터치해 주세요.";
+      return "💡 [금전 / 재물] 고민을 깊이 생각하면서, 내가 쥐게 될 금전적 결실과 풍요로운 모습을 마음속으로 그려주세요. 그 다음 아래의 카드 중 가장 끌리는 3장을 순서대로 터치해 주세요.";
     case "move":
-      return "새로 이사하게 될 주거지나 새로운 생활 환경으로 도약하는 모습을 마음속으로 깊이 떠올리며, 아래 뒷면이 보이는 카드들 중 가장 끌리는 3장의 카드를 순서대로 하나씩 터치해 주세요.";
+      return "💡 [이동수 / 이사] 고민을 깊이 생각하면서, 새로 이전하게 될 터전이나 주거지 환경을 마음속으로 그려주세요. 그 다음 아래의 카드 중 가장 끌리는 3장을 순서대로 터치해 주세요.";
     case "relation":
-      return "나와 얽혀있는 사람들과 갈등이 원만하게 풀리는 평온한 관계를 마음속으로 깊이 떠올리며, 아래 뒷면이 보이는 카드들 중 가장 끌리는 3장의 카드를 순서대로 하나씩 터치해 주세요.";
+      return "💡 [인간관계] 갈등 고민을 깊이 생각하면서, 얽힌 오해가 풀리고 평온해진 관계의 모습을 마음속으로 그려주세요. 그 다음 아래의 카드 중 가장 끌리는 3장을 순서대로 터치해 주세요.";
     case "health":
-      return "내 몸과 마음의 기력이 활기차게 회복되는 건강한 에너지를 마음속으로 깊이 떠올리며, 아래 뒷면이 보이는 카드들 중 가장 끌리는 3장의 카드를 순서대로 하나씩 터치해 주세요.";
+      return "💡 [건강운] 고민을 깊이 생각하면서, 내 몸과 마음의 기력이 활기차게 회복되는 건강한 에너지를 떠올려 주세요. 그 다음 아래의 카드 중 가장 끌리는 3장을 순서대로 터치해 주세요.";
+    case "exam":
+      return "💡 [학업 / 시험] 고민을 깊이 생각하면서, 간절히 바라는 합격 소식이나 목표 달성의 순간을 마음속으로 그려주세요. 그 다음 아래의 카드 중 가장 끌리는 3장을 순서대로 터치해 주세요.";
     default:
-      return "내가 간절히 바라는 목표나 고민의 실타래가 술술 풀리는 미래를 마음속으로 깊이 떠올리며, 아래 뒷면이 보이는 카드들 중 가장 끌리는 3장의 카드를 순서대로 하나씩 터치해 주세요.";
+      return "💡 먼저 위의 [가장 고민인 분야]를 선택하신 후, 그 고민의 실타래가 술술 풀리는 미래를 마음속으로 깊이 생각하며 아래의 카드 중 가장 끌리는 3장을 순서대로 터치해 주세요.";
   }
 };
 
@@ -1220,9 +1223,44 @@ function InputFormContent() {
                       <Sparkles className="w-4 h-4 text-brass" />
                       🔮 [타로 카드 선택] 1:1 맞춤 타로 상담
                     </h3>
-                    <p className="text-xs text-foreground-muted leading-relaxed font-light">
-                      {getTarotGuideText(formData.worryCategory)}
-                    </p>
+                    
+                    <div className="space-y-2">
+                      <span className="block text-xs font-semibold text-[#A3845B] mb-2">1단계. 먼저 가장 고민인 분야를 선택해 주세요</span>
+                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                        {[
+                          { key: "love", label: "연애 / 속마음" },
+                          { key: "job", label: "취업 / 진로" },
+                          { key: "career", label: "이직 / 퇴사" },
+                          { key: "business", label: "사업 / 창업" },
+                          { key: "wealth", label: "금전 / 재물" },
+                          { key: "move", label: "이동수 / 이사" },
+                          { key: "relation", label: "인간관계" },
+                          { key: "health", label: "건강운" },
+                          { key: "exam", label: "학업 / 시험" },
+                          { key: "general", label: "각종 고민" },
+                        ].map((cat) => (
+                          <button
+                            key={cat.key}
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, worryCategory: cat.key }))}
+                            className={`py-2 text-xs font-medium rounded border transition-colors ${
+                              formData.worryCategory === cat.key
+                                ? "bg-brass text-background border-brass"
+                                : "bg-background text-foreground-muted border-border-custom hover:border-brass/50"
+                            }`}
+                          >
+                            {cat.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="border-t border-border-custom/50 pt-4 space-y-2">
+                      <span className="block text-xs font-semibold text-[#A3845B]">2단계. 선택한 고민을 생각하며 카드를 3장 골라주세요</span>
+                      <p className="text-xs text-foreground-muted leading-relaxed font-light bg-brass/5 p-3 rounded border border-brass/10">
+                        {getTarotGuideText(formData.worryCategory)}
+                      </p>
+                    </div>
 
                     <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 pt-2">
                       {tarotDeck.map((card) => {
@@ -1318,64 +1356,53 @@ function InputFormContent() {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      {productKey === "dream" ? "꿈의 핵심 주제" : "가장 고민인 분야"}
-                    </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      {(productKey === "wealth"
-                        ? [
-                            { key: "business", label: "사업 / 운영" },
-                            { key: "startup", label: "창업 / 부업" },
-                            { key: "trade", label: "장사 / 유통" },
-                            { key: "facility", label: "설비투자 / 확장" },
-                            { key: "general", label: "종합 / 기타" },
-                          ]
-                        : productKey === "dream"
-                        ? [
-                            { key: "animal_plant", label: "학동물 / 식물" },
-                            { key: "people_family", label: "인물 / 가족" },
-                            { key: "death_blood", label: "죽음 / 피" },
-                            { key: "nature_weather", label: "자연 / 날씨" },
-                            { key: "wealth_jewel", label: "재물 / 보석" },
-                            { key: "general", label: "일반 / 기타" },
-                          ]
-                        : productKey === "tarot"
-                        ? [
-                            { key: "love", label: "연애 / 속마음" },
-                            { key: "job", label: "취업 / 진로" },
-                            { key: "career", label: "이직 / 퇴사" },
-                            { key: "business", label: "사업 / 창업" },
-                            { key: "wealth", label: "금전 / 재물" },
-                            { key: "move", label: "이동수 / 이사" },
-                            { key: "relation", label: "인간관계" },
-                            { key: "health", label: "건강운" },
-                            { key: "exam", label: "학업 / 시험" },
-                            { key: "general", label: "각종 고민" },
-                          ]
-                        : [
-                            { key: "love", label: "연애 / 속마음" },
-                            { key: "career", label: "직장 / 이직" },
-                            { key: "wealth", label: "금전 / 투자" },
-                            { key: "exam", label: "학업 / 시험" },
-                            { key: "general", label: "종합 / 기타" },
-                          ]
-                      ).map((cat) => (
-                        <button
-                          key={cat.key}
-                          type="button"
-                          onClick={() => setFormData(prev => ({ ...prev, worryCategory: cat.key }))}
-                          className={`py-2 text-xs font-medium rounded border transition-colors ${
-                            formData.worryCategory === cat.key
-                              ? "bg-brass text-background border-brass"
-                              : "bg-background text-foreground-muted border-border-custom hover:border-brass/50"
-                          }`}
-                        >
-                          {cat.label}
-                        </button>
-                      ))}
+                  {productKey !== "tarot" && (
+                    <div>
+                      <label className="block text-xs font-semibold text-foreground mb-1.5">
+                        {productKey === "dream" ? "꿈의 핵심 주제" : "가장 고민인 분야"}
+                      </label>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        {(productKey === "wealth"
+                          ? [
+                              { key: "business", label: "사업 / 운영" },
+                              { key: "startup", label: "창업 / 부업" },
+                              { key: "trade", label: "장사 / 유통" },
+                              { key: "facility", label: "설비투자 / 확장" },
+                              { key: "general", label: "종합 / 기타" },
+                            ]
+                          : productKey === "dream"
+                          ? [
+                              { key: "animal_plant", label: "학동물 / 식물" },
+                              { key: "people_family", label: "인물 / 가족" },
+                              { key: "death_blood", label: "죽음 / 피" },
+                              { key: "nature_weather", label: "자연 / 날씨" },
+                              { key: "wealth_jewel", label: "재물 / 보석" },
+                              { key: "general", label: "일반 / 기타" },
+                            ]
+                          : [
+                              { key: "love", label: "연애 / 속마음" },
+                              { key: "career", label: "직장 / 이직" },
+                              { key: "wealth", label: "금전 / 투자" },
+                              { key: "exam", label: "학업 / 시험" },
+                              { key: "general", label: "종합 / 기타" },
+                            ]
+                        ).map((cat) => (
+                          <button
+                            key={cat.key}
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, worryCategory: cat.key }))}
+                            className={`py-2 text-xs font-medium rounded border transition-colors ${
+                              formData.worryCategory === cat.key
+                                ? "bg-brass text-background border-brass"
+                                : "bg-background text-foreground-muted border-border-custom hover:border-brass/50"
+                            }`}
+                          >
+                            {cat.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   <div>
                     <div className="flex justify-between items-center mb-1.5">
