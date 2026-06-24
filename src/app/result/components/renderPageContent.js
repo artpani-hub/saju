@@ -32,12 +32,16 @@ export const renderPageContent = (page, ctx) => {
     getElementColor,
     getElementBarColor,
     handlePortonePayment,
-    isFree
+    handleUpgradePayment,
+    currentGrade,
+    isFree,
+    isPaid,
+    reportGrade
   } = ctx;
 
   const blurClass = isFree ? "blur-[5px] select-none pointer-events-none" : "";
 
-  const { getSipsinList, getLifeStyleStrategyData } = ctx;
+  const { getSipsinList, getLifeStyleStrategyData, getDestinyHarmonyData, getInnerDispositionData } = ctx;
   const sipsinData = getSipsinList(sajuInfo);
   const { counts: sipsinCounts, sipsins: sipsinItems } = sipsinData;
 
@@ -2550,6 +2554,22 @@ export const renderPageContent = (page, ctx) => {
               3. **현금 금고 보관:** 거실 서쪽 서랍 깊숙한 곳에 노란 비단천에 통장과 도장을 모아 보관하면 재물이 흩어지는 흉을 원천 방어합니다.
             </p>
           </div>
+          {reportGrade === "premium" && !isPaid && (
+            <div className="my-6 border border-[#E2DDD5] bg-[#FAF8F5] rounded-lg p-6 text-center space-y-4 print:hidden">
+              <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light text-justify max-w-lg mx-auto">
+                "현재 고급 리포트 등급을 이용 중이십니다. 본 보감의 37페이지 전체 내용 중 아래의 핵심 프리미엄 분석 영역들이 현재 블러(흐림) 처리되어 잠겨 있습니다. 🔒 2026년 병오년 전체 세운 흐름 🔒 분기별 상세 흐름 & 월별 대응 전술 🔒 2026년 분야별 상세 등급 & 행동 강령 🔒 평생 대운 흐름 및 10년 대운 다이어그램 🔒 대운 1기~4기 상세 로드맵 🔒 평생 조심해야 할 흉한 시기 & 방어 비책 업그레이드 완료 즉시 블러 처리가 모두 해제되며 완전한 리포트를 바로 열람하실 수 있습니다."
+              </p>
+              
+              <button
+                type="button"
+                onClick={handleUpgradePayment}
+                className="w-full max-w-xs py-2 bg-[#FAF8F5] hover:bg-gray-100 text-[#8B221E] rounded border border-[#E2DDD5] font-sans font-bold text-xs shadow-sm transition-all cursor-pointer inline-flex items-center justify-center gap-1.5"
+              >
+                <span>👑 프리미엄 리포트로 최종 업그레이드 (+15,000원) ➔</span>
+              </button>
+            </div>
+          )}
+
           <div className="bg-gradient-to-r from-[#2D3A30] to-[#1E2620] border-2 border-[#A3845B] rounded-lg p-6 text-center text-[#FAF7F0] space-y-3 shadow-lg">
             <h4 className="font-myeongjo text-base font-bold text-[#A3845B] tracking-widest">慧眼堂 마지막 축원 (祝願)</h4>
             <p className="text-xs leading-relaxed font-light font-traditional italic max-w-md mx-auto">

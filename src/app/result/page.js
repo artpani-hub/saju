@@ -466,6 +466,9 @@ const renderPageContent = (page, ctx) => {
     getElementColor,
     getElementBarColor,
     handlePortonePayment,
+    handleUpgradePayment,
+    reportGrade,
+    isPaid,
     isFree
   } = ctx;
 
@@ -3151,6 +3154,21 @@ const renderPageContent = (page, ctx) => {
               "태어난 8글자의 운명은 단단한 돌에 새겨진 비석이 아니며, 스스로 물을 주고 가꾸는 대지의 기름진 흙과 같습니다. 혜안당 보감이 제시하는 개운 실천법을 일상에 새겨, 다가올 풍파를 비껴가고 인생의 찬란한 황금기를 활짝 개화하시기를 온 마음으로 축원합니다."
             </p>
           </div>
+          {reportGrade === "premium" && !isPaid && (
+            <div className="my-6 border border-[#E2DDD5] bg-[#FAF8F5] rounded-lg p-6 text-center space-y-4 print:hidden">
+              <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light text-justify max-w-lg mx-auto">
+                "현재 고급 리포트 등급을 이용 중이십니다. 본 보감의 37페이지 전체 내용 중 아래의 핵심 프리미엄 분석 영역들이 현재 블러(흐림) 처리되어 잠겨 있습니다. 🔒 2026년 병오년 전체 세운 흐름 🔒 분기별 상세 흐름 & 월별 대응 전술 🔒 2026년 분야별 상세 등급 & 행동 강령 🔒 평생 대운 흐름 및 10년 대운 다이어그램 🔒 대운 1기~4기 상세 로드맵 🔒 평생 조심해야 할 흉한 시기 & 방어 비책 업그레이드 완료 즉시 블러 처리가 모두 해제되며 완전한 리포트를 바로 열람하실 수 있습니다."
+              </p>
+              
+              <button
+                type="button"
+                onClick={handleUpgradePayment}
+                className="w-full max-w-xs py-2 bg-[#FAF8F5] hover:bg-gray-100 text-[#8B221E] rounded border border-[#E2DDD5] font-sans font-bold text-xs shadow-sm transition-all cursor-pointer inline-flex items-center justify-center gap-1.5"
+              >
+                <span>👑 프리미엄 리포트로 최종 업그레이드 (+15,000원) ➔</span>
+              </button>
+            </div>
+          )}
         </div>
       );
 
@@ -3214,7 +3232,15 @@ const renderDaeunOrbitSvg = (baseEl) => {
 function ResultContent() {
   const searchParams = useSearchParams();
   const [copied, setCopied] = useState(false);
-  const [isPaid, setIsPaid] = useState(false);
+  const [isPaid, setIsPaid] = useState(() => {
+    if (typeof window !== "undefined") {
+      const debugUnlock = window.location.search.includes("unlock=true") || window.location.search.includes("debug=true");
+      if (debugUnlock) return true;
+      const reportGrade = new URLSearchParams(window.location.search).get("reportGrade") || "premium";
+      if (reportGrade === "premium") return false;
+    }
+    return false;
+  });
   const [cumulativeCount, setCumulativeCount] = useState(14820);
 
   useEffect(() => {
@@ -3244,7 +3270,18 @@ function ResultContent() {
     return isNaN(parsed) ? fallback : parsed;
   };
 
-  const name = searchParams.get("name") || "이지혜";
+  const getDecodedParam = (key, fallback) => {
+    const val = searchParams.get(key);
+    if (!val) return fallback;
+    try {
+      // 이미 디코딩되어 있는 값은 한 번 더 디코딩 시 예외가 발생하므로 디코딩 복제 안정화
+      return val.includes("%") ? decodeURIComponent(val) : val;
+    } catch (e) {
+      return val;
+    }
+  };
+
+  const name = getDecodedParam("name", "이지혜");
   const genderVal = searchParams.get("gender");
   const gender = (genderVal === "male" || genderVal === "남" || genderVal === "남성") ? "남성" : "여성";
   const typeParam = searchParams.get("type") || "saju"; // saju, newyear, tojeong, wealth, tarot, gunghap
@@ -3255,14 +3292,14 @@ function ResultContent() {
   const day = parseQueryInt(searchParams.get("day"), 25);
   const hour = searchParams.get("hour") || "10:00";
   const worryCategory = searchParams.get("worryCategory") || "general";
-  const worryText = searchParams.get("worryText") || "";
+  const worryText = getDecodedParam("worryText", "");
   const emailParam = searchParams.get("email") || "";
   const phoneParam = searchParams.get("phone") || "";
   const reportGrade = searchParams.get("reportGrade") || "premium"; // premium(고급), deep(심화)
   const currentGrade = reportGrade;
 
   // Partner parameters
-  const partnerName = searchParams.get("partnerName") || "강민우";
+  const partnerName = getDecodedParam("partnerName", "강민우");
   const partnerGender = searchParams.get("partnerGender") === "female" ? "여성" : "남성";
   const partnerCalendar = searchParams.get("partnerCalendar") || "solar";
   const partnerYear = parseQueryInt(searchParams.get("partnerYear"), 1993);
@@ -3275,7 +3312,7 @@ function ResultContent() {
   const partnerSajuInfo = getGanjiTable(partnerYear, partnerMonth, partnerDay, partnerHour);
   const prescriptions = getDeficientPrescription(sajuInfo.elements);
   const metrics = getCharacterMetrics(sajuInfo);
-  const isFree = reportGrade === "free" && !isPaid;
+  const isFree = (reportGrade === "free" && !isPaid) || (reportGrade === "premium" && !isPaid);
 
   // Determine user's base element for 2026 compatibility (일간 오행 기준)
   const baseEl = sajuInfo.day.stemEl; // Representing birth day element (일간)
@@ -3293,9 +3330,43 @@ function ResultContent() {
         setIsPaid(true);
         return;
       }
-      if (reportGrade !== "free") {
+      const existingStr = localStorage.getItem("hyeandang_orders");
+      let paidOrder = null;
+      if (existingStr) {
+        try {
+          const orders = JSON.parse(existingStr);
+          paidOrder = Array.isArray(orders) ? orders.find(o => 
+            o &&
+            o.name === name && 
+            o.status === "paid" &&
+            o.year === String(year) &&
+            o.month === String(month) &&
+            o.day === String(day)
+          ) : null;
+        } catch(e) {
+          console.error(e);
+        }
+      }
+
+      if (paidOrder && reportGrade !== "premium") {
         setIsPaid(true);
+        setHasCheckedPayment(true);
         return;
+      }
+
+      // 만약 URL 파라미터에 성공(imp_success) 플래그가 들어있는 경우도 결제 완료 처리
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("imp_success") === "true" && reportGrade !== "premium") {
+        setIsPaid(true);
+        setHasCheckedPayment(true);
+        return;
+      }
+
+      // 그 외의 경우 (특히 free가 아닌 상태에서 hyeandang_orders도 없는 경우) 결제 유도
+      if (reportGrade === "premium") {
+        setIsPaid(false);
+      } else if (reportGrade !== "free") {
+        setIsPaid(false);
       }
       try {
         // 무료(free) 리포트일 때는 기존에 결제 통과하여 'paid' 상태로 저장된 다른 주문(예: 같은 이름, 생일)이 
@@ -3439,7 +3510,7 @@ function ResultContent() {
                       gunghapType: gunghapType
                     });
 
-                    const origin = "https://saju.artpani.com";
+                    const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
                     const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=${grade}`;
                     
                     const mailSubject = `[혜안당 명리연구소] ${name} 님 주문하신 [정통 사주 업그레이드 보고서] 분석결과서가 도착했습니다.`;
@@ -3493,7 +3564,7 @@ function ResultContent() {
                 if (targetPhone && targetPhone.replace(/[^0-9]/g, "").length >= 9) {
                   try {
                     const smsQueryParams = new URLSearchParams({
-                      name: name,
+                      name: encodeURIComponent(name),
                       gender: genderVal || "female",
                       type: typeParam,
                       calendar: calendar,
@@ -3502,8 +3573,8 @@ function ResultContent() {
                       day: String(day),
                       hour: hour,
                       worryCategory: worryCategory,
-                      worryText: worryText || "",
-                      partnerName: partnerName || "",
+                      worryText: encodeURIComponent(worryText || ""),
+                      partnerName: encodeURIComponent(partnerName || ""),
                       partnerGender: partnerGender === "여성" ? "female" : "male",
                       partnerCalendar: partnerCalendar,
                       partnerYear: String(partnerYear),
@@ -3513,7 +3584,7 @@ function ResultContent() {
                       gunghapType: gunghapType
                     });
 
-                    const origin = "https://saju.artpani.com";
+                    const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
                     const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=${grade}`;
                     const smsContent = `[혜안당 명리연구소] ${name} 님, 주문하신 정통 사주 업그레이드 분석이 완료되었습니다.\n\n적어주신 이메일(${targetEmail || "지정 이메일"})로 상세 보감 PDF가 전송되었으며, 아래 온라인 보감 링크로도 즉시 열람이 가능합니다.\n\n▶ 결과 보기: ${mobileResultUrl}\n\n감사합니다.`;
 
@@ -3612,7 +3683,7 @@ function ResultContent() {
                 if (targetEmail && targetEmail.includes("@") && targetEmail !== "today_sms@hyeandang.com") {
                   try {
                     const queryParams = new URLSearchParams({
-                      name: name,
+                      name: encodeURIComponent(name),
                       gender: genderVal || "female",
                       type: typeParam,
                       calendar: calendar,
@@ -3621,8 +3692,8 @@ function ResultContent() {
                       day: String(day),
                       hour: hour,
                       worryCategory: worryCategory,
-                      worryText: worryText || "",
-                      partnerName: partnerName || "",
+                      worryText: encodeURIComponent(worryText || ""),
+                      partnerName: encodeURIComponent(partnerName || ""),
                       partnerGender: partnerGender === "여성" ? "female" : "male",
                       partnerCalendar: partnerCalendar,
                       partnerYear: String(partnerYear),
@@ -3686,7 +3757,7 @@ function ResultContent() {
                 if (targetPhone && targetPhone.replace(/[^0-9]/g, "").length >= 9) {
                   try {
                     const smsQueryParams = new URLSearchParams({
-                      name: name,
+                      name: encodeURIComponent(name),
                       gender: genderVal || "female",
                       type: typeParam,
                       calendar: calendar,
@@ -3695,8 +3766,8 @@ function ResultContent() {
                       day: String(day),
                       hour: hour,
                       worryCategory: worryCategory,
-                      worryText: worryText || "",
-                      partnerName: partnerName || "",
+                      worryText: encodeURIComponent(worryText || ""),
+                      partnerName: encodeURIComponent(partnerName || ""),
                       partnerGender: partnerGender === "여성" ? "female" : "male",
                       partnerCalendar: partnerCalendar,
                       partnerYear: String(partnerYear),
@@ -3706,7 +3777,7 @@ function ResultContent() {
                       gunghapType: gunghapType
                     });
 
-                    const origin = "https://saju.artpani.com";
+                    const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
                     const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=premium`;
                     const smsContent = `[혜안당 명리연구소] ${name} 님, 주문하신 정통 사주 분석이 완료되었습니다.\n\n적어주신 이메일(${targetEmail || "지정 이메일"})로 상세 보감 PDF가 전송되었으며, 아래 온라인 보감 링크로도 즉시 열람이 가능합니다.\n\n▶ 결과 보기: ${mobileResultUrl}\n\n감사합니다.`;
 
@@ -4053,7 +4124,7 @@ function ResultContent() {
     const metrics = getCharacterMetrics(sajuInfo);
     const iljuSecret = getIljuSecret(sajuInfo.day.stem, sajuInfo.day.branch);
 
-    const isFree = reportGrade === "free" && !isPaid;
+    const isFree = (reportGrade === "free" || reportGrade === "premium") && !isPaid;
     
     // 카운트다운 타이머 상태 관리
     const [timeLeft, setTimeLeft] = useState("02:26:49");
@@ -4075,12 +4146,7 @@ function ResultContent() {
       return () => clearInterval(timer);
     }, []);
 
-    // 고급 리포트(premium)일 때는 심화 전용 페이지(신년운세, 대운/용신, 고민심화) 제외
-    const activePages = reportGrade === "premium"
-      ? pages
-          .filter(p => !["seoun_2026", "seoun_quarterly", "seoun_aspects", "daeun_orbit", "daeun_roadmap_1", "daeun_roadmap_2", "warning_period", "worry_solution"].includes(p.type))
-          .map((p, idx) => ({ ...p, page: idx + 1 }))
-      : pages;
+    const activePages = pages;
 
     return (
       <div className="space-y-12 print:space-y-0">
@@ -4103,6 +4169,8 @@ function ResultContent() {
               {/* Dynamic Content */}
               <div className="flex-1">
                 {renderPageContent(page, {
+                  handleUpgradePayment,
+                  currentGrade,
                   name,
                   gender,
                   year,
@@ -4129,7 +4197,13 @@ function ResultContent() {
                   getElementColor,
                   getElementBarColor,
                   handlePortonePayment,
-                  isFree
+                  isPaid,
+                  reportGrade,
+                  getSipsinList,
+                  getLifeStyleStrategyData,
+                  getDestinyHarmonyData,
+                  getInnerDispositionData,
+                  isFree: (reportGrade === "free" && !isPaid) || (reportGrade === "premium" && ["seoun_2026", "seoun_quarterly", "seoun_aspects", "daeun_orbit", "daeun_roadmap_1", "daeun_roadmap_2", "warning_period", "worry_solution", "fengshui_bless"].includes(page.type))
                 })}
               </div>
             </div>
@@ -4142,7 +4216,7 @@ function ResultContent() {
           </div>
         ))}
 
-        {isFree && (
+        {reportGrade === "free" && !isPaid && (
           <div className="relative mt-8">
             {/* 정교한 유료 잠금 오버레이 배너 (이현의 마지막 제안 테마) */}
             <div className="bg-[#1C1613] text-[#FAF7F0] border-4 border-double border-[#A3845B] rounded-xl p-8 shadow-2xl text-center font-traditional relative overflow-hidden print:hidden">
@@ -7626,8 +7700,8 @@ function ResultContent() {
           </p>
         </div>
 
-        {/* 하단 고정 결제 CTA 플로팅 바 (isFree 일 때 노출) */}
-        {isFree && (
+        {/* 하단 고정 결제 CTA 플로팅 바 (isFree 일 때 노출 단, 고급 미결제는 제외) */}
+        {isFree && reportGrade === "free" && (
           <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
             <button
               type="button"
@@ -7662,8 +7736,8 @@ function ResultContent() {
           </div>
         )}
 
-        {/* 고급 리포트일 때 프리미엄 업그레이드 하단 고정 플로팅 바 */}
-        {!isFree && (type === "saju" || (type === "newyear" && typeParam !== "tojeong")) && currentGrade === "premium" && (
+        {/* 고급 리포트일 때 프리미엄 업그레이드 하단 고정 플로팅 바 (미결제 상태에서도 노출) */}
+        {(reportGrade === "premium" && !isPaid) && (type === "saju" || (type === "newyear" && typeParam !== "tojeong")) && (
           <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
             <button
               type="button"
