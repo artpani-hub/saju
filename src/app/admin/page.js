@@ -182,8 +182,7 @@ const buildGeneralSmsTextFromOrder = (order) => {
     worryText: order.worryText || "",
     gunghapType: order.productName.includes("속궁합") ? "deep_compatibility" :
                  order.productName.includes("재회") ? "reunion" : "compatibility",
-    reportGrade: order.reportGrade === "premium" && order.status === "paid" ? "deep" :
-                 (order.reportGrade || (order.productName.includes("문자메시지") ? "sms" : order.productName.includes("심화") ? "deep" : order.productName.includes("무료") ? "free" : "premium"))
+    reportGrade: order.reportGrade || (order.productName.includes("문자메시지") ? "sms" : order.productName.includes("심화") ? "deep" : order.productName.includes("무료") ? "free" : "premium")
   });
 
   const origin = "https://saju.artpani.com";
@@ -1013,8 +1012,7 @@ export default function AdminPage() {
                                     order.productName.includes("속궁합") ? "deep_compatibility" :
                                     order.productName.includes("재회") ? "reunion" : "compatibility"
                                   }&reportGrade=${
-                                    order.reportGrade === "premium" && order.status === "paid" ? "deep" :
-                                    (order.reportGrade || (order.productName.includes("문자메시지") ? "sms" : order.productName.includes("심화") ? "deep" : order.productName.includes("무료") ? "free" : "premium"))
+                                    order.reportGrade || (order.productName.includes("문자메시지") ? "sms" : order.productName.includes("심화") ? "deep" : order.productName.includes("무료") ? "free" : "premium")
                                   }`}
                                   className="inline-flex items-center gap-1 border border-jade/50 text-jade px-2 py-1 rounded hover:bg-jade hover:text-background transition-all text-[10px] font-medium cursor-pointer"
                                 >
