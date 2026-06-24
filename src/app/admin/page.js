@@ -162,7 +162,7 @@ const buildTodaySmsText = (name, gender, year, month, day, hour) => {
 
   const origin = "https://saju.artpani.com";
 
-  return `[혜안당 명리연구소] ${name} 님 오늘의 수호 보감\n오늘의 일진: ${formattedToday} (${dayStem}${dayBranch}일 - ${dayStemEl}의 기운)\n\n● 총운: ${analysis.summary}\n● 금전운: ${analysis.wealth.score}% (${analysis.wealth.desc})\n● 연애운: ${analysis.love.score}% (${analysis.love.desc})\n● 대인관계: ${analysis.social.score}% (${analysis.social.desc})\n\n행운의 개운 비법:\n- 수호 색상: ${myPresc.color}\n- 수호 숫자: ${myPresc.number}\n- 수호 방향: ${myPresc.direction}\n- 조언: ${analysis.advice}\n\n상세한 분석 및 만세력 결과는 아래 링크에서 확인하실 수 있습니다.\n▶ 결과 보기: ${origin}/result?name=${encodeURIComponent(name)}&gender=${gender === "female" ? "female" : "male"}&type=today&year=${year}&month=${month}&day=${day}&hour=${encodeURIComponent(hour)}&reportGrade=sms`;
+  return `[혜안당 명리연구소] ${name} 님 오늘의 수호 보감\n오늘의 일진: ${formattedToday} (${dayStem}${dayBranch}일 - ${dayStemEl}의 기운)\n\n● 총운: ${analysis.summary}\n● 금전운: ${analysis.wealth.score}% (${analysis.wealth.desc})\n● 연애운: ${analysis.love.score}% (${analysis.love.desc})\n● 대인관계: ${analysis.social.score}% (${analysis.social.desc})\n\n행운의 개운 비법:\n- 수호 색상: ${myPresc.color}\n- 수호 숫자: ${myPresc.number}\n- 수호 방향: ${myPresc.direction}\n- 조언: ${analysis.advice}\n\n상세한 분석 및 만세력 결과는 아래 링크에서 확인하실 수 있습니다.\n▶ 결과 보기: ${origin}/result?name=${name}&gender=${gender === "female" ? "female" : "male"}&type=today&year=${year}&month=${month}&day=${day}&hour=${hour}&reportGrade=sms`;
 };
 
 const buildGeneralSmsTextFromOrder = (order) => {
@@ -181,12 +181,13 @@ const buildGeneralSmsTextFromOrder = (order) => {
     hour: order.hour || "10:00",
     worryText: order.worryText || "",
     gunghapType: order.productName.includes("속궁합") ? "deep_compatibility" :
-                 order.productName.includes("재회") ? "reunion" : "compatibility"
+                 order.productName.includes("재회") ? "reunion" : "compatibility",
+    reportGrade: order.reportGrade || (order.productName.includes("문자메시지") ? "sms" : order.productName.includes("심화") ? "deep" : order.productName.includes("무료") ? "free" : "premium")
   });
 
   const origin = "https://saju.artpani.com";
 
-  return `[혜안당 명리연구소] ${order.name} 님, 주문하신 [${order.productName}] 분석이 무사히 완료되었습니다.\n\n적어주신 이메일(${order.email})로 상세 보고서 PDF 가이드를 재전송해 드렸습니다. 혹은 아래의 온라인 결과 보감 링크를 통해 즉시 확인해 보실 수 있습니다.\n\n▶ 모바일 결과 보기: ${origin}/result?${queryParams.toString()}&reportGrade=premium\n\n귀하의 앞날에 늘 지혜의 빛이 함께하기를 기원합니다. 감사합니다.`;
+  return `[혜안당 명리연구소] ${order.name} 님, 주문하신 [${order.productName}] 분석이 무사히 완료되었습니다.\n\n적어주신 이메일(${order.email})로 상세 보고서 PDF 가이드를 재전송해 드렸습니다. 혹은 아래의 온라인 결과 보감 링크를 통해 즉시 확인해 보실 수 있습니다.\n\n▶ 모바일 결과 보기: ${origin}/result?${queryParams.toString()}\n\n귀하의 앞날에 늘 지혜의 빛이 함께하기를 기원합니다. 감사합니다.`;
 };
 
 export default function AdminPage() {
@@ -412,7 +413,7 @@ export default function AdminPage() {
         });
 
         const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
-        const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=premium`;
+        const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=${targetOrder.reportGrade || (targetOrder.productName.includes("문자메시지") ? "sms" : targetOrder.productName.includes("심화") ? "deep" : targetOrder.productName.includes("무료") ? "free" : "premium")}`;
         
         const mailSubject = `[혜안당 명리연구소] ${targetOrder.name} 님 주문하신 [${targetOrder.productName}] 분석결과서가 재도착했습니다.`;
         const mailHtml = `
@@ -1010,6 +1011,8 @@ export default function AdminPage() {
                                   )}&gunghapType=${
                                     order.productName.includes("속궁합") ? "deep_compatibility" :
                                     order.productName.includes("재회") ? "reunion" : "compatibility"
+                                  }&reportGrade=${
+                                    order.reportGrade || (order.productName.includes("문자메시지") ? "sms" : order.productName.includes("심화") ? "deep" : order.productName.includes("무료") ? "free" : "premium")
                                   }`}
                                   className="inline-flex items-center gap-1 border border-jade/50 text-jade px-2 py-1 rounded hover:bg-jade hover:text-background transition-all text-[10px] font-medium cursor-pointer"
                                 >

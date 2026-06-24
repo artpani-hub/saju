@@ -3155,18 +3155,54 @@ const renderPageContent = (page, ctx) => {
             </p>
           </div>
           {reportGrade === "premium" && !isPaid && (
-            <div className="my-6 border border-[#E2DDD5] bg-[#FAF8F5] rounded-lg p-6 text-center space-y-4 print:hidden">
-              <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light text-justify max-w-lg mx-auto">
-                "현재 고급 리포트 등급을 이용 중이십니다. 본 보감의 37페이지 전체 내용 중 아래의 핵심 프리미엄 분석 영역들이 현재 블러(흐림) 처리되어 잠겨 있습니다. 🔒 2026년 병오년 전체 세운 흐름 🔒 분기별 상세 흐름 & 월별 대응 전술 🔒 2026년 분야별 상세 등급 & 행동 강령 🔒 평생 대운 흐름 및 10년 대운 다이어그램 🔒 대운 1기~4기 상세 로드맵 🔒 평생 조심해야 할 흉한 시기 & 방어 비책 업그레이드 완료 즉시 블러 처리가 모두 해제되며 완전한 리포트를 바로 열람하실 수 있습니다."
-              </p>
-              
-              <button
-                type="button"
-                onClick={handleUpgradePayment}
-                className="w-full max-w-xs py-2 bg-[#FAF8F5] hover:bg-gray-100 text-[#8B221E] rounded border border-[#E2DDD5] font-sans font-bold text-xs shadow-sm transition-all cursor-pointer inline-flex items-center justify-center gap-1.5"
-              >
-                <span>👑 프리미엄 리포트로 최종 업그레이드 (+15,000원) ➔</span>
-              </button>
+            <div className="my-6 border border-[#E2DDD5] bg-[#FAF8F5] rounded-xl p-6 text-center space-y-5 print:hidden shadow-sm">
+              <div className="space-y-1">
+                <span className="text-[10px] tracking-widest text-[#A3845B] font-bold block font-sans">— PREMIUM UPGRADE —</span>
+                <h4 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">
+                  현재 <span className="text-[#A3845B]">고급 리포트 등급</span>을 이용 중이십니다.
+                </h4>
+                <p className="text-[10px] text-gray-500 font-light max-w-md mx-auto">
+                  본 보감의 37페이지 전체 내용 중 아래의 핵심 프리미엄 분석 영역들이 현재 블러(흐림) 처리되어 있습니다. 업그레이드 완료 즉시 즉시 잠금이 해제됩니다.
+                </p>
+              </div>
+
+              {/* 락 표시 그리드 레이아웃 */}
+              <div className="grid grid-cols-2 gap-2 text-left text-[10px] max-w-md mx-auto">
+                <div className="bg-white border border-[#E2DDD5]/70 p-2.5 rounded flex items-center gap-2">
+                  <span className="text-xs text-[#A3845B]">🔒</span>
+                  <span className="text-gray-600 font-sans">2026년 병오년 전체 세운 흐름</span>
+                </div>
+                <div className="bg-white border border-[#E2DDD5]/70 p-2.5 rounded flex items-center gap-2">
+                  <span className="text-xs text-[#A3845B]">🔒</span>
+                  <span className="text-gray-600 font-sans">분기별 상세 흐름 & 월별 대응 전술</span>
+                </div>
+                <div className="bg-white border border-[#E2DDD5]/70 p-2.5 rounded flex items-center gap-2">
+                  <span className="text-xs text-[#A3845B]">🔒</span>
+                  <span className="text-gray-600 font-sans">2026년 분야별 상세 등급 & 행동 강령</span>
+                </div>
+                <div className="bg-white border border-[#E2DDD5]/70 p-2.5 rounded flex items-center gap-2">
+                  <span className="text-xs text-[#A3845B]">🔒</span>
+                  <span className="text-gray-600 font-sans">평생 대운 흐름 및 10년 대운 다이어그램</span>
+                </div>
+                <div className="bg-white border border-[#E2DDD5]/70 p-2.5 rounded flex items-center gap-2">
+                  <span className="text-xs text-[#A3845B]">🔒</span>
+                  <span className="text-gray-600 font-sans">대운 1기 ~ 4기 상세 로드맵</span>
+                </div>
+                <div className="bg-white border border-[#E2DDD5]/70 p-2.5 rounded flex items-center gap-2">
+                  <span className="text-xs text-[#A3845B]">🔒</span>
+                  <span className="text-gray-600 font-sans">평생 조심해야 할 흉한 시기 & 방어 비책</span>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={handleUpgradePayment}
+                  className="w-full max-w-sm py-3.5 bg-gradient-to-r from-[#8B221E] to-[#A33530] hover:from-[#721C18] hover:to-[#8E2D29] text-white rounded-xl font-sans font-bold text-xs shadow-md hover:shadow-lg transition-all cursor-pointer inline-flex items-center justify-center gap-2 transform active:scale-[0.98]"
+                >
+                  <span>👑 프리미엄 리포트 최종 업그레이드 (+15,000원) ➔</span>
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -3564,7 +3600,7 @@ function ResultContent() {
                 if (targetPhone && targetPhone.replace(/[^0-9]/g, "").length >= 9) {
                   try {
                     const smsQueryParams = new URLSearchParams({
-                      name: encodeURIComponent(name),
+                      name: name,
                       gender: genderVal || "female",
                       type: typeParam,
                       calendar: calendar,
@@ -3573,8 +3609,8 @@ function ResultContent() {
                       day: String(day),
                       hour: hour,
                       worryCategory: worryCategory,
-                      worryText: encodeURIComponent(worryText || ""),
-                      partnerName: encodeURIComponent(partnerName || ""),
+                      worryText: worryText || "",
+                      partnerName: partnerName || "",
                       partnerGender: partnerGender === "여성" ? "female" : "male",
                       partnerCalendar: partnerCalendar,
                       partnerYear: String(partnerYear),

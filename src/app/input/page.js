@@ -242,10 +242,10 @@ const buildTodaySmsText = (name, gender, year, month, day, hour) => {
 
   const origin = "https://saju.artpani.com";
 
-  return `[혜안당 명리연구소] ${name} 님 오늘의 수호 보감\n오늘의 일진: ${formattedToday} (${dayStem}${dayBranch}일 - ${dayStemEl}의 기운)\n\n● 총운: ${analysis.summary}\n● 금전운: ${analysis.wealth.score}% (${analysis.wealth.desc})\n● 연애운: ${analysis.love.score}% (${analysis.love.desc})\n● 대인관계: ${analysis.social.score}% (${analysis.social.desc})\n\n행운의 개운 비법:\n- 수호 색상: ${myPresc.color}\n- 수호 숫자: ${myPresc.number}\n- 수호 방향: ${myPresc.direction}\n- 조언: ${analysis.advice}\n\n상세한 분석 및 만세력 결과는 아래 링크에서 확인하실 수 있습니다.\n▶ 결과 보기: ${origin}/result?name=${encodeURIComponent(name)}&gender=${gender === "female" ? "female" : "male"}&type=today&year=${year}&month=${month}&day=${day}&hour=${encodeURIComponent(hour)}&reportGrade=sms`;
+  return `[혜안당 명리연구소] ${name} 님 오늘의 수호 보감\n오늘의 일진: ${formattedToday} (${dayStem}${dayBranch}일 - ${dayStemEl}의 기운)\n\n● 총운: ${analysis.summary}\n● 금전운: ${analysis.wealth.score}% (${analysis.wealth.desc})\n● 연애운: ${analysis.love.score}% (${analysis.love.desc})\n● 대인관계: ${analysis.social.score}% (${analysis.social.desc})\n\n행운의 개운 비법:\n- 수호 색상: ${myPresc.color}\n- 수호 숫자: ${myPresc.number}\n- 수호 방향: ${myPresc.direction}\n- 조언: ${analysis.advice}\n\n상세한 분석 및 만세력 결과는 아래 링크에서 확인하실 수 있습니다.\n▶ 결과 보기: ${origin}/result?name=${name}&gender=${gender === "female" ? "female" : "male"}&type=today&year=${year}&month=${month}&day=${day}&hour=${hour}&reportGrade=sms`;
 };
 
-const buildGeneralSmsText = (name, productName, email, phone, productKey, formData, gunghapType = "compatibility") => {
+const buildGeneralSmsText = (name, productName, email, phone, productKey, formData, gunghapType = "compatibility", selectedCards = [], reportGrade = "premium") => {
   const queryParams = new URLSearchParams({
     name: formData.name,
     gender: formData.gender,
@@ -264,12 +264,17 @@ const buildGeneralSmsText = (name, productName, email, phone, productKey, formDa
     partnerMonth: formData.partnerBirthMonth || "08",
     partnerDay: formData.partnerBirthDay || "25",
     partnerHour: formData.partnerBirthHour || "unknown",
-    gunghapType: gunghapType
+    gunghapType: gunghapType,
+    reportGrade: reportGrade
   });
+
+  if (selectedCards && selectedCards.length > 0) {
+    queryParams.set("cards", selectedCards.join(","));
+  }
 
   const origin = "https://saju.artpani.com";
 
-  return `[혜안당 명리연구소] ${name} 님, 주문하신 [${productName}] 분석이 무사히 완료되었습니다.\n\n적어주신 이메일(${email})로 상세 보고서 PDF 가이드를 전송해 드렸습니다. 혹은 아래의 온라인 결과 보감 링크를 통해 즉시 확인해 보실 수 있습니다.\n\n▶ 모바일 결과 보기: ${origin}/result?${queryParams.toString()}&reportGrade=premium\n\n귀하의 앞날에 늘 지혜의 빛이 함께하기를 기원합니다. 감사합니다.`;
+  return `[혜안당 명리연구소] ${name} 님, 주문하신 [${productName}] 분석이 무사히 완료되었습니다.\n\n적어주신 이메일(${email})로 상세 보고서 PDF 가이드를 전송해 드렸습니다. 혹은 아래의 온라인 결과 보감 링크를 통해 즉시 확인해 보실 수 있습니다.\n\n▶ 모바일 결과 보기: ${origin}/result?${queryParams.toString()}\n\n귀하의 앞날에 늘 지혜의 빛이 함께하기를 기원합니다. 감사합니다.`;
 };
 
 function InputFormContent() {
@@ -342,6 +347,8 @@ function InputFormContent() {
               partnerMonth: formData.partnerBirthMonth || "08",
               partnerDay: formData.partnerBirthDay || "25",
               partnerHour: formData.partnerBirthHour || "unknown",
+              phone: formData.phone || "",
+              email: formData.email || "",
               gunghapType: gunghapType || "compatibility",
               reportGrade: reportGrade === "free" ? "free" : (productKey === "today" ? "sms" : (productKey === "tarot" ? "premium" : reportGrade))
             });
@@ -563,7 +570,8 @@ function InputFormContent() {
         month: formData.birthMonth,
         day: formData.birthDay,
         hour: formData.birthHour,
-        worryText: formData.worryText || "오늘의 운세"
+        worryText: formData.worryText || "오늘의 운세",
+        reportGrade: reportGrade
       };
 
         const existingStr = localStorage.getItem("hyeandang_orders");
@@ -674,7 +682,9 @@ function InputFormContent() {
                 formData.phone,
                 productKey,
                 formData,
-                gunghapType
+                gunghapType,
+                selectedCards,
+                reportGrade
               );
             }
 
@@ -714,8 +724,12 @@ function InputFormContent() {
                   gunghapType: gunghapType
                 });
 
+                if (selectedCards && selectedCards.length > 0) {
+                  queryParams.set("cards", selectedCards.join(","));
+                }
+
                 const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
-                const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=premium`;
+                const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=${reportGrade}`;
                 const mailSubject = `[혜안당 명리연구소] ${formData.name} 님 주문하신 [${products[productKey]?.title || "정통 사주 풀이"}] 분석결과서가 도착했습니다.`;
                 const mailHtml = `
                   <div style="font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; border: 1px solid #E2DDD5; border-radius: 12px; background-color: #F9F8F6;">
