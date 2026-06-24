@@ -3620,7 +3620,7 @@ function ResultContent() {
                       gunghapType: gunghapType
                     });
 
-                    const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
+                    const origin = "https://saju.artpani.com";
                     const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=${grade}`;
                     const smsContent = `[혜안당 명리연구소] ${name} 님, 주문하신 정통 사주 업그레이드 분석이 완료되었습니다.\n\n적어주신 이메일(${targetEmail || "지정 이메일"})로 상세 보감 PDF가 전송되었으며, 아래 온라인 보감 링크로도 즉시 열람이 가능합니다.\n\n▶ 결과 보기: ${mobileResultUrl}\n\n감사합니다.`;
 
