@@ -3459,23 +3459,49 @@ function ResultContent() {
     const updateLocalStorageOrderGrade = (targetGrade) => {
       try {
         const existingStr = localStorage.getItem("hyeandang_orders");
+        let orders = [];
         if (existingStr) {
-          const orders = JSON.parse(existingStr);
-          const matchedIdx = orders.findIndex(o => 
-            o.name === name && 
-            o.year === String(year) &&
-            o.month === String(month) &&
-            o.day === String(day)
-          );
-          if (matchedIdx > -1) {
-            orders[matchedIdx].status = "paid";
-            orders[matchedIdx].reportGrade = targetGrade;
-            if (typeParam === "tojeong") {
-              orders[matchedIdx].productName = "정통 토정비결";
-            }
-            localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+          try {
+            orders = JSON.parse(existingStr);
+            if (!Array.isArray(orders)) orders = [];
+          } catch (e) {
+            orders = [];
           }
         }
+        const matchedIdx = orders.findIndex(o => 
+          o &&
+          o.name === name && 
+          o.year === String(year) &&
+          o.month === String(month) &&
+          o.day === String(day)
+        );
+        if (matchedIdx > -1) {
+          orders[matchedIdx].status = "paid";
+          orders[matchedIdx].reportGrade = targetGrade;
+          if (typeParam === "tojeong") {
+            orders[matchedIdx].productName = "정통 토정비결";
+          }
+        } else {
+          orders.push({
+            id: Math.floor(Math.random() * 9000) + 1000,
+            name: name,
+            email: emailParam || "today_sms@hyeandang.com",
+            phone: phoneParam || "010-0000-0000",
+            productName: typeParam === "tojeong" ? "정통 토정비결" : (type === "newyear" ? "신년운세" : "평생 종합 사주팔자"),
+            amount: amount,
+            status: "paid",
+            createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
+            gender: genderVal || "female",
+            calendar: calendar,
+            year: String(year),
+            month: String(month),
+            day: String(day),
+            hour: hour,
+            worryText: worryText || "오늘의 운세",
+            reportGrade: targetGrade
+          });
+        }
+        localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
       } catch (e) {
         console.error(e);
       }
@@ -4152,7 +4178,7 @@ function ResultContent() {
   };
 
   const renderSajuContent = () => {
-    if (reportGrade === "sms") {
+    if (reportGrade === "sms" || reportGrade === "free") {
       return renderSmsSajuContent();
     }
 
@@ -7595,7 +7621,7 @@ function ResultContent() {
         </div>
       )}
 
-      <div className={`max-w-3xl mx-auto bg-[#F6F3EC] border-4 border-[#A3845B] rounded-lg p-6 md:p-12 shadow-md relative print:shadow-none print:border-none print:bg-white ${isFree ? "pb-24 md:pb-32" : ""}`}>
+      <div className={`max-w-3xl mx-auto bg-[#F6F3EC] border-4 border-[#A3845B] rounded-lg p-6 md:p-12 shadow-md relative print:shadow-none print:border-none print:bg-white ${(isFree || type === "today") ? "pb-24 md:pb-32" : ""}`}>
         
         {/* Decorative corner motifs */}
         <div className="absolute top-4 left-4 text-[#A3845B]/30 font-myeongjo text-sm print:hidden">卍</div>
@@ -7737,7 +7763,7 @@ function ResultContent() {
         </div>
 
         {/* 하단 고정 결제 CTA 플로팅 바 (isFree 일 때 노출 단, 고급 미결제는 제외) */}
-        {isFree && reportGrade === "free" && (
+        {isFree && reportGrade === "free_old_disabled" && (
           <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
             <button
               type="button"
@@ -7750,8 +7776,8 @@ function ResultContent() {
           </div>
         )}
 
-        {/* SMS 요약 보고서일 때 유료 결제 유도 하단 고정 플로팅 바 */}
-        {reportGrade === "sms" && (
+        {/* SMS 요약 보고서일 때 유료 결제 유도 하단 고정 플로팅 바 (오늘의 운세는 제외) */}
+        {type !== "today" && (reportGrade === "sms" || reportGrade === "free") && (
           <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp flex gap-2 sm:gap-3">
             <button
               type="button"
@@ -7769,6 +7795,19 @@ function ResultContent() {
               <span>👑 프리미엄 리포트 (+35,000원)</span>
               <span className="text-[10px] sm:text-xs text-[#A3845B]">➔</span>
             </button>
+          </div>
+        )}
+
+        {/* 오늘의 맞춤 운세 보고서 하단 고정 혜안당 운세 상품 이동 플로팅 바 */}
+        {type === "today" && (
+          <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
+            <Link
+              href="/#services"
+              className="w-full bg-[#8B221E] hover:bg-[#6D1B18] text-white py-4 px-6 rounded-xl font-myeongjo font-bold text-xs sm:text-sm flex items-center justify-between shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#8B221E]/20"
+            >
+              <span>🔮 혜안당 정밀 운세 상품 보러가기 (종합사주/신년운세)</span>
+              <span className="text-lg">➔</span>
+            </Link>
           </div>
         )}
 

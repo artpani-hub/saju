@@ -850,27 +850,15 @@ function InputFormContent() {
     else if (payMethod === "tosspay") selectedPayMethod = "tosspay";
 
     const payData = {
-      pg: selectedPayMethod !== "card" ? `${pgChannel.split(".")[0]}.${selectedPayMethod}` : pgChannel,
-      pay_method: selectedPayMethod === "naverpay" ? "card" : selectedPayMethod, // NaverPay는 이니시스 경유 시 card/point 처리 등 PG 세부설정에 맞춰 매핑
+      pg: pgChannel,
+      pay_method: selectedPayMethod,
       merchant_uid: `merchant_${new Date().getTime()}`,
       name: `${formData.name || "의뢰인"}님 ${activeProduct.title}`,
       amount: finalPrice,
       buyer_name: formData.name,
       buyer_tel: formData.phone,
-      buyer_email: formData.email || "test@example.com",
+      buyer_email: formData.email || "today_sms@hyeandang.com",
     };
-
-    // 만약 네이버페이, 카카오페이, 토스페이 전용 간편결제 채널이 pgChannel에 정의되어 있다면 1순위 사용
-    if (selectedPayMethod === "kakaopay") {
-      payData.pg = "kakaopay";
-      payData.pay_method = "card";
-    } else if (selectedPayMethod === "naverpay") {
-      payData.pg = "naverpay";
-      payData.pay_method = "card";
-    } else if (selectedPayMethod === "tosspay") {
-      payData.pg = "tosspay";
-      payData.pay_method = "card";
-    }
 
     IMP.request_pay(payData, function (rsp) {
       if (rsp.success) {

@@ -202,6 +202,75 @@ export default function AdminPage() {
   const [endDate, setEndDate] = useState("");
   const [refreshingId, setRefreshingId] = useState(null);
 
+  // Q&A Inquiry States
+  const [currentMenuTab, setCurrentMenuTab] = useState("orders"); // orders, inquiries
+  const [inquiries, setInquiries] = useState([]);
+  const [inquirySearch, setInquirySearch] = useState("");
+  const [inquiryFilterType, setInquiryFilterType] = useState("all"); // all, delivery, general
+  const [inquiryFilterStatus, setInquiryFilterStatus] = useState("all"); // all, pending, answered
+  const [replyingInquiryId, setReplyingInquiryId] = useState(null);
+  const [replyText, setReplyText] = useState("");
+
+  // Q&A 데이터 로드
+  useEffect(() => {
+    try {
+      const existingStr = localStorage.getItem("hyeandang_inquiries");
+      if (existingStr) {
+        setInquiries(JSON.parse(existingStr));
+      } else {
+        const defaultInquiries = [
+          {
+            id: "inq_171928372619",
+            type: "delivery",
+            name: "이지혜",
+            phone: "010-1234-5678",
+            orderId: 1004,
+            content: "결제를 완료했는데 메일과 문자가 모두 오지 않습니다. 확인 부탁드립니다.",
+            password: "1234",
+            status: "pending",
+            reply: "",
+            createdAt: "2026-06-29 11:35"
+          }
+        ];
+        setInquiries(defaultInquiries);
+        localStorage.setItem("hyeandang_inquiries", JSON.stringify(defaultInquiries));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [isLoggedIn]);
+
+  const handleSaveReply = (inqId) => {
+    if (!replyText.trim()) {
+      alert("답변 내용을 입력해 주세요.");
+      return;
+    }
+    const updated = inquiries.map(inq => {
+      if (inq.id === inqId) {
+        return {
+          ...inq,
+          status: "answered",
+          reply: replyText.trim(),
+          repliedAt: new Date().toISOString().replace('T', ' ').substring(0, 16)
+        };
+      }
+      return inq;
+    });
+    setInquiries(updated);
+    localStorage.setItem("hyeandang_inquiries", JSON.stringify(updated));
+    setReplyingInquiryId(null);
+    setReplyText("");
+    alert("답변이 성공적으로 등록되었습니다.");
+  };
+
+  const handleDeleteInquiry = (inqId) => {
+    if (!confirm("해당 문의를 삭제하시겠습니까?")) return;
+    const updated = inquiries.filter(inq => inq.id !== inqId);
+    setInquiries(updated);
+    localStorage.setItem("hyeandang_inquiries", JSON.stringify(updated));
+    alert("문의가 삭제되었습니다.");
+  };
+
   // 날짜 포맷팅 헬퍼 (YYYY-MM-DD)
   const getFormattedDateString = (date) => {
     const y = date.getFullYear();
@@ -729,329 +798,589 @@ export default function AdminPage() {
 
       {/* Admin Content */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-6 py-8 space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="font-myeongjo text-2xl font-bold text-foreground mb-1">실시간 운영 현황</h2>
-            <p className="text-xs text-foreground-muted font-light">혜안당 플랫폼의 주문 결제 내역과 AI 분석 상태를 모니터링합니다.</p>
-          </div>
-          <div className="text-xs text-brass font-semibold">
-            조회 범위: {
-              dateFilter === "all" ? "전체 기간" : 
-              dateFilter === "today" ? "오늘" : 
-              dateFilter === "7days" ? "최근 7일" : 
-              dateFilter === "30days" ? "최근 30일" : 
-              `직접 지정 (${startDate || "시작일 미지정"} ~ ${endDate || "종료일 미지정"})`
-            }
-          </div>
-        </div>
-
-        {/* Status Stat Cards (필터 기간 반영) */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-background-secondary/50 border border-border-custom rounded-lg p-5">
-            <div className="flex items-center justify-between text-foreground-muted mb-2">
-              <span className="text-xs font-medium">선택 기간 결제액</span>
-              <CreditCard className="w-4 h-4 text-brass" />
-            </div>
-            <span className="font-myeongjo text-xl font-bold text-foreground">{stats.totalAmount.toLocaleString()}원</span>
-            <span className="text-[10px] text-jade block mt-1">완료 {stats.paidCount}건 기준</span>
-          </div>
-
-          <div className="bg-background-secondary/50 border border-border-custom rounded-lg p-5">
-            <div className="flex items-center justify-between text-foreground-muted mb-2">
-              <span className="text-xs font-medium">선택 기간 주문 수</span>
-              <Users className="w-4 h-4 text-jade" />
-            </div>
-            <span className="font-myeongjo text-xl font-bold text-foreground">{stats.totalCount}건</span>
-            <span className="text-[10px] text-foreground-muted block mt-1">결제 완료 {stats.paidCount}건 / 실패 {stats.failedCount}건</span>
-          </div>
-
-          <div className="bg-background-secondary/50 border border-border-custom rounded-lg p-5">
-            <div className="flex items-center justify-between text-foreground-muted mb-2">
-              <span className="text-xs font-medium">메일 발송 상태</span>
-              <Mail className="w-4 h-4 text-brass" />
-            </div>
-            <span className="font-myeongjo text-xl font-bold text-foreground">{stats.sentEmailCount} / {stats.paidCount}건 완료</span>
-            <span className="text-[10px] text-brass block mt-1">
-              {stats.paidCount - stats.sentEmailCount > 0 ? `⚠️ 미발송 및 실패 ${stats.paidCount - stats.sentEmailCount}건 처리 요망` : "✓ 발송 누락 없음"}
-            </span>
-          </div>
-
-          <div className="bg-background-secondary/50 border border-border-custom rounded-lg p-5">
-            <div className="flex items-center justify-between text-foreground-muted mb-2">
-              <span className="text-xs font-medium">AI 연산 가동율</span>
-              <Sparkles className="w-4 h-4 text-jade" />
-            </div>
-            <span className="font-myeongjo text-xl font-bold text-foreground">100%</span>
-            <span className="text-[10px] text-jade block mt-1">API 서버 정상 가동 중</span>
-          </div>
-        </div>
-
-        {/* Filter and Search */}
-        <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between bg-background-secondary/30 border border-border-custom p-4 rounded-xl">
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-foreground-muted">조회 기간 필터:</span>
-              <div className="inline-flex rounded-lg border border-border-custom bg-background p-1 gap-1">
-                {[
-                  { key: "all", label: "전체 기간" },
-                  { key: "today", label: "오늘" },
-                  { key: "7days", label: "최근 7일" },
-                  { key: "30days", label: "최근 30일" },
-                  { key: "custom", label: "직접 지정" }
-                ].map((filter) => (
-                  <button
-                    key={filter.key}
-                    onClick={() => setDateFilter(filter.key)}
-                    className={`px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer transition-colors ${
-                      dateFilter === filter.key
-                        ? "bg-brass text-background font-bold shadow-sm"
-                        : "text-foreground-muted hover:text-foreground hover:bg-background-secondary"
-                    }`}
-                  >
-                    {filter.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Custom Date Inputs */}
-            {dateFilter === "custom" && (
-              <div className="flex flex-wrap items-center gap-2 bg-background border border-brass/35 rounded-lg px-2.5 py-1 shadow-sm animate-fadeIn">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] text-brass font-semibold font-myeongjo">시작</span>
-                  <div className="relative flex items-center bg-background-secondary/30 rounded border border-border-custom px-2 py-1">
-                    <Calendar className="w-3.5 h-3.5 text-brass mr-1 pointer-events-none" />
-                    <input
-                      type="date"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className="bg-transparent border-none text-xs focus:outline-none text-foreground cursor-pointer select-none font-sans font-medium w-[105px]"
-                      style={{ colorScheme: "light" }}
-                    />
-                  </div>
-                </div>
-                <span className="text-xs text-brass font-bold mx-0.5">~</span>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] text-brass font-semibold font-myeongjo">종료</span>
-                  <div className="relative flex items-center bg-background-secondary/30 rounded border border-border-custom px-2 py-1">
-                    <Calendar className="w-3.5 h-3.5 text-brass mr-1 pointer-events-none" />
-                    <input
-                      type="date"
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      className="bg-transparent border-none text-xs focus:outline-none text-foreground cursor-pointer select-none font-sans font-medium w-[105px]"
-                      style={{ colorScheme: "light" }}
-                    />
-                  </div>
-                </div>
-              </div>
+        {/* Menu Tabs */}
+        <div className="flex border-b border-border-custom bg-background-secondary/20 p-1.5 rounded-lg max-w-xs mb-4">
+          <button
+            onClick={() => setCurrentMenuTab("orders")}
+            className={`flex-1 py-2 text-center text-xs font-semibold rounded-md transition-all cursor-pointer ${
+              currentMenuTab === "orders"
+                ? "bg-brass text-background font-bold shadow-sm"
+                : "text-foreground-muted hover:text-foreground"
+            }`}
+          >
+            주문/결제 관리
+          </button>
+          <button
+            onClick={() => setCurrentMenuTab("inquiries")}
+            className={`flex-1 py-2 text-center text-xs font-semibold rounded-md transition-all cursor-pointer relative ${
+              currentMenuTab === "inquiries"
+                ? "bg-brass text-background font-bold shadow-sm"
+                : "text-foreground-muted hover:text-foreground"
+            }`}
+          >
+            고객 문의 관리
+            {inquiries.filter(i => i.status === "pending").length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full scale-90">
+                {inquiries.filter(i => i.status === "pending").length}
+              </span>
             )}
-          </div>
-          
-          <div className="relative w-full lg:max-w-xs">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-foreground-muted" />
-            <input
-              type="text"
-              placeholder="고객명, 이메일, 상품명 검색"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-background border border-border-custom rounded pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-brass"
-            />
-          </div>
+          </button>
         </div>
 
-        {/* Info label */}
-        <div className="flex items-center justify-between text-xs text-foreground-muted">
-          <div>
-            조회 범위 내 필터링된 주문: <strong className="text-foreground">{filteredOrders.length}</strong>건
-          </div>
-          <div>
-            * 신청된 테스트 데이터는 브라우저의 localStorage를 통해 로컬에서 동기화 유지됩니다.
-          </div>
-        </div>
+        {currentMenuTab === "orders" ? (
+          <>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="font-myeongjo text-2xl font-bold text-foreground mb-1">실시간 운영 현황</h2>
+                <p className="text-xs text-foreground-muted font-light">혜안당 플랫폼의 주문 결제 내역과 AI 분석 상태를 모니터링합니다.</p>
+              </div>
+              <div className="text-xs text-brass font-semibold">
+                조회 범위: {
+                  dateFilter === "all" ? "전체 기간" : 
+                  dateFilter === "today" ? "오늘" : 
+                  dateFilter === "7days" ? "최근 7일" : 
+                  dateFilter === "30days" ? "최근 30일" : 
+                  `직접 지정 (${startDate || "시작일 미지정"} ~ ${endDate || "종료일 미지정"})`
+                }
+              </div>
+            </div>
 
-        {/* Table of Orders */}
-        <div className="border border-border-custom rounded-lg bg-background overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-background-secondary border-b border-border-custom text-foreground font-semibold">
-                  <th className="p-4">주문번호</th>
-                  <th className="p-4">주문일시</th>
-                  <th className="p-4">고객 정보</th>
-                  <th className="p-4">상품명</th>
-                  <th className="p-4 text-right">금액</th>
-                  <th className="p-4">결제 상태</th>
-                  <th className="p-4">만세력 정보</th>
-                  <th className="p-4">결과 발송</th>
-                  <th className="p-4 text-center">관리 액션</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border-custom/50">
-                {filteredOrders.length > 0 ? (
-                  filteredOrders.map((order) => (
-                    <tr key={order.id} className="hover:bg-background-secondary/30 transition-colors">
-                      <td className="p-4 font-bold text-foreground">{order.id}</td>
-                      <td className="p-4 text-foreground-muted">{order.createdAt}</td>
-                      <td className="p-4">
-                        {editingId === order.id ? (
-                          <div className="space-y-1.5 min-w-[150px]">
-                            <input
-                              type="text"
-                              name="name"
-                              value={editForm.name}
-                              onChange={handleEditChange}
-                              className="w-full bg-background border border-border-custom rounded px-2 py-0.5 text-xs text-foreground focus:outline-none focus:border-brass"
-                              placeholder="성명"
-                            />
-                            <input
-                              type="email"
-                              name="email"
-                              value={editForm.email}
-                              onChange={handleEditChange}
-                              className="w-full bg-background border border-border-custom rounded px-2 py-0.5 text-xs text-foreground focus:outline-none focus:border-brass"
-                              placeholder="이메일"
-                            />
-                            <input
-                              type="text"
-                              name="phone"
-                              value={editForm.phone}
-                              onChange={handleEditChange}
-                              className="w-full bg-background border border-border-custom rounded px-2 py-0.5 text-xs text-foreground focus:outline-none focus:border-brass"
-                              placeholder="연락처"
-                            />
-                          </div>
-                        ) : (
-                          <>
-                            <div className="font-semibold text-foreground">{order.name}</div>
-                            <div className="text-[10px] text-foreground-muted">{order.email}</div>
-                            <div className="text-[10px] text-foreground-muted">{order.phone}</div>
-                          </>
-                        )}
-                      </td>
-                      <td className="p-4 font-medium text-foreground">{order.productName}</td>
-                      <td className="p-4 text-right font-bold text-foreground">
-                        {order.amount.toLocaleString()}원
-                      </td>
-                      <td className="p-4">
-                        {order.status === "paid" && (
-                          <span className="inline-flex items-center gap-1 bg-jade/10 text-jade px-2 py-0.5 rounded font-medium text-[10px]">
-                            <CheckCircle2 className="w-3 h-3" /> 결제 완료
-                          </span>
-                        )}
-                        {order.status === "failed" && (
-                          <span className="inline-flex items-center gap-1 bg-red-50 text-red-600 px-2 py-0.5 rounded font-medium text-[10px]">
-                            <AlertTriangle className="w-3 h-3" /> 결제 실패
-                          </span>
-                        )}
-                      </td>
-                      <td className="p-4 text-foreground-muted font-traditional">
-                        {order.sajuGanji}
-                      </td>
-                      <td className="p-4">
-                        {order.emailStatus === "sent" && (
-                          <span className="inline-flex items-center gap-1 text-jade font-medium">
-                            발송 성공
-                          </span>
-                        )}
-                        {order.emailStatus === "pending" && (
-                          <span className="inline-flex items-center gap-1 text-foreground-muted italic">
-                            대기 중
-                          </span>
-                        )}
-                        {order.emailStatus === "failed" && (
-                          <span className="inline-flex items-center gap-1 text-red-500 font-bold">
-                            ⚠️ 발송 실패
-                          </span>
-                        )}
-                      </td>
-                      <td className="p-4 text-center">
-                        {editingId === order.id ? (
-                          <div className="flex items-center justify-center gap-1.5">
-                            <button
-                              type="button"
-                              onClick={() => saveEdit(order.id)}
-                              className="bg-jade text-background px-2.5 py-1 rounded hover:bg-jade-dark text-[10px] font-semibold cursor-pointer"
-                            >
-                              저장
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setEditingId(null)}
-                              className="border border-border-custom text-foreground-muted px-2.5 py-1 rounded hover:bg-background-secondary text-[10px] font-semibold cursor-pointer"
-                            >
-                              취소
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="flex items-center justify-center gap-1.5">
-                            {order.status === "paid" && (
+            {/* Status Stat Cards (필터 기간 반영) */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-background-secondary/50 border border-border-custom rounded-lg p-5">
+                <div className="flex items-center justify-between text-foreground-muted mb-2">
+                  <span className="text-xs font-medium">선택 기간 결제액</span>
+                  <CreditCard className="w-4 h-4 text-brass" />
+                </div>
+                <span className="font-myeongjo text-xl font-bold text-foreground">{stats.totalAmount.toLocaleString()}원</span>
+                <span className="text-[10px] text-jade block mt-1">완료 {stats.paidCount}건 기준</span>
+              </div>
+
+              <div className="bg-background-secondary/50 border border-border-custom rounded-lg p-5">
+                <div className="flex items-center justify-between text-foreground-muted mb-2">
+                  <span className="text-xs font-medium">선택 기간 주문 수</span>
+                  <Users className="w-4 h-4 text-jade" />
+                </div>
+                <span className="font-myeongjo text-xl font-bold text-foreground">{stats.totalCount}건</span>
+                <span className="text-[10px] text-foreground-muted block mt-1">결제 완료 {stats.paidCount}건 / 실패 {stats.failedCount}건</span>
+              </div>
+
+              <div className="bg-background-secondary/50 border border-border-custom rounded-lg p-5">
+                <div className="flex items-center justify-between text-foreground-muted mb-2">
+                  <span className="text-xs font-medium">메일 발송 상태</span>
+                  <Mail className="w-4 h-4 text-brass" />
+                </div>
+                <span className="font-myeongjo text-xl font-bold text-foreground">{stats.sentEmailCount} / {stats.paidCount}건 완료</span>
+                <span className="text-[10px] text-brass block mt-1">
+                  {stats.paidCount - stats.sentEmailCount > 0 ? `⚠️ 미발송 및 실패 ${stats.paidCount - stats.sentEmailCount}건 처리 요망` : "✓ 발송 누락 없음"}
+                </span>
+              </div>
+
+              <div className="bg-background-secondary/50 border border-border-custom rounded-lg p-5">
+                <div className="flex items-center justify-between text-foreground-muted mb-2">
+                  <span className="text-xs font-medium">AI 연산 가동율</span>
+                  <Sparkles className="w-4 h-4 text-jade" />
+                </div>
+                <span className="font-myeongjo text-xl font-bold text-foreground">100%</span>
+                <span className="text-[10px] text-jade block mt-1">API 서버 정상 가동 중</span>
+              </div>
+            </div>
+
+            {/* Filter and Search */}
+            <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between bg-background-secondary/30 border border-border-custom p-4 rounded-xl">
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-foreground-muted">조회 기간 필터:</span>
+                  <div className="inline-flex rounded-lg border border-border-custom bg-background p-1 gap-1">
+                    {[
+                      { key: "all", label: "전체 기간" },
+                      { key: "today", label: "오늘" },
+                      { key: "7days", label: "최근 7일" },
+                      { key: "30days", label: "최근 30일" },
+                      { key: "custom", label: "직접 지정" }
+                    ].map((filter) => (
+                      <button
+                        key={filter.key}
+                        onClick={() => setDateFilter(filter.key)}
+                        className={`px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer transition-colors ${
+                          dateFilter === filter.key
+                            ? "bg-brass text-background font-bold shadow-sm"
+                            : "text-foreground-muted hover:text-foreground hover:bg-background-secondary"
+                        }`}
+                      >
+                        {filter.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Custom Date Inputs */}
+                {dateFilter === "custom" && (
+                  <div className="flex flex-wrap items-center gap-2 bg-background border border-brass/35 rounded-lg px-2.5 py-1 shadow-sm animate-fadeIn">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] text-brass font-semibold font-myeongjo">시작</span>
+                      <div className="relative flex items-center bg-background-secondary/30 rounded border border-border-custom px-2 py-1">
+                        <Calendar className="w-3.5 h-3.5 text-brass mr-1 pointer-events-none" />
+                        <input
+                          type="date"
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
+                          className="bg-transparent border-none text-xs focus:outline-none text-foreground cursor-pointer select-none font-sans font-medium w-[105px]"
+                          style={{ colorScheme: "light" }}
+                        />
+                      </div>
+                    </div>
+                    <span className="text-xs text-brass font-bold mx-0.5">~</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] text-brass font-semibold font-myeongjo">종료</span>
+                      <div className="relative flex items-center bg-background-secondary/30 rounded border border-border-custom px-2 py-1">
+                        <Calendar className="w-3.5 h-3.5 text-brass mr-1 pointer-events-none" />
+                        <input
+                          type="date"
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                          className="bg-transparent border-none text-xs focus:outline-none text-foreground cursor-pointer select-none font-sans font-medium w-[105px]"
+                          style={{ colorScheme: "light" }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="relative w-full lg:max-w-xs">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-foreground-muted" />
+                <input
+                  type="text"
+                  placeholder="고객명, 이메일, 상품명 검색"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-background border border-border-custom rounded pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-brass"
+                />
+              </div>
+            </div>
+
+            {/* Info label */}
+            <div className="flex items-center justify-between text-xs text-foreground-muted">
+              <div>
+                조회 범위 내 필터링된 주문: <strong className="text-foreground">{filteredOrders.length}</strong>건
+              </div>
+              <div>
+                * 신청된 테스트 데이터는 브라우저의 localStorage를 통해 로컬에서 동기화 유지됩니다.
+              </div>
+            </div>
+
+            {/* Table of Orders */}
+            <div className="border border-border-custom rounded-lg bg-background overflow-hidden shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-background-secondary border-b border-border-custom text-foreground font-semibold">
+                      <th className="p-4">주문번호</th>
+                      <th className="p-4">주문일시</th>
+                      <th className="p-4">고객 정보</th>
+                      <th className="p-4">상품명</th>
+                      <th className="p-4 text-right">금액</th>
+                      <th className="p-4">결제 상태</th>
+                      <th className="p-4">만세력 정보</th>
+                      <th className="p-4">결과 발송</th>
+                      <th className="p-4 text-center">관리 액션</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border-custom/50">
+                    {filteredOrders.length > 0 ? (
+                      filteredOrders.map((order) => (
+                        <tr key={order.id} className="hover:bg-background-secondary/30 transition-colors">
+                          <td className="p-4 font-bold text-foreground">{order.id}</td>
+                          <td className="p-4 text-foreground-muted">{order.createdAt}</td>
+                          <td className="p-4">
+                            {editingId === order.id ? (
+                              <div className="space-y-1.5 min-w-[150px]">
+                                <input
+                                  type="text"
+                                  name="name"
+                                  value={editForm.name}
+                                  onChange={handleEditChange}
+                                  className="w-full bg-background border border-border-custom rounded px-2 py-0.5 text-xs text-foreground focus:outline-none focus:border-brass"
+                                  placeholder="성명"
+                                />
+                                <input
+                                  type="email"
+                                  name="email"
+                                  value={editForm.email}
+                                  onChange={handleEditChange}
+                                  className="w-full bg-background border border-border-custom rounded px-2 py-0.5 text-xs text-foreground focus:outline-none focus:border-brass"
+                                  placeholder="이메일"
+                                />
+                                <input
+                                  type="text"
+                                  name="phone"
+                                  value={editForm.phone}
+                                  onChange={handleEditChange}
+                                  className="w-full bg-background border border-border-custom rounded px-2 py-0.5 text-xs text-foreground focus:outline-none focus:border-brass"
+                                  placeholder="연락처"
+                                />
+                              </div>
+                            ) : (
                               <>
-                                <Link
-                                  href={`/result?name=${encodeURIComponent(order.name)}&gender=${order.gender || (order.id === 1003 ? "male" : "female")}&type=${
-                                    order.productName.includes("오늘") || order.productName.includes("오늘의") ? "today" :
-                                    order.productName.includes("사주") ? "saju" : 
-                                    order.productName.includes("재물") ? "wealth" : 
-                                    order.productName.includes("신년") ? "newyear" : 
-                                    order.productName.includes("궁합") ? "gunghap" : "tarot"
-                                  }&year=${
-                                    order.year || (order.id === 1004 ? "1995" : order.id === 1003 ? "1990" : "1993")
-                                  }&month=${
-                                    order.month || (order.id === 1004 ? "8" : order.id === 1003 ? "6" : "1")
-                                  }&day=${
-                                    order.day || (order.id === 1004 ? "25" : order.id === 1003 ? "15" : "20")
-                                  }&hour=${encodeURIComponent(
-                                    order.hour || (order.id === 1004 ? "10:00" : order.id === 1003 ? "12:00" : "08:30")
-                                  )}&worryText=${encodeURIComponent(
-                                    order.worryText || (
-                                      order.id === 1004 ? "이번 가을에 다니던 IT 회사를 퇴사하고 다른 회사 서비스 기획팀으로 이직을 준비하고 있는데 무사히 합격할 수 있을지 고민입니다." :
-                                      order.id === 1003 ? "최근에 동업 제안을 받아 쇼핑몰 창업을 계획하고 있는데, 지금 시기에 돈을 대출받아 투자해도 괜찮을지 알고 싶습니다." :
-                                      "올해 유독 회사 일이 안 풀려서 스트레스가 많고 이직 준비를 하려는데 자격증 합격이나 다른 곳으로의 기운이 따를지 조언을 부탁드립니다."
-                                    )
-                                  )}&gunghapType=${
-                                    order.productName.includes("속궁합") ? "deep_compatibility" :
-                                    order.productName.includes("재회") ? "reunion" : "compatibility"
-                                  }&reportGrade=${
-                                    order.reportGrade || (order.productName.includes("문자메시지") ? "sms" : order.productName.includes("심화") ? "deep" : order.productName.includes("무료") ? "free" : "premium")
-                                  }`}
-                                  className="inline-flex items-center gap-1 border border-jade/50 text-jade px-2 py-1 rounded hover:bg-jade hover:text-background transition-all text-[10px] font-medium cursor-pointer"
-                                >
-                                  결과 보기
-                                </Link>
-                                <button
-                                  type="button"
-                                  onClick={() => handleResend(order.id)}
-                                  disabled={refreshingId === order.id}
-                                  className="inline-flex items-center gap-1 border border-brass/50 text-brass px-2 py-1 rounded hover:bg-brass hover:text-background transition-all disabled:opacity-50 text-[10px] font-medium cursor-pointer"
-                                >
-                                  <RefreshCw className={`w-3 h-3 ${refreshingId === order.id ? 'animate-spin' : ''}`} />
-                                  {order.emailStatus === "failed" ? "재시도" : "재전송"}
-                                </button>
+                                <div className="font-semibold text-foreground">{order.name}</div>
+                                <div className="text-[10px] text-foreground-muted">{order.email}</div>
+                                <div className="text-[10px] text-foreground-muted">{order.phone}</div>
                               </>
                             )}
-                            <button
-                              type="button"
-                              onClick={() => startEdit(order)}
-                              className="inline-flex items-center gap-1 border border-border-custom text-foreground-muted px-2 py-1 rounded hover:bg-background-secondary transition-all text-[10px] font-medium cursor-pointer"
-                            >
-                              수정
-                            </button>
-                          </div>
-                        )}
-                      </td>
+                          </td>
+                          <td className="p-4 font-medium text-foreground">{order.productName}</td>
+                          <td className="p-4 text-right font-bold text-foreground">
+                            {order.amount.toLocaleString()}원
+                          </td>
+                          <td className="p-4">
+                            {order.status === "paid" && (
+                              <span className="inline-flex items-center gap-1 bg-jade/10 text-jade px-2 py-0.5 rounded font-medium text-[10px]">
+                                <CheckCircle2 className="w-3 h-3" /> 결제 완료
+                              </span>
+                            )}
+                            {order.status === "failed" && (
+                              <span className="inline-flex items-center gap-1 bg-red-50 text-red-600 px-2 py-0.5 rounded font-medium text-[10px]">
+                                <AlertTriangle className="w-3 h-3" /> 결제 실패
+                              </span>
+                            )}
+                          </td>
+                          <td className="p-4 text-foreground-muted font-traditional">
+                            {order.sajuGanji}
+                          </td>
+                          <td className="p-4">
+                            {order.emailStatus === "sent" && (
+                              <span className="inline-flex items-center gap-1 text-jade font-medium">
+                                발송 성공
+                              </span>
+                            )}
+                            {order.emailStatus === "pending" && (
+                              <span className="inline-flex items-center gap-1 text-foreground-muted italic">
+                                대기 중
+                              </span>
+                            )}
+                            {order.emailStatus === "failed" && (
+                              <span className="inline-flex items-center gap-1 text-red-500 font-bold">
+                                ⚠️ 발송 실패
+                              </span>
+                            )}
+                          </td>
+                          <td className="p-4 text-center">
+                            {editingId === order.id ? (
+                              <div className="flex items-center justify-center gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => saveEdit(order.id)}
+                                  className="bg-jade text-background px-2.5 py-1 rounded hover:bg-jade-dark text-[10px] font-semibold cursor-pointer"
+                                >
+                                  저장
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingId(null)}
+                                  className="border border-border-custom text-foreground-muted px-2.5 py-1 rounded hover:bg-background-secondary text-[10px] font-semibold cursor-pointer"
+                                >
+                                  취소
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="flex items-center justify-center gap-1.5">
+                                {order.status === "paid" && (
+                                  <>
+                                    <Link
+                                      href={`/result?name=${encodeURIComponent(order.name)}&gender=${order.gender || (order.id === 1003 ? "male" : "female")}&type=${
+                                        order.productName.includes("오늘") || order.productName.includes("오늘의") ? "today" :
+                                        order.productName.includes("사주") ? "saju" : 
+                                        order.productName.includes("재물") ? "wealth" : 
+                                        order.productName.includes("신년") ? "newyear" : 
+                                        order.productName.includes("궁합") ? "gunghap" : "tarot"
+                                      }&year=${
+                                        order.year || (order.id === 1004 ? "1995" : order.id === 1003 ? "1990" : "1993")
+                                      }&month=${
+                                        order.month || (order.id === 1004 ? "8" : order.id === 1003 ? "6" : "1")
+                                      }&day=${
+                                        order.day || (order.id === 1004 ? "25" : order.id === 1003 ? "15" : "20")
+                                      }&hour=${encodeURIComponent(
+                                        order.hour || (order.id === 1004 ? "10:00" : order.id === 1003 ? "12:00" : "08:30")
+                                      )}&worryText=${encodeURIComponent(
+                                        order.worryText || (
+                                          order.id === 1004 ? "이번 가을에 다니던 IT 회사를 퇴사하고 다른 회사 서비스 기획팀으로 이직을 준비하고 있는데 무사히 합격할 수 있을지 고민입니다." :
+                                          order.id === 1003 ? "최근에 동업 제안을 받아 쇼핑몰 창업을 계획하고 있는데, 지금 시기에 돈을 대출받아 투자해도 괜찮을지 알고 싶습니다." :
+                                          "올해 유독 회사 일이 안 풀려서 스트레스가 많고 이직 준비를 하려는데 자격증 합격이나 다른 곳으로의 기운이 따를지 조언을 부탁드립니다."
+                                        )
+                                      )}&gunghapType=${
+                                        order.productName.includes("속궁합") ? "deep_compatibility" :
+                                        order.productName.includes("재회") ? "reunion" : "compatibility"
+                                      }&reportGrade=${
+                                        order.reportGrade || (order.productName.includes("문자메시지") ? "sms" : order.productName.includes("심화") ? "deep" : order.productName.includes("무료") ? "free" : "premium")
+                                      }`}
+                                      className="inline-flex items-center gap-1 border border-jade/50 text-jade px-2 py-1 rounded hover:bg-jade hover:text-background transition-all text-[10px] font-medium cursor-pointer"
+                                    >
+                                      결과 보기
+                                    </Link>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleResend(order.id)}
+                                      disabled={refreshingId === order.id}
+                                      className="inline-flex items-center gap-1 border border-brass/50 text-brass px-2 py-1 rounded hover:bg-brass hover:text-background transition-all disabled:opacity-50 text-[10px] font-medium cursor-pointer"
+                                    >
+                                      <RefreshCw className={`w-3 h-3 ${refreshingId === order.id ? 'animate-spin' : ''}`} />
+                                      {order.emailStatus === "failed" ? "재시도" : "재전송"}
+                                    </button>
+                                  </>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() => startEdit(order)}
+                                  className="inline-flex items-center gap-1 border border-border-custom text-foreground-muted px-2 py-1 rounded hover:bg-background-secondary transition-all text-[10px] font-medium cursor-pointer"
+                                >
+                                  수정
+                                </button>
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="9" className="p-8 text-center text-foreground-muted font-light">
+                          선택한 조회 기간 조건에 부합하는 주문 내역이 없습니다.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        ) : (
+          /* Q&A 고객 문의 관리 */
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="font-myeongjo text-2xl font-bold text-foreground mb-1">고객 문의 내역 관리</h2>
+                <p className="text-xs text-foreground-muted font-light">사용자들로부터 접수된 1:1 오류 제보 및 일반 문의에 대해 답변을 관리합니다.</p>
+              </div>
+            </div>
+
+            {/* Inquiry Filter and Search */}
+            <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between bg-background-secondary/30 border border-border-custom p-4 rounded-xl">
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-foreground-muted">문의 유형:</span>
+                  <div className="inline-flex rounded-lg border border-border-custom bg-background p-1 gap-1">
+                    {[
+                      { key: "all", label: "전체 문의" },
+                      { key: "delivery", label: "발송 문의" },
+                      { key: "general", label: "기타 문의" }
+                    ].map((type) => (
+                      <button
+                        key={type.key}
+                        onClick={() => setInquiryFilterType(type.key)}
+                        className={`px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer transition-colors ${
+                          inquiryFilterType === type.key
+                            ? "bg-brass text-background font-bold shadow-sm"
+                            : "text-foreground-muted hover:text-foreground hover:bg-background-secondary"
+                        }`}
+                      >
+                        {type.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-foreground-muted">답변 상태:</span>
+                  <div className="inline-flex rounded-lg border border-border-custom bg-background p-1 gap-1">
+                    {[
+                      { key: "all", label: "전체 상태" },
+                      { key: "pending", label: "대기 중" },
+                      { key: "answered", label: "답변 완료" }
+                    ].map((status) => (
+                      <button
+                        key={status.key}
+                        onClick={() => setInquiryFilterStatus(status.key)}
+                        className={`px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer transition-colors ${
+                          inquiryFilterStatus === status.key
+                            ? "bg-brass text-background font-bold shadow-sm"
+                            : "text-foreground-muted hover:text-foreground hover:bg-background-secondary"
+                        }`}
+                      >
+                        {status.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative w-full lg:max-w-xs">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-foreground-muted" />
+                <input
+                  type="text"
+                  placeholder="작성자명, 내용, 연락처 검색"
+                  value={inquirySearch}
+                  onChange={(e) => setInquirySearch(e.target.value)}
+                  className="w-full bg-background border border-border-custom rounded pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-brass"
+                />
+              </div>
+            </div>
+
+            {/* Inquiries Table */}
+            <div className="border border-border-custom rounded-lg bg-background overflow-hidden shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-background-secondary border-b border-border-custom text-foreground font-semibold">
+                      <th className="p-4">유형</th>
+                      <th className="p-4">접수일시</th>
+                      <th className="p-4">의뢰인 정보</th>
+                      <th className="p-4">연동 주문번호</th>
+                      <th className="p-4">문의 내용</th>
+                      <th className="p-4">답변 상태</th>
+                      <th className="p-4 text-center">관리 액션</th>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="9" className="p-8 text-center text-foreground-muted font-light">
-                      선택한 조회 기간 조건에 부합하는 주문 내역이 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  </thead>
+                  <tbody className="divide-y divide-border-custom/50">
+                    {inquiries.filter(inq => {
+                      if (inquiryFilterType !== "all" && inq.type !== inquiryFilterType) return false;
+                      if (inquiryFilterStatus !== "all" && inq.status !== inquiryFilterStatus) return false;
+                      if (inquirySearch) {
+                        const term = inquirySearch.toLowerCase();
+                        const nameMatch = inq.name && inq.name.toLowerCase().includes(term);
+                        const contentMatch = inq.content && inq.content.toLowerCase().includes(term);
+                        const phoneMatch = inq.phone && inq.phone.includes(term);
+                        if (!nameMatch && !contentMatch && !phoneMatch) return false;
+                      }
+                      return true;
+                    }).length > 0 ? (
+                      inquiries.filter(inq => {
+                        if (inquiryFilterType !== "all" && inq.type !== inquiryFilterType) return false;
+                        if (inquiryFilterStatus !== "all" && inq.status !== inquiryFilterStatus) return false;
+                        if (inquirySearch) {
+                          const term = inquirySearch.toLowerCase();
+                          const nameMatch = inq.name && inq.name.toLowerCase().includes(term);
+                          const contentMatch = inq.content && inq.content.toLowerCase().includes(term);
+                          const phoneMatch = inq.phone && inq.phone.includes(term);
+                          if (!nameMatch && !contentMatch && !phoneMatch) return false;
+                        }
+                        return true;
+                      }).map((inq) => (
+                        <tr key={inq.id} className="hover:bg-background-secondary/30 transition-colors">
+                          <td className="p-4">
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
+                              inq.type === "delivery"
+                                ? "bg-brass/5 border-brass/20 text-brass-dark"
+                                : "bg-gray-50 border-gray-200 text-gray-600"
+                            }`}>
+                              {inq.type === "delivery" ? "발송 문의" : "기타 문의"}
+                            </span>
+                          </td>
+                          <td className="p-4 text-foreground-muted">{inq.createdAt}</td>
+                          <td className="p-4">
+                            <div className="font-semibold text-foreground">{inq.name}</div>
+                            <div className="text-[10px] text-foreground-muted">{inq.phone}</div>
+                          </td>
+                          <td className="p-4">
+                            {inq.orderId ? (
+                              <button
+                                onClick={() => {
+                                  setCurrentMenuTab("orders");
+                                  setSearchTerm(String(inq.orderId));
+                                }}
+                                className="text-brass hover:underline font-bold"
+                                title="주문 관리 탭에서 검색하기"
+                              >
+                                #{inq.orderId}
+                              </button>
+                            ) : (
+                              <span className="text-foreground-muted font-light">-</span>
+                            )}
+                          </td>
+                          <td className="p-4 max-w-sm">
+                            <p className="whitespace-pre-wrap leading-relaxed">{inq.content}</p>
+                            {inq.reply && (
+                              <div className="mt-2 bg-[#FAF6EE] p-3 rounded border border-[#A3845B]/20 text-[11px] text-gray-700">
+                                <strong className="text-[#A3845B] block mb-1">✍️ 답변 ({inq.repliedAt}):</strong>
+                                {inq.reply}
+                              </div>
+                            )}
+                          </td>
+                          <td className="p-4">
+                            {inq.status === "pending" ? (
+                              <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-medium text-[10px]">
+                                대기 중
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded font-medium text-[10px]">
+                                답변 완료
+                              </span>
+                            )}
+                          </td>
+                          <td className="p-4">
+                            <div className="flex flex-col gap-1.5 items-center justify-center">
+                              {replyingInquiryId === inq.id ? (
+                                <div className="space-y-2 w-48 text-left bg-gray-50 p-2.5 rounded border border-border-custom">
+                                  <textarea
+                                    value={replyText}
+                                    onChange={(e) => setReplyText(e.target.value)}
+                                    placeholder="답변 내용을 작성해 주세요."
+                                    rows={4}
+                                    className="w-full text-xs p-1.5 border border-border-custom rounded bg-white focus:outline-none focus:border-brass text-foreground"
+                                  />
+                                  <div className="flex justify-end gap-1.5">
+                                    <button
+                                      onClick={() => handleSaveReply(inq.id)}
+                                      className="bg-brass text-background px-2.5 py-1 rounded text-[10px] font-bold hover:bg-brass-dark cursor-pointer"
+                                    >
+                                      완료
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        setReplyingInquiryId(null);
+                                        setReplyText("");
+                                      }}
+                                      className="border border-border-custom text-foreground-muted px-2.5 py-1 rounded text-[10px] hover:bg-background-secondary cursor-pointer"
+                                    >
+                                      취소
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <>
+                                  <button
+                                    onClick={() => {
+                                      setReplyingInquiryId(inq.id);
+                                      setReplyText(inq.reply || "");
+                                    }}
+                                    className="w-full text-center border border-brass/50 text-brass px-2 py-1 rounded hover:bg-brass hover:text-background transition-all text-[10px] font-semibold cursor-pointer"
+                                  >
+                                    {inq.reply ? "답변 수정" : "답변 달기"}
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteInquiry(inq.id)}
+                                    className="w-full text-center border border-red-200 text-red-600 px-2 py-1 rounded hover:bg-red-500 hover:text-white transition-all text-[10px] font-semibold cursor-pointer"
+                                  >
+                                    삭제
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="7" className="p-8 text-center text-foreground-muted font-light">
+                          조회 조건에 부합하는 문의 사항이 없습니다.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </main>
     </div>
   );
