@@ -812,25 +812,24 @@ function InputFormContent() {
       }
   };
 
-  // 실제 포트원 결제창 호출 및 처리
-  const handlePortonePayment = () => {
-    const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
-    const pgChannel = process.env.NEXT_PUBLIC_PORTONE_PG || "html5_inicis";
+  // 실제 포트원 결제창 호출 및 처리 (V2 마이그레이션)
+  const handlePortonePayment = async () => {
+    const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "store-312155f8-f523-4067-a568-285c7bbec6e0";
+    const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "";
 
-    if (impCode === "imp00000000") {
-      alert("[개발자 테스트 안내] 테스트 가맹점 코드(imp00000000)가 감지되어 모의 결제 성공 시뮬레이션을 즉시 실행합니다.\n\n확인을 누르시면 주문 정보가 관리자 페이지에 결제완료(paid) 상태로 즉시 등록되고 분석 화면으로 넘어갑니다.");
+    // 채널 키가 환경변수로 제공되지 않은 임시 환경인 경우 모의 테스트로 분석 즉시 진입
+    if (!channelKey) {
+      alert("[개발자 테스트 안내] V2 결제 채널 키가 지정되지 않아 모의 결제 성공 시뮬레이션을 즉시 실행합니다.\n\n확인을 누르시면 주문 정보가 관리자 페이지에 결제완료(paid) 상태로 즉시 등록되고 분석 화면으로 넘어갑니다.");
       startAnalysis();
       return;
     }
 
-    if (typeof window === "undefined" || !window.IMP) {
+    if (typeof window === "undefined" || !window.PortOne) {
       alert("결제 모듈을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
       return;
     }
 
-    const IMP = window.IMP;
-
-    IMP.init(impCode);
+    const PortOne = window.PortOne;
 
     const base = productKey === "gunghap" 
       ? (gunghapType === "reunion" ? 19900 : 26900)
@@ -843,30 +842,56 @@ function InputFormContent() {
         : base)
       : base;
 
-    // 결제수단 매핑 (card, kakaopay, payco, tosspay, naverpay 등)
-    let selectedPayMethod = "card";
-    if (payMethod === "kakaopay") selectedPayMethod = "kakaopay";
-    else if (payMethod === "naverpay") selectedPayMethod = "naverpay";
-    else if (payMethod === "tosspay") selectedPayMethod = "tosspay";
+    // 결제수단 및 간편결제 제공사 매핑 (CARD, EASY_PAY)
+    let payMethodParam = "CARD";
+    let easyPayProvider = undefined;
 
-    const payData = {
-      pg: pgChannel,
-      pay_method: selectedPayMethod,
-      merchant_uid: `merchant_${new Date().getTime()}`,
-      name: `${formData.name || "의뢰인"}님 ${activeProduct.title}`,
-      amount: finalPrice,
-      buyer_name: formData.name,
-      buyer_tel: formData.phone,
-      buyer_email: formData.email || "today_sms@hyeandang.com",
-    };
+    if (payMethod === "kakaopay") {
+      payMethodParam = "EASY_PAY";
+      easyPayProvider = "EASY_PAY_PROVIDER_KAKAOPAY";
+    } else if (payMethod === "naverpay") {
+      payMethodParam = "EASY_PAY";
+      easyPayProvider = "EASY_PAY_PROVIDER_NAVERPAY";
+    } else if (payMethod === "tosspay") {
+      payMethodParam = "EASY_PAY";
+      easyPayProvider = "EASY_PAY_PROVIDER_TOSSPAY";
+    }
 
-    IMP.request_pay(payData, function (rsp) {
-      if (rsp.success) {
-        startAnalysis(); // 결제 완료 시 분석 진행
-      } else {
-        alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg} (가맹점코드: ${impCode}, PG: ${pgChannel})`);
+    try {
+      const paymentData = {
+        storeId,
+        channelKey,
+        paymentId: `payment_${new Date().getTime()}`,
+        orderName: `${formData.name || "의뢰인"}님 ${activeProduct.title}`,
+        totalAmount: finalPrice,
+        currency: "CURRENCY_KRW",
+        payMethod: payMethodParam,
+        customer: {
+          fullName: formData.name || "의뢰인",
+          phoneNumber: formData.phone || "010-0000-0000",
+          email: formData.email || "today_sms@hyeandang.com",
+        },
+      };
+
+      if (payMethodParam === "EASY_PAY" && easyPayProvider) {
+        paymentData.easyPay = {
+          easyPayProvider
+        };
       }
-    });
+
+      const response = await PortOne.requestPayment(paymentData);
+
+      if (response.code !== undefined) {
+        // 결제 실패
+        alert(`결제에 실패하였습니다. 에러 내용: ${response.message}`);
+      } else {
+        // 결제 성공
+        startAnalysis();
+      }
+    } catch (e) {
+      console.error("V2 Payment request error:", e);
+      alert(`결제 처리 중 오류가 발생했습니다: ${e.message}`);
+    }
   };
 
   const getTraditionalTimeName = (hourVal) => {
@@ -889,7 +914,7 @@ function InputFormContent() {
   return (
     <div className="flex flex-col min-h-screen hyeandang-traditional-bg">
       <Script 
-        src="https://cdn.iamport.kr/v1/iamport.js" 
+        src="https://cdn.portone.io/v2/browser-sdk.js" 
         strategy="afterInteractive"
       />
       {/* Header */}

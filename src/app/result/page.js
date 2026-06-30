@@ -3516,28 +3516,38 @@ function ResultContent() {
       window.location.href = url.toString();
     };
 
-    const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
-    const pgCode = process.env.NEXT_PUBLIC_PORTONE_PG || "html5_inicis";
+    const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "store-312155f8-f523-4067-a568-285c7bbec6e0";
+    const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "";
 
-    if (!window.IMP) {
+    if (!channelKey) {
+      alert("[개발자 테스트 안내] V2 결제 채널 키가 지정되지 않아 모의 결제를 즉시 완료합니다.");
+      performUpgrade();
+      return;
+    }
+
+    if (typeof window === "undefined" || !window.PortOne) {
       alert("결제 모듈이 아직 로드되지 않았습니다. 인터넷 연결을 확인하시거나, 브라우저의 광고 차단 확장 프로그램(AdBlock 등)이 활성화되어 있다면 해제한 후 새로고침(F5)을 해주세요.");
       return;
     }
 
     try {
-      const IMP = window.IMP;
-      IMP.init(impCode);
+      const PortOne = window.PortOne;
 
-      IMP.request_pay({
-        pg: pgCode,
-        merchant_uid: `merchant_${new Date().getTime()}`,
-        name: `${name}님 ${typeParam === "tojeong" ? "토정비결" : "신수비결"} ${grade === "premium" ? "고급" : "프리미엄"} 업그레이드`,
-        amount: amount,
-        buyer_name: name,
-        buyer_email: emailParam || "today_sms@hyeandang.com",
-        buyer_tel: phoneParam || "010-0000-0000",
-      }, function (rsp) {
-        if (rsp.success) {
+      PortOne.requestPayment({
+        storeId,
+        channelKey,
+        paymentId: `payment_${new Date().getTime()}`,
+        orderName: `${name}님 ${typeParam === "tojeong" ? "토정비결" : "신수비결"} ${grade === "premium" ? "고급" : "프리미엄"} 업그레이드`,
+        totalAmount: amount,
+        currency: "CURRENCY_KRW",
+        payMethod: "CARD",
+        customer: {
+          fullName: name,
+          phoneNumber: phoneParam || "010-0000-0000",
+          email: emailParam || "today_sms@hyeandang.com",
+        },
+      }).then(function (rsp) {
+        if (rsp.code === undefined) {
           setIsProcessing(true);
           setProgress(0);
           
@@ -3674,7 +3684,7 @@ function ResultContent() {
             }
           }, 150);
         } else {
-          alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
+          alert(`결제에 실패하였습니다. 에러 내용: ${rsp.message}`);
         }
       });
     } catch (err) {
@@ -3685,47 +3695,40 @@ function ResultContent() {
   const handlePortonePayment = () => {
     if (typeof window === "undefined") return;
 
-    const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
-    const pgCode = process.env.NEXT_PUBLIC_PORTONE_PG || "html5_inicis";
+    const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "store-312155f8-f523-4067-a568-285c7bbec6e0";
+    const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "";
 
-    // 로컬 환경에서도 포트원 카드결제창을 띄우기 위해 기존 모의결제 우회 로직을 주석 처리합니다.
-    /*
-    const isLocal = (typeof window !== "undefined" && (
-      window.location.hostname === "localhost" || 
-      window.location.hostname === "127.0.0.1" ||
-      window.location.hostname.startsWith("192.168.") ||
-      window.location.hostname.startsWith("10.") ||
-      window.location.port === "3000" ||
-      window.location.port === "3001"
-    ));
-
-    if (impCode === "imp00000000" || isLocal) {
-      alert("[개발자 테스트 안내] 모의 결제를 즉시 실행합니다.\n\n확인을 누르시면 결제완료 처리되고 상세 보고서 잠금이 풀립니다.");
+    // 로컬 환경 혹은 개발 테스트를 위해 채널 키가 없으면 바로 잠금 해제
+    if (!channelKey) {
+      alert("[개발자 테스트 안내] V2 결제 채널 키가 지정되지 않아 모의 결제를 즉시 완료합니다.\n\n확인을 누르시면 결제완료 처리되고 상세 보고서 잠금이 풀립니다.");
       setIsPaid(true);
       updateLocalStorageOrderToPaid();
       return;
     }
-    */
-    
-    if (!window.IMP) {
+
+    if (typeof window === "undefined" || !window.PortOne) {
       alert("결제 모듈이 아직 로드되지 않았습니다. 인터넷 연결을 확인하시거나, 브라우저의 광고 차단 확장 프로그램(AdBlock 등)이 활성화되어 있다면 해제한 후 새로고침(F5)을 해주세요.");
       return;
     }
 
     try {
-      const IMP = window.IMP;
-      IMP.init(impCode);
+      const PortOne = window.PortOne;
 
-      IMP.request_pay({
-        pg: pgCode,
-        merchant_uid: `merchant_${new Date().getTime()}`,
+      PortOne.requestPayment({
+        storeId,
+        channelKey,
+        paymentId: `payment_${new Date().getTime()}`,
         name: `${name}님 정통 사주 풀이 보고서`,
-        amount: 34900,
-        buyer_name: name,
-        buyer_email: emailParam || "today_sms@hyeandang.com",
-        buyer_tel: phoneParam || "010-0000-0000",
-      }, function (rsp) {
-        if (rsp.success) {
+        totalAmount: 34900,
+        currency: "CURRENCY_KRW",
+        payMethod: "CARD",
+        customer: {
+          fullName: name,
+          phoneNumber: phoneParam || "010-0000-0000",
+          email: emailParam || "today_sms@hyeandang.com",
+        },
+      }).then(function (rsp) {
+        if (rsp.code === undefined) {
           // 결제 성공 시 1.8초 동안 만세력 정밀 보조 빌드 애니메이션 시작
           setIsProcessing(true);
           setProgress(0);
@@ -3864,7 +3867,7 @@ function ResultContent() {
             }
           }, 150);
         } else {
-          alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg} (가맹점코드: ${impCode}, PG: ${pgCode})`);
+          alert(`결제에 실패하였습니다. 에러 내용: ${rsp.message}`);
         }
       });
     } catch (err) {
@@ -7587,9 +7590,10 @@ function ResultContent() {
   return (
     <div className="min-h-screen hyeandang-traditional-bg text-[#2C2C2C] py-10 px-4 md:py-16 print:bg-white print:py-0 print:px-0">
       <Script 
-        src="https://cdn.iamport.kr/v1/iamport.js" 
+        src="https://cdn.portone.io/v2/browser-sdk.js" 
         strategy="afterInteractive"
       />
+
       {/* 결제 후 데이터 생성 중 로딩 애니메이션 오버레이 */}
       {isProcessing && (
         <div className="fixed inset-0 bg-black/75 backdrop-blur-md flex flex-col items-center justify-center z-50 p-6 text-center select-none print:hidden">
