@@ -3539,7 +3539,7 @@ function ResultContent() {
         paymentId: `payment_${new Date().getTime()}`,
         orderName: `${name}님 ${typeParam === "tojeong" ? "토정비결" : "신수비결"} ${grade === "premium" ? "고급" : "프리미엄"} 업그레이드`,
         totalAmount: amount,
-        currency: "CURRENCY_KRW",
+        currency: "KRW",
         payMethod: "CARD",
         customer: {
           fullName: name,
@@ -3720,7 +3720,7 @@ function ResultContent() {
         paymentId: `payment_${new Date().getTime()}`,
         name: `${name}님 정통 사주 풀이 보고서`,
         totalAmount: 34900,
-        currency: "CURRENCY_KRW",
+        currency: "KRW",
         payMethod: "CARD",
         customer: {
           fullName: name,

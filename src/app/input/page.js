@@ -852,7 +852,7 @@ function InputFormContent() {
         paymentId: `payment_${new Date().getTime()}`,
         orderName: `${formData.name || "의뢰인"}님 ${activeProduct.title}`,
         totalAmount: finalPrice,
-        currency: "CURRENCY_KRW",
+        currency: "KRW",
         payMethod: payMethodParam,
         customer: {
           fullName: formData.name || "의뢰인",
