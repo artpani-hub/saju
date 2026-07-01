@@ -7780,8 +7780,8 @@ function ResultContent() {
           </div>
         )}
 
-        {/* SMS 요약 보고서일 때 유료 결제 유도 하단 고정 플로팅 바 (오늘의 운세는 제외) */}
-        {type !== "today" && (reportGrade === "sms" || reportGrade === "free") && (
+        {/* SMS 요약 보고서일 때 유료 결제 유도 하단 고정 플로팅 바 (오늘의 운세 및 무료 사주는 제외) */}
+        {type !== "today" && reportGrade === "sms" && (
           <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp flex gap-2 sm:gap-3">
             <button
               type="button"
@@ -7802,8 +7802,8 @@ function ResultContent() {
           </div>
         )}
 
-        {/* 오늘의 맞춤 운세 보고서 하단 고정 혜안당 운세 상품 이동 플로팅 바 */}
-        {type === "today" && (
+        {/* 오늘의 맞춤 운세 및 무료 사주 보고서 하단 고정 혜안당 운세 상품 이동 플로팅 바 */}
+        {(type === "today" || reportGrade === "free") && (
           <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
             <Link
               href="/#services"
