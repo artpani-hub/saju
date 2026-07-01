@@ -842,20 +842,8 @@ function InputFormContent() {
         : base)
       : base;
 
-    // 결제수단 및 간편결제 제공사 매핑 (CARD, EASY_PAY)
+    // KCP 결제 채널은 신용카드(CARD) 결제창을 호출하고, 해당 결제창 내에서 카드/카카오페이/네이버페이 등을 모두 처리합니다.
     let payMethodParam = "CARD";
-    let easyPayProvider = undefined;
-
-    if (payMethod === "kakaopay") {
-      payMethodParam = "EASY_PAY";
-      easyPayProvider = "EASY_PAY_PROVIDER_KAKAOPAY";
-    } else if (payMethod === "naverpay") {
-      payMethodParam = "EASY_PAY";
-      easyPayProvider = "EASY_PAY_PROVIDER_NAVERPAY";
-    } else if (payMethod === "tosspay") {
-      payMethodParam = "EASY_PAY";
-      easyPayProvider = "EASY_PAY_PROVIDER_TOSSPAY";
-    }
 
     try {
       const paymentData = {
@@ -872,12 +860,6 @@ function InputFormContent() {
           email: formData.email || "today_sms@hyeandang.com",
         },
       };
-
-      if (payMethodParam === "EASY_PAY" && easyPayProvider) {
-        paymentData.easyPay = {
-          easyPayProvider
-        };
-      }
 
       const response = await PortOne.requestPayment(paymentData);
 
