@@ -3277,7 +3277,7 @@ function ResultContent() {
       const debugUnlock = window.location.search.includes("unlock=true") || window.location.search.includes("debug=true");
       if (debugUnlock) return true;
       const reportGrade = new URLSearchParams(window.location.search).get("reportGrade") || "premium";
-      if (reportGrade === "premium") return false;
+      if (reportGrade === "premium" || reportGrade === "deep" || reportGrade === "sms") return false;
     }
     return false;
   });
@@ -3352,7 +3352,8 @@ function ResultContent() {
   const partnerSajuInfo = getGanjiTable(partnerYear, partnerMonth, partnerDay, partnerHour);
   const prescriptions = getDeficientPrescription(sajuInfo.elements);
   const metrics = getCharacterMetrics(sajuInfo);
-  const isFree = (reportGrade === "free" && !isPaid) || (reportGrade === "premium" && !isPaid);
+  const isFree = (reportGrade === "free" && !isPaid) || (reportGrade === "premium" && !isPaid) || (reportGrade === "sms" && !isPaid);
+  const isSmsLocked = (reportGrade === "sms" && !isPaid);
 
   // Determine user's base element for 2026 compatibility (일간 오행 기준)
   const baseEl = sajuInfo.day.stemEl; // Representing birth day element (일간)
@@ -3516,7 +3517,7 @@ function ResultContent() {
       }
 
       // 그 외의 경우 (특히 free가 아닌 상태에서 hyeandang_orders도 없는 경우) 결제 유도
-      if (reportGrade === "premium" || reportGrade === "deep") {
+      if (reportGrade === "premium" || reportGrade === "deep" || reportGrade === "sms") {
         setIsPaid(false);
       } else if (reportGrade !== "free") {
         setIsPaid(false);
@@ -4312,7 +4313,9 @@ function ResultContent() {
   };
 
   const renderSajuContent = () => {
-    if (reportGrade === "sms" || reportGrade === "free") {
+    // reportGrade가 'sms'이고 추가 업그레이드를 하지 않았다면 (isPaid가 true가 아니거나 orders에 deep/premium 업그레이드 기록이 없음) 요약본 노출
+    // 단, reportGrade가 'free'인 비결제 상태도 요약본 노출
+    if ((reportGrade === "sms" && !isPaid) || reportGrade === "free") {
       return renderSmsSajuContent();
     }
 
@@ -5320,7 +5323,8 @@ function ResultContent() {
   };
 
   const renderNewYearContent = () => {
-    if (reportGrade === "sms") {
+    // reportGrade가 'sms'이고 추가 업그레이드를 하지 않았다면 (isPaid가 true가 아니거나 orders에 deep/premium 업그레이드 기록이 없음) 요약본 노출
+    if (reportGrade === "sms" && !isPaid) {
       return renderSmsNewYearContent();
     }
 
