@@ -553,7 +553,11 @@ const renderPageContent = (page, ctx) => {
             <div className="border-t border-[#E2DDD5]/70 pt-3 grid grid-cols-2 gap-4 text-left">
               <div className="space-y-1">
                 <span className="text-[10px] text-[#A3845B] font-semibold block">의뢰 구분 및 등급</span>
-                <span className="text-xs font-bold text-[#A3845B]">평생 종합 사주 (초프리미엄 32페이지 보감)</span>
+                <span className="text-xs font-bold text-[#A3845B]">
+                  {reportGrade === "sms" ? "평생 종합 사주 (문자 요약)" : 
+                   reportGrade === "deep" ? "평생 종합 사주 (고급)" : 
+                   "평생 종합 사주 (프리미엄)"}
+                </span>
               </div>
               <div className="space-y-1">
                 <span className="text-[10px] text-[#A3845B] font-semibold block">분석 기관</span>
@@ -3384,7 +3388,7 @@ function ResultContent() {
         }
       }
 
-      if (paidOrder && reportGrade !== "premium") {
+      if (paidOrder) {
         setIsPaid(true);
         setHasCheckedPayment(true);
         return;
@@ -3392,14 +3396,127 @@ function ResultContent() {
 
       // 만약 URL 파라미터에 성공(imp_success) 플래그가 들어있는 경우도 결제 완료 처리
       const params = new URLSearchParams(window.location.search);
-      if (params.get("imp_success") === "true" && reportGrade !== "premium") {
+      if (params.get("imp_success") === "true") {
         setIsPaid(true);
+        // 모바일 리다이렉트 등으로 들어왔을 때 해당 주문 정보를 로컬 스토리지에 업데이트
+        updateLocalStorageOrderToPaid();
+        
+        // 만약 reportGrade가 deep이나 premium으로 성공해서 리다이렉트 되었는데 로컬스토리지에 미처 반영이 안 되었을 수 있으므로 강제 승격 진행
+        const currentGradeParam = params.get("reportGrade") || "premium";
+        
+        // [모바일 리다이렉트 대응] 결제 완료 시점 메일 및 문자 자동 전송 처리
+        const sendNotificationOnMobileRedirect = async () => {
+          try {
+            const targetEmail = emailParam || "today_sms@hyeandang.com";
+            const targetPhone = phoneParam;
+            
+            // 1. 이메일 전송
+            if (targetEmail && targetEmail.includes("@") && targetEmail !== "today_sms@hyeandang.com") {
+              const queryParams = new URLSearchParams({
+                name: name,
+                gender: genderVal || "female",
+                type: typeParam,
+                calendar: calendar,
+                year: String(year),
+                month: String(month),
+                day: String(day),
+                hour: hour,
+                worryCategory: worryCategory,
+                worryText: worryText || "",
+                partnerName: partnerName || "",
+                partnerGender: partnerGender === "여성" ? "female" : "male",
+                partnerCalendar: partnerCalendar,
+                partnerYear: String(partnerYear),
+                partnerMonth: String(partnerMonth),
+                partnerDay: String(partnerDay),
+                partnerHour: partnerHour,
+                gunghapType: gunghapType
+              });
+
+              const origin = window.location.origin;
+              const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=${currentGradeParam}`;
+              const mailSubject = `[혜안당 명리연구소] ${name} 님 주문하신 [정통 사주 보고서] 분석결과서가 도착했습니다.`;
+              const mailHtml = `
+                <div style="font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; border: 1px solid #E2DDD5; border-radius: 12px; background-color: #F9F8F6;">
+                  <div style="text-align: center; margin-bottom: 30px;">
+                    <span style="font-size: 24px; font-weight: bold; color: #A3845B; letter-spacing: 2px;">慧眼堂</span>
+                    <p style="font-size: 12px; color: #888; margin-top: 5px;">지혜로운 눈으로 밝히는 운명</p>
+                  </div>
+                  <div style="background-color: #ffffff; padding: 30px; border-radius: 8px; border: 1px solid #E1E1E1; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                    <h2 style="font-size: 18px; font-weight: bold; color: #1A1A1A; margin-top: 0; border-bottom: 2px solid #A3845B; padding-bottom: 15px;">운세 분석 보고서 완료 안내</h2>
+                    <p style="font-size: 14px; color: #333; line-height: 1.6; margin-top: 20px;">
+                      안녕하세요, <strong>${name}</strong> 님.<br />
+                      혜안당 명리연구소에 의뢰해 주신 <strong>[정통 사주 보고서]</strong> 분석 작업이 정교한 명리 해석을 거쳐 최종 완료되었습니다.
+                    </p>
+                    <p style="font-size: 14px; color: #333; line-height: 1.6;">
+                      작성된 정밀 보감 보고서는 아래의 '결과 확인하기' 버튼을 누르시면 온라인 결과 화면으로 즉시 연결되어 열람 및 가이드를 확인해 보실 수 있습니다.
+                    </p>
+                    <div style="text-align: center; margin: 35px 0;">
+                      <a href="${resultUrl}" target="_blank" style="display: inline-block; background-color: #A3845B; color: #ffffff; text-decoration: none; padding: 14px 35px; border-radius: 6px; font-size: 15px; font-weight: bold; box-shadow: 0 4px 6px rgba(163,132,91,0.25);">결과 확인하기</a>
+                    </div>
+                    <p style="font-size: 12px; color: #666; line-height: 1.5; background-color: #F3F3F3; padding: 15px; border-radius: 6px; margin-bottom: 0;">
+                      ※ 본 메일은 발신전용으로 회신이 되지 않습니다.<br />
+                      ※ 문의 사항은 홈페이지 하단 대표번호 혹은 아트파니 고객센터로 연락 주시기 바랍니다.
+                    </p>
+                  </div>
+                  <div style="text-align: center; margin-top: 30px; font-size: 11px; color: #888; line-height: 1.6;">
+                    © 2026 혜안당. All rights reserved.
+                  </div>
+                </div>
+              `;
+
+              await fetch("/api/email", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ to: targetEmail, subject: mailSubject, html: mailHtml })
+              });
+            }
+
+            // 2. SMS 전송
+            if (targetPhone && targetPhone.replace(/[^0-9]/g, "").length >= 9) {
+              const smsQueryParams = new URLSearchParams({
+                name: name,
+                gender: genderVal || "female",
+                type: typeParam,
+                calendar: calendar,
+                year: String(year),
+                month: String(month),
+                day: String(day),
+                hour: hour,
+                worryCategory: worryCategory,
+                worryText: worryText || "",
+                partnerName: partnerName || "",
+                partnerGender: partnerGender === "여성" ? "female" : "male",
+                partnerCalendar: partnerCalendar,
+                partnerYear: String(partnerYear),
+                partnerMonth: String(partnerMonth),
+                partnerDay: String(partnerDay),
+                partnerHour: partnerHour,
+                gunghapType: gunghapType
+              });
+
+              const origin = "https://saju.artpani.com";
+              const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=${currentGradeParam}`;
+              const smsContent = `[혜안당 명리연구소] ${name} 님, 주문하신 정통 사주 분석이 완료되었습니다.\n\n적어주신 이메일(${targetEmail || "지정 이메일"})로 상세 보감 PDF가 전송되었으며, 아래 온라인 보감 링크로도 즉시 열람이 가능합니다.\n\n▶ 결과 보기: ${mobileResultUrl}\n\n감사합니다.`;
+
+              await fetch("/api/sms", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ receiver: targetPhone, msg: smsContent, title: "[혜안당 사주분석]" })
+              });
+            }
+          } catch (err) {
+            console.error("모바일 리다이렉트 문자/메일 발송 실패:", err);
+          }
+        };
+
+        sendNotificationOnMobileRedirect();
         setHasCheckedPayment(true);
         return;
       }
 
       // 그 외의 경우 (특히 free가 아닌 상태에서 hyeandang_orders도 없는 경우) 결제 유도
-      if (reportGrade === "premium") {
+      if (reportGrade === "premium" || reportGrade === "deep") {
         setIsPaid(false);
       } else if (reportGrade !== "free") {
         setIsPaid(false);
@@ -3533,6 +3650,10 @@ function ResultContent() {
     try {
       const PortOne = window.PortOne;
 
+      const redirectUrl = typeof window !== "undefined"
+        ? `${window.location.origin}/result?${new URLSearchParams(window.location.search).toString()}&imp_success=true`
+        : "https://saju.artpani.com/result";
+
       PortOne.requestPayment({
         storeId,
         channelKey,
@@ -3541,6 +3662,9 @@ function ResultContent() {
         totalAmount: amount,
         currency: "KRW",
         payMethod: "CARD",
+        redirectUrl: redirectUrl,
+        redirectUrlType: "PAGELINK",
+        appScheme: "artpanisaju",
         customer: {
           fullName: name,
           phoneNumber: phoneParam || "010-0000-0000",
@@ -3714,6 +3838,10 @@ function ResultContent() {
     try {
       const PortOne = window.PortOne;
 
+      const redirectUrl = typeof window !== "undefined" 
+        ? `${window.location.origin}/result?${new URLSearchParams(window.location.search).toString()}&imp_success=true`
+        : "https://saju.artpani.com/result";
+
       PortOne.requestPayment({
         storeId,
         channelKey,
@@ -3722,6 +3850,9 @@ function ResultContent() {
         totalAmount: 34900,
         currency: "KRW",
         payMethod: "CARD",
+        redirectUrl: redirectUrl,
+        redirectUrlType: "PAGELINK",
+        appScheme: "artpanisaju",
         customer: {
           fullName: name,
           phoneNumber: phoneParam || "010-0000-0000",

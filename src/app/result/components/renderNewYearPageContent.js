@@ -6532,7 +6532,9 @@ case "ny_stem_harmony":
           elementBlessing = "심연을 흐르는 맑은 물결처럼 무한한 지혜와 통찰력으로 삶의 모든 굴곡을 유연하고 복되게 개척해가시길 축원합니다.";
         }
 
-        return wrapLock(
+        const showUpgradePrompt = currentGrade === "premium";
+
+        const contentBlock = wrapLock(
           <div className="py-8 px-4 flex flex-col justify-between min-h-[600px] bg-gradient-to-b from-[#FDFBF7] to-[#FAF6EE] border-4 border-[#A3845B]/30 rounded-2xl relative shadow-lg overflow-hidden">
             {/* 고풍스러운 모서리 문양 */}
             <div className="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-[#A3845B]/40 pointer-events-none" />
@@ -6585,6 +6587,46 @@ case "ny_stem_harmony":
               </svg>
             </div>
           </div>
+        );
+
+        return (
+          <>
+            {contentBlock}
+            {showUpgradePrompt && (
+              <div className="mt-8 border-2 border-dashed border-[#A3845B] bg-[#FAF8F5] rounded-xl p-6 text-center space-y-4 print:hidden">
+                <div className="inline-flex items-center justify-center w-10 h-10 bg-[#A3845B]/10 rounded-full text-lg">
+                  🔓
+                </div>
+                <h4 className="font-myeongjo text-sm font-bold text-gray-800">
+                  {name}님, 고급 리포트에서 가려진 <span className="text-[#8B221E]">핵심 프리미엄 분석</span>을 확인해 보세요.
+                </h4>
+                <p className="text-[11px] text-[#5F5F5F] leading-relaxed font-light text-justify max-w-md mx-auto">
+                  현재 고급 리포트 등급을 이용 중이십니다. 본 신년보감의 52페이지 전체 내용 중 아래의 핵심 프리미엄 분석 영역들이 현재 블러(흐림) 처리되어 잠겨 있습니다.
+                </p>
+                
+                <div className="grid grid-cols-2 gap-2 text-[10px] text-left text-gray-600 bg-white border border-[#E2DDD5]/60 p-4 rounded-lg max-w-md mx-auto">
+                  <div className="flex items-center gap-1">🔒 신년 3대 신살 작동 분석</div>
+                  <div className="flex items-center gap-1">🔒 치명적인 액난 경보 & 방어 비책</div>
+                  <div className="flex items-center gap-1">🔒 신년 1대1 고민 정밀 조율 솔루션</div>
+                  <div className="flex items-center gap-1">🔒 향후 3개년 로드맵 (2027~2029)</div>
+                  <div className="flex items-center gap-1">🔒 공간 풍수 인테리어 처방</div>
+                </div>
+
+                <p className="text-[11px] text-[#8B221E] font-medium">
+                  업그레이드 완료 즉시 블러 처리가 모두 해제되며 완전한 리포트를 바로 열람하실 수 있습니다.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={handleUpgradePayment}
+                  className="w-full max-w-xs py-3.5 bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] rounded-lg font-myeongjo font-bold text-xs shadow-md transition-all cursor-pointer inline-flex items-center justify-center gap-1.5"
+                >
+                  <span>👑 프리미엄 리포트로 최종 업그레이드 (+15,000원)</span>
+                  <span>➔</span>
+                </button>
+              </div>
+            )}
+          </>
         );
       }
 

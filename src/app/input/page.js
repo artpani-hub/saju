@@ -846,6 +846,10 @@ function InputFormContent() {
     let payMethodParam = "CARD";
 
     try {
+      const redirectUrl = typeof window !== "undefined"
+        ? `${window.location.origin}/result?name=${encodeURIComponent(formData.name)}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendar}&year=${formData.year}&month=${formData.month}&day=${formData.day}&hour=${formData.hour}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText)}&email=${encodeURIComponent(formData.email)}&phone=${encodeURIComponent(formData.phone)}&reportGrade=${reportGrade}&partnerName=${encodeURIComponent(formData.partnerName || "")}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendar}&partnerYear=${formData.partnerYear}&partnerMonth=${formData.partnerMonth}&partnerDay=${formData.partnerDay}&partnerHour=${formData.partnerHour}&gunghapType=${gunghapType}&imp_success=true`
+        : "https://saju.artpani.com/result";
+
       const paymentData = {
         storeId,
         channelKey,
@@ -854,6 +858,9 @@ function InputFormContent() {
         totalAmount: finalPrice,
         currency: "KRW",
         payMethod: payMethodParam,
+        redirectUrl: redirectUrl,
+        redirectUrlType: "PAGELINK",
+        appScheme: "artpanisaju",
         customer: {
           fullName: formData.name || "의뢰인",
           phoneNumber: formData.phone || "010-0000-0000",
@@ -1830,56 +1837,13 @@ function InputFormContent() {
                   );
                 })()}
 
-                 {/* Options of paying */}
-                <div className="border-t border-border-custom pt-4 text-left">
-                  <span className="text-xs font-semibold text-foreground block mb-2">결제수단 선택</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setPayMethod("card")}
-                      className={`py-2.5 text-xs text-center border rounded font-medium transition-all ${
-                        payMethod === "card"
-                          ? "border-brass bg-brass/5 text-brass"
-                          : "border-border-custom hover:border-brass"
-                      }`}
-                    >
-                      신용/체크카드
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPayMethod("kakaopay")}
-                      className={`py-2.5 text-xs text-center border rounded font-medium transition-all ${
-                        payMethod === "kakaopay"
-                          ? "border-brass bg-brass/5 text-brass"
-                          : "border-border-custom hover:border-brass"
-                      }`}
-                    >
-                      카카오페이
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPayMethod("naverpay")}
-                      className={`py-2.5 text-xs text-center border rounded font-medium transition-all ${
-                        payMethod === "naverpay"
-                          ? "border-brass bg-brass/5 text-brass"
-                          : "border-border-custom hover:border-brass"
-                      }`}
-                    >
-                      네이버페이
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPayMethod("tosspay")}
-                      className={`py-2.5 text-xs text-center border rounded font-medium transition-all ${
-                        payMethod === "tosspay"
-                          ? "border-brass bg-brass/5 text-brass"
-                          : "border-border-custom hover:border-brass"
-                      }`}
-                    >
-                      토스페이
-                    </button>
+                  <span className="text-xs font-semibold text-foreground block mb-2">결제수단</span>
+                  <div className="w-full py-3 text-center border border-brass bg-brass/5 text-brass rounded font-medium text-xs">
+                    신용/체크카드 (통합결제)
                   </div>
-                </div>
+                  <p className="text-[10px] text-foreground-muted mt-2 text-left leading-relaxed">
+                    * NHN KCP 통합 결제창 내에서 신용카드 결제 및 카카오뱅크 등 간편 결제를 모두 이용하실 수 있습니다.
+                  </p>
               </div>
             </div>
 
