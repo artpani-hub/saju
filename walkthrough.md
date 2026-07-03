@@ -297,3 +297,12 @@
 - **검증**:
   - 도커 재빌드(`docker-compose up -d --build`) 후 브라우저 서브에이전트를 통하여 `reportGrade=premium` 인 토정비결 결과 페이지가 31페이지 끝까지 (음력 1~12월 상세 운세 포함) 아무런 흰색 화면(Crash)이나 콘솔 에러 없이 정상적으로 렌더링됨을 최종 검증했습니다.
 
+### 32. 모바일 포트원 결제 완료 리다이렉트 시 고급보고서 미노출 에러 수정 [BUG FIX]
+- **에러 내용**: 모바일에서 문자요약(`reportGrade=sms`)을 보던 중 고급 업그레이드 결제를 완료했음에도 불구하고, 결제 창 복귀 후 화면이 여전히 문자요약(`sms`) 상태로 보이거나 고급 보고서가 노출되지 않는 현상.
+- **원인 분석**: 
+  - 모바일 기기에서는 포트원 결제 모듈이 페이지 링크(`PAGELINK`) 방식으로 기동되어 결제 완료 후 지정된 `redirectUrl`로 리다이렉트되어 돌아옵니다.
+  - 기존 `redirectUrl` 빌드 시 `new URLSearchParams(window.location.search)`를 그대로 사용하여 이전 상태인 `reportGrade=sms`가 쿼리 스트링에 박힌 채 복귀하였고, 이로 인해 결제 후 등급이 `"deep"`으로 올바르게 갱신되지 못했던 것이 원인이었습니다.
+- **수정 내용**:
+  - `src/app/result/page.js` 파일 내 `handleUpgradeFromSms` 함수 안에서 `redirectUrl` 생성 시, URL 파라미터의 `reportGrade` 값을 업그레이드 대상 등급인 `grade`(예: `"deep"`)로 변경해 주도록 보완했습니다. (즉, 결제 복귀 URL이 `reportGrade=deep&imp_success=true`로 생성되도록 수정)
+- **검증**:
+  - 로컬 빌드 및 실서버 배포(`node scratch/deploy_to_server.js`) 완료 후, 모바일 결제 프로세스 진입 및 복귀 시 결제 등급(`reportGrade=deep`)이 정상 유지되어 최종 고급/프리미엄 리포트 화면이 완벽하게 잠금 해제되어 출력됨을 확인했습니다.

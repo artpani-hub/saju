@@ -3684,8 +3684,10 @@ function ResultContent() {
     try {
       const PortOne = window.PortOne;
 
+      const queryParams = new URLSearchParams(window.location.search);
+      queryParams.set("reportGrade", grade);
       const redirectUrl = typeof window !== "undefined"
-        ? `${window.location.origin}/result?${new URLSearchParams(window.location.search).toString()}&imp_success=true`
+        ? `${window.location.origin}/result?${queryParams.toString()}&imp_success=true`
         : "https://saju.artpani.com/result";
 
       PortOne.requestPayment({
