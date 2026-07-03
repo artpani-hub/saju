@@ -44,7 +44,7 @@ const getElementBarColor = (el) => {
 
 
 const getPersonalizedSolution = (name, text, category, dayStemEl) => {
-  const cleanedText = text ? decodeURIComponent(text).replace(new RegExp("<\\/?[^>]+(>|$)", "g"), "") : "";
+  const cleanedText = text ? text.replace(new RegExp("<\\/?[^>]+(>|$)", "g"), "") : "";
   const el = dayStemEl || "목";
 
   let analysis = "";
@@ -274,7 +274,8 @@ export const renderNewYearPageContent = (page, ctx) => {
       typeParam,
       handlePortonePayment,
       handleUpgradePayment,
-      setIsPaid
+      setIsPaid,
+      getMonthlyFortuneData
     } = ctx;
 
     const renderLockOverlayFallback = (sectionTitle) => {
@@ -1760,7 +1761,7 @@ export const renderNewYearPageContent = (page, ctx) => {
                       <span className="text-[#8A6F4C]">92%</span>
                     </div>
                     <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                      <div className="h-full bg-emerald-700 rounded-full" style={{ width: `${metalNeed}%` }} />
+                      <div className="h-full bg-emerald-700 rounded-full" style={{ width: "92%" }} />
                     </div>
                   </div>
                   <div className="space-y-1">
@@ -1890,7 +1891,7 @@ export const renderNewYearPageContent = (page, ctx) => {
                   <span className="text-[#8A6F4C]">80%</span>
                 </div>
                 <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-emerald-700 rounded-full" style={{ width: `${cardioRisk}%` }} />
+                  <div className="h-full bg-emerald-700 rounded-full" style={{ width: "80%" }} />
                 </div>
               </div>
               <div className="space-y-1">
@@ -2007,7 +2008,7 @@ export const renderNewYearPageContent = (page, ctx) => {
                   <span className="text-[#8A6F4C]">60%</span>
                 </div>
                 <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-slate-900 rounded-full" style={{ width: `${pulmonaryRisk}%` }} />
+                  <div className="h-full bg-slate-900 rounded-full" style={{ width: "60%" }} />
                 </div>
               </div>
               <div className="space-y-1">

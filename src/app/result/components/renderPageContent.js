@@ -114,14 +114,18 @@ export const renderPageContent = (page, ctx) => {
               <div className="space-y-1">
                 <span className="text-[10px] text-[#A3845B] font-semibold block">출생 정보</span>
                 <span className="text-xs font-semibold text-[#1A1A1A]">
-                  {year}년 {month}월 {day}일 {hour} ({calendar === "solar" ? "양력" : "음력"})
+                  {year}년 {month}월 {day}일 {hour === "unknown" ? "시간 모름" : hour} ({calendar === "solar" ? "양력" : "음력"})
                 </span>
               </div>
             </div>
             <div className="border-t border-[#E2DDD5]/70 pt-3 grid grid-cols-2 gap-4 text-left">
               <div className="space-y-1">
                 <span className="text-[10px] text-[#A3845B] font-semibold block">구분 및 등급</span>
-                <span className="text-xs font-bold text-[#A3845B]">평생 종합 사주 (초프리미엄 32페이지 보감)</span>
+                <span className="text-xs font-bold text-[#A3845B]">
+                  {(reportGrade === "sms" || reportGrade === "free") ? "평생 종합 사주 (문자요약)" : 
+                   reportGrade === "deep" ? "평생 종합 사주 (고급)" : 
+                   "평생 종합 사주 (프리미엄)"}
+                </span>
               </div>
               <div className="space-y-1">
                 <span className="text-[10px] text-[#A3845B] font-semibold block">분석 기관</span>

@@ -274,7 +274,7 @@ const buildGeneralSmsText = (name, productName, email, phone, productKey, formDa
 
   const origin = "https://saju.artpani.com";
 
-  return `[혜안당 명리연구소] ${name} 님, 주문하신 [${productName}] 분석이 무사히 완료되었습니다.\n\n적어주신 이메일(${email})로 상세 보고서 PDF 가이드를 전송해 드렸습니다. 혹은 아래의 온라인 결과 보감 링크를 통해 즉시 확인해 보실 수 있습니다.\n\n▶ 모바일 결과 보기: ${origin}/result?${queryParams.toString()}\n\n귀하의 앞날에 늘 지혜의 빛이 함께하기를 기원합니다. 감사합니다.`;
+  return `[혜안당 명리연구소] ${name} 님, 주문하신 [${productName}] 분석이 무사히 완료되었습니다.\n\n적어주신 이메일(${email})로 상세 보고서 PDF 가이드를 전송해 드렸습니다. 혹은 아래의 온라인 결과 보감 링크를 통해 즉시 확인해 보실 수 있습니다.\n\n▶ 모바일 결과 보기: ${origin}/result?${queryParams.toString()}&unlock=true\n\n귀하의 앞날에 늘 지혜의 빛이 함께하기를 기원합니다. 감사합니다.`;
 };
 
 function InputFormContent() {
@@ -729,7 +729,7 @@ function InputFormContent() {
                 }
 
                 const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
-                const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=${reportGrade}`;
+                const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=${reportGrade}&unlock=true`;
                 const mailSubject = `[혜안당 명리연구소] ${formData.name} 님 주문하신 [${products[productKey]?.title || "정통 사주 풀이"}] 분석결과서가 도착했습니다.`;
                 const mailHtml = `
                   <div style="font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; border: 1px solid #E2DDD5; border-radius: 12px; background-color: #F9F8F6;">
@@ -847,7 +847,7 @@ function InputFormContent() {
 
     try {
       const redirectUrl = typeof window !== "undefined"
-        ? `${window.location.origin}/result?name=${encodeURIComponent(formData.name)}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendar}&year=${formData.year}&month=${formData.month}&day=${formData.day}&hour=${formData.hour}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText)}&email=${encodeURIComponent(formData.email)}&phone=${encodeURIComponent(formData.phone)}&reportGrade=${reportGrade}&partnerName=${encodeURIComponent(formData.partnerName || "")}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendar}&partnerYear=${formData.partnerYear}&partnerMonth=${formData.partnerMonth}&partnerDay=${formData.partnerDay}&partnerHour=${formData.partnerHour}&gunghapType=${gunghapType}&imp_success=true`
+        ? `${window.location.origin}/result?name=${encodeURIComponent(formData.name)}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendarType}&year=${formData.birthYear}&month=${formData.birthMonth}&day=${formData.birthDay}&hour=${formData.birthHour}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText)}&email=${encodeURIComponent(formData.email)}&phone=${encodeURIComponent(formData.phone)}&reportGrade=${reportGrade}&partnerName=${encodeURIComponent(formData.partnerName || "")}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendarType}&partnerYear=${formData.partnerBirthYear}&partnerMonth=${formData.partnerBirthMonth}&partnerDay=${formData.partnerBirthDay}&partnerHour=${formData.partnerBirthHour}&gunghapType=${gunghapType}&imp_success=true`
         : "https://saju.artpani.com/result";
 
       const paymentData = {

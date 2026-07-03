@@ -546,7 +546,7 @@ const renderPageContent = (page, ctx) => {
               <div className="space-y-1">
                 <span className="text-[10px] text-[#A3845B] font-semibold block">출생 정보</span>
                 <span className="text-xs font-semibold text-[#1A1A1A]">
-                  {year}년 {month}월 {day}일 {hour} ({calendar === "solar" ? "양력" : "음력"})
+                  {year}년 {month}월 {day}일 {hour === "unknown" ? "시간 모름" : hour} ({calendar === "solar" ? "양력" : "음력"})
                 </span>
               </div>
             </div>
@@ -554,7 +554,7 @@ const renderPageContent = (page, ctx) => {
               <div className="space-y-1">
                 <span className="text-[10px] text-[#A3845B] font-semibold block">의뢰 구분 및 등급</span>
                 <span className="text-xs font-bold text-[#A3845B]">
-                  {reportGrade === "sms" ? "평생 종합 사주 (문자 요약)" : 
+                  {(reportGrade === "sms" || reportGrade === "free") ? "평생 종합 사주 (문자요약)" : 
                    reportGrade === "deep" ? "평생 종합 사주 (고급)" : 
                    "평생 종합 사주 (프리미엄)"}
                 </span>
@@ -3276,12 +3276,13 @@ function ResultContent() {
     if (typeof window !== "undefined") {
       const debugUnlock = window.location.search.includes("unlock=true") || window.location.search.includes("debug=true");
       if (debugUnlock) return true;
-      const reportGrade = new URLSearchParams(window.location.search).get("reportGrade") || "premium";
-      if (reportGrade === "premium" || reportGrade === "deep" || reportGrade === "sms") return false;
+      const reportGrade = new URLSearchParams(window.location.search).get("reportGrade") || "sms";
+      if (reportGrade === "premium" || reportGrade === "deep" || reportGrade === "sms" || reportGrade === "free") return false;
     }
     return false;
   });
   const [cumulativeCount, setCumulativeCount] = useState(14820);
+  const [timeLeft, setTimeLeft] = useState("02:26:49");
 
   useEffect(() => {
     setCumulativeCount(getCumulativeCount());
@@ -3292,6 +3293,25 @@ function ResultContent() {
     
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    let totalSeconds = 8809; // 2시간 26분 49초
+    const timer = setInterval(() => {
+      if (totalSeconds <= 0) {
+        clearInterval(timer);
+        return;
+      }
+      totalSeconds--;
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      
+      const format = (num) => String(num).padStart(2, '0');
+      setTimeLeft(`${format(hours)}:${format(minutes)}:${format(seconds)}`);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -3335,7 +3355,34 @@ function ResultContent() {
   const worryText = getDecodedParam("worryText", "");
   const emailParam = searchParams.get("email") || "";
   const phoneParam = searchParams.get("phone") || "";
-  const reportGrade = searchParams.get("reportGrade") || "premium"; // premium(고급), deep(심화)
+  const getReportGrade = () => {
+    const paramGrade = searchParams.get("reportGrade") || "sms";
+    if (paramGrade === "free") return "free";
+    if (typeof window !== "undefined") {
+      try {
+        const existingStr = localStorage.getItem("hyeandang_orders");
+        if (existingStr) {
+          const orders = JSON.parse(existingStr);
+          const matched = Array.isArray(orders) ? orders.find(o => 
+            o &&
+            o.name === name && 
+            o.status === "paid" &&
+            parseInt(o.year) === year &&
+            parseInt(o.month) === month &&
+            parseInt(o.day) === day
+          ) : null;
+          if (matched && matched.reportGrade) {
+            return matched.reportGrade;
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return paramGrade;
+  };
+
+  const reportGrade = getReportGrade();
   const currentGrade = reportGrade;
 
   // Partner parameters
@@ -3380,16 +3427,16 @@ function ResultContent() {
             o &&
             o.name === name && 
             o.status === "paid" &&
-            o.year === String(year) &&
-            o.month === String(month) &&
-            o.day === String(day)
+            parseInt(o.year) === year &&
+            parseInt(o.month) === month &&
+            parseInt(o.day) === day
           ) : null;
         } catch(e) {
           console.error(e);
         }
       }
 
-      if (paidOrder) {
+      if (paidOrder && reportGrade !== "free") {
         setIsPaid(true);
         setHasCheckedPayment(true);
         return;
@@ -3435,7 +3482,7 @@ function ResultContent() {
               });
 
               const origin = window.location.origin;
-              const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=${currentGradeParam}`;
+              const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=${currentGradeParam}&unlock=true`;
               const mailSubject = `[혜안당 명리연구소] ${name} 님 주문하신 [정통 사주 보고서] 분석결과서가 도착했습니다.`;
               const mailHtml = `
                 <div style="font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; border: 1px solid #E2DDD5; border-radius: 12px; background-color: #F9F8F6;">
@@ -3497,7 +3544,7 @@ function ResultContent() {
               });
 
               const origin = "https://saju.artpani.com";
-              const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=${currentGradeParam}`;
+              const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=${currentGradeParam}&unlock=true`;
               const smsContent = `[혜안당 명리연구소] ${name} 님, 주문하신 정통 사주 분석이 완료되었습니다.\n\n적어주신 이메일(${targetEmail || "지정 이메일"})로 상세 보감 PDF가 전송되었으며, 아래 온라인 보감 링크로도 즉시 열람이 가능합니다.\n\n▶ 결과 보기: ${mobileResultUrl}\n\n감사합니다.`;
 
               await fetch("/api/sms", {
@@ -3526,21 +3573,7 @@ function ResultContent() {
         // 무료(free) 리포트일 때는 기존에 결제 통과하여 'paid' 상태로 저장된 다른 주문(예: 같은 이름, 생일)이 
         // 로컬스토리지에 있더라도 이를 무시하고 결제 유도창(Lock)이 무조건 정상적으로 뜨도록 분기 처리합니다.
         if (reportGrade === "free") {
-          const existingStr = localStorage.getItem("hyeandang_orders");
-          if (existingStr) {
-            const orders = JSON.parse(existingStr);
-            const matched = Array.isArray(orders) ? orders.find(o => 
-              o &&
-              o.name === name && 
-              o.status === "paid" &&
-              o.year === String(year) &&
-              o.month === String(month) &&
-              o.day === String(day)
-            ) : null;
-            if (matched) {
-              setIsPaid(true);
-            }
-          }
+          setIsPaid(false);
         }
       } catch (e) {
         console.error(e);
@@ -3589,9 +3622,9 @@ function ResultContent() {
         const matchedIdx = orders.findIndex(o => 
           o &&
           o.name === name && 
-          o.year === String(year) &&
-          o.month === String(month) &&
-          o.day === String(day)
+          parseInt(o.year) === year &&
+          parseInt(o.month) === month &&
+          parseInt(o.day) === day
         );
         if (matchedIdx > -1) {
           orders[matchedIdx].status = "paid";
@@ -3708,7 +3741,7 @@ function ResultContent() {
                     });
 
                     const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
-                    const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=${grade}`;
+                    const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=${grade}&unlock=true`;
                     
                     const mailSubject = `[혜안당 명리연구소] ${name} 님 주문하신 [정통 사주 업그레이드 보고서] 분석결과서가 도착했습니다.`;
                     const mailHtml = `
@@ -3782,7 +3815,7 @@ function ResultContent() {
                     });
 
                     const origin = "https://saju.artpani.com";
-                    const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=${grade}`;
+                    const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=${grade}&unlock=true`;
                     const smsContent = `[혜안당 명리연구소] ${name} 님, 주문하신 정통 사주 업그레이드 분석이 완료되었습니다.\n\n적어주신 이메일(${targetEmail || "지정 이메일"})로 상세 보감 PDF가 전송되었으며, 아래 온라인 보감 링크로도 즉시 열람이 가능합니다.\n\n▶ 결과 보기: ${mobileResultUrl}\n\n감사합니다.`;
 
                     await fetch("/api/sms", {
@@ -3901,7 +3934,7 @@ function ResultContent() {
                     });
 
                     const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
-                    const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=premium`;
+                    const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=${reportGrade}&unlock=true`;
                     
                     const mailSubject = `[혜안당 명리연구소] ${name} 님 주문하신 [정통 사주 풀이 보고서] 분석결과서가 도착했습니다.`;
                     const mailHtml = `
@@ -3975,7 +4008,7 @@ function ResultContent() {
                     });
 
                     const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
-                    const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=premium`;
+                    const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=${reportGrade}&unlock=true`;
                     const smsContent = `[혜안당 명리연구소] ${name} 님, 주문하신 정통 사주 분석이 완료되었습니다.\n\n적어주신 이메일(${targetEmail || "지정 이메일"})로 상세 보감 PDF가 전송되었으며, 아래 온라인 보감 링크로도 즉시 열람이 가능합니다.\n\n▶ 결과 보기: ${mobileResultUrl}\n\n감사합니다.`;
 
                     await fetch("/api/sms", {
@@ -4311,11 +4344,8 @@ function ResultContent() {
       </div>
     );
   };
-
   const renderSajuContent = () => {
-    // reportGrade가 'sms'이고 추가 업그레이드를 하지 않았다면 (isPaid가 true가 아니거나 orders에 deep/premium 업그레이드 기록이 없음) 요약본 노출
-    // 단, reportGrade가 'free'인 비결제 상태도 요약본 노출
-    if ((reportGrade === "sms" && !isPaid) || reportGrade === "free") {
+    if (reportGrade === "sms" || reportGrade === "free") {
       return renderSmsSajuContent();
     }
 
@@ -4325,26 +4355,6 @@ function ResultContent() {
 
     const isFree = (reportGrade === "free" || reportGrade === "premium") && !isPaid;
     
-    // 카운트다운 타이머 상태 관리
-    const [timeLeft, setTimeLeft] = useState("02:26:49");
-    useEffect(() => {
-      let totalSeconds = 8809; // 2시간 26분 49초
-      const timer = setInterval(() => {
-        if (totalSeconds <= 0) {
-          clearInterval(timer);
-          return;
-        }
-        totalSeconds--;
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-        
-        const format = (num) => String(num).padStart(2, '0');
-        setTimeLeft(`${format(hours)}:${format(minutes)}:${format(seconds)}`);
-      }, 1000);
-      return () => clearInterval(timer);
-    }, []);
-
     const activePages = pages;
 
     return (
@@ -4473,7 +4483,7 @@ function ResultContent() {
   const renderSmsNewYearContent = () => {
     // 만약 토정비결일 경우 2페이지 요약본으로 분기 렌더링
     if (typeParam === "tojeong") {
-      const decodedWorry = worryText ? decodeURIComponent(worryText) : "";
+      const decodedWorry = worryText || "";
       const worrySolutionText = decodedWorry
         ? `귀하의 고민 [${decodedWorry}]에 대해:\n올해는 병오년의 조급한 화(火) 기운으로 인해 성급히 판단하면 그르치기 쉽습니다. 가을철(음력 8월) 이전까지는 중요한 결정을 유보하고, 현상을 안정적으로 유지하며 에너지를 실속 있게 다지는 것이 가장 유리합니다.`
         : "올해 고민 솔루션:\n올해는 조급한 감정적 충동을 억제하고 정중동(靜中動)의 자세를 유지하는 것이 좋습니다. 특히 가을 이전에는 서투른 확장을 피해 손재수를 차단하십시오.";
@@ -4482,18 +4492,45 @@ function ResultContent() {
 
       let tojeongGeneralDesc = "";
       const currentBaseEl = baseEl || (sajuInfo && sajuInfo.day && sajuInfo.day.stemEl) || "목";
-      
+
       if (currentBaseEl === "목") {
-        tojeongGeneralDesc = `목(木) 일간인 {name}님에게 2026년은 맹렬한 화(火) 기운이 목생화(木生火)로 설계되어 내적 재능과 열정이 크게 발산되는 해입니다. 기획이나 창작 활동에서 눈부신 성과를 내고 대외적 영향력이 확장되나, 과도한 활동으로 체력이 쉽게 소진되고 심리적 조급증이나 상열감이 발생할 수 있으니 완급 조절이 필수적입니다. 특히 음력 5월과 6월의 폭발적인 화기 속에서는 무리한 확장을 지양하고 휴식을 병행하는 정중동의 지혜가 필요합니다.`;
+        tojeongGeneralDesc = `목(木) 일간인 ${name}님에게 2026년은 맹렬한 화(火) 기운이 목생화(木生火)로 설계되어 내적 재능과 열정이 크게 발산되는 해입니다. 기획이나 창작 활동에서 눈부신 성과를 내고 대외적 영향력이 확장되나, 과도한 활동으로 체력이 쉽게 소진되고 심리적 조급증이나 상열감이 발생할 수 있으니 완급 조절이 필수적입니다. 특히 음력 5월과 6월의 폭발적인 화기 속에서는 무리한 확장을 지양하고 휴식을 병행하는 정중동의 지혜가 필요합니다.`;
       } else if (currentBaseEl === "화") {
-        tojeongGeneralDesc = `{name}님에게 2026년은 나와 같은 강력한 화(火) 기운이 세운에서 더해져 자신감과 고집이 최고조에 달하는 비겁(比劫)의 시기입니다. 스스로 독립하여 새로운 영역을 개척하려는 에너지가 솟구치나, 자만심으로 인한 무리한 투자나 대인관계의 시비, 동업 문제로 손재수를 입을 수 있으니 겸손과 자제가 가장 강력한 개운법입니다. 뜨거운 열정을 내실을 다지고 리스크를 방어하는 데 집중하여 큰 재물 손실을 피해야 합니다.`;
+        tojeongGeneralDesc = `${name}님에게 2026년은 나와 같은 강력한 화(火) 기운이 세운에서 더해져 자신감과 고집이 최고조에 달하는 비겁(比劫)의 시기입니다. 스스로 독립하여 새로운 영역을 개척하려는 에너지가 솟구치나, 자만심으로 인한 무리한 투자나 대인관계의 시비, 동업 문제로 손재수를 입을 수 있으니 겸손과 자제가 가장 강력한 개운법입니다. 뜨거운 열정을 내실을 다지고 리스크를 방어하는 데 집중하여 큰 재물 손실을 피해야 합니다.`;
       } else if (currentBaseEl === "토") {
-        tojeongGeneralDesc = `토(土) 일간인 {name}님에게 2026년은 맹렬한 불길이 단단한 흙을 돕는 화생토(火生土)의 강한 인성(印星)의 해입니다. 나를 돕는 귀인의 혜택이나 문서상의 계약(부동산, 자격증, 합격 등)에서 매우 길한 소식이 기대됩니다. 다만 생각이 지나치게 많아져 실행력이 떨어지는 '생각의 감옥'을 경계해야 합니다. 행동이 무거워지지 않도록 실용적인 계획을 세우고, 가을철 금(金)의 기류를 타고 결실을 과감히 쟁취해 보십시오.`;
+        tojeongGeneralDesc = `토(土) 일간인 ${name}님에게 2026년은 맹렬한 불길이 단단한 흙을 돕는 화생토(火生土)의 강한 인성(印星)의 해입니다. 나를 돕는 귀인의 혜택이나 문서상의 계약(부동산, 자격증, 합격 등)에서 매우 길한 소식이 기대됩니다. 다만 생각이 지나치게 많아져 실행력이 떨어지는 '생각의 감옥'을 경계해야 합니다. 행동이 무거워지지 않도록 실용적인 계획을 세우고, 가을철 금(金)의 기류를 타고 결실을 과감히 쟁취해 보십시오.`;
       } else if (currentBaseEl === "금") {
-        tojeongGeneralDesc = `금(金) 일간인 {name}님에게 2026년은 뜨거운 용광로의 불꽃이 단단한 쇠를 제련하는 화극금(화극금)의 관성(官星)의 해입니다. 직장에서의 승진, 명예 획득, 새로운 책임감 등 삶의 중요한 뼈대를 세우는 제련의 과정을 겪게 됩니다. 책임감이 무겁고 대외적 스트레스가 따르나, 이 시기를 묵묵히 인내하고 규칙을 준수하며 버텨낸다면 연말에는 값진 명예와 한 단계 도약한 사회적 지위를 얻을 것입니다.`;
+        tojeongGeneralDesc = `금(金) 일간인 ${name}님에게 2026년은 뜨거운 용광로의 불꽃이 단단한 쇠를 제련하는 화극금(화극금)의 관성(官星)의 해입니다. 직장에서의 승진, 명예 획득, 새로운 책임감 등 삶의 중요한 뼈대를 세우는 제련의 과정을 겪게 됩니다. 책임감이 무겁고 대외적 스트레스가 따르나, 이 시기를 묵묵히 인내하고 규칙을 준수하며 버텨낸다면 연말에는 값진 명예와 한 단계 도약한 사회적 지위를 얻을 것입니다.`;
       } else { // 수
-        tojeongGeneralDesc = `수(水) 일간인 {name}님에게 2026년은 뜨거운 불을 다스리는 수극화(수극화)의 재성(財星)의 해입니다. 일생일대의 큰 재물적 기회와 성과를 눈앞에 다가오는 역동적인 시기입니다. 횡재수나 대외적인 실리를 확실하게 챙길 수 있는 판이 짜이지만, 조급하게 서두르거나 분수에 넘치는 과욕을 부리면 불길에 물이 모두 증발하여 오히려 큰 낭패를 볼 수 있으니 차분하고 이성적인 현금 자산 관리가 절대적으로 필요합니다.`;
+        tojeongGeneralDesc = `수(水) 일간인 ${name}님에게 2026년은 뜨거운 불을 다스리는 수극화(수극화)의 재성(財星)의 해입니다. 일생일대의 큰 재물적 기회와 성과를 눈앞에 다가오는 역동적인 시기입니다. 횡재수나 대외적인 실리를 확실하게 챙길 수 있는 판이 짜이지만, 조급하게 서두르거나 분수에 넘치는 과욕을 부리면 불길에 물이 모두 증발하여 오히려 큰 낭패를 볼 수 있으니 차분하고 이성적인 현금 자산 관리가 절대적으로 필요합니다.`;
       }
+
+      const smsText = `[혜안당 명리연구소] 2026 병오년 토정비결 요약
+──────────────────────────────
+본 문서는 ${name} 님의 2026년 토정비결 요약본입니다.
+
+■ 1. 2026년 병오년(丙午年) 운세 기조
+- 세운 특징: 천지합화(天地合火) - 하늘과 대지가 거대한 불꽃으로 화합하는 역동적 한 해
+- 기운 오행 분포: ${elStats}
+- 기질 융합 해석:
+  ${tojeongGeneralDesc}
+
+■ 2. 2026년 분기별 행동 플레이북
+- 1분기 (음력 1~3월): 변동운이 스쳐 가나 이직이나 계약 시 섣부른 즉답을 피하고 서류를 철저히 검토하십시오.
+- 2분기 (음력 4~6월): 타오르는 불꽃이 뜨거워지니 구설수와 시비를 조심하고, 10분 늦게 화내며 감정을 다스려야 안전합니다.
+- 3분기 (음력 7~9월): 현실적 결실을 맺는 시기입니다. 이직, 승진, 재물 획득에 있어서 추진력을 발휘하기에 최적입니다.
+- 4분기 (음력 10~12월): 한 해를 마무리하며 에너지를 갈무리하는 평온한 재충전과 자산 지키기에 힘써야 합니다.
+
+■ 3. 맞춤 고민 극복 솔루션
+- ${worrySolutionText}
+
+■ 4. 올해의 행운 개운 비법
+- 행운의 색상: ${prescriptions[0]?.color || "밝은 계열"}
+- 행운의 상성 방향: ${prescriptions[0]?.direction || "중앙"}
+- 행운의 숫자: ${prescriptions[0]?.number || "5, 10"}
+
+──────────────────────────────
+* 본 요약본은 혜안당 명리분석 시스템에 의해 계산 및 정밀 빌드되었습니다.`;
 
       return (
         <div className="space-y-12 print:space-y-0">
@@ -4834,7 +4871,7 @@ function ResultContent() {
       yearInteractionText = "물(水) 일간인 귀하에게 2026년은 뜻밖의 금전적 기회와 성과를 얻게 되는 '재성(財星)'의 해입니다. 투자와 연봉 상승의 기회가 있으나 무리하면 건강에 지장을 줄 수 있습니다.";
     }
 
-    const decodedWorry = worryText ? decodeURIComponent(worryText) : "";
+    const decodedWorry = worryText || "";
     const worrySolutionText = decodedWorry
       ? `귀하의 고민 [${decodedWorry}]에 대해:\n올해는 병오년의 조급한 화(火) 기운으로 인해 성급히 판단하면 그르치기 쉽습니다. 가을철(음력 8월) 이전까지는 중요한 결정을 유보하고, 현상을 안정적으로 유지하며 에너지를 실속 있게 다지는 것이 가장 유리합니다.`
       : "올해 고민 솔루션:\n올해는 조급한 감정적 충동을 억제하고 정중동(靜中動)의 자세를 유지하는 것이 좋습니다. 특히 가을 이전에는 서투른 확장을 피해 손재수를 차단하십시오.";
@@ -5324,7 +5361,7 @@ function ResultContent() {
 
   const renderNewYearContent = () => {
     // reportGrade가 'sms'이고 추가 업그레이드를 하지 않았다면 (isPaid가 true가 아니거나 orders에 deep/premium 업그레이드 기록이 없음) 요약본 노출
-    if (reportGrade === "sms" && !isPaid) {
+    if (reportGrade === "sms" || reportGrade === "free") {
       return renderSmsNewYearContent();
     }
 
@@ -5389,7 +5426,8 @@ function ResultContent() {
                   typeParam,
                   handlePortonePayment,
                   handleUpgradePayment,
-                  setIsPaid
+                  setIsPaid,
+                  getMonthlyFortuneData
                 })}
               </div>
             </div>
@@ -7823,7 +7861,7 @@ function ResultContent() {
               <div className="space-y-1">
                 <span className="text-[10px] text-[#A3845B] font-semibold block">출생 정보</span>
                 <span className="text-xs font-semibold text-[#1A1A1A]">
-                  {year}년 {month}월 {day}일 {hour} ({calendar === "solar" ? "양력" : "음력"})
+                  {year}년 {month}월 {day}일 {hour === "unknown" ? "시간 모름" : hour} ({calendar === "solar" ? "양력" : "음력"})
                 </span>
               </div>
             </div>
@@ -7847,8 +7885,8 @@ function ResultContent() {
               <div className="space-y-1">
                 <span className="text-[10px] text-[#A3845B] font-semibold block">의뢰 구분 및 등급</span>
                 <span className="text-xs font-bold text-[#A3845B]">
-                  {type === "saju" && `평생 종합 사주 (${reportGrade === "deep" ? "심화" : "고급"})`}
-                  {type === "newyear" && (typeParam === "tojeong" ? "토정비결" : "신년운세")}
+                  {type === "saju" && `평생 종합 사주 (${reportGrade === "deep" ? "심화" : (reportGrade === "free" || reportGrade === "sms") ? "문자요약" : "고급"})`}
+                  {type === "newyear" && (typeParam === "tojeong" ? (reportGrade === "sms" || reportGrade === "free" ? "토정비결 문자요약" : "토정비결") : (reportGrade === "sms" || reportGrade === "free" ? "신년운세 문자요약" : "신년운세"))}
                   {type === "wealth" && "재물 & 비즈니스운"}
                   {type === "tarot" && "속마음 퀵 타로"}
                   {type === "gunghap" && "연인 궁합 정밀 분석"}
@@ -7917,24 +7955,37 @@ function ResultContent() {
 
         {/* SMS 요약 보고서일 때 유료 결제 유도 하단 고정 플로팅 바 (오늘의 운세 및 무료 사주는 제외) */}
         {type !== "today" && reportGrade === "sms" && (
-          <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp flex gap-2 sm:gap-3">
-            <button
-              type="button"
-              onClick={() => handleUpgradeFromSms("premium", 20000)}
-              className="flex-1 bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] py-3.5 px-4 rounded-xl font-myeongjo font-bold text-xs sm:text-sm flex items-center justify-center gap-1 shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#A3845B]/20"
-            >
-              <span>고급 리포트 업그레이드 (+20,000원)</span>
-              <span className="text-[10px] sm:text-xs">➔</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleUpgradeFromSms("deep", 35000)}
-              className="flex-1 bg-[#2C2420] hover:bg-[#3d322c] text-[#E2DDD5] py-3.5 px-4 rounded-xl font-myeongjo font-bold text-xs sm:text-sm flex items-center justify-center gap-1 shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#A3845B]/30"
-            >
-              <span>👑 프리미엄 리포트 (+35,000원)</span>
-              <span className="text-[10px] sm:text-xs text-[#A3845B]">➔</span>
-            </button>
-          </div>
+          typeParam === "tojeong" ? (
+            <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
+              <button
+                type="button"
+                onClick={() => handleUpgradeFromSms("premium", 20000)}
+                className="w-full bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] py-4 px-6 rounded-xl font-myeongjo font-bold text-xs sm:text-sm flex items-center justify-between shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#A3845B]/20"
+              >
+                <span>고급 리포트 업그레이드 (+20,000원)</span>
+                <span className="text-lg">➔</span>
+              </button>
+            </div>
+          ) : (
+            <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp flex gap-2 sm:gap-3">
+              <button
+                type="button"
+                onClick={() => handleUpgradeFromSms("premium", 20000)}
+                className="flex-1 bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] py-3.5 px-4 rounded-xl font-myeongjo font-bold text-xs sm:text-sm flex items-center justify-center gap-1 shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#A3845B]/20"
+              >
+                <span>고급 리포트 업그레이드 (+20,000원)</span>
+                <span className="text-[10px] sm:text-xs">➔</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleUpgradeFromSms("deep", 35000)}
+                className="flex-1 bg-[#2C2420] hover:bg-[#3d322c] text-[#E2DDD5] py-3.5 px-4 rounded-xl font-myeongjo font-bold text-xs sm:text-sm flex items-center justify-center gap-1 shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#A3845B]/30"
+              >
+                <span>👑 프리미엄 리포트 (+35,000원)</span>
+                <span className="text-[10px] sm:text-xs text-[#A3845B]">➔</span>
+              </button>
+            </div>
+          )
         )}
 
         {/* 오늘의 맞춤 운세 및 무료 사주 보고서 하단 고정 혜안당 운세 상품 이동 플로팅 바 */}

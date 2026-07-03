@@ -287,3 +287,13 @@
 - **결제수단 단일화 및 간편결제 버튼 제거**: NHN KCP 통합 결제창 내에서 카드 및 카카오페이/네이버페이/토스페이를 모두 일괄 처리하는 특성을 반영해, 사용자 혼선을 줄이기 위해 개별 페이 버튼을 삭제하고 '신용/체크카드 (통합결제)' 단일 옵션으로 UI를 간소화했습니다.
 - **사주 보고서 표지(Cover)의 의뢰 구분 텍스트 동적 매핑**: 문자요약 결제건(`reportGrade=sms`)의 표지 등급명이 프리미엄으로 고정되어 노출되던 점을 수정하여, 결제 등급에 따라 `"평생 종합 사주 (문자 요약)"`, `"평생 종합 사주 (고급)"`, `"평생 종합 사주 (프리미엄)"`으로 올바르게 노출되도록 동적 전환 텍스트를 연동했습니다.
 - **모바일 결제 앱 연동 및 이메일/SMS 전송 누락 완벽 해결**: 모바일 브라우저에서 포트원 결제 시 카드사 앱(페이북 앱 등)이 정상 작동하지 않고 PC용 QR코드가 뜨는 문제를 해결하기 위해, `redirectUrl` 및 `appScheme` 파라미터를 결제창 요청 시 추가하였습니다. 또한 결제 완료 후 모바일 페이지로 리다이렉트(`imp_success=true`) 되었을 때, `useEffect` 진입점에서 이벤트를 감지하여 이메일과 알림 SMS 문자가 누락 없이 최종 자동 전송되도록 비동기 트리거를 이식 완료했습니다.
+
+### 31. 토정비결 문자요약에서 고급 업그레이드 시 고급보고서 렌더링 에러 수정 [BUG FIX]
+- **에러 내용**: 토정비결 문자요약(`reportGrade=sms`)에서 고급 리포트(`reportGrade=premium` 또는 `deep`)로 업그레이드할 때 음력 월별 토정비결 페이지(`tj_monthly` 타입)가 렌더링되는데, 렌더링 도중 `ReferenceError: getMonthlyFortuneData is not defined` 에러가 나면서 전체 페이지가 깨지는 현상 발생.
+- **원인 분석**: `getMonthlyFortuneData` 함수가 `src/app/result/page.js`에만 정의되어 있고, 렌더링을 실제로 처리하는 `src/app/result/components/renderNewYearPageContent.js` 파일에는 정의되어 있지 않았음. 또한, `page.js`에서 렌더러로 컨텍스트(`ctx`) 객체를 넘겨줄 때와 `renderNewYearPageContent.js`에서 이를 구조 분해 할당(Destructuring)할 때 해당 함수가 누락되어 발생한 문제.
+- **수정 내용**:
+  1. `src/app/result/page.js`에서 `renderNewYearPageContent`를 호출하는 곳에 `getMonthlyFortuneData` 함수를 컨텍스트 객체의 인자로 추가하여 전달하도록 보완했습니다.
+  2. `src/app/result/components/renderNewYearPageContent.js` 내부의 구조 분해 할당 영역에 `getMonthlyFortuneData`를 추가하여 런타임에 올바르게 호출되도록 수정했습니다.
+- **검증**:
+  - 도커 재빌드(`docker-compose up -d --build`) 후 브라우저 서브에이전트를 통하여 `reportGrade=premium` 인 토정비결 결과 페이지가 31페이지 끝까지 (음력 1~12월 상세 운세 포함) 아무런 흰색 화면(Crash)이나 콘솔 에러 없이 정상적으로 렌더링됨을 최종 검증했습니다.
+
