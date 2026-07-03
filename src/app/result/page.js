@@ -3464,9 +3464,9 @@ function ResultContent() {
                 const matched = Array.isArray(orders) ? orders.find(o => 
                   o &&
                   o.name === name && 
-                  o.year === String(year) &&
-                  o.month === String(month) &&
-                  o.day === String(day)
+                  String(o.year) === String(year) &&
+                  String(o.month) === String(month) &&
+                  String(o.day) === String(day)
                 ) : null;
                 if (matched) {
                   restoredEmail = matched.email;
@@ -3708,6 +3708,32 @@ function ResultContent() {
 
       const queryParams = new URLSearchParams(window.location.search);
       queryParams.set("reportGrade", grade);
+
+      let resolvedEmail = emailParam;
+      let resolvedPhone = phoneParam;
+      try {
+        const existingStr = localStorage.getItem("hyeandang_orders");
+        if (existingStr) {
+          const orders = JSON.parse(existingStr);
+          const matched = Array.isArray(orders) ? orders.find(o => 
+            o &&
+            o.name === name && 
+            parseInt(o.year) === year &&
+            parseInt(o.month) === month &&
+            parseInt(o.day) === day
+          ) : null;
+          if (matched) {
+            if (matched.email) resolvedEmail = matched.email;
+            if (matched.phone) resolvedPhone = matched.phone;
+          }
+        }
+      } catch (e) {
+        console.error("결제 요청 전 로컬스토리지 조회 실패:", e);
+      }
+
+      if (resolvedEmail) queryParams.set("email", resolvedEmail);
+      if (resolvedPhone) queryParams.set("phone", resolvedPhone);
+
       const redirectUrl = typeof window !== "undefined"
         ? `${window.location.origin}/result?${queryParams.toString()}&imp_success=true`
         : "https://saju.artpani.com/result";
@@ -3725,8 +3751,8 @@ function ResultContent() {
         appScheme: "artpanisaju",
         customer: {
           fullName: name,
-          phoneNumber: phoneParam || "010-0000-0000",
-          email: emailParam || "today_sms@hyeandang.com",
+          phoneNumber: resolvedPhone || "010-0000-0000",
+          email: resolvedEmail || "today_sms@hyeandang.com",
         },
       }).then(function (rsp) {
         if (rsp.code === undefined) {
