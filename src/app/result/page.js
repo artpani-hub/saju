@@ -3455,8 +3455,30 @@ function ResultContent() {
         // [모바일 리다이렉트 대응] 결제 완료 시점 메일 및 문자 자동 전송 처리
         const sendNotificationOnMobileRedirect = async () => {
           try {
-            const targetEmail = emailParam || "today_sms@hyeandang.com";
-            const targetPhone = phoneParam;
+            let restoredEmail = "";
+            let restoredPhone = "";
+            try {
+              const existingStr = localStorage.getItem("hyeandang_orders");
+              if (existingStr) {
+                const orders = JSON.parse(existingStr);
+                const matched = Array.isArray(orders) ? orders.find(o => 
+                  o &&
+                  o.name === name && 
+                  o.year === String(year) &&
+                  o.month === String(month) &&
+                  o.day === String(day)
+                ) : null;
+                if (matched) {
+                  restoredEmail = matched.email;
+                  restoredPhone = matched.phone;
+                }
+              }
+            } catch (e) {
+              console.error("로컬 스토리지 주문 조회 실패:", e);
+            }
+
+            const targetEmail = emailParam || restoredEmail || "today_sms@hyeandang.com";
+            const targetPhone = phoneParam || restoredPhone;
             
             // 1. 이메일 전송
             if (targetEmail && targetEmail.includes("@") && targetEmail !== "today_sms@hyeandang.com") {
