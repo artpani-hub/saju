@@ -577,7 +577,12 @@ function InputFormContent() {
         const existingStr = localStorage.getItem("hyeandang_orders");
         let currentOrders = [];
         if (existingStr) {
-          currentOrders = JSON.parse(existingStr);
+          try {
+            currentOrders = JSON.parse(existingStr);
+            if (!Array.isArray(currentOrders)) currentOrders = [];
+          } catch (e) {
+            currentOrders = [];
+          }
         } else {
           currentOrders = [
             {
@@ -658,7 +663,28 @@ function InputFormContent() {
             }
           ];
         }
-        currentOrders.unshift(newOrder);
+
+        // 대기 중인 주문(ready)이 있는지 확인하여 있을 경우 paid로 업데이트
+        const matchedIdx = currentOrders.findIndex(o => 
+          o &&
+          o.name === newOrder.name &&
+          String(o.year) === String(newOrder.year) &&
+          String(o.month) === String(newOrder.month) &&
+          String(o.day) === String(newOrder.day) &&
+          o.status === "ready"
+        );
+
+        if (matchedIdx > -1) {
+          currentOrders[matchedIdx].status = reportGrade === "free" ? "free" : "paid";
+          currentOrders[matchedIdx].id = orderId;
+          currentOrders[matchedIdx].createdAt = formattedDate;
+          currentOrders[matchedIdx].amount = finalPrice;
+          currentOrders[matchedIdx].productName = newOrder.productName;
+          currentOrders[matchedIdx].reportGrade = reportGrade;
+          newOrder.emailStatus = currentOrders[matchedIdx].emailStatus || "pending";
+        } else {
+          currentOrders.unshift(newOrder);
+        }
         localStorage.setItem("hyeandang_orders", JSON.stringify(currentOrders));
 
         // 알리고 SMS 전송 비동기 호출
@@ -812,8 +838,84 @@ function InputFormContent() {
       }
   };
 
+  // 결제 전 모바일 리다이렉트 대비용 대기 주문(ready) 생성 및 임시 저장
+  const savePendingOrder = () => {
+    try {
+      const now = new Date();
+      const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const traditionalTime = getTraditionalTimeName(formData.birthHour);
+      const sajuGanji = `${formData.birthYear}년 ${formData.birthMonth}월 ${formData.birthDay}일 (${traditionalTime})`;
+
+      const base = productKey === "gunghap"
+        ? (gunghapType === "reunion" ? 19900 : 26900)
+        : (products[productKey]?.price || 30000);
+      const finalPrice = reportGrade === "free" ? 0 : ((productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
+        ? (reportGrade === "deep" 
+          ? base + 15000 
+          : reportGrade === "sms" 
+          ? Math.max(5000, base - 20000) 
+          : base)
+        : base);
+
+      const gunghapLabel = productKey === "gunghap" ? (gunghapType === "deep_compatibility" ? " (속궁합)" : gunghapType === "reunion" ? " (재회운)" : " (궁합)") : "";
+      
+      const pendingOrder = {
+        id: Math.floor(Math.random() * 9000) + 1000,
+        name: formData.name || "홍길동",
+        email: formData.email || "today_sms@hyeandang.com",
+        phone: formData.phone || "010-0000-0000",
+        productName: `${products[productKey]?.title || "맞춤 사주"}${gunghapLabel}`,
+        amount: finalPrice,
+        status: "ready", // 대기 상태
+        sajuGanji: sajuGanji,
+        emailStatus: "pending",
+        createdAt: formattedDate,
+        gender: formData.gender,
+        calendar: formData.calendarType,
+        year: String(formData.birthYear),
+        month: String(formData.birthMonth),
+        day: String(formData.birthDay),
+        hour: formData.birthHour,
+        worryText: formData.worryText || "오늘의 운세",
+        reportGrade: reportGrade
+      };
+
+      const existingStr = localStorage.getItem("hyeandang_orders");
+      let currentOrders = [];
+      if (existingStr) {
+        try {
+          currentOrders = JSON.parse(existingStr);
+          if (!Array.isArray(currentOrders)) currentOrders = [];
+        } catch (e) {
+          currentOrders = [];
+        }
+      }
+
+      const matchedIdx = currentOrders.findIndex(o => 
+        o &&
+        o.name === pendingOrder.name &&
+        String(o.year) === String(pendingOrder.year) &&
+        String(o.month) === String(pendingOrder.month) &&
+        String(o.day) === String(pendingOrder.day) &&
+        o.status === "ready"
+      );
+
+      if (matchedIdx > -1) {
+        currentOrders[matchedIdx] = pendingOrder;
+      } else {
+        currentOrders.unshift(pendingOrder);
+      }
+      localStorage.setItem("hyeandang_orders", JSON.stringify(currentOrders));
+    } catch (e) {
+      console.error("Pending order 임시 저장 실패:", e);
+    }
+  };
+
   // 실제 포트원 결제창 호출 및 처리 (V2 마이그레이션)
   const handlePortonePayment = async () => {
+    // 결제창 띄우기 직전, 대기 주문 정보를 로컬 스토리지에 미리 기록 (모바일 리다이렉트 대응)
+    savePendingOrder();
+
     const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "store-312155f8-f523-4067-a568-285c7bbec6e0";
     const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "";
 

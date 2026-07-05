@@ -3418,6 +3418,10 @@ function ResultContent() {
         setIsPaid(true);
         return;
       }
+      
+      const params = new URLSearchParams(window.location.search);
+      const isMobileSuccess = params.get("imp_success") === "true";
+
       const existingStr = localStorage.getItem("hyeandang_orders");
       let paidOrder = null;
       if (existingStr) {
@@ -3436,21 +3440,18 @@ function ResultContent() {
         }
       }
 
-      if (paidOrder && reportGrade !== "free") {
+      if (paidOrder && reportGrade !== "free" && !isMobileSuccess) {
         setIsPaid(true);
         setHasCheckedPayment(true);
         return;
       }
 
       // 만약 URL 파라미터에 성공(imp_success) 플래그가 들어있는 경우도 결제 완료 처리
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("imp_success") === "true") {
+      if (isMobileSuccess) {
         setIsPaid(true);
-        // 모바일 리다이렉트 등으로 들어왔을 때 해당 주문 정보를 로컬 스토리지에 업데이트
-        updateLocalStorageOrderToPaid();
-        
-        // 만약 reportGrade가 deep이나 premium으로 성공해서 리다이렉트 되었는데 로컬스토리지에 미처 반영이 안 되었을 수 있으므로 강제 승격 진행
         const currentGradeParam = params.get("reportGrade") || "premium";
+        // 모바일 리다이렉트 등으로 들어왔을 때 해당 주문 정보를 로컬 스토리지에 업데이트
+        updateLocalStorageOrderToPaid(currentGradeParam);
         
         // [모바일 리다이렉트 대응] 결제 완료 시점 메일 및 문자 자동 전송 처리
         const sendNotificationOnMobileRedirect = async () => {
@@ -3464,9 +3465,9 @@ function ResultContent() {
                 const matched = Array.isArray(orders) ? orders.find(o => 
                   o &&
                   o.name === name && 
-                  String(o.year) === String(year) &&
-                  String(o.month) === String(month) &&
-                  String(o.day) === String(day)
+                  parseInt(o.year) === year &&
+                  parseInt(o.month) === month &&
+                  parseInt(o.day) === day
                 ) : null;
                 if (matched) {
                   restoredEmail = matched.email;
@@ -3480,6 +3481,9 @@ function ResultContent() {
             const targetEmail = emailParam || restoredEmail || "today_sms@hyeandang.com";
             const targetPhone = phoneParam || restoredPhone;
             
+            const isTojeong = typeParam === "tojeong";
+            const productTitle = isTojeong ? "정통 토정비결" : "정통 사주 보고서";
+
             // 1. 이메일 전송
             if (targetEmail && targetEmail.includes("@") && targetEmail !== "today_sms@hyeandang.com") {
               const queryParams = new URLSearchParams({
@@ -3505,7 +3509,7 @@ function ResultContent() {
 
               const origin = window.location.origin;
               const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=${currentGradeParam}&unlock=true`;
-              const mailSubject = `[혜안당 명리연구소] ${name} 님 주문하신 [정통 사주 보고서] 분석결과서가 도착했습니다.`;
+              const mailSubject = `[혜안당 명리연구소] ${name} 님 주문하신 [${productTitle}] 분석결과서가 도착했습니다.`;
               const mailHtml = `
                 <div style="font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; border: 1px solid #E2DDD5; border-radius: 12px; background-color: #F9F8F6;">
                   <div style="text-align: center; margin-bottom: 30px;">
@@ -3516,7 +3520,7 @@ function ResultContent() {
                     <h2 style="font-size: 18px; font-weight: bold; color: #1A1A1A; margin-top: 0; border-bottom: 2px solid #A3845B; padding-bottom: 15px;">운세 분석 보고서 완료 안내</h2>
                     <p style="font-size: 14px; color: #333; line-height: 1.6; margin-top: 20px;">
                       안녕하세요, <strong>${name}</strong> 님.<br />
-                      혜안당 명리연구소에 의뢰해 주신 <strong>[정통 사주 보고서]</strong> 분석 작업이 정교한 명리 해석을 거쳐 최종 완료되었습니다.
+                      혜안당 명리연구소에 의뢰해 주신 <strong>[${productTitle}]</strong> 분석 작업이 정교한 명리 해석을 거쳐 최종 완료되었습니다.
                     </p>
                     <p style="font-size: 14px; color: #333; line-height: 1.6;">
                       작성된 정밀 보감 보고서는 아래의 '결과 확인하기' 버튼을 누르시면 온라인 결과 화면으로 즉시 연결되어 열람 및 가이드를 확인해 보실 수 있습니다.
@@ -3567,12 +3571,12 @@ function ResultContent() {
 
               const origin = "https://saju.artpani.com";
               const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=${currentGradeParam}&unlock=true`;
-              const smsContent = `[혜안당 명리연구소] ${name} 님, 주문하신 정통 사주 분석이 완료되었습니다.\n\n적어주신 이메일(${targetEmail || "지정 이메일"})로 상세 보감 PDF가 전송되었으며, 아래 온라인 보감 링크로도 즉시 열람이 가능합니다.\n\n▶ 결과 보기: ${mobileResultUrl}\n\n감사합니다.`;
+              const smsContent = `[혜안당 명리연구소] ${name} 님, 주문하신 ${isTojeong ? "정통 토정비결" : "정통 사주"} 분석이 완료되었습니다.\n\n적어주신 이메일(${targetEmail || "지정 이메일"})로 상세 보감 PDF가 전송되었으며, 아래 온라인 보감 링크로도 즉시 열람이 가능합니다.\n\n▶ 결과 보기: ${mobileResultUrl}\n\n감사합니다.`;
 
               await fetch("/api/sms", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ receiver: targetPhone, msg: smsContent, title: "[혜안당 사주분석]" })
+                body: JSON.stringify({ receiver: targetPhone, msg: smsContent, title: isTojeong ? "[혜안당 토정비결]" : "[혜안당 사주분석]" })
               });
             }
           } catch (err) {
@@ -3604,7 +3608,7 @@ function ResultContent() {
     }
   }, [reportGrade, name, year, month, day, debugUnlock]);
 
-  const updateLocalStorageOrderToPaid = () => {
+  const updateLocalStorageOrderToPaid = (targetGrade) => {
     try {
       const existingStr = localStorage.getItem("hyeandang_orders");
       if (existingStr) {
@@ -3612,12 +3616,18 @@ function ResultContent() {
         const matchedIdx = Array.isArray(orders) ? orders.findIndex(o => 
           o &&
           o.name === name && 
-          o.year === String(year) &&
-          o.month === String(month) &&
-          o.day === String(day)
+          parseInt(o.year) === year &&
+          parseInt(o.month) === month &&
+          parseInt(o.day) === day
         ) : -1;
         if (matchedIdx > -1) {
           orders[matchedIdx].status = "paid";
+          if (targetGrade) {
+            orders[matchedIdx].reportGrade = targetGrade;
+          }
+          if (typeParam === "tojeong") {
+            orders[matchedIdx].productName = "정통 토정비결";
+          }
           localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
         }
       }
@@ -3906,11 +3916,36 @@ function ResultContent() {
     const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "store-312155f8-f523-4067-a568-285c7bbec6e0";
     const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "";
 
+    // 결제 성공 및 리다이렉트 복귀용 이메일, 전화번호 복원
+    let resolvedEmail = emailParam;
+    let resolvedPhone = phoneParam;
+    try {
+      const existingStr = localStorage.getItem("hyeandang_orders");
+      if (existingStr) {
+        const orders = JSON.parse(existingStr);
+        const matched = Array.isArray(orders) ? orders.find(o => 
+          o &&
+          o.name === name && 
+          parseInt(o.year) === year &&
+          parseInt(o.month) === month &&
+          parseInt(o.day) === day
+        ) : null;
+        if (matched) {
+          if (matched.email) resolvedEmail = matched.email;
+          if (matched.phone) resolvedPhone = matched.phone;
+        }
+      }
+    } catch (e) {
+      console.error("결제 요청 전 로컬스토리지 조회 실패:", e);
+    }
+
+    const currentGrade = reportGrade || "premium";
+
     // 로컬 환경 혹은 개발 테스트를 위해 채널 키가 없으면 바로 잠금 해제
     if (!channelKey) {
       alert("[개발자 테스트 안내] V2 결제 채널 키가 지정되지 않아 모의 결제를 즉시 완료합니다.\n\n확인을 누르시면 결제완료 처리되고 상세 보고서 잠금이 풀립니다.");
       setIsPaid(true);
-      updateLocalStorageOrderToPaid();
+      updateLocalStorageOrderToPaid(currentGrade);
       return;
     }
 
@@ -3922,15 +3957,23 @@ function ResultContent() {
     try {
       const PortOne = window.PortOne;
 
+      const queryParams = new URLSearchParams(window.location.search);
+      if (resolvedEmail) queryParams.set("email", resolvedEmail);
+      if (resolvedPhone) queryParams.set("phone", resolvedPhone);
+      queryParams.set("reportGrade", currentGrade);
+
       const redirectUrl = typeof window !== "undefined" 
-        ? `${window.location.origin}/result?${new URLSearchParams(window.location.search).toString()}&imp_success=true`
+        ? `${window.location.origin}/result?${queryParams.toString()}&imp_success=true`
         : "https://saju.artpani.com/result";
+
+      const isTojeong = typeParam === "tojeong";
+      const paymentTitle = isTojeong ? `${name}님 정통 토정비결 보고서` : `${name}님 정통 사주 풀이 보고서`;
 
       PortOne.requestPayment({
         storeId,
         channelKey,
         paymentId: `payment_${new Date().getTime()}`,
-        name: `${name}님 정통 사주 풀이 보고서`,
+        name: paymentTitle,
         totalAmount: 34900,
         currency: "KRW",
         payMethod: "CARD",
@@ -3939,8 +3982,8 @@ function ResultContent() {
         appScheme: "artpanisaju",
         customer: {
           fullName: name,
-          phoneNumber: phoneParam || "010-0000-0000",
-          email: emailParam || "today_sms@hyeandang.com",
+          phoneNumber: resolvedPhone || "010-0000-0000",
+          email: resolvedEmail || "today_sms@hyeandang.com",
         },
       }).then(function (rsp) {
         if (rsp.code === undefined) {
