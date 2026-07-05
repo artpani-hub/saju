@@ -3504,7 +3504,9 @@ function ResultContent() {
                 partnerMonth: String(partnerMonth),
                 partnerDay: String(partnerDay),
                 partnerHour: partnerHour,
-                gunghapType: gunghapType
+                gunghapType: gunghapType,
+                email: targetEmail,
+                phone: targetPhone
               });
 
               const origin = window.location.origin;
@@ -3566,7 +3568,9 @@ function ResultContent() {
                 partnerMonth: String(partnerMonth),
                 partnerDay: String(partnerDay),
                 partnerHour: partnerHour,
-                gunghapType: gunghapType
+                gunghapType: gunghapType,
+                email: targetEmail,
+                phone: targetPhone
               });
 
               const origin = "https://saju.artpani.com";
@@ -3797,7 +3801,9 @@ function ResultContent() {
                       partnerMonth: String(partnerMonth),
                       partnerDay: String(partnerDay),
                       partnerHour: partnerHour,
-                      gunghapType: gunghapType
+                      gunghapType: gunghapType,
+                      email: targetEmail,
+                      phone: targetPhone
                     });
 
                     const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
@@ -3871,7 +3877,9 @@ function ResultContent() {
                       partnerMonth: String(partnerMonth),
                       partnerDay: String(partnerDay),
                       partnerHour: partnerHour,
-                      gunghapType: gunghapType
+                      gunghapType: gunghapType,
+                      email: targetEmail,
+                      phone: targetPhone
                     });
 
                     const origin = "https://saju.artpani.com";
@@ -4023,7 +4031,9 @@ function ResultContent() {
                       partnerMonth: String(partnerMonth),
                       partnerDay: String(partnerDay),
                       partnerHour: partnerHour,
-                      gunghapType: gunghapType
+                      gunghapType: gunghapType,
+                      email: targetEmail,
+                      phone: targetPhone
                     });
 
                     const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
@@ -4097,7 +4107,9 @@ function ResultContent() {
                       partnerMonth: String(partnerMonth),
                       partnerDay: String(partnerDay),
                       partnerHour: partnerHour,
-                      gunghapType: gunghapType
+                      gunghapType: gunghapType,
+                      email: targetEmail,
+                      phone: targetPhone
                     });
 
                     const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
