@@ -8049,15 +8049,8 @@ function ResultContent() {
         <div className="absolute bottom-4 left-4 text-[#A3845B]/30 font-myeongjo text-sm print:hidden">卍</div>
         <div className="absolute bottom-4 right-4 text-[#A3845B]/30 font-myeongjo text-sm print:hidden">卍</div>
 
-        {/* Back and Print Actions */}
-        <div className="flex justify-between items-center mb-8 border-b border-[#E2DDD5] pb-4 print:hidden">
-          <Link
-            href="/input"
-            className="inline-flex items-center gap-1.5 text-xs text-[#5F5F5F] hover:text-[#A3845B] transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            다시 입력하기
-          </Link>
+        {/* Print Actions */}
+        <div className="flex justify-end items-center mb-8 border-b border-[#E2DDD5] pb-4 print:hidden">
           <button
             onClick={handlePrint}
             className="inline-flex items-center gap-1.5 bg-[#A3845B] text-[#F9F8F6] px-4 py-1.5 rounded text-xs font-semibold hover:bg-[#86653E] transition-colors shadow-sm"
@@ -8180,6 +8173,17 @@ function ResultContent() {
           <p className="text-[10px] text-[#5F5F5F] font-light text-center">
             본 문서의 지적 재산권은 혜안당에 있으며, 무단 배포 및 도용을 금지합니다.
           </p>
+        </div>
+
+        {/* 보고서 하단으로 이동된 다시 입력하기 버튼 (인쇄 제외) */}
+        <div className="flex justify-center mt-12 pb-4 print:hidden">
+          <Link
+            href="/input"
+            className="inline-flex items-center gap-2 px-6 py-3 border border-[#A3845B] text-sm text-[#A3845B] hover:bg-[#A3845B] hover:text-[#F9F8F6] rounded-md transition-all font-semibold font-myeongjo shadow-sm hover:shadow"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            다시 입력하기
+          </Link>
         </div>
 
         {/* 하단 고정 결제 CTA 플로팅 바 (isFree 일 때 노출 단, 고급 미결제는 제외) */}
