@@ -265,7 +265,9 @@ const buildGeneralSmsText = (name, productName, email, phone, productKey, formDa
     partnerDay: formData.partnerBirthDay || "25",
     partnerHour: formData.partnerBirthHour || "unknown",
     gunghapType: gunghapType,
-    reportGrade: reportGrade
+    reportGrade: reportGrade,
+    email: email || "",
+    phone: phone || ""
   });
 
   if (selectedCards && selectedCards.length > 0) {
@@ -1042,7 +1044,7 @@ function InputFormContent() {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form id="saju-input-form" onSubmit={handleSubmit} className="space-y-6">
                 {/* 1. Name and Gender */}
                 <div className="bg-background-secondary/30 border border-border-custom rounded-lg p-6 space-y-4">
                   <h3 className="font-myeongjo text-base font-bold text-foreground flex items-center gap-2 border-b border-border-custom/50 pb-2">
@@ -1574,10 +1576,10 @@ function InputFormContent() {
                   </label>
                 </div>
 
-                {/* Submitting button */}
+                {/* PC 화면 전용 결제 제출 버튼 */}
                 <button
                   type="submit"
-                  className="w-full py-4 bg-jade text-background rounded-lg font-myeongjo text-lg font-bold shadow-md hover:bg-jade-dark hover:shadow-lg transition-all cursor-pointer"
+                  className="hidden lg:block w-full py-4 bg-jade text-background rounded-lg font-myeongjo text-lg font-bold shadow-md hover:bg-jade-dark hover:shadow-lg transition-all cursor-pointer"
                 >
                   {reportGrade === "free" ? "확인하기" : "기입 완료 및 결제 진행"}
                 </button>
@@ -1833,6 +1835,15 @@ function InputFormContent() {
                     <ShieldCheck className="w-4 h-4 text-jade shrink-0" />
                     <span>혜안당은 포트원 통합 결제 모듈을 통하여 암호화된 금융 보안 결제를 지원합니다.</span>
                   </div>
+
+                  {/* 모바일 화면 전용 결제 제출 버튼 */}
+                  <button
+                    type="submit"
+                    form="saju-input-form"
+                    className="lg:hidden w-full mt-5 py-4 bg-brass text-[#1C1613] hover:bg-[#8A6F4C] rounded-lg font-myeongjo text-lg font-bold shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    {reportGrade === "free" ? "확인하기" : "기입 완료 및 결제 진행"}
+                  </button>
                 </div>
               ) : (
                 /* 무료 체험판 안내 카드 (전통적인 이탈 방지용 단아한 카드 디자인) */

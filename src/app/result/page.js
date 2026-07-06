@@ -3413,43 +3413,61 @@ function ResultContent() {
   const [hasCheckedPayment, setHasCheckedPayment] = useState(false);
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // debugUnlock이 활성화되어 있으면 즉시 잠금 해제
-      if (debugUnlock) {
-        setIsPaid(true);
-        return;
-      }
-      
       const params = new URLSearchParams(window.location.search);
-      const isMobileSuccess = params.get("imp_success") === "true";
+      const isMobileSuccess = params.get("imp_success") === "true" || (params.has("paymentId") && !params.has("code"));
 
-      const existingStr = localStorage.getItem("hyeandang_orders");
-      let paidOrder = null;
-      if (existingStr) {
+      // [파라미터 유실 방어] 모바일 결제 성공 리다이렉트 시 파라미터가 유실된 경우 임시 보관 정보로 복구하여 리다이렉트
+      if (isMobileSuccess && (!params.has("name") || !params.has("phone") || !params.has("email"))) {
         try {
-          const orders = JSON.parse(existingStr);
-          paidOrder = Array.isArray(orders) ? orders.find(o => 
-            o &&
-            o.name === name && 
-            o.status === "paid" &&
-            parseInt(o.year) === year &&
-            parseInt(o.month) === month &&
-            parseInt(o.day) === day
-          ) : null;
-        } catch(e) {
-          console.error(e);
+          const tempStr = localStorage.getItem("hyeandang_temp_upgrade_info");
+          if (tempStr) {
+            const tempInfo = JSON.parse(tempStr);
+            const redirectParams = new URLSearchParams({
+              name: tempInfo.name,
+              gender: tempInfo.genderVal || "female",
+              type: tempInfo.typeParam || "saju",
+              calendar: tempInfo.calendar || "solar",
+              year: String(tempInfo.year),
+              month: String(tempInfo.month),
+              day: String(tempInfo.day),
+              hour: tempInfo.hour || "10:00",
+              worryCategory: tempInfo.worryCategory || "general",
+              worryText: tempInfo.worryText || "",
+              partnerName: tempInfo.partnerName || "",
+              partnerGender: tempInfo.partnerGender || "male",
+              partnerCalendar: tempInfo.partnerCalendar || "solar",
+              partnerYear: String(tempInfo.partnerYear || 1993),
+              partnerMonth: String(tempInfo.partnerMonth || 11),
+              partnerDay: String(tempInfo.partnerDay || 12),
+              partnerHour: tempInfo.partnerHour || "unknown",
+              gunghapType: tempInfo.gunghapType || "compatibility",
+              email: tempInfo.email || "",
+              phone: tempInfo.phone || "",
+              reportGrade: tempInfo.targetGrade || "premium",
+              imp_success: "true"
+            });
+            window.location.href = `${window.location.origin}${window.location.pathname}?${redirectParams.toString()}`;
+            return;
+          }
+        } catch (e) {
+          console.error("모바일 성공 리다이렉트 파라미터 복구 실패:", e);
         }
-      }
-
-      if (paidOrder && reportGrade !== "free" && !isMobileSuccess) {
-        setIsPaid(true);
-        setHasCheckedPayment(true);
-        return;
       }
 
       // 만약 URL 파라미터에 성공(imp_success) 플래그가 들어있는 경우도 결제 완료 처리
       if (isMobileSuccess) {
         setIsPaid(true);
-        const currentGradeParam = params.get("reportGrade") || "premium";
+        const currentGradeParam = params.get("reportGrade") || (
+          (() => {
+            try {
+              const tempStr = localStorage.getItem("hyeandang_temp_upgrade_info");
+              if (tempStr) {
+                return JSON.parse(tempStr).targetGrade;
+              }
+            } catch(e) {}
+            return "premium";
+          })()
+        );
         // 모바일 리다이렉트 등으로 들어왔을 때 해당 주문 정보를 로컬 스토리지에 업데이트
         updateLocalStorageOrderToPaid(currentGradeParam);
         
@@ -3458,24 +3476,40 @@ function ResultContent() {
           try {
             let restoredEmail = "";
             let restoredPhone = "";
+            
+            // 1순위: 임시 정보 백업 저장소에서 최우선으로 연락처 복원
             try {
-              const existingStr = localStorage.getItem("hyeandang_orders");
-              if (existingStr) {
-                const orders = JSON.parse(existingStr);
-                const matched = Array.isArray(orders) ? orders.find(o => 
-                  o &&
-                  o.name === name && 
-                  parseInt(o.year) === year &&
-                  parseInt(o.month) === month &&
-                  parseInt(o.day) === day
-                ) : null;
-                if (matched) {
-                  restoredEmail = matched.email;
-                  restoredPhone = matched.phone;
-                }
+              const tempStr = localStorage.getItem("hyeandang_temp_upgrade_info");
+              if (tempStr) {
+                const tempInfo = JSON.parse(tempStr);
+                restoredEmail = tempInfo.email;
+                restoredPhone = tempInfo.phone;
               }
-            } catch (e) {
-              console.error("로컬 스토리지 주문 조회 실패:", e);
+            } catch (tempErr) {
+              console.error("임시 정보 조회 실패:", tempErr);
+            }
+
+            // 2순위: 기존 주문 내역(hyeandang_orders)에서 복원
+            if (!restoredEmail || !restoredPhone) {
+              try {
+                const existingStr = localStorage.getItem("hyeandang_orders");
+                if (existingStr) {
+                  const orders = JSON.parse(existingStr);
+                  const matched = Array.isArray(orders) ? orders.find(o => 
+                    o &&
+                    o.name === name && 
+                    parseInt(o.year) === year &&
+                    parseInt(o.month) === month &&
+                    parseInt(o.day) === day
+                  ) : null;
+                  if (matched) {
+                    if (!restoredEmail) restoredEmail = matched.email;
+                    if (!restoredPhone) restoredPhone = matched.phone;
+                  }
+                }
+              } catch (e) {
+                console.error("로컬 스토리지 주문 조회 실패:", e);
+              }
             }
 
             const targetEmail = emailParam || restoredEmail || "today_sms@hyeandang.com";
@@ -3588,7 +3622,40 @@ function ResultContent() {
           }
         };
 
-        sendNotificationOnMobileRedirect();
+        // 비동기 전송이 완료될 때까지 확실히 기다린 후 return 하도록 조치
+        (async () => {
+          await sendNotificationOnMobileRedirect();
+          setHasCheckedPayment(true);
+        })();
+        return;
+      }
+
+      // debugUnlock이 활성화되어 있으면 즉시 잠금 해제
+      if (debugUnlock) {
+        setIsPaid(true);
+        return;
+      }
+
+      const existingStr = localStorage.getItem("hyeandang_orders");
+      let paidOrder = null;
+      if (existingStr) {
+        try {
+          const orders = JSON.parse(existingStr);
+          paidOrder = Array.isArray(orders) ? orders.find(o => 
+            o &&
+            o.name === name && 
+            o.status === "paid" &&
+            parseInt(o.year) === year &&
+            parseInt(o.month) === month &&
+            parseInt(o.day) === day
+          ) : null;
+        } catch(e) {
+          console.error(e);
+        }
+      }
+
+      if (paidOrder && reportGrade !== "free" && !isMobileSuccess) {
+        setIsPaid(true);
         setHasCheckedPayment(true);
         return;
       }
@@ -3705,6 +3772,77 @@ function ResultContent() {
 
     const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "store-312155f8-f523-4067-a568-285c7bbec6e0";
     const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "";
+
+    // 결제요청 직전에 사용자 정보를 임시 저장 (모바일 리다이렉트 유실 대비)
+    try {
+      const tempUpgradeInfo = {
+        name,
+        genderVal,
+        typeParam,
+        calendar,
+        year,
+        month,
+        day,
+        hour,
+        worryCategory,
+        worryText,
+        partnerName,
+        partnerGender,
+        partnerCalendar,
+        partnerYear,
+        partnerMonth,
+        partnerDay,
+        partnerHour,
+        gunghapType,
+        email: emailParam || "today_sms@hyeandang.com",
+        phone: phoneParam || "010-0000-0000",
+        targetGrade: grade,
+        amount
+      };
+      localStorage.setItem("hyeandang_temp_upgrade_info", JSON.stringify(tempUpgradeInfo));
+
+      // 결제 검증을 위한 로컬스토리지 orders 정보도 pending 상태로 선등록
+      const existingStr = localStorage.getItem("hyeandang_orders");
+      let orders = [];
+      if (existingStr) {
+        try {
+          orders = JSON.parse(existingStr);
+          if (!Array.isArray(orders)) orders = [];
+        } catch (e) {
+          orders = [];
+        }
+      }
+      const matchedIdx = orders.findIndex(o => 
+        o &&
+        o.name === name && 
+        parseInt(o.year) === year &&
+        parseInt(o.month) === month &&
+        parseInt(o.day) === day
+      );
+      if (matchedIdx === -1) {
+        orders.push({
+          id: Math.floor(Math.random() * 9000) + 1000,
+          name: name,
+          email: emailParam || "today_sms@hyeandang.com",
+          phone: phoneParam || "010-0000-0000",
+          productName: typeParam === "tojeong" ? "정통 토정비결" : (type === "newyear" ? "신년운세" : "평생 종합 사주팔자"),
+          amount: amount,
+          status: "pending",
+          createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
+          gender: genderVal || "female",
+          calendar: calendar,
+          year: String(year),
+          month: String(month),
+          day: String(day),
+          hour: hour,
+          worryText: worryText || "오늘의 운세",
+          reportGrade: grade
+        });
+        localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+      }
+    } catch (tempErr) {
+      console.error("임시 정보 백업 실패:", tempErr);
+    }
 
     if (!channelKey) {
       alert("[개발자 테스트 안내] V2 결제 채널 키가 지정되지 않아 모의 결제를 즉시 완료합니다.");
@@ -8106,8 +8244,8 @@ function ResultContent() {
           </div>
         )}
 
-        {/* 고급 리포트일 때 프리미엄 업그레이드 하단 고정 플로팅 바 (미결제 상태에서도 노출) */}
-        {(reportGrade === "premium" && !isPaid) && (type === "saju" || (type === "newyear" && typeParam !== "tojeong")) && (
+        {/* 고급 리포트일 때 프리미엄 업그레이드 하단 고정 플로팅 바 (결제 완료 상태에서도 노출되도록 !isPaid 조건 제거) */}
+        {reportGrade === "premium" && (type === "saju" || (type === "newyear" && typeParam !== "tojeong")) && (
           <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
             <button
               type="button"
