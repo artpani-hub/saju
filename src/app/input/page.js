@@ -46,7 +46,7 @@ const products = {
     category: "연인 궁합",
     price: 26900,
     originalPrice: 49500,
-    desc: "두 사람의 타고난 오행 분포 조화, 속궁합/정서적 궁합, 백년해로 타이밍 및 관계 유지 솔루션 제공",
+    desc: "두 사람의 타고난 오행 분포 조화, 밀착/정서적 궁합, 백년해로 타이밍 및 관계 유지 솔루션 제공",
   },
   dream: {
     title: "꿈해몽 & 사주 조율",
@@ -554,7 +554,7 @@ function InputFormContent() {
           : base)
         : base);
 
-      const gunghapLabel = productKey === "gunghap" ? (gunghapType === "deep_compatibility" ? " (속궁합)" : gunghapType === "reunion" ? " (재회운)" : " (궁합)") : "";
+      const gunghapLabel = productKey === "gunghap" ? (gunghapType === "deep_compatibility" ? " (밀착궁합)" : gunghapType === "reunion" ? " (재회운)" : " (궁합)") : "";
       const newOrder = {
         id: orderId,
         name: formData.name || "홍길동",
@@ -859,7 +859,7 @@ function InputFormContent() {
           : base)
         : base);
 
-      const gunghapLabel = productKey === "gunghap" ? (gunghapType === "deep_compatibility" ? " (속궁합)" : gunghapType === "reunion" ? " (재회운)" : " (궁합)") : "";
+      const gunghapLabel = productKey === "gunghap" ? (gunghapType === "deep_compatibility" ? " (밀착궁합)" : gunghapType === "reunion" ? " (재회운)" : " (궁합)") : "";
       
       const pendingOrder = {
         id: Math.floor(Math.random() * 9000) + 1000,
@@ -1545,7 +1545,7 @@ function InputFormContent() {
                       placeholder={productKey === "dream"
                         ? "예시: 어젯밤에 검은 덕치마가 나타나 나를 품어안는 꿈을 꽜었습니다. 덕치가 새끼하게 움직이지는 않았고 오히려 저를 감싸 안아주는 듯한 느낌이었습니다. 불로 타오르는 산과 수력이 보이는 꿈이었습니다. 이 꿈과 요즘 직장 이직 문제가 어떤 관계인지 알고 싶습니다..."
                         : productKey === "gunghap"
-                        ? "예시: 이 사람과 성향 차이로 자주 다툽니다. 서로 극복할 방안이나 저희의 연애 궁합/속궁합 등 두 사람 사이의 고민을 적어주세요..."
+                        ? "예시: 이 사람과 성향 차이로 자주 다툽니다. 서로 극복할 방안이나 저희의 연애 궁합/밀착 궁합 등 두 사람 사이의 고민을 적어주세요..."
                         : "예시: 다니고 있는 회사에서 올해 이직을 준비하고 있는데, 언제가 좋을지, 제 사주에 어떤 기운이 도움이 되는지 알려주세요. 또한 대인관계로 인한 스트레스가 많습니다..."}
                       className="w-full bg-background border border-border-custom rounded px-3 py-2 text-sm focus:outline-none focus:border-brass font-light leading-relaxed resize-none"
                     ></textarea>
@@ -1733,10 +1733,10 @@ function InputFormContent() {
                                 >
                                   <div className="flex-1 min-w-0">
                                     <span className="text-[11px] font-bold text-[#C2185B] flex items-center gap-1">
-                                      🔥 속궁합 <span className="text-[8px] bg-[#C2185B]/15 text-[#C2185B] px-1.5 py-0.5 rounded font-normal">인기</span>
+                                      🔥 밀착 궁합 <span className="text-[8px] bg-[#C2185B]/15 text-[#C2185B] px-1.5 py-0.5 rounded font-normal">인기</span>
                                     </span>
                                     <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
-                                      신체적 교감, 정서적 밀착도, 잠자리 궁합 상세 분석
+                                      음양 오행의 성향, 정서적 밀착도, 행동 성향 상세 분석
                                     </span>
                                   </div>
                                   <span className="text-[10px] font-bold text-[#C2185B] whitespace-nowrap flex-shrink-0 text-right">26,900원</span>

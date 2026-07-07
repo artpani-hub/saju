@@ -7166,28 +7166,28 @@ function ResultContent() {
       const isPartnerYang = ["甲", "丙", "戊", "庚", "壬"].includes(partnerSVal);
 
       if (isMyYang && isPartnerYang) {
-        return "두 사람 모두 넘쳐나는 양(陽)의 에너지를 타고나 매우 역동적이고 뜨거운 신체적 이끌림을 가집니다. 서로를 향한 본능적인 매력이 빠르게 점화되나, 불꽃이 튀는 만큼 사소한 기세 싸움에서 한 발도 물러서지 않는 경향이 있으니 속궁합에서 서로의 템포를 조절하는 배려가 절실합니다.";
+        return "두 사람 모두 넘쳐나는 양(陽)의 에너지를 타고나 매우 역동적이고 뜨거운 성향적 이끌림을 가집니다. 서로를 향한 본능적인 매력이 빠르게 점화되나, 불꽃이 튀는 만큼 사소한 기세 싸움에서 한 발도 물러서지 않는 경향이 있으니 밀착 궁합에서 서로의 템포를 조절하는 배려가 절실합니다.";
       }
       if (!isMyYang && !isPartnerYang) {
-        return "두 사람 모두 정적인 음(陰)의 기운이 발달하여 속궁합에서 격렬함보다는 부드럽고 섬세한 교감을 선호합니다. 정서적 만족과 아늑한 대화를 바탕으로 한 신체 교감 지수가 매우 높으며, 시간이 흐를수록 서로의 존재 자체로 깊은 심리적 힐링을 선하하는 궁합입니다.";
+        return "두 사람 모두 정적인 음(陰)의 기운이 발달하여 밀착 궁합에서 격렬함보다는 부드럽고 섬세한 교감을 선호합니다. 정서적 만족과 아늑한 대화를 바탕으로 한 케미스트리 지수가 매우 높으며, 시간이 흐를수록 서로의 존재 자체로 깊은 심리적 힐링을 선사하는 궁합입니다.";
       }
       return `${name}님과 상대방의 음(陰, 차분한 기운)과 양(陽, 활발한 기운) 기운이 완벽하게 톱니바퀴처럼 맞물립니다. 한 사람이 주도적으로 에너지를 이끌면 다른 한 사람은 부드럽게 수용하며 화합하여, 지치지 않고 가장 이상적인 음양의 신체 밸런스를 평생 유지하게 해주는 최상의 끌림을 보유하고 있습니다.`;
     };
 
     const umyangText = getUmyangText(myStem, partnerStem);
 
-    // 지장간 암합 및 속궁합
+    // 지장간 암합 및 밀착 궁합
     const getSexualHarmonyText = (myBr, partnerBr) => {
       const sexualMap = {
-        "子丑": "자축(子丑) 육합의 물과 흙이 유려하게 섞이는 상성으로, 보이지 않는 본능적 친밀도와 잠자리 융합도가 5대 조합 중 가장 끈끈하게 작동하는 속궁합 최상의 명조 배합입니다.",
-        "寅亥": "인해(寅亥) 생합의 기운이 강해, 서로를 향한 신체적 소통뿐만 아니라 그 이후의 친밀감과 편안함이 아주 깊게 동조되는 영혼과 육체의 동반 결합 상성입니다.",
-        "卯戌": "묘술(卯戌) 합화의 불꽃 반응이 일어납니다. 만날 때마다 설렘과 짜릿함이 유지되어 장기 연애 중에도 권태기가 거의 오지 않는 아주 건강하고 열정적인 잠자리 시너지를 냅니다.",
-        "子午": "일지가 자오충(子午冲)으로 강하게 부딪힙니다. 잠자리에서 서로의 피지컬 템포나 요구하는 감각의 차이가 발생할 수 있으니 자존심 세우지 말고 솔직한 대화를 통해 맞춰가는 혜안이 중요합니다.",
-        "丑午": "축오(丑午) 원진과 귀문 기류가 겹쳐 잠자리 전후의 감정 기복이나 사소한 오해로 인한 토라짐이 발생하기 쉽습니다. 스킨십 후 반드시 '사랑의 대화'를 10분 이상 나눠 감정을 풀어주어야 대길합니다."
+        "子丑": "자축(子丑) 육합의 물과 흙이 유려하게 섞이는 상성으로, 보이지 않는 본능적 친밀도와 행동 조화도가 5대 조합 중 가장 끈끈하게 작동하는 밀착 궁합 최상의 명조 배합입니다.",
+        "寅亥": "인해(寅亥) 생합의 기운이 강해, 서로를 향한 신체적 소통뿐만 아니라 그 이후의 친밀감과 편안함이 아주 깊게 동조되는 영혼과 행동 성향의 동반 결합 상성입니다.",
+        "卯戌": "묘술(卯戌) 합화의 불꽃 반응이 일어납니다. 만날 때마다 설렘과 짜릿함이 유지되어 장기 연애 중에도 권태기가 거의 오지 않는 아주 건강하고 열정적인 행동 성향 시너지를 냅니다.",
+        "子午": "일지가 자오충(子午冲)으로 강하게 부딪힙니다. 행동 조화에서 서로의 피지컬 템포나 요구하는 감각의 차이가 발생할 수 있으니 자존심 세우지 말고 솔직한 대화를 통해 맞춰가는 혜안이 중요합니다.",
+        "丑午": "축오(丑午) 원진과 귀문 기류가 겹쳐 밀착 관계 전후의 감정 기복이나 사소한 오해로 인한 토라짐이 발생하기 쉽습니다. 소통 후 반드시 '사랑의 대화'를 10분 이상 나눠 감정을 풀어주어야 대길합니다."
       };
       const key = myBr + partnerBr;
       const revKey = partnerBr + myBr;
-      return sexualMap[key] || sexualMap[revKey] || `일지 지지인 ${myBr}와 ${partnerBr}의 관계가 평이하여 신체적 마찰이나 거부 반응이 현저히 적습니다. 서로의 배려 속에 가장 평화롭고 자연스럽게 속궁합의 조화를 구축해 갈 수 있는 원만한 배합입니다.`;
+      return sexualMap[key] || sexualMap[revKey] || `일지 지지인 ${myBr}와 ${partnerBr}의 관계가 평이하여 신체적 마찰이나 거부 반응이 현저히 적습니다. 서로의 배려 속에 가장 평화롭고 자연스럽게 밀착 궁합의 조화를 구축해 갈 수 있는 원만한 배합입니다.`;
     };
 
     const sexualHarmonyText = getSexualHarmonyText(myBranch, partnerBranch);
@@ -7200,14 +7200,14 @@ function ResultContent() {
           direction: "북동쪽 (침대 머리 방향)",
           color: "차분한 네이비 또는 다크 크림 계열의 침구류",
           perfume: "안정감을 부여하는 묵직한 샌들우드 또는 머스크 계열",
-          reason: "뜨겁거나 솟구치는 기운을 지닌 두 분의 화기운을 차분하게 진정시키고 깊은 이완을 도와 신체적 유대를 더욱 아늑하게 만듭니다."
+          reason: "뜨겁거나 솟구치는 기운을 지닌 두 분의 화기운을 차분하게 진정시키고 깊은 이완을 도와 정서적 유대를 더욱 아늑하게 만듭니다."
         };
       }
       return {
         direction: "남서쪽 (침실 화분 배치 방향)",
         color: "따뜻한 오렌지 또는 아늑한 로즈 베이지 톤의 조명과 인테리어",
         perfume: "감수성을 자극하는 은은한 일랑일랑 또는 로즈 앰버 계열",
-        reason: "다소 건조하거나 차갑게 얼어붙을 수 있는 금/수 기운의 방안을 부드러운 온기로 녹여주어 신체적 흥분도와 낭만적 몰입도를 높여줍니다."
+        reason: "다소 건조하거나 차갑게 얼어붙을 수 있는 금/수 기운의 방안을 부드러운 온기로 녹여주어 정서적 흥분도와 낭만적 몰입도를 높여줍니다."
       };
     };
 
@@ -7221,7 +7221,7 @@ function ResultContent() {
         <div className="text-center space-y-2 mb-8">
           <span className="text-xs tracking-widest text-purple-700 font-bold block">慧眼堂 비밀 처방 보감</span>
           <h2 className="font-myeongjo text-2xl font-bold text-[#1A1A1A] tracking-wider">
-            🔥 속궁합 & 음양 조율 정밀 분석 보고서
+            🔥 밀착 궁합 & 음양 조율 정밀 분석 보고서
           </h2>
           <div className="w-24 h-0.5 bg-purple-300 mx-auto my-2" />
         </div>
@@ -7251,7 +7251,7 @@ function ResultContent() {
             💋 제 1장. 음양(陰陽) 에너지 균형과 본능적 끌림
           </h4>
           <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
-            {name}님과 상대방 {partnerName}님의 일주(日柱) 천간 음양 구성을 해독하여 신체적 기류와 본능적 끌림 정도를 진단했습니다.
+            {name}님과 상대방 {partnerName}님의 일주(日柱) 천간 음양 구성을 해독하여 성향적 기류와 본능적 끌림 정도를 진단했습니다.
           </p>
           <div className="bg-[#FAF8F5] p-4 rounded text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional border border-[#E2DDD5]/40">
             <strong>음양 분석 진단:</strong> {umyangText}
@@ -7261,20 +7261,20 @@ function ResultContent() {
         {/* 2. 속궁합 상성 */}
         <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 shadow-sm space-y-4">
           <h4 className="font-myeongjo text-sm font-bold text-purple-700 flex items-center gap-1.5 border-b border-purple-200 pb-2">
-            🍷 제 2장. 명리학으로 풀어보는 1:1 속궁합 융합도
+            🍷 제 2장. 명리학으로 풀어보는 1:1 밀착 궁합 융합도
           </h4>
           <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
-            두 사람의 지지 지장간(支藏干) 암합 구조와 배우자궁 일지 상호작용을 해독한 신체적 소통 결과입니다.
+            두 사람의 지지 지장간(支藏干) 암합 구조와 배우자궁 일지 상호작용을 해독한 행동 조화 결과입니다.
           </p>
           <div className="bg-[#FAF8F5] p-4 rounded text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional border border-[#E2DDD5]/40">
-            <strong>속궁합 명조 풀이:</strong> {sexualHarmonyText}
+            <strong>밀착 궁합 명조 풀이:</strong> {sexualHarmonyText}
           </div>
         </div>
 
         {/* 3. 친밀도 조율 개운 처방 */}
         <div className="bg-white border border-[#E2DDD5] rounded-lg p-6 shadow-sm space-y-4">
           <h4 className="font-myeongjo text-sm font-bold text-purple-700 flex items-center gap-1.5 border-b border-purple-200 pb-2">
-            🔮 제 3장. 속궁합 주파수 조율을 위한 혜안당 공간 처방
+            🔮 제 3장. 밀착 궁합 주파수 조율을 위한 혜안당 공간 처방
           </h4>
           <div className="space-y-4 text-xs font-light font-traditional text-[#2C2C2C]">
             <div className="grid grid-cols-2 gap-4">
@@ -7297,15 +7297,15 @@ function ResultContent() {
         {/* 4. 유대감 강화 솔루션 */}
         <div className="bg-[#FAF6FF] border border-purple-200 rounded-lg p-5 space-y-3 shadow-sm">
           <h4 className="font-myeongjo text-sm font-bold text-purple-700 flex items-center gap-1.5 border-b border-purple-200 pb-2">
-            💜 제 4장. 성적 유대 및 침실 갈등 예방 1:1 행동 비책
+            💜 제 4장. 유대감 강화 및 갈등 예방 1:1 행동 비책
           </h4>
           <p className="text-xs text-[#2C2C2C] leading-relaxed font-light font-traditional">
-            속궁합의 마찰을 줄이기 위해서는 잠자리 전후의 감정적 안전거리가 중요합니다. 서로의 다름을 비난하기보다 "오늘 함께해서 정말 따뜻하고 행복했어"라는 언어적 지지를 반드시 나누는 습관을 기르십시오. 이 사소한 행동이 두 분의 침실 속 부정적인 기운과 불안감을 완벽히 정화해 줄 묘책이 될 것입니다.
+            밀착 궁합의 마찰을 줄이기 위해서는 갈등 상황 전후의 감정적 안전거리가 중요합니다. 서로의 다름을 비난하기보다 "오늘 함께해서 정말 따뜻하고 행복했어"라는 언어적 지지를 반드시 나누는 습관을 기르십시오. 이 사소한 행동이 두 분 사이의 부정적인 기운과 불안감을 완벽히 정화해 줄 묘책이 될 것입니다.
           </p>
           {worryText && (
             <div className="text-xs text-[#6F5B85] leading-relaxed font-light font-traditional border-t border-purple-200/50 pt-2.5">
-              <strong>의뢰하신 고민의 침실/속궁합적 혜안:</strong><br />
-              현재 적어주신 고민을 두 분의 음양 주파수와 지장간 암합으로 짚어보면, 낮의 말다툼이 밤의 서먹함으로 이어지기 쉬운 흐름입니다. 잠자리에 들기 전에는 무거운 화제나 현실적 고민에 대한 대화를 피하고, 오롯이 두 분의 따뜻한 온기 교감에만 집중하는 리셋 규칙을 세우는 것이 꼬인 실타래를 푸는 혜안입니다.
+              <strong>의뢰하신 고민의 조화/성향적 혜안:</strong><br />
+              현재 적어주신 고민을 두 분의 음양 주파수와 지장간 암합으로 짚어보면, 낮의 말다툼이 밤의 서먹함으로 이어지기 쉬운 흐름입니다. 하루를 마무리하고 휴식을 취하기 전에는 무거운 화제나 현실적 고민에 대한 대화를 피하고, 오롯이 두 분의 따뜻한 온기 교감에만 집중하는 리셋 규칙을 세우는 것이 꼬인 실타래를 푸는 혜안입니다.
             </div>
           )}
         </div>
