@@ -187,7 +187,7 @@ const buildGeneralSmsTextFromOrder = (order) => {
 
   const origin = "https://saju.artpani.com";
 
-  return `[혜안당 명리연구소] ${order.name} 님, 주문하신 [${order.productName}] 분석이 무사히 완료되었습니다.\n\n적어주신 이메일(${order.email})로 상세 보고서 PDF 가이드를 재전송해 드렸습니다. 혹은 아래의 온라인 결과 보감 링크를 통해 즉시 확인해 보실 수 있습니다.\n\n▶ 모바일 결과 보기: ${origin}/result?${queryParams.toString()}\n\n귀하의 앞날에 늘 지혜의 빛이 함께하기를 기원합니다. 감사합니다.`;
+  return `[혜안당 명리연구소] ${order.name} 님, 주문하신 [${order.productName}] 분석이 무사히 완료되었습니다.\n\n적어주신 이메일(${order.email})로 상세 보고서 PDF 가이드를 재전송해 드렸습니다. 혹은 아래의 온라인 결과 보감 링크를 통해 즉시 확인해 보실 수 있습니다.\n\n▶ 모바일 결과 보기: ${origin}/result?${queryParams.toString()}\n\n🎁 [재구매 10% 할인쿠폰]\n혜안당을 이용해 주셔서 감사합니다. 다음 서비스 이용 시 결제창에서 쿠폰번호 [HYEAN-WELCOME-10]을 입력하시면 10% 추가 할인을 받으실 수 있습니다.\n\n귀하의 앞날에 늘 지혜의 빛이 함께하기를 기원합니다. 감사합니다.`;
 };
 
 export default function AdminPage() {
@@ -203,13 +203,70 @@ export default function AdminPage() {
   const [refreshingId, setRefreshingId] = useState(null);
 
   // Q&A Inquiry States
-  const [currentMenuTab, setCurrentMenuTab] = useState("orders"); // orders, inquiries
+  const [currentMenuTab, setCurrentMenuTab] = useState("orders"); // orders, inquiries, stats, crm
   const [inquiries, setInquiries] = useState([]);
   const [inquirySearch, setInquirySearch] = useState("");
   const [inquiryFilterType, setInquiryFilterType] = useState("all"); // all, delivery, general
   const [inquiryFilterStatus, setInquiryFilterStatus] = useState("all"); // all, pending, answered
   const [replyingInquiryId, setReplyingInquiryId] = useState(null);
   const [replyText, setReplyText] = useState("");
+
+  // CRM & SMS States
+  const [selectedCustomerPhones, setSelectedCustomerPhones] = useState([]);
+  const [smsTitle, setSmsTitle] = useState("[혜안당]");
+  const [smsMessage, setSmsMessage] = useState("");
+  const [useAdFormat, setUseAdFormat] = useState(true);
+  const [crmTargetProduct, setCrmTargetProduct] = useState("all");
+  const [crmTargetGender, setCrmTargetGender] = useState("all");
+  const [crmTargetPayment, setCrmTargetPayment] = useState("all"); // all, paidOnly, unpaidFreeOnly
+  const [crmSearchTerm, setCrmSearchTerm] = useState("");
+  const [isSendingSms, setIsSendingSms] = useState(false);
+  const [crmAlert, setCrmAlert] = useState({ show: false, message: "", type: "info" });
+  const [selectedSmsCoupon, setSelectedSmsCoupon] = useState("");
+  const [sendCouponSmsOnCreate, setSendCouponSmsOnCreate] = useState(false);
+
+  const showCrmAlert = (message, type = "info") => {
+    setCrmAlert({ show: true, message, type });
+    setTimeout(() => {
+      setCrmAlert({ show: false, message: "", type: "info" });
+    }, 4000);
+  };
+
+  // Coupon States
+  const [coupons, setCoupons] = useState([]);
+  const [newCouponCode, setNewCouponCode] = useState("");
+  const [newCouponName, setNewCouponName] = useState("");
+  const [newCouponType, setNewCouponType] = useState("percent"); // percent, fixed
+  const [newCouponValue, setNewCouponValue] = useState("");
+  const [newCouponExpiry, setNewCouponExpiry] = useState("2026-12-31");
+  const [newCouponMinAmount, setNewCouponMinAmount] = useState("");
+
+  // 쿠폰 데이터 로드
+  useEffect(() => {
+    try {
+      const existingStr = localStorage.getItem("hyeandang_coupons");
+      if (existingStr) {
+        setCoupons(JSON.parse(existingStr));
+      } else {
+        const defaultCoupons = [
+          {
+            code: "HYEAN-WELCOME-10",
+            name: "첫 가입 감사 10% 할인 쿠폰",
+            type: "percent",
+            value: 10,
+            expireDate: "2026-12-31",
+            isActive: true,
+            usedCount: 0,
+            minOrderAmount: 0
+          }
+        ];
+        setCoupons(defaultCoupons);
+        localStorage.setItem("hyeandang_coupons", JSON.stringify(defaultCoupons));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [isLoggedIn]);
 
   // Q&A 데이터 로드
   useEffect(() => {
@@ -700,7 +757,840 @@ export default function AdminPage() {
 
   const stats = getPeriodStats();
 
-  // 5. 로그인 화면 렌더링
+  // CRM: 중복 제거된 고객 목록 추출
+  const getCustomers = () => {
+    const customerMap = {};
+    orders.forEach(o => {
+      if (!o.phone) return;
+      const cleanPhone = o.phone.trim();
+      if (!customerMap[cleanPhone]) {
+        customerMap[cleanPhone] = {
+          phone: cleanPhone,
+          name: o.name,
+          email: o.email || "-",
+          gender: o.gender || "female",
+          totalOrders: 0,
+          paidOrders: 0,
+          totalSpent: 0,
+          hasFreeOrder: false,
+          purchasedProducts: new Set(),
+          lastOrderDate: o.createdAt || "-"
+        };
+      }
+      const cust = customerMap[cleanPhone];
+      cust.totalOrders++;
+      if (o.status === "paid") {
+        cust.paidOrders++;
+        cust.totalSpent += o.amount || 0;
+      }
+      if (o.status === "free" || (o.productName && o.productName.includes("체험판"))) {
+        cust.hasFreeOrder = true;
+      }
+      if (o.productName) {
+        cust.purchasedProducts.add(o.productName);
+      }
+      if (o.createdAt && (cust.lastOrderDate === "-" || o.createdAt > cust.lastOrderDate)) {
+        cust.lastOrderDate = o.createdAt;
+      }
+    });
+
+    return Object.values(customerMap).map(c => ({
+      ...c,
+      purchasedProducts: Array.from(c.purchasedProducts).join(", ")
+    }));
+  };
+
+  // 통계: 카테고리별 매출 분석 데이터 집계
+  const getCategoryStats = () => {
+    const periodOrders = orders.filter(order => {
+      if (!order.createdAt) return false;
+      const orderDate = new Date(order.createdAt.replace(/-/g, "/"));
+      const now = new Date();
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const orderDayStart = new Date(orderDate.getFullYear(), orderDate.getMonth(), orderDate.getDate());
+      const diffTime = todayStart - orderDayStart;
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (dateFilter === "today") {
+        return orderDate.getFullYear() === now.getFullYear() &&
+               orderDate.getMonth() === now.getMonth() &&
+               orderDate.getDate() === now.getDate();
+      } else if (dateFilter === "7days") {
+        return diffDays >= 0 && diffDays <= 6;
+      } else if (dateFilter === "30days") {
+        return diffDays >= 0 && diffDays <= 29;
+      } else if (dateFilter === "custom") {
+        if (startDate) {
+          const start = parseLocalDate(startDate, false);
+          if (start && orderDate.getTime() < start.getTime()) return false;
+        }
+        if (endDate) {
+          const end = parseLocalDate(endDate, true);
+          if (end && orderDate.getTime() > end.getTime()) return false;
+        }
+        return true;
+      }
+      return true; // all
+    });
+
+    const categories = {
+      gunghap_basic: { label: "연인 궁합 (기본 궁합)", orderCount: 0, paidCount: 0, revenue: 0 },
+      gunghap_deep: { label: "연인 궁합 (밀착 궁합)", orderCount: 0, paidCount: 0, revenue: 0 },
+      gunghap_reunion: { label: "연인 궁합 (재회운)", orderCount: 0, paidCount: 0, revenue: 0 },
+      saju: { label: "평생 종합 사주", orderCount: 0, paidCount: 0, revenue: 0 },
+      newyear: { label: "신년 운세 / 토정비결", orderCount: 0, paidCount: 0, revenue: 0 },
+      wealth: { label: "재물 & 비즈니스운", orderCount: 0, paidCount: 0, revenue: 0 },
+      tarot: { label: "1:1 맞춤 타로 상담", orderCount: 0, paidCount: 0, revenue: 0 },
+      dream: { label: "꿈해몽", orderCount: 0, paidCount: 0, revenue: 0 },
+      today: { label: "오늘의 운세", orderCount: 0, paidCount: 0, revenue: 0 },
+      other: { label: "기타", orderCount: 0, paidCount: 0, revenue: 0 },
+    };
+
+    periodOrders.forEach(o => {
+      const name = o.productName || "";
+      let catKey = "other";
+
+      if (name.includes("궁합")) {
+        if (name.includes("속궁합") || name.includes("밀착")) {
+          catKey = "gunghap_deep";
+        } else if (name.includes("재회")) {
+          catKey = "gunghap_reunion";
+        } else {
+          catKey = "gunghap_basic";
+        }
+      } else if (name.includes("사주")) {
+        catKey = "saju";
+      } else if (name.includes("신년") || name.includes("토정")) {
+        catKey = "newyear";
+      } else if (name.includes("재물") || name.includes("비즈니스")) {
+        catKey = "wealth";
+      } else if (name.includes("타로")) {
+        catKey = "tarot";
+      } else if (name.includes("꿈") || name.includes("해몽")) {
+        catKey = "dream";
+      } else if (name.includes("오늘")) {
+        catKey = "today";
+      }
+
+      categories[catKey].orderCount++;
+      if (o.status === "paid") {
+        categories[catKey].paidCount++;
+        categories[catKey].revenue += o.amount || 0;
+      }
+    });
+
+    const totalPaidRevenue = Object.values(categories).reduce((sum, c) => sum + c.revenue, 0);
+
+    return {
+      categories: Object.entries(categories).map(([key, data]) => {
+        const share = totalPaidRevenue > 0 ? (data.revenue / totalPaidRevenue) * 100 : 0;
+        const conversionRate = data.orderCount > 0 ? (data.paidCount / data.orderCount) * 100 : 0;
+        return {
+          key,
+          ...data,
+          share,
+          conversionRate
+        };
+      }),
+      totalPaidRevenue
+    };
+  };
+
+  // CRM: SMS 일괄 전송
+  const handleSendBulkSms = async () => {
+    if (selectedCustomerPhones.length === 0) {
+      showCrmAlert("발송 대상 고객을 한 명 이상 선택해 주세요.", "error");
+      return;
+    }
+    if (!smsMessage.trim()) {
+      showCrmAlert("메시지 내용을 입력해 주세요.", "error");
+      return;
+    }
+
+    setIsSendingSms(true);
+    let successCount = 0;
+    let failCount = 0;
+
+    const customers = getCustomers();
+
+    for (const phone of selectedCustomerPhones) {
+      const customer = customers.find(c => c.phone === phone);
+      const customerName = customer ? customer.name : "고객";
+      
+      // 개인화 치환
+      let personalMsg = smsMessage.replace(/#{이름}/g, customerName).replace(/#{name}/g, customerName);
+      
+      // 쿠폰 치환 및 자동 첨부
+      if (selectedSmsCoupon) {
+        const targetCoupon = coupons.find(c => c.code === selectedSmsCoupon);
+        if (targetCoupon) {
+          if (personalMsg.includes("#{쿠폰코드}")) {
+            personalMsg = personalMsg.replace(/#{쿠폰코드}/g, targetCoupon.code);
+          } else if (personalMsg.includes("#{coupon}")) {
+            personalMsg = personalMsg.replace(/#{coupon}/g, targetCoupon.code);
+          } else {
+            personalMsg = `${personalMsg}\n\n▶ 추천 할인쿠폰 번호: ${targetCoupon.code}\n(${targetCoupon.value}${targetCoupon.type === "percent" ? "%" : "원"} 할인 혜택)`;
+          }
+        }
+      }
+
+      // 광고 문구 자동 삽입
+      if (useAdFormat) {
+        personalMsg = `(광고) ${smsTitle}\n\n${personalMsg}`;
+      }
+
+      try {
+        const response = await fetch("/api/sms", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            receiver: phone,
+            msg: personalMsg,
+            title: smsTitle
+          }),
+        });
+
+        const resData = await response.json();
+        if (resData.success) {
+          successCount++;
+        } else {
+          failCount++;
+        }
+      } catch (e) {
+        failCount++;
+      }
+    }
+
+    setIsSendingSms(false);
+    showCrmAlert(`발송 작업 완료! (성공: ${successCount}건 / 실패: ${failCount}건)`, failCount > 0 ? "warning" : "success");
+  };
+
+  // CRM: 쿠폰 난수 생성
+  const handleGenerateRandomCouponCode = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let code = "HYEAN-";
+    for (let i = 0; i < 8; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setNewCouponCode(code);
+  };
+
+  // CRM: 쿠폰 생성
+  const handleCreateCoupon = async () => {
+    if (!newCouponCode.trim() || !newCouponName.trim() || !newCouponValue) {
+      showCrmAlert("쿠폰 정보를 모두 입력해 주세요.", "error");
+      return;
+    }
+    const code = newCouponCode.trim().toUpperCase();
+    if (coupons.some(c => c.code === code)) {
+      showCrmAlert("이미 존재하는 쿠폰 코드입니다.", "error");
+      return;
+    }
+
+    const newCoupon = {
+      code,
+      name: newCouponName.trim(),
+      type: newCouponType,
+      value: Number(newCouponValue),
+      expireDate: newCouponExpiry || "2026-12-31",
+      isActive: true,
+      usedCount: 0,
+      minOrderAmount: Number(newCouponMinAmount) || 0
+    };
+
+    const updated = [...coupons, newCoupon];
+    setCoupons(updated);
+    localStorage.setItem("hyeandang_coupons", JSON.stringify(updated));
+
+    // 문자 자동 전송 처리
+    if (sendCouponSmsOnCreate) {
+      if (selectedCustomerPhones.length === 0) {
+        showCrmAlert("쿠폰 발행은 완료되었으나, 문자 전송 대상 고객이 선택되지 않았습니다.", "warning");
+      } else {
+        setIsSendingSms(true);
+        let successCount = 0;
+        let failCount = 0;
+
+        const customers = getCustomers();
+        
+        for (const phone of selectedCustomerPhones) {
+          const customer = customers.find(c => c.phone === phone);
+          const customerName = customer ? customer.name : "고객";
+          const minAmountValText = newCoupon.minOrderAmount > 0 
+            ? `${newCoupon.minOrderAmount.toLocaleString()}원 이상 결제 시` 
+            : "제한 없음";
+          const benefitText = `${newCoupon.value.toLocaleString()}${newCoupon.type === "percent" ? "%" : "원"} 할인`;
+          
+          let couponSmsMsg = `[혜안당 사주] ${customerName}님, 특별 할인 쿠폰이 도착했습니다.\n\n- 쿠폰명: ${newCoupon.name}\n- 쿠폰번호: [${newCoupon.code}]\n- 할인 혜택: ${benefitText}\n- 사용 만료일: ${newCoupon.expireDate}\n- 최소 결제 금액: ${minAmountValText}\n\n혜안당 신청서 페이지에서 쿠폰번호를 등록하여 즉시 할인 혜택을 받아보세요!\n▶ 혜안당 신청서: https://saju.artpani.com/input`;
+
+          try {
+            const response = await fetch("/api/sms", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                receiver: phone,
+                msg: couponSmsMsg,
+                title: "[혜안당]"
+              }),
+            });
+
+            const resData = await response.json();
+            if (resData.success) {
+              successCount++;
+            } else {
+              failCount++;
+            }
+          } catch (e) {
+            failCount++;
+          }
+        }
+
+        setIsSendingSms(false);
+        showCrmAlert(`선택 고객 ${selectedCustomerPhones.length}명에게 쿠폰 문자 전송 완료 (성공: ${successCount} / 실패: ${failCount})`, failCount > 0 ? "warning" : "success");
+      }
+    } else {
+      showCrmAlert(`쿠폰 [${code}]이(가) 정상적으로 발행되었습니다.`, "success");
+    }
+    
+    setNewCouponCode("");
+    setNewCouponName("");
+    setNewCouponValue("");
+    setNewCouponMinAmount("");
+    setSendCouponSmsOnCreate(false);
+  };
+
+  // CRM: 쿠폰 삭제
+  const handleDeleteCoupon = (code) => {
+    const updated = coupons.filter(c => c.code !== code);
+    setCoupons(updated);
+    localStorage.setItem("hyeandang_coupons", JSON.stringify(updated));
+    showCrmAlert("쿠폰이 삭제되었습니다.", "success");
+  };
+
+  // CRM: 쿠폰 활성화 상태 토글
+  const handleToggleCouponActive = (code) => {
+    const updated = coupons.map(c => 
+      c.code === code ? { ...c, isActive: !c.isActive } : c
+    );
+    setCoupons(updated);
+    localStorage.setItem("hyeandang_coupons", JSON.stringify(updated));
+  };
+
+  // stats 탭 렌더링
+  const renderStatsTab = () => {
+    const catStats = getCategoryStats();
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="font-myeongjo text-2xl font-bold text-foreground mb-1">카테고리별 매출 분석</h2>
+          <p className="text-xs text-foreground-muted font-light">선택된 기간 내 결제 완료된 상품 카테고리별 성과 통계를 확인합니다.</p>
+        </div>
+
+        {/* 요약 현황 */}
+        <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="text-center md:text-left space-y-1">
+            <span className="text-xs text-foreground-muted font-semibold uppercase tracking-wider block">선택 기간 총 결제액</span>
+            <span className="font-myeongjo text-3xl font-bold text-brass">{catStats.totalPaidRevenue.toLocaleString()}원</span>
+          </div>
+          <div className="w-px h-12 bg-border-custom hidden md:block" />
+          <div className="text-center space-y-1">
+            <span className="text-xs text-foreground-muted font-semibold block">가장 매출이 높은 분야</span>
+            <span className="font-semibold text-foreground text-sm">
+              {catStats.categories.reduce((max, c) => c.revenue > max.revenue ? c : max, { label: "없음", revenue: 0 }).label}
+            </span>
+          </div>
+        </div>
+
+        {/* 통계 테이블 */}
+        <div className="border border-border-custom rounded-lg bg-background overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="bg-background-secondary border-b border-border-custom text-foreground font-semibold">
+                  <th className="p-4">상품 카테고리</th>
+                  <th className="p-4 text-center">총 주문 (건)</th>
+                  <th className="p-4 text-center">결제 완료 (건)</th>
+                  <th className="p-4 text-center">결제 전환율 (%)</th>
+                  <th className="p-4 text-right">총 결제액 (원)</th>
+                  <th className="p-4 text-right">매출 비중 (%)</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border-custom/50">
+                {catStats.categories.map((c) => (
+                  <tr key={c.key} className={`hover:bg-background-secondary/30 transition-colors ${c.key.startsWith("gunghap_") ? 'bg-[#FCFAF2]/30' : ''}`}>
+                    <td className="p-4 font-semibold text-foreground flex items-center gap-2">
+                      {c.key.startsWith("gunghap_") && <span className="text-brass">└</span>}
+                      {c.label}
+                    </td>
+                    <td className="p-4 text-center text-foreground-muted">{c.orderCount}건</td>
+                    <td className="p-4 text-center font-bold text-foreground">{c.paidCount}건</td>
+                    <td className="p-4 text-center">
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                        c.conversionRate >= 90 ? 'bg-jade/10 text-jade' : 'bg-gray-100 text-gray-600'
+                      }`}>
+                        {c.conversionRate.toFixed(1)}%
+                      </span>
+                    </td>
+                    <td className="p-4 text-right font-bold text-foreground">{c.revenue.toLocaleString()}원</td>
+                    <td className="p-4 text-right text-foreground-muted font-medium">
+                      <div className="flex items-center justify-end gap-2">
+                        <div className="w-16 bg-gray-100 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                          <div className="bg-brass h-full" style={{ width: `${c.share}%` }} />
+                        </div>
+                        <span>{c.share.toFixed(1)}%</span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // crm 탭 렌더링
+  const renderCrmTab = () => {
+    const customers = getCustomers();
+    
+    // CRM 전용 검색 및 필터링
+    const filteredCustomers = customers.filter(c => {
+      if (crmTargetGender !== "all" && c.gender !== crmTargetGender) return false;
+      if (crmTargetProduct !== "all") {
+        if (crmTargetProduct === "gunghap" && !c.purchasedProducts.includes("궁합")) return false;
+        if (crmTargetProduct === "saju" && !c.purchasedProducts.includes("사주")) return false;
+        if (crmTargetProduct === "newyear" && (!c.purchasedProducts.includes("신년") && !c.purchasedProducts.includes("토정"))) return false;
+        if (crmTargetProduct === "today" && !c.purchasedProducts.includes("오늘")) return false;
+      }
+      if (crmTargetPayment === "paidOnly" && c.paidOrders === 0) return false;
+      if (crmTargetPayment === "unpaidFreeOnly" && (!c.hasFreeOrder || c.paidOrders > 0)) return false;
+      if (crmSearchTerm) {
+        const term = crmSearchTerm.toLowerCase();
+        return c.name.toLowerCase().includes(term) || c.phone.includes(term) || c.email.toLowerCase().includes(term);
+      }
+      return true;
+    });
+
+    const handleSelectAll = (checked) => {
+      if (checked) {
+        setSelectedCustomerPhones(filteredCustomers.map(c => c.phone));
+      } else {
+        setSelectedCustomerPhones([]);
+      }
+    };
+
+    const handleSelectOne = (phone, checked) => {
+      if (checked) {
+        setSelectedCustomerPhones(prev => [...prev, phone]);
+      } else {
+        setSelectedCustomerPhones(prev => prev.filter(p => p !== phone));
+      }
+    };
+
+    return (
+      <div className="space-y-8">
+        {crmAlert.show && (
+          <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg border flex items-center gap-2.5 transition-all text-xs font-semibold ${
+            crmAlert.type === "success" 
+              ? "bg-jade/10 border-jade text-jade" 
+              : crmAlert.type === "error" 
+              ? "bg-red-50 border-red-200 text-red-700" 
+              : "bg-[#FCFAF2] border-brass text-brass"
+          }`}>
+            {crmAlert.type === "error" ? "⚠️" : "✨"} {crmAlert.message}
+          </div>
+        )}
+        {/* CRM 상단 필터 */}
+        <div className="space-y-4">
+          <div>
+            <h2 className="font-myeongjo text-2xl font-bold text-foreground mb-1">고객 DB 관리 및 타겟 마케팅 (CRM)</h2>
+            <p className="text-xs text-foreground-muted font-light">확보된 고객 DB 정보를 활용하여 타겟 고객에게 맞춤 혜택 문자나 쿠폰을 발송합니다.</p>
+          </div>
+
+          <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between bg-background-secondary/30 border border-border-custom p-4 rounded-xl">
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-foreground-muted">상품 구매 이력:</span>
+                <select
+                  value={crmTargetProduct}
+                  onChange={(e) => setCrmTargetProduct(e.target.value)}
+                  className="bg-background border border-border-custom rounded px-2 py-1 text-xs focus:outline-none focus:border-brass text-foreground"
+                >
+                  <option value="all">전체 상품군</option>
+                  <option value="gunghap">연인 궁합군</option>
+                  <option value="saju">평생 사주군</option>
+                  <option value="newyear">신년/토정비결군</option>
+                  <option value="today">오늘의운세군</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-foreground-muted">성별 필터:</span>
+                <select
+                  value={crmTargetGender}
+                  onChange={(e) => setCrmTargetGender(e.target.value)}
+                  className="bg-background border border-border-custom rounded px-2 py-1 text-xs focus:outline-none focus:border-brass text-foreground"
+                >
+                  <option value="all">전체 성별</option>
+                  <option value="female">여성</option>
+                  <option value="male">남성</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-foreground-muted">결제 유형:</span>
+                <select
+                  value={crmTargetPayment}
+                  onChange={(e) => setCrmTargetPayment(e.target.value)}
+                  className="bg-background border border-border-custom rounded px-2 py-1 text-xs focus:outline-none focus:border-brass text-foreground"
+                >
+                  <option value="all">전체 고객</option>
+                  <option value="paidOnly">유료 결제 완료 고객</option>
+                  <option value="unpaidFreeOnly">무료체험 후 미결제 고객 (추천 타겟)</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="relative w-full lg:max-w-xs">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-foreground-muted" />
+              <input
+                type="text"
+                placeholder="고객명, 연락처, 이메일 검색"
+                value={crmSearchTerm}
+                onChange={(e) => setCrmSearchTerm(e.target.value)}
+                className="w-full bg-background border border-border-custom rounded pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-brass"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* 2단 그리드 */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          <div className="xl:col-span-2 space-y-4">
+            <div className="flex justify-between items-center text-xs">
+              <span className="text-foreground-muted">
+                선택된 발송 대상 고객: <strong className="text-brass">{selectedCustomerPhones.length}</strong>명 / 필터링됨: <strong>{filteredCustomers.length}</strong>명
+              </span>
+            </div>
+
+            <div className="border border-border-custom rounded-lg bg-background overflow-hidden shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-background-secondary border-b border-border-custom text-foreground font-semibold">
+                      <th className="p-4 w-10 text-center">
+                        <input
+                          type="checkbox"
+                          checked={filteredCustomers.length > 0 && selectedCustomerPhones.length === filteredCustomers.length}
+                          onChange={(e) => handleSelectAll(e.target.checked)}
+                          className="cursor-pointer"
+                        />
+                      </th>
+                      <th className="p-4">성명</th>
+                      <th className="p-4">연락처 & 이메일</th>
+                      <th className="p-4">구매 이력 상품</th>
+                      <th className="p-4 text-right">총 주문 (건)</th>
+                      <th className="p-4 text-right">누적 결제액</th>
+                      <th className="p-4">최근 주문일</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border-custom/50">
+                    {filteredCustomers.length > 0 ? (
+                      filteredCustomers.map((cust) => (
+                        <tr key={cust.phone} className="hover:bg-background-secondary/30 transition-colors">
+                          <td className="p-4 text-center">
+                            <input
+                              type="checkbox"
+                              checked={selectedCustomerPhones.includes(cust.phone)}
+                              onChange={(e) => handleSelectOne(cust.phone, e.target.checked)}
+                              className="cursor-pointer"
+                            />
+                          </td>
+                          <td className="p-4 font-bold text-foreground flex items-center gap-1.5">
+                            {cust.name}
+                            <span className={`text-[9px] px-1 rounded-sm ${
+                              cust.gender === "female" ? "bg-pink-50 text-pink-500" : "bg-blue-50 text-blue-500"
+                            }`}>
+                              {cust.gender === "female" ? "여" : "남"}
+                            </span>
+                          </td>
+                          <td className="p-4">
+                            <div className="text-foreground">{cust.phone}</div>
+                            <div className="text-[10px] text-foreground-muted">{cust.email}</div>
+                          </td>
+                          <td className="p-4 max-w-[150px] truncate text-foreground-muted" title={cust.purchasedProducts}>
+                            {cust.purchasedProducts}
+                          </td>
+                          <td className="p-4 text-right font-medium text-foreground">{cust.paidOrders} / {cust.totalOrders}건</td>
+                          <td className="p-4 text-right font-bold text-brass">{cust.totalSpent.toLocaleString()}원</td>
+                          <td className="p-4 text-foreground-muted">{cust.lastOrderDate.substring(0, 10)}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="7" className="p-8 text-center text-foreground-muted font-light">
+                          조회 조건에 부합하는 고객 정보가 없습니다.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            {/* SMS 일괄 발송 */}
+            <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-4">
+              <h3 className="font-myeongjo text-sm font-bold text-brass flex items-center gap-1.5 border-b border-brass/25 pb-2">
+                ✉️ 타겟 광고 문자 전송
+              </h3>
+              
+              <div className="space-y-3 text-xs">
+                <div>
+                  <label className="block font-semibold text-foreground mb-1">발송용 쿠폰 첨부 (선택)</label>
+                  <select
+                    value={selectedSmsCoupon}
+                    onChange={(e) => setSelectedSmsCoupon(e.target.value)}
+                    className="w-full bg-background border border-border-custom rounded px-3 py-2 text-xs focus:outline-none focus:border-brass text-foreground"
+                  >
+                    <option value="">쿠폰 첨부 안함</option>
+                    {coupons.filter(c => c.isActive).map(c => (
+                      <option key={c.code} value={c.code}>
+                        [{c.code}] {c.name} ({c.value.toLocaleString()}{c.type === "percent" ? "%" : "원"} 할인)
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-[9px] text-foreground-muted mt-1 leading-normal">
+                    * 본문에 <strong className="text-brass">#&#123;쿠폰코드&#125;</strong>를 적으면 쿠폰 번호로 자동 치환됩니다.<br/>
+                    * 치환자가 본문에 없으면 문자 맨 하단에 쿠폰 정보가 자동 덧붙여집니다.
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-foreground mb-1">발송 제목 (발신자 표시)</label>
+                  <input
+                    type="text"
+                    value={smsTitle}
+                    onChange={(e) => setSmsTitle(e.target.value)}
+                    className="w-full bg-background border border-border-custom rounded px-3 py-2 text-xs focus:outline-none focus:border-brass text-foreground"
+                    placeholder="[혜안당]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-foreground mb-1">
+                    메시지 내용 ({smsMessage.length}자)
+                  </label>
+                  <textarea
+                    value={smsMessage}
+                    onChange={(e) => setSmsMessage(e.target.value)}
+                    placeholder="발송할 마케팅 텍스트를 작성하세요.
+#{이름} 치환자를 사용해 개인화할 수 있습니다.
+(예: #{이름}님, 신년 특별 10% 쿠폰이 도착했습니다.)"
+                    rows={6}
+                    className="w-full bg-background border border-border-custom rounded px-3 py-2 text-xs focus:outline-none focus:border-brass text-foreground leading-relaxed font-sans resize-none"
+                  />
+                </div>
+
+                <div className="flex items-center gap-1.5 bg-white border border-[#E2DDD5] p-2 rounded">
+                  <input
+                    type="checkbox"
+                    id="useAd"
+                    checked={useAdFormat}
+                    onChange={(e) => setUseAdFormat(e.target.checked)}
+                    className="cursor-pointer"
+                  />
+                  <label htmlFor="useAd" className="text-[10px] text-foreground-muted select-none cursor-pointer">
+                    <strong>광고 의무사항 포맷 적용</strong> <br/>
+                    (메시지에 (광고) 타이틀 및 080 수신거부 번호를 삽입합니다)
+                  </label>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleSendBulkSms}
+                  disabled={isSendingSms}
+                  className="w-full bg-brass hover:bg-brass-dark text-background font-bold py-2.5 rounded shadow-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-2"
+                >
+                  {isSendingSms ? "전송 중..." : `선택한 ${selectedCustomerPhones.length}명에게 대량 전송`}
+                </button>
+              </div>
+            </div>
+
+            {/* 쿠폰 생성 및 발행 */}
+            <div className="bg-white border border-border-custom rounded-xl p-5 shadow-sm space-y-4">
+              <h3 className="font-myeongjo text-sm font-bold text-purple-700 flex items-center gap-1.5 border-b border-purple-200 pb-2">
+                🎟️ 할인 쿠폰 발행기
+              </h3>
+
+              <div className="space-y-3 text-xs">
+                <div>
+                  <label className="block font-semibold text-foreground mb-1">쿠폰 코드 생성</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newCouponCode}
+                      onChange={(e) => setNewCouponCode(e.target.value.toUpperCase())}
+                      className="flex-1 bg-background border border-border-custom rounded px-3 py-1.5 text-xs focus:outline-none focus:border-brass text-foreground font-mono"
+                      placeholder="코드 직접 입력 또는 생성"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleGenerateRandomCouponCode}
+                      className="bg-purple-50 border border-purple-200 text-purple-700 font-semibold px-3 py-1.5 rounded hover:bg-purple-100 cursor-pointer"
+                    >
+                      랜덤 생성
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-foreground mb-1">쿠폰명 (설명)</label>
+                  <input
+                    type="text"
+                    value={newCouponName}
+                    onChange={(e) => setNewCouponName(e.target.value)}
+                    className="w-full bg-background border border-border-custom rounded px-3 py-1.5 text-xs focus:outline-none focus:border-brass text-foreground"
+                    placeholder="신년 감사 10% 쿠폰"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block font-semibold text-foreground mb-1">할인 형태</label>
+                    <select
+                      value={newCouponType}
+                      onChange={(e) => setNewCouponType(e.target.value)}
+                      className="w-full bg-background border border-border-custom rounded px-2 py-1.5 text-xs focus:outline-none focus:border-brass text-foreground"
+                    >
+                      <option value="percent">정률 할인 (%)</option>
+                      <option value="fixed">정액 할인 (원)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block font-semibold text-foreground mb-1">할인값</label>
+                    <input
+                      type="number"
+                      value={newCouponValue}
+                      onChange={(e) => setNewCouponValue(e.target.value)}
+                      className="w-full bg-background border border-border-custom rounded px-3 py-1.5 text-xs focus:outline-none focus:border-brass text-foreground text-right"
+                      placeholder={newCouponType === "percent" ? "10" : "5000"}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-foreground mb-1">쿠폰 사용 기한</label>
+                  <input
+                    type="date"
+                    value={newCouponExpiry}
+                    onChange={(e) => setNewCouponExpiry(e.target.value)}
+                    className="w-full bg-background border border-border-custom rounded px-3 py-1.5 text-xs focus:outline-none focus:border-brass text-foreground"
+                    style={{ colorScheme: "light" }}
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-foreground mb-1">최소 결제 금액 제한 (원)</label>
+                  <input
+                    type="number"
+                    value={newCouponMinAmount}
+                    onChange={(e) => setNewCouponMinAmount(e.target.value)}
+                    className="w-full bg-background border border-border-custom rounded px-3 py-1.5 text-xs focus:outline-none focus:border-brass text-foreground text-right"
+                    placeholder="예: 20000 (0 입력 시 제한 없음)"
+                  />
+                </div>
+
+                <div className="flex items-center gap-2 bg-[#FAF8F5] border border-[#E2DDD5] p-2.5 rounded">
+                  <input
+                    type="checkbox"
+                    id="sendCouponSms"
+                    checked={sendCouponSmsOnCreate}
+                    onChange={(e) => setSendCouponSmsOnCreate(e.target.checked)}
+                    className="cursor-pointer"
+                  />
+                  <label htmlFor="sendCouponSms" className="text-[10px] text-foreground-muted select-none cursor-pointer leading-normal">
+                    <strong>선택된 고객({selectedCustomerPhones.length}명)에게 전송</strong> <br/>
+                    (쿠폰 발행과 동시에 안내 문자를 즉시 발송합니다)
+                  </label>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleCreateCoupon}
+                  className="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-2 rounded shadow-sm cursor-pointer mt-2"
+                >
+                  할인 쿠폰 발행
+                </button>
+              </div>
+            </div>
+
+            {/* 발행된 쿠폰 목록 */}
+            <div className="bg-white border border-border-custom rounded-xl p-5 shadow-sm space-y-4">
+              <h3 className="font-myeongjo text-sm font-bold text-foreground flex items-center gap-1.5 border-b border-border-custom pb-2">
+                🎫 활성화된 쿠폰 목록 ({coupons.length})
+              </h3>
+              
+              <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                {coupons.length > 0 ? (
+                  coupons.map((coupon) => (
+                    <div key={coupon.code} className="border border-border-custom rounded p-3 text-xs space-y-1.5 bg-background-secondary/20 relative">
+                      <div className="flex justify-between items-center">
+                        <strong className="text-foreground font-mono">{coupon.code}</strong>
+                        <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${
+                          coupon.isActive ? 'bg-jade/10 text-jade' : 'bg-red-50 text-red-500'
+                        }`}>
+                          {coupon.isActive ? '사용가능' : '정지됨'}
+                        </span>
+                      </div>
+                      <div className="text-[11px] text-foreground-muted font-medium">{coupon.name}</div>
+                      <div className="text-[10px] text-foreground-muted flex justify-between">
+                        <span>혜택: <strong className="text-brass">{coupon.value.toLocaleString()}{coupon.type === "percent" ? "%" : "원"} 할인</strong></span>
+                        <span>만료: {coupon.expireDate}</span>
+                      </div>
+                      {coupon.minOrderAmount > 0 && (
+                        <div className="text-[9px] text-red-500 font-semibold">
+                          * 최소 {coupon.minOrderAmount.toLocaleString()}원 이상 결제 시 사용 가능
+                        </div>
+                      )}
+                      
+                      <div className="flex justify-end gap-1.5 border-t border-border-custom/50 pt-2 mt-1.5">
+                        <button
+                          type="button"
+                          onClick={() => handleToggleCouponActive(coupon.code)}
+                          className="text-[9px] border border-border-custom px-2 py-0.5 rounded text-foreground-muted hover:bg-background-secondary cursor-pointer"
+                        >
+                          {coupon.isActive ? "정지" : "활성화"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteCoupon(coupon.code)}
+                          className="text-[9px] border border-red-200 px-2 py-0.5 rounded text-red-600 hover:bg-red-50 cursor-pointer"
+                        >
+                          삭제
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center p-4 text-foreground-muted italic text-xs">
+                    발행된 쿠폰이 없습니다.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center font-gothic px-6">
@@ -799,7 +1689,7 @@ export default function AdminPage() {
       {/* Admin Content */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-6 py-8 space-y-8">
         {/* Menu Tabs */}
-        <div className="flex border-b border-border-custom bg-background-secondary/20 p-1.5 rounded-lg max-w-xs mb-4">
+        <div className="flex border-b border-border-custom bg-background-secondary/20 p-1.5 rounded-lg max-w-md mb-4">
           <button
             onClick={() => setCurrentMenuTab("orders")}
             className={`flex-1 py-2 text-center text-xs font-semibold rounded-md transition-all cursor-pointer ${
@@ -825,9 +1715,29 @@ export default function AdminPage() {
               </span>
             )}
           </button>
+          <button
+            onClick={() => setCurrentMenuTab("stats")}
+            className={`flex-1 py-2 text-center text-xs font-semibold rounded-md transition-all cursor-pointer ${
+              currentMenuTab === "stats"
+                ? "bg-brass text-background font-bold shadow-sm"
+                : "text-foreground-muted hover:text-foreground"
+            }`}
+          >
+            카테고리 통계
+          </button>
+          <button
+            onClick={() => setCurrentMenuTab("crm")}
+            className={`flex-1 py-2 text-center text-xs font-semibold rounded-md transition-all cursor-pointer ${
+              currentMenuTab === "crm"
+                ? "bg-brass text-background font-bold shadow-sm"
+                : "text-foreground-muted hover:text-foreground"
+            }`}
+          >
+            고객 관리 & CRM
+          </button>
         </div>
 
-        {currentMenuTab === "orders" ? (
+        {currentMenuTab === "orders" && (
           <>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
@@ -1153,7 +2063,8 @@ export default function AdminPage() {
               </div>
             </div>
           </>
-        ) : (
+        )}
+        {currentMenuTab === "inquiries" && (
           /* Q&A 고객 문의 관리 */
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1381,6 +2292,8 @@ export default function AdminPage() {
             </div>
           </div>
         )}
+        {currentMenuTab === "stats" && renderStatsTab()}
+        {currentMenuTab === "crm" && renderCrmTab()}
       </main>
     </div>
   );

@@ -276,7 +276,7 @@ const buildGeneralSmsText = (name, productName, email, phone, productKey, formDa
 
   const origin = "https://saju.artpani.com";
 
-  return `[혜안당 명리연구소] ${name} 님, 주문하신 [${productName}] 분석이 무사히 완료되었습니다.\n\n적어주신 이메일(${email})로 상세 보고서 PDF 가이드를 전송해 드렸습니다. 혹은 아래의 온라인 결과 보감 링크를 통해 즉시 확인해 보실 수 있습니다.\n\n▶ 모바일 결과 보기: ${origin}/result?${queryParams.toString()}&unlock=true\n\n귀하의 앞날에 늘 지혜의 빛이 함께하기를 기원합니다. 감사합니다.`;
+  return `[혜안당 명리연구소] ${name} 님, 주문하신 [${productName}] 분석이 무사히 완료되었습니다.\n\n적어주신 이메일(${email})로 상세 보고서 PDF 가이드를 전송해 드렸습니다. 혹은 아래의 온라인 결과 보감 링크를 통해 즉시 확인해 보실 수 있습니다.\n\n▶ 모바일 결과 보기: ${origin}/result?${queryParams.toString()}&unlock=true\n\n🎁 [재구매 10% 할인쿠폰]\n혜안당을 이용해 주셔서 감사합니다. 다음 서비스 이용 시 결제창에서 쿠폰번호 [HYEAN-WELCOME-10]을 입력하시면 10% 추가 할인을 받으실 수 있습니다.\n\n귀하의 앞날에 늘 지혜의 빛이 함께하기를 기원합니다. 감사합니다.`;
 };
 
 function InputFormContent() {
@@ -318,6 +318,100 @@ function InputFormContent() {
   const [progress, setProgress] = useState(0);
   const [privacyAgreed, setPrivacyAgreed] = useState(false);
   const [payMethod, setPayMethod] = useState("card");
+
+  // Coupon States
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponError, setCouponError] = useState("");
+  const [couponSuccess, setCouponSuccess] = useState("");
+
+  const handleApplyCoupon = () => {
+    setCouponError("");
+    setCouponSuccess("");
+    
+    if (!couponCode.trim()) {
+      setCouponError("쿠폰 코드를 입력해 주세요.");
+      return;
+    }
+
+    const code = couponCode.trim().toUpperCase();
+    try {
+      const existingStr = localStorage.getItem("hyeandang_coupons");
+      const coupons = existingStr ? JSON.parse(existingStr) : [];
+      const coupon = coupons.find(c => c.code === code);
+
+      if (!coupon) {
+        setCouponError("유효하지 않은 쿠폰 코드입니다.");
+        return;
+      }
+      if (!coupon.isActive) {
+        setCouponError("사용 정지된 쿠폰입니다.");
+        return;
+      }
+      
+      const expireDate = new Date(coupon.expireDate);
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      if (expireDate < today) {
+        setCouponError("만료 기간이 지난 쿠폰입니다.");
+        return;
+      }
+
+      // 최소 결제 금액 검증
+      const base = productKey === "gunghap" 
+        ? (gunghapType === "reunion" ? 19900 : 26900)
+        : (products[productKey]?.price || 30000);
+      const currentPrice = reportGrade === "free" ? 0 : ((productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
+        ? (reportGrade === "deep" 
+          ? base + 15000 
+          : reportGrade === "sms" 
+          ? Math.max(5000, base - 20000) 
+          : base)
+        : base);
+
+      if (coupon.minOrderAmount > 0 && currentPrice < coupon.minOrderAmount) {
+        setCouponError(`이 쿠폰은 최소 ${coupon.minOrderAmount.toLocaleString()}원 이상 결제 시 사용 가능합니다. (현재 결제 금액: ${currentPrice.toLocaleString()}원)`);
+        return;
+      }
+
+      setAppliedCoupon(coupon);
+      setCouponSuccess(`[${coupon.name}]이(가) 적용되었습니다. (${coupon.value.toLocaleString()}${coupon.type === "percent" ? "%" : "원"} 할인)`);
+    } catch (e) {
+      setCouponError("쿠폰 확인 중 오류가 발생했습니다.");
+    }
+  };
+
+  const getDiscountedPrice = (rawPrice) => {
+    if (!appliedCoupon) return rawPrice;
+    if (appliedCoupon.type === "percent") {
+      const discount = Math.round(rawPrice * (appliedCoupon.value / 100));
+      return Math.max(0, rawPrice - discount);
+    } else {
+      return Math.max(0, rawPrice - appliedCoupon.value);
+    }
+  };
+
+  // 결제 금액 실시간 변경 시 적용된 쿠폰 유효성(최소 금액 제한) 검사
+  useEffect(() => {
+    if (!appliedCoupon) return;
+    const base = productKey === "gunghap" 
+      ? (gunghapType === "reunion" ? 19900 : 26900)
+      : (products[productKey]?.price || 30000);
+    const currentPrice = reportGrade === "free" ? 0 : ((productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
+      ? (reportGrade === "deep" 
+        ? base + 15000 
+        : reportGrade === "sms" 
+        ? Math.max(5000, base - 20000) 
+        : base)
+      : base);
+
+    if (appliedCoupon.minOrderAmount > 0 && currentPrice < appliedCoupon.minOrderAmount) {
+      setAppliedCoupon(null);
+      setCouponCode("");
+      setCouponSuccess("");
+      setCouponError(`최소 결제 금액 미달로 적용된 쿠폰이 해제되었습니다. (최소 ${appliedCoupon.minOrderAmount.toLocaleString()}원 필요)`);
+    }
+  }, [productKey, reportGrade, gunghapType, appliedCoupon]);
 
   // step === "processing" 진행 상황 실시간 타이머
   useEffect(() => {
@@ -553,6 +647,7 @@ function InputFormContent() {
           ? Math.max(5000, base - 20000) 
           : base)
         : base);
+      const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
 
       const gunghapLabel = productKey === "gunghap" ? (gunghapType === "deep_compatibility" ? " (밀착궁합)" : gunghapType === "reunion" ? " (재회운)" : " (궁합)") : "";
       const newOrder = {
@@ -561,11 +656,12 @@ function InputFormContent() {
         email: formData.email || "today_sms@hyeandang.com",
         phone: formData.phone || "010-0000-0000",
         productName: `${products[productKey]?.title || "맞춤 사주"}${gunghapLabel}${reportGrade === "free" ? " (무료 체험판)" : ""}`,
-        amount: finalPrice,
+        amount: finalPriceWithDiscount,
         status: reportGrade === "free" ? "free" : "paid",
         sajuGanji: sajuGanji,
         emailStatus: "pending",
         createdAt: formattedDate,
+        couponCode: appliedCoupon ? appliedCoupon.code : null,
         gender: formData.gender,
         calendar: formData.calendarType,
         year: formData.birthYear,
@@ -680,14 +776,29 @@ function InputFormContent() {
           currentOrders[matchedIdx].status = reportGrade === "free" ? "free" : "paid";
           currentOrders[matchedIdx].id = orderId;
           currentOrders[matchedIdx].createdAt = formattedDate;
-          currentOrders[matchedIdx].amount = finalPrice;
+          currentOrders[matchedIdx].amount = finalPriceWithDiscount;
           currentOrders[matchedIdx].productName = newOrder.productName;
           currentOrders[matchedIdx].reportGrade = reportGrade;
+          currentOrders[matchedIdx].couponCode = appliedCoupon ? appliedCoupon.code : null;
           newOrder.emailStatus = currentOrders[matchedIdx].emailStatus || "pending";
         } else {
           currentOrders.unshift(newOrder);
         }
         localStorage.setItem("hyeandang_orders", JSON.stringify(currentOrders));
+
+        // 쿠폰 사용 카운트 증가 처리
+        if (appliedCoupon) {
+          try {
+            const existingCouponsStr = localStorage.getItem("hyeandang_coupons");
+            if (existingCouponsStr) {
+              const coupons = JSON.parse(existingCouponsStr);
+              const updatedCoupons = coupons.map(c => 
+                c.code === appliedCoupon.code ? { ...c, usedCount: c.usedCount + 1 } : c
+              );
+              localStorage.setItem("hyeandang_coupons", JSON.stringify(updatedCoupons));
+            }
+          } catch (e) {}
+        }
 
         // 알리고 SMS 전송 비동기 호출
         const sendSmsMessage = async () => {
@@ -858,6 +969,7 @@ function InputFormContent() {
           ? Math.max(5000, base - 20000) 
           : base)
         : base);
+      const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
 
       const gunghapLabel = productKey === "gunghap" ? (gunghapType === "deep_compatibility" ? " (밀착궁합)" : gunghapType === "reunion" ? " (재회운)" : " (궁합)") : "";
       
@@ -867,7 +979,8 @@ function InputFormContent() {
         email: formData.email || "today_sms@hyeandang.com",
         phone: formData.phone || "010-0000-0000",
         productName: `${products[productKey]?.title || "맞춤 사주"}${gunghapLabel}`,
-        amount: finalPrice,
+        amount: finalPriceWithDiscount,
+        couponCode: appliedCoupon ? appliedCoupon.code : null,
         status: "ready", // 대기 상태
         sajuGanji: sajuGanji,
         emailStatus: "pending",
@@ -945,6 +1058,7 @@ function InputFormContent() {
         ? Math.max(5000, base - 20000) 
         : base)
       : base;
+    const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
 
     // KCP 결제 채널은 신용카드(CARD) 결제창을 호출하고, 해당 결제창 내에서 카드/카카오페이/네이버페이 등을 모두 처리합니다.
     let payMethodParam = "CARD";
@@ -959,7 +1073,7 @@ function InputFormContent() {
         channelKey,
         paymentId: `payment_${new Date().getTime()}`,
         orderName: `${formData.name || "의뢰인"}님 ${activeProduct.title}`,
-        totalAmount: finalPrice,
+        totalAmount: finalPriceWithDiscount,
         currency: "KRW",
         payMethod: payMethodParam,
         redirectUrl: redirectUrl,
@@ -1811,20 +1925,70 @@ function InputFormContent() {
                         ? Math.max(5000, base - 20000) 
                         : base)
                       : base;
+                    const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
                     return (
                       <div className="space-y-2 mb-6">
+                        {/* Coupon Register Form */}
+                        {reportGrade !== "free" && (
+                          <div className="border-t border-b border-border-custom/50 py-3 mb-3 space-y-2">
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs font-semibold text-foreground">할인 쿠폰 등록</span>
+                              {appliedCoupon && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setAppliedCoupon(null);
+                                    setCouponCode("");
+                                    setCouponSuccess("");
+                                    setCouponError("");
+                                  }}
+                                  className="text-[10px] text-red-500 hover:underline cursor-pointer"
+                                >
+                                  쿠폰 해제
+                                </button>
+                              )}
+                            </div>
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                value={couponCode}
+                                onChange={(e) => setCouponCode(e.target.value)}
+                                disabled={!!appliedCoupon}
+                                placeholder="쿠폰 코드를 입력하세요"
+                                className="flex-1 bg-background border border-border-custom rounded px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:border-brass disabled:opacity-60"
+                              />
+                              <button
+                                type="button"
+                                onClick={handleApplyCoupon}
+                                disabled={!!appliedCoupon}
+                                className="bg-brass text-background font-semibold px-3 py-1.5 rounded text-xs hover:bg-brass-dark disabled:opacity-50 cursor-pointer"
+                              >
+                                적용
+                              </button>
+                            </div>
+                            {couponError && <p className="text-[10px] text-red-500 font-medium">{couponError}</p>}
+                            {couponSuccess && <p className="text-[10px] text-jade font-medium">{couponSuccess}</p>}
+                          </div>
+                        )}
+
                         <div className="flex justify-between text-xs text-foreground-muted">
                           <span>분석 대행 수수료</span>
-                          <span>{Math.round(finalPrice * 0.9).toLocaleString()}원</span>
+                          <span>{Math.round(finalPriceWithDiscount * 0.9).toLocaleString()}원</span>
                         </div>
                         <div className="flex justify-between text-xs text-foreground-muted">
                           <span>부가세(10%)</span>
-                          <span>{Math.round(finalPrice * 0.1).toLocaleString()}원</span>
+                          <span>{Math.round(finalPriceWithDiscount * 0.1).toLocaleString()}원</span>
                         </div>
+                        {appliedCoupon && (
+                          <div className="flex justify-between text-xs text-purple-600 font-medium">
+                            <span>쿠폰 할인 ({appliedCoupon.code})</span>
+                            <span>-{ (finalPrice - finalPriceWithDiscount).toLocaleString() }원</span>
+                          </div>
+                        )}
                         <div className="flex justify-between items-center border-t border-border-custom pt-3 mt-1.5">
                           <span className="text-sm font-bold text-foreground font-myeongjo">최종 결제 금액</span>
                           <span className="text-lg font-bold text-brass">
-                            {finalPrice.toLocaleString()}원
+                            {finalPriceWithDiscount.toLocaleString()}원
                           </span>
                         </div>
                       </div>
@@ -1934,6 +2098,7 @@ function InputFormContent() {
                       ? Math.max(5000, base - 20000) 
                       : base)
                     : base;
+                  const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
                   return (
                     <>
                       <div>
@@ -1944,7 +2109,7 @@ function InputFormContent() {
                       </div>
                       <div>
                         <span className="text-[10px] text-foreground-muted block">결제 금액</span>
-                        <span className="text-xl font-bold text-brass">{finalPrice.toLocaleString()}원</span>
+                        <span className="text-xl font-bold text-brass">{finalPriceWithDiscount.toLocaleString()}원</span>
                       </div>
                     </>
                   );
