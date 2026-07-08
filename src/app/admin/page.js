@@ -913,8 +913,14 @@ export default function AdminPage() {
       showCrmAlert("발송 대상 고객을 한 명 이상 선택해 주세요.", "error");
       return;
     }
-    if (!smsMessage.trim()) {
-      showCrmAlert("메시지 내용을 입력해 주세요.", "error");
+    if (!selectedSmsCoupon) {
+      showCrmAlert("발송할 쿠폰을 선택해 주세요.", "error");
+      return;
+    }
+
+    const targetCoupon = coupons.find(c => c.code === selectedSmsCoupon);
+    if (!targetCoupon) {
+      showCrmAlert("유효한 쿠폰이 아닙니다.", "error");
       return;
     }
 
@@ -923,33 +929,20 @@ export default function AdminPage() {
     let failCount = 0;
 
     const customers = getCustomers();
+    const newLogs = [];
+
+    const minAmountValText = targetCoupon.minOrderAmount > 0 
+      ? `${targetCoupon.minOrderAmount.toLocaleString()}원 이상 결제 시` 
+      : "제한 없음";
+    const benefitText = `${targetCoupon.value.toLocaleString()}${targetCoupon.type === "percent" ? "%" : "원"} 할인`;
 
     for (const phone of selectedCustomerPhones) {
       const customer = customers.find(c => c.phone === phone);
       const customerName = customer ? customer.name : "고객";
       
-      // 개인화 치환
-      let personalMsg = smsMessage.replace(/#{이름}/g, customerName).replace(/#{name}/g, customerName);
-      
-      // 쿠폰 치환 및 자동 첨부
-      if (selectedSmsCoupon) {
-        const targetCoupon = coupons.find(c => c.code === selectedSmsCoupon);
-        if (targetCoupon) {
-          if (personalMsg.includes("#{쿠폰코드}")) {
-            personalMsg = personalMsg.replace(/#{쿠폰코드}/g, targetCoupon.code);
-          } else if (personalMsg.includes("#{coupon}")) {
-            personalMsg = personalMsg.replace(/#{coupon}/g, targetCoupon.code);
-          } else {
-            personalMsg = `${personalMsg}\n\n▶ 추천 할인쿠폰 번호: ${targetCoupon.code}\n(${targetCoupon.value}${targetCoupon.type === "percent" ? "%" : "원"} 할인 혜택)`;
-          }
-        }
-      }
+      let couponSmsMsg = `[혜안당 사주] ${customerName}님, 특별 할인 쿠폰이 도착했습니다.\n\n- 쿠폰명: ${targetCoupon.name}\n- 쿠폰번호: [${targetCoupon.code}]\n- 할인 혜택: ${benefitText}\n- 사용 만료일: ${targetCoupon.expireDate}\n- 최소 결제 금액: ${minAmountValText}\n\n혜안당 신청서 페이지에서 쿠폰번호를 등록하여 즉시 할인 혜택을 받아보세요!\n▶ 혜안당 신청서: https://saju.artpani.com/input`;
 
-      // 광고 문구 자동 삽입
-      if (useAdFormat) {
-        personalMsg = `(광고) ${smsTitle}\n\n${personalMsg}`;
-      }
-
+      let isSuccess = false;
       try {
         const response = await fetch("/api/sms", {
           method: "POST",
@@ -958,24 +951,41 @@ export default function AdminPage() {
           },
           body: JSON.stringify({
             receiver: phone,
-            msg: personalMsg,
-            title: smsTitle
+            msg: couponSmsMsg,
+            title: "[혜안당]"
           }),
         });
 
         const resData = await response.json();
         if (resData.success) {
           successCount++;
+          isSuccess = true;
         } else {
           failCount++;
         }
       } catch (e) {
         failCount++;
       }
+
+      newLogs.push({
+        id: Date.now() + Math.random().toString(36).substr(2, 9),
+        sentAt: new Date().toISOString(),
+        customerName,
+        customerPhone: phone,
+        couponCode: targetCoupon.code,
+        couponName: targetCoupon.name,
+        benefit: benefitText,
+        status: isSuccess ? "success" : "fail"
+      });
     }
 
+    const updatedLogs = [...newLogs, ...touchLogs];
+    setTouchLogs(updatedLogs);
+    localStorage.setItem("hyeandang_touch_logs", JSON.stringify(updatedLogs));
+
     setIsSendingSms(false);
-    showCrmAlert(`발송 작업 완료! (성공: ${successCount}건 / 실패: ${failCount}건)`, failCount > 0 ? "warning" : "success");
+    showCrmAlert(`선택 고객 ${selectedCustomerPhones.length}명에게 쿠폰 문자 전송 완료 (성공: ${successCount} / 실패: ${failCount})`, failCount > 0 ? "warning" : "success");
+    setSelectedSmsCoupon("");
   };
 
   // CRM: 쿠폰 난수 생성
@@ -1535,7 +1545,43 @@ export default function AdminPage() {
           </div>
 
           <div className="space-y-6">
+            {/* 타겟 쿠폰 발송 패널 */}
+            <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-4">
+              <h3 className="font-myeongjo text-sm font-bold text-brass flex items-center gap-1.5 border-b border-brass/25 pb-2">
+                ✉️ 타겟 할인쿠폰 문자 발송
+              </h3>
+              
+              <div className="space-y-3 text-xs">
+                <div>
+                  <label className="block font-semibold text-foreground mb-1">발송할 쿠폰 선택</label>
+                  <select
+                    value={selectedSmsCoupon}
+                    onChange={(e) => setSelectedSmsCoupon(e.target.value)}
+                    className="w-full bg-background border border-border-custom rounded px-3 py-2 text-xs focus:outline-none focus:border-brass text-foreground"
+                  >
+                    <option value="">발송할 쿠폰을 선택해 주세요</option>
+                    {coupons.filter(c => c.isActive).map(c => (
+                      <option key={c.code} value={c.code}>
+                        [{c.code}] {c.name} ({c.value.toLocaleString()}{c.type === "percent" ? "%" : "원"} 할인)
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-[9px] text-foreground-muted mt-1.5 leading-normal">
+                    * 선택된 고객들에게 쿠폰 발급 안내 템플릿 문자가 발송됩니다.<br/>
+                    * 발송 내역은 [발송 이력 조회] 탭에서 확인 가능합니다.
+                  </p>
+                </div>
 
+                <button
+                  type="button"
+                  onClick={handleSendBulkSms}
+                  disabled={isSendingSms}
+                  className="w-full bg-brass hover:bg-brass-dark text-background font-bold py-2.5 rounded shadow-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-2"
+                >
+                  {isSendingSms ? "전송 중..." : `선택한 ${selectedCustomerPhones.length}명에게 쿠폰 전송`}
+                </button>
+              </div>
+            </div>
 
             {/* 쿠폰 생성 및 발행 */}
             <div className="bg-white border border-border-custom rounded-xl p-5 shadow-sm space-y-4">
