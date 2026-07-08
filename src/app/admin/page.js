@@ -229,6 +229,14 @@ export default function AdminPage() {
   const [touchLogs, setTouchLogs] = useState([]);
   const [touchDateFilter, setTouchDateFilter] = useState("all"); // all, today, yesterday, 7days
   const [touchSearchTerm, setTouchSearchTerm] = useState("");
+  const [touchStartDate, setTouchStartDate] = useState("");
+  const [touchEndDate, setTouchEndDate] = useState("");
+
+  // Category Stats Filter States
+  const [statsDateFilter, setStatsDateFilter] = useState("all"); // all, today, 7days, 30days, custom
+  const [statsStartDate, setStatsStartDate] = useState("");
+  const [statsEndDate, setStatsEndDate] = useState("");
+  const [statsCategoryFilter, setStatsCategoryFilter] = useState("all"); // all, saju, gunghap, tarot, newyear
 
   const showCrmAlert = (message, type = "info") => {
     setCrmAlert({ show: true, message, type });
@@ -822,21 +830,21 @@ export default function AdminPage() {
       const diffTime = todayStart - orderDayStart;
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
       
-      if (dateFilter === "today") {
+      if (statsDateFilter === "today") {
         return orderDate.getFullYear() === now.getFullYear() &&
                orderDate.getMonth() === now.getMonth() &&
                orderDate.getDate() === now.getDate();
-      } else if (dateFilter === "7days") {
+      } else if (statsDateFilter === "7days") {
         return diffDays >= 0 && diffDays <= 6;
-      } else if (dateFilter === "30days") {
+      } else if (statsDateFilter === "30days") {
         return diffDays >= 0 && diffDays <= 29;
-      } else if (dateFilter === "custom") {
-        if (startDate) {
-          const start = parseLocalDate(startDate, false);
+      } else if (statsDateFilter === "custom") {
+        if (statsStartDate) {
+          const start = parseLocalDate(statsStartDate, false);
           if (start && orderDate.getTime() < start.getTime()) return false;
         }
-        if (endDate) {
-          const end = parseLocalDate(endDate, true);
+        if (statsEndDate) {
+          const end = parseLocalDate(statsEndDate, true);
           if (end && orderDate.getTime() > end.getTime()) return false;
         }
         return true;
@@ -1163,6 +1171,17 @@ export default function AdminPage() {
         const diffTime = Math.abs(today - logDate);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         if (diffDays > 7) return false;
+      } else if (touchDateFilter === "custom") {
+        if (touchStartDate) {
+          const start = new Date(touchStartDate);
+          start.setHours(0, 0, 0, 0);
+          if (logDate < start) return false;
+        }
+        if (touchEndDate) {
+          const end = new Date(touchEndDate);
+          end.setHours(23, 59, 59, 999);
+          if (logDate > end) return false;
+        }
       }
 
       if (touchSearchTerm) {
@@ -1202,7 +1221,8 @@ export default function AdminPage() {
                   { key: "all", label: "전체 기간" },
                   { key: "today", label: "오늘" },
                   { key: "yesterday", label: "어제" },
-                  { key: "7days", label: "최근 7일" }
+                  { key: "7days", label: "최근 7일" },
+                  { key: "custom", label: "직접 지정" }
                 ].map((filter) => (
                   <button
                     key={filter.key}
@@ -1219,6 +1239,39 @@ export default function AdminPage() {
                 ))}
               </div>
             </div>
+
+            {/* 수동 날짜 입력 달력 */}
+            {touchDateFilter === "custom" && (
+              <div className="flex items-center gap-2 animate-fadeIn">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] text-brass font-semibold font-myeongjo">시작</span>
+                  <div className="relative flex items-center bg-background rounded border border-border-custom px-2 py-1 bg-white">
+                    <Calendar className="w-3.5 h-3.5 text-brass mr-1 pointer-events-none" />
+                    <input
+                      type="date"
+                      value={touchStartDate}
+                      onChange={(e) => setTouchStartDate(e.target.value)}
+                      className="bg-transparent border-none text-xs focus:outline-none text-foreground cursor-pointer select-none font-sans font-medium w-[105px]"
+                      style={{ colorScheme: "light" }}
+                    />
+                  </div>
+                </div>
+                <span className="text-xs text-brass font-bold mx-0.5">~</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] text-brass font-semibold font-myeongjo">종료</span>
+                  <div className="relative flex items-center bg-background rounded border border-border-custom px-2 py-1 bg-white">
+                    <Calendar className="w-3.5 h-3.5 text-brass mr-1 pointer-events-none" />
+                    <input
+                      type="date"
+                      value={touchEndDate}
+                      onChange={(e) => setTouchEndDate(e.target.value)}
+                      className="bg-transparent border-none text-xs focus:outline-none text-foreground cursor-pointer select-none font-sans font-medium w-[105px]"
+                      style={{ colorScheme: "light" }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           
           <div className="relative w-full lg:max-w-xs">
@@ -1315,24 +1368,128 @@ export default function AdminPage() {
   // stats 탭 렌더링
   const renderStatsTab = () => {
     const catStats = getCategoryStats();
+
+    // 1. 카테고리 필터링
+    const filteredCategories = catStats.categories.filter(c => {
+      if (statsCategoryFilter === "all") return true;
+      if (statsCategoryFilter === "gunghap") return c.key.startsWith("gunghap_");
+      if (statsCategoryFilter === "saju") return c.key === "saju";
+      if (statsCategoryFilter === "newyear") return c.key === "newyear";
+      if (statsCategoryFilter === "tarot") return c.key === "tarot";
+      if (statsCategoryFilter === "etc") {
+        return c.key === "wealth" || c.key === "dream" || c.key === "today" || c.key === "other";
+      }
+      return true;
+    });
+
+    // 2. 소계(Subtotal) 계산
+    const subtotalOrderCount = filteredCategories.reduce((sum, c) => sum + c.orderCount, 0);
+    const subtotalPaidCount = filteredCategories.reduce((sum, c) => sum + c.paidCount, 0);
+    const subtotalRevenue = filteredCategories.reduce((sum, c) => sum + c.revenue, 0);
+    const subtotalShare = filteredCategories.reduce((sum, c) => sum + c.share, 0);
+    const averageConversionRate = subtotalOrderCount > 0 ? (subtotalPaidCount / subtotalOrderCount) * 100 : 0;
+
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="font-myeongjo text-2xl font-bold text-foreground mb-1">카테고리별 매출 분석</h2>
+          <h2 className="font-myeongjo text-2xl font-bold text-foreground mb-1">📈 카테고리별 매출 분석</h2>
           <p className="text-xs text-foreground-muted font-light">선택된 기간 내 결제 완료된 상품 카테고리별 성과 통계를 확인합니다.</p>
         </div>
 
-        {/* 요약 현황 */}
+        {/* 필터 및 검색 */}
+        <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between bg-background-secondary/30 border border-border-custom p-4 rounded-xl">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-foreground-muted">조회 기간 필터:</span>
+              <div className="inline-flex rounded-lg border border-border-custom bg-background p-1 gap-1">
+                {[
+                  { key: "all", label: "전체 기간" },
+                  { key: "today", label: "오늘" },
+                  { key: "7days", label: "최근 7일" },
+                  { key: "30days", label: "최근 30일" },
+                  { key: "custom", label: "직접 지정" }
+                ].map((filter) => (
+                  <button
+                    key={filter.key}
+                    type="button"
+                    onClick={() => setStatsDateFilter(filter.key)}
+                    className={`px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer transition-colors ${
+                      statsDateFilter === filter.key
+                        ? "bg-brass text-background font-bold shadow-sm"
+                        : "text-foreground-muted hover:text-foreground hover:bg-background-secondary"
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 수동 날짜 입력 달력 */}
+            {statsDateFilter === "custom" && (
+              <div className="flex items-center gap-2 animate-fadeIn">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] text-brass font-semibold font-myeongjo">시작</span>
+                  <div className="relative flex items-center bg-background rounded border border-border-custom px-2 py-1 bg-white">
+                    <Calendar className="w-3.5 h-3.5 text-brass mr-1 pointer-events-none" />
+                    <input
+                      type="date"
+                      value={statsStartDate}
+                      onChange={(e) => setStatsStartDate(e.target.value)}
+                      className="bg-transparent border-none text-xs focus:outline-none text-foreground cursor-pointer select-none font-sans font-medium w-[105px]"
+                      style={{ colorScheme: "light" }}
+                    />
+                  </div>
+                </div>
+                <span className="text-xs text-brass font-bold mx-0.5">~</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] text-brass font-semibold font-myeongjo">종료</span>
+                  <div className="relative flex items-center bg-background rounded border border-border-custom px-2 py-1 bg-white">
+                    <Calendar className="w-3.5 h-3.5 text-brass mr-1 pointer-events-none" />
+                    <input
+                      type="date"
+                      value={statsEndDate}
+                      onChange={(e) => setStatsEndDate(e.target.value)}
+                      className="bg-transparent border-none text-xs focus:outline-none text-foreground cursor-pointer select-none font-sans font-medium w-[105px]"
+                      style={{ colorScheme: "light" }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 상품 카테고리 필터 셀렉트박스 */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-foreground-muted">상품 카테고리 설정:</span>
+            <select
+              value={statsCategoryFilter}
+              onChange={(e) => setStatsCategoryFilter(e.target.value)}
+              className="bg-background border border-border-custom rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-brass text-foreground bg-white"
+            >
+              <option value="all">전체 상품 카테고리</option>
+              <option value="gunghap">연인 궁합 계열 (기본/밀착/재회)</option>
+              <option value="saju">평생 종합 사주</option>
+              <option value="newyear">신년 운세 / 토정비결</option>
+              <option value="tarot">1:1 맞춤 타로</option>
+              <option value="etc">기타 (오늘의 운세, 꿈해몽, 재물 등)</option>
+            </select>
+          </div>
+        </div>
+
+        {/* 요약 현황 (필터링된 기준이 아니라 전체 매출 기준 요약 유지 혹은 필터링 반영 매출 표기) */}
         <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-center md:text-left space-y-1">
-            <span className="text-xs text-foreground-muted font-semibold uppercase tracking-wider block">선택 기간 총 결제액</span>
-            <span className="font-myeongjo text-3xl font-bold text-brass">{catStats.totalPaidRevenue.toLocaleString()}원</span>
+            <span className="text-xs text-foreground-muted font-semibold uppercase tracking-wider block">선택 필터 총 결제액</span>
+            <span className="font-myeongjo text-3xl font-bold text-brass">{subtotalRevenue.toLocaleString()}원</span>
           </div>
           <div className="w-px h-12 bg-border-custom hidden md:block" />
           <div className="text-center space-y-1">
             <span className="text-xs text-foreground-muted font-semibold block">가장 매출이 높은 분야</span>
             <span className="font-semibold text-foreground text-sm">
-              {catStats.categories.reduce((max, c) => c.revenue > max.revenue ? c : max, { label: "없음", revenue: 0 }).label}
+              {filteredCategories.length > 0
+                ? filteredCategories.reduce((max, c) => c.revenue > max.revenue ? c : max, { label: "없음", revenue: 0 }).label
+                : "없음"}
             </span>
           </div>
         </div>
@@ -1352,32 +1509,60 @@ export default function AdminPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-custom/50">
-                {catStats.categories.map((c) => (
-                  <tr key={c.key} className={`hover:bg-background-secondary/30 transition-colors ${c.key.startsWith("gunghap_") ? 'bg-[#FCFAF2]/30' : ''}`}>
-                    <td className="p-4 font-semibold text-foreground flex items-center gap-2">
-                      {c.key.startsWith("gunghap_") && <span className="text-brass">└</span>}
-                      {c.label}
-                    </td>
-                    <td className="p-4 text-center text-foreground-muted">{c.orderCount}건</td>
-                    <td className="p-4 text-center font-bold text-foreground">{c.paidCount}건</td>
-                    <td className="p-4 text-center">
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-                        c.conversionRate >= 90 ? 'bg-jade/10 text-jade' : 'bg-gray-100 text-gray-600'
-                      }`}>
-                        {c.conversionRate.toFixed(1)}%
-                      </span>
-                    </td>
-                    <td className="p-4 text-right font-bold text-foreground">{c.revenue.toLocaleString()}원</td>
-                    <td className="p-4 text-right text-foreground-muted font-medium">
-                      <div className="flex items-center justify-end gap-2">
-                        <div className="w-16 bg-gray-100 rounded-full h-1.5 overflow-hidden hidden sm:block">
-                          <div className="bg-brass h-full" style={{ width: `${c.share}%` }} />
+                {filteredCategories.length > 0 ? (
+                  filteredCategories.map((c) => (
+                    <tr key={c.key} className={`hover:bg-background-secondary/30 transition-colors ${c.key.startsWith("gunghap_") ? 'bg-[#FCFAF2]/30' : ''}`}>
+                      <td className="p-4 font-semibold text-foreground flex items-center gap-2">
+                        {c.key.startsWith("gunghap_") && <span className="text-brass">└</span>}
+                        {c.label}
+                      </td>
+                      <td className="p-4 text-center text-foreground-muted">{c.orderCount}건</td>
+                      <td className="p-4 text-center font-bold text-foreground">{c.paidCount}건</td>
+                      <td className="p-4 text-center">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                          c.conversionRate >= 90 ? 'bg-jade/10 text-jade' : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {c.conversionRate.toFixed(1)}%
+                        </span>
+                      </td>
+                      <td className="p-4 text-right font-bold text-foreground">{c.revenue.toLocaleString()}원</td>
+                      <td className="p-4 text-right text-foreground-muted font-medium">
+                        <div className="flex items-center justify-end gap-2">
+                          <div className="w-16 bg-gray-100 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                            <div className="bg-brass h-full" style={{ width: `${c.share}%` }} />
+                          </div>
+                          <span>{c.share.toFixed(1)}%</span>
                         </div>
-                        <span>{c.share.toFixed(1)}%</span>
-                      </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="p-8 text-center text-foreground-muted font-light">
+                      조회 조건에 부합하는 통계 데이터가 없습니다.
                     </td>
                   </tr>
-                ))}
+                )}
+
+                {/* 하단 소계 추가 */}
+                {filteredCategories.length > 0 && (
+                  <tr className="bg-background-secondary/70 border-t-2 border-border-custom font-bold text-foreground">
+                    <td className="p-4 flex items-center gap-2">
+                      <span className="text-brass">Σ</span> 소계 (합계)
+                    </td>
+                    <td className="p-4 text-center text-foreground">{subtotalOrderCount.toLocaleString()}건</td>
+                    <td className="p-4 text-center text-foreground font-black">{subtotalPaidCount.toLocaleString()}건</td>
+                    <td className="p-4 text-center">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-brass/10 text-brass-dark">
+                        {averageConversionRate.toFixed(1)}%
+                      </span>
+                    </td>
+                    <td className="p-4 text-right font-black text-brass">{subtotalRevenue.toLocaleString()}원</td>
+                    <td className="p-4 text-right text-foreground-muted font-bold">
+                      {subtotalShare.toFixed(1)}%
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
