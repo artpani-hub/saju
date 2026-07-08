@@ -1273,11 +1273,11 @@ export default function AdminPage() {
                             ? "bg-amber-50 text-amber-700 border border-amber-200" 
                             : "bg-gray-100 text-gray-600"
                         }`}>
-                          {log.customerPaymentType || "전체 고객"}
+                          {log.customerPaymentType || "기록 없음"}
                         </span>
                       </td>
                       <td className="p-4 text-foreground-muted font-medium">
-                        {log.targetPaymentType || "전체 고객 타겟"}
+                        {log.targetPaymentType || "기록 없음"}
                       </td>
                       <td className="p-4">
                         <span className="font-mono bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-semibold text-[10px] border border-purple-100">
