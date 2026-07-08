@@ -203,7 +203,7 @@ export default function AdminPage() {
   const [refreshingId, setRefreshingId] = useState(null);
 
   // Q&A Inquiry States
-  const [currentMenuTab, setCurrentMenuTab] = useState("orders"); // orders, inquiries, stats, crm
+  const [currentMenuTab, setCurrentMenuTab] = useState("orders"); // orders, inquiries, stats, crm, touch
   const [inquiries, setInquiries] = useState([]);
   const [inquirySearch, setInquirySearch] = useState("");
   const [inquiryFilterType, setInquiryFilterType] = useState("all"); // all, delivery, general
@@ -225,6 +225,11 @@ export default function AdminPage() {
   const [selectedSmsCoupon, setSelectedSmsCoupon] = useState("");
   const [sendCouponSmsOnCreate, setSendCouponSmsOnCreate] = useState(false);
 
+  // Touch Logs States
+  const [touchLogs, setTouchLogs] = useState([]);
+  const [touchDateFilter, setTouchDateFilter] = useState("all"); // all, today, yesterday, 7days
+  const [touchSearchTerm, setTouchSearchTerm] = useState("");
+
   const showCrmAlert = (message, type = "info") => {
     setCrmAlert({ show: true, message, type });
     setTimeout(() => {
@@ -241,7 +246,7 @@ export default function AdminPage() {
   const [newCouponExpiry, setNewCouponExpiry] = useState("2026-12-31");
   const [newCouponMinAmount, setNewCouponMinAmount] = useState("");
 
-  // 쿠폰 데이터 로드
+  // 쿠폰 및 터치 로그 데이터 로드
   useEffect(() => {
     try {
       const existingStr = localStorage.getItem("hyeandang_coupons");
@@ -262,6 +267,12 @@ export default function AdminPage() {
         ];
         setCoupons(defaultCoupons);
         localStorage.setItem("hyeandang_coupons", JSON.stringify(defaultCoupons));
+      }
+
+      // 터치 로그 로드
+      const logsStr = localStorage.getItem("hyeandang_touch_logs");
+      if (logsStr) {
+        setTouchLogs(JSON.parse(logsStr));
       }
     } catch (e) {
       console.error(e);
@@ -1015,6 +1026,7 @@ export default function AdminPage() {
 
         const customers = getCustomers();
         
+        const newLogs = [];
         for (const phone of selectedCustomerPhones) {
           const customer = customers.find(c => c.phone === phone);
           const customerName = customer ? customer.name : "고객";
@@ -1025,6 +1037,7 @@ export default function AdminPage() {
           
           let couponSmsMsg = `[혜안당 사주] ${customerName}님, 특별 할인 쿠폰이 도착했습니다.\n\n- 쿠폰명: ${newCoupon.name}\n- 쿠폰번호: [${newCoupon.code}]\n- 할인 혜택: ${benefitText}\n- 사용 만료일: ${newCoupon.expireDate}\n- 최소 결제 금액: ${minAmountValText}\n\n혜안당 신청서 페이지에서 쿠폰번호를 등록하여 즉시 할인 혜택을 받아보세요!\n▶ 혜안당 신청서: https://saju.artpani.com/input`;
 
+          let isSuccess = false;
           try {
             const response = await fetch("/api/sms", {
               method: "POST",
@@ -1041,13 +1054,29 @@ export default function AdminPage() {
             const resData = await response.json();
             if (resData.success) {
               successCount++;
+              isSuccess = true;
             } else {
               failCount++;
             }
           } catch (e) {
             failCount++;
           }
+
+          newLogs.push({
+            id: Date.now() + Math.random().toString(36).substr(2, 9),
+            sentAt: new Date().toISOString(),
+            customerName,
+            customerPhone: phone,
+            couponCode: newCoupon.code,
+            couponName: newCoupon.name,
+            benefit: benefitText,
+            status: isSuccess ? "success" : "fail"
+          });
         }
+
+        const updatedLogs = [...newLogs, ...touchLogs];
+        setTouchLogs(updatedLogs);
+        localStorage.setItem("hyeandang_touch_logs", JSON.stringify(updatedLogs));
 
         setIsSendingSms(false);
         showCrmAlert(`선택 고객 ${selectedCustomerPhones.length}명에게 쿠폰 문자 전송 완료 (성공: ${successCount} / 실패: ${failCount})`, failCount > 0 ? "warning" : "success");
@@ -1078,6 +1107,167 @@ export default function AdminPage() {
     );
     setCoupons(updated);
     localStorage.setItem("hyeandang_coupons", JSON.stringify(updated));
+  };
+
+  // Touch Logs 탭 렌더링
+  const renderTouchLogsTab = () => {
+    const handleClearTouchLogs = () => {
+      if (!confirm("모든 발송 이력을 영구적으로 삭제하시겠습니까?")) return;
+      setTouchLogs([]);
+      localStorage.removeItem("hyeandang_touch_logs");
+      showCrmAlert("모든 발송 이력이 초기화되었습니다.", "success");
+    };
+
+    const filteredTouchLogs = touchLogs.filter((log) => {
+      const logDate = new Date(log.sentAt);
+      const today = new Date();
+      const yesterday = new Date();
+      yesterday.setDate(today.getDate() - 1);
+
+      const isSameDate = (d1, d2) => 
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate();
+
+      if (touchDateFilter === "today") {
+        if (!isSameDate(logDate, today)) return false;
+      } else if (touchDateFilter === "yesterday") {
+        if (!isSameDate(logDate, yesterday)) return false;
+      } else if (touchDateFilter === "7days") {
+        const diffTime = Math.abs(today - logDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays > 7) return false;
+      }
+
+      if (touchSearchTerm) {
+        const term = touchSearchTerm.toLowerCase();
+        const nameMatch = log.customerName.toLowerCase().includes(term);
+        const phoneMatch = log.customerPhone.includes(term);
+        const couponMatch = log.couponCode.toLowerCase().includes(term);
+        if (!nameMatch && !phoneMatch && !couponMatch) return false;
+      }
+
+      return true;
+    });
+
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="font-myeongjo text-2xl font-bold text-foreground mb-1">📢 고객 터치(쿠폰 발송) 이력 조회</h2>
+            <p className="text-xs text-foreground-muted font-light">기간별로 고객들에게 발송된 할인 쿠폰 문자 내역을 정밀하게 모니터링합니다.</p>
+          </div>
+          <button
+            onClick={handleClearTouchLogs}
+            disabled={touchLogs.length === 0}
+            className="border border-red-200 text-red-600 hover:bg-red-55 hover:text-red-700 text-xs px-3 py-1.5 rounded transition-all font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            이력 전체 초기화
+          </button>
+        </div>
+
+        {/* 필터 및 검색 */}
+        <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between bg-background-secondary/30 border border-border-custom p-4 rounded-xl">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-foreground-muted">발송 일자 필터:</span>
+              <div className="inline-flex rounded-lg border border-border-custom bg-background p-1 gap-1">
+                {[
+                  { key: "all", label: "전체 기간" },
+                  { key: "today", label: "오늘" },
+                  { key: "yesterday", label: "어제" },
+                  { key: "7days", label: "최근 7일" }
+                ].map((filter) => (
+                  <button
+                    key={filter.key}
+                    type="button"
+                    onClick={() => setTouchDateFilter(filter.key)}
+                    className={`px-3 py-1 text-xs font-medium cursor-pointer transition-colors rounded-md ${
+                      touchDateFilter === filter.key
+                        ? "bg-brass text-background font-bold shadow-sm"
+                        : "text-foreground-muted hover:text-foreground hover:bg-background-secondary"
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          
+          <div className="relative w-full lg:max-w-xs">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-foreground-muted" />
+            <input
+              type="text"
+              placeholder="고객명, 연락처, 쿠폰 코드 검색"
+              value={touchSearchTerm}
+              onChange={(e) => setTouchSearchTerm(e.target.value)}
+              className="w-full bg-background border border-border-custom rounded pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-brass text-foreground"
+            />
+          </div>
+        </div>
+
+        {/* 테이블 데이터 */}
+        <div className="border border-border-custom rounded-lg bg-background overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="bg-background-secondary border-b border-border-custom text-foreground font-semibold">
+                  <th className="p-4">발송 일시</th>
+                  <th className="p-4">수신 고객</th>
+                  <th className="p-4">연락처</th>
+                  <th className="p-4">발송 쿠폰</th>
+                  <th className="p-4">혜택</th>
+                  <th className="p-4 text-center">전송 상태</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border-custom/50">
+                {filteredTouchLogs.length > 0 ? (
+                  filteredTouchLogs.map((log) => (
+                    <tr key={log.id} className="hover:bg-background-secondary/30 transition-colors">
+                      <td className="p-4 text-foreground-muted">
+                        {new Date(log.sentAt).toLocaleString("ko-KR", {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit"
+                        })}
+                      </td>
+                      <td className="p-4 font-bold text-foreground">{log.customerName}</td>
+                      <td className="p-4 text-foreground-muted">{log.customerPhone}</td>
+                      <td className="p-4">
+                        <span className="font-mono bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-semibold text-[10px] border border-purple-100">
+                          {log.couponCode}
+                        </span>
+                        <div className="text-[10px] text-foreground-muted mt-0.5">{log.couponName}</div>
+                      </td>
+                      <td className="p-4 font-bold text-brass">{log.benefit}</td>
+                      <td className="p-4 text-center">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                          log.status === "success" 
+                            ? "bg-jade/10 text-jade" 
+                            : "bg-red-50 text-red-500"
+                        }`}>
+                          {log.status === "success" ? "성공" : "실패"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="p-8 text-center text-foreground-muted font-light">
+                      발송 이력 정보가 존재하지 않습니다.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   // stats 탭 렌더링
@@ -1345,83 +1535,7 @@ export default function AdminPage() {
           </div>
 
           <div className="space-y-6">
-            {/* SMS 일괄 발송 */}
-            <div className="bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl p-5 shadow-sm space-y-4">
-              <h3 className="font-myeongjo text-sm font-bold text-brass flex items-center gap-1.5 border-b border-brass/25 pb-2">
-                ✉️ 타겟 광고 문자 전송
-              </h3>
-              
-              <div className="space-y-3 text-xs">
-                <div>
-                  <label className="block font-semibold text-foreground mb-1">발송용 쿠폰 첨부 (선택)</label>
-                  <select
-                    value={selectedSmsCoupon}
-                    onChange={(e) => setSelectedSmsCoupon(e.target.value)}
-                    className="w-full bg-background border border-border-custom rounded px-3 py-2 text-xs focus:outline-none focus:border-brass text-foreground"
-                  >
-                    <option value="">쿠폰 첨부 안함</option>
-                    {coupons.filter(c => c.isActive).map(c => (
-                      <option key={c.code} value={c.code}>
-                        [{c.code}] {c.name} ({c.value.toLocaleString()}{c.type === "percent" ? "%" : "원"} 할인)
-                      </option>
-                    ))}
-                  </select>
-                  <p className="text-[9px] text-foreground-muted mt-1 leading-normal">
-                    * 본문에 <strong className="text-brass">#&#123;쿠폰코드&#125;</strong>를 적으면 쿠폰 번호로 자동 치환됩니다.<br/>
-                    * 치환자가 본문에 없으면 문자 맨 하단에 쿠폰 정보가 자동 덧붙여집니다.
-                  </p>
-                </div>
 
-                <div>
-                  <label className="block font-semibold text-foreground mb-1">발송 제목 (발신자 표시)</label>
-                  <input
-                    type="text"
-                    value={smsTitle}
-                    onChange={(e) => setSmsTitle(e.target.value)}
-                    className="w-full bg-background border border-border-custom rounded px-3 py-2 text-xs focus:outline-none focus:border-brass text-foreground"
-                    placeholder="[혜안당]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-foreground mb-1">
-                    메시지 내용 ({smsMessage.length}자)
-                  </label>
-                  <textarea
-                    value={smsMessage}
-                    onChange={(e) => setSmsMessage(e.target.value)}
-                    placeholder="발송할 마케팅 텍스트를 작성하세요.
-#{이름} 치환자를 사용해 개인화할 수 있습니다.
-(예: #{이름}님, 신년 특별 10% 쿠폰이 도착했습니다.)"
-                    rows={6}
-                    className="w-full bg-background border border-border-custom rounded px-3 py-2 text-xs focus:outline-none focus:border-brass text-foreground leading-relaxed font-sans resize-none"
-                  />
-                </div>
-
-                <div className="flex items-center gap-1.5 bg-white border border-[#E2DDD5] p-2 rounded">
-                  <input
-                    type="checkbox"
-                    id="useAd"
-                    checked={useAdFormat}
-                    onChange={(e) => setUseAdFormat(e.target.checked)}
-                    className="cursor-pointer"
-                  />
-                  <label htmlFor="useAd" className="text-[10px] text-foreground-muted select-none cursor-pointer">
-                    <strong>광고 의무사항 포맷 적용</strong> <br/>
-                    (메시지에 (광고) 타이틀 및 080 수신거부 번호를 삽입합니다)
-                  </label>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleSendBulkSms}
-                  disabled={isSendingSms}
-                  className="w-full bg-brass hover:bg-brass-dark text-background font-bold py-2.5 rounded shadow-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-2"
-                >
-                  {isSendingSms ? "전송 중..." : `선택한 ${selectedCustomerPhones.length}명에게 대량 전송`}
-                </button>
-              </div>
-            </div>
 
             {/* 쿠폰 생성 및 발행 */}
             <div className="bg-white border border-border-custom rounded-xl p-5 shadow-sm space-y-4">
@@ -1689,7 +1803,7 @@ export default function AdminPage() {
       {/* Admin Content */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-6 py-8 space-y-8">
         {/* Menu Tabs */}
-        <div className="flex border-b border-border-custom bg-background-secondary/20 p-1.5 rounded-lg max-w-md mb-4">
+        <div className="flex border-b border-border-custom bg-background-secondary/20 p-1.5 rounded-lg max-w-xl mb-4">
           <button
             onClick={() => setCurrentMenuTab("orders")}
             className={`flex-1 py-2 text-center text-xs font-semibold rounded-md transition-all cursor-pointer ${
@@ -1734,6 +1848,16 @@ export default function AdminPage() {
             }`}
           >
             고객 관리 & CRM
+          </button>
+          <button
+            onClick={() => setCurrentMenuTab("touch")}
+            className={`flex-1 py-2 text-center text-xs font-semibold rounded-md transition-all cursor-pointer ${
+              currentMenuTab === "touch"
+                ? "bg-brass text-background font-bold shadow-sm"
+                : "text-foreground-muted hover:text-foreground"
+            }`}
+          >
+            발송 이력 조회
           </button>
         </div>
 
@@ -2294,6 +2418,7 @@ export default function AdminPage() {
         )}
         {currentMenuTab === "stats" && renderStatsTab()}
         {currentMenuTab === "crm" && renderCrmTab()}
+        {currentMenuTab === "touch" && renderTouchLogsTab()}
       </main>
     </div>
   );
