@@ -967,6 +967,12 @@ export default function AdminPage() {
         failCount++;
       }
 
+      const custPaymentType = customer 
+        ? (customer.paidOrders > 0 
+          ? "유료 결제 완료" 
+          : (customer.hasFreeOrder && customer.paidOrders === 0 ? "무료체험 미결제" : "체험 없음"))
+        : "정보 없음";
+
       newLogs.push({
         id: Date.now() + Math.random().toString(36).substr(2, 9),
         sentAt: new Date().toISOString(),
@@ -975,7 +981,9 @@ export default function AdminPage() {
         couponCode: targetCoupon.code,
         couponName: targetCoupon.name,
         benefit: benefitText,
-        status: isSuccess ? "success" : "fail"
+        status: isSuccess ? "success" : "fail",
+        customerPaymentType: custPaymentType,
+        targetPaymentType: crmTargetPayment === "unpaidFreeOnly" ? "무료체험 미결제 타겟" : (crmTargetPayment === "paidOnly" ? "유료 결제 고객 타겟" : "전체 고객 타겟")
       });
     }
 
@@ -1072,6 +1080,12 @@ export default function AdminPage() {
             failCount++;
           }
 
+          const custPaymentType = customer 
+            ? (customer.paidOrders > 0 
+              ? "유료 결제 완료" 
+              : (customer.hasFreeOrder && customer.paidOrders === 0 ? "무료체험 미결제" : "체험 없음"))
+            : "정보 없음";
+
           newLogs.push({
             id: Date.now() + Math.random().toString(36).substr(2, 9),
             sentAt: new Date().toISOString(),
@@ -1080,7 +1094,9 @@ export default function AdminPage() {
             couponCode: newCoupon.code,
             couponName: newCoupon.name,
             benefit: benefitText,
-            status: isSuccess ? "success" : "fail"
+            status: isSuccess ? "success" : "fail",
+            customerPaymentType: custPaymentType,
+            targetPaymentType: crmTargetPayment === "unpaidFreeOnly" ? "무료체험 미결제 타겟" : (crmTargetPayment === "paidOnly" ? "유료 결제 고객 타겟" : "전체 고객 타겟")
           });
         }
 
@@ -1226,6 +1242,8 @@ export default function AdminPage() {
                   <th className="p-4">발송 일시</th>
                   <th className="p-4">수신 고객</th>
                   <th className="p-4">연락처</th>
+                  <th className="p-4">고객 결제유형</th>
+                  <th className="p-4">발송 타겟</th>
                   <th className="p-4">발송 쿠폰</th>
                   <th className="p-4">혜택</th>
                   <th className="p-4 text-center">전송 상태</th>
@@ -1248,6 +1266,20 @@ export default function AdminPage() {
                       <td className="p-4 font-bold text-foreground">{log.customerName}</td>
                       <td className="p-4 text-foreground-muted">{log.customerPhone}</td>
                       <td className="p-4">
+                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold ${
+                          log.customerPaymentType === "유료 결제 완료" 
+                            ? "bg-jade/10 text-jade" 
+                            : log.customerPaymentType === "무료체험 미결제" 
+                            ? "bg-amber-50 text-amber-700 border border-amber-200" 
+                            : "bg-gray-100 text-gray-600"
+                        }`}>
+                          {log.customerPaymentType || "전체 고객"}
+                        </span>
+                      </td>
+                      <td className="p-4 text-foreground-muted font-medium">
+                        {log.targetPaymentType || "전체 고객 타겟"}
+                      </td>
+                      <td className="p-4">
                         <span className="font-mono bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-semibold text-[10px] border border-purple-100">
                           {log.couponCode}
                         </span>
@@ -1267,7 +1299,7 @@ export default function AdminPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className="p-8 text-center text-foreground-muted font-light">
+                    <td colSpan="8" className="p-8 text-center text-foreground-muted font-light">
                       발송 이력 정보가 존재하지 않습니다.
                     </td>
                   </tr>
