@@ -1695,7 +1695,7 @@ function InputFormContent() {
                   type="submit"
                   className="hidden lg:block w-full py-4 bg-jade text-background rounded-lg font-myeongjo text-lg font-bold shadow-md hover:bg-jade-dark hover:shadow-lg transition-all cursor-pointer"
                 >
-                  {reportGrade === "free" ? "확인하기" : "기입 완료 및 결제 진행"}
+                  {reportGrade === "free" ? "내 사주 무료 확인하기" : "기입 완료 및 결제 진행"}
                 </button>
               </form>
             </div>
@@ -2010,63 +2010,73 @@ function InputFormContent() {
                   </button>
                 </div>
               ) : (
-                /* 무료 체험판 안내 카드 (전통적인 이탈 방지용 단아한 카드 디자인) */
-                <div className="border-2 border-jade bg-[#F9F8F6] rounded-xl p-6 sticky top-24 animate-fadeIn space-y-6 relative overflow-hidden shadow-md">
-                  {/* Decorative traditional motifs */}
-                  <div className="absolute top-2 left-2 text-jade/25 text-xs">卍</div>
-                  <div className="absolute top-2 right-2 text-jade/25 text-xs">卍</div>
-                  <div className="absolute bottom-2 left-2 text-jade/25 text-xs">卍</div>
-                  <div className="absolute bottom-2 right-2 text-jade/25 text-xs">卍</div>
+                <>
+                  {/* 무료 체험판 안내 카드 (전통적인 이탈 방지용 단아한 카드 디자인) */}
+                  <div className="border-2 border-jade bg-[#F9F8F6] rounded-xl p-6 sticky top-24 animate-fadeIn space-y-6 relative overflow-hidden shadow-md">
+                    {/* Decorative traditional motifs */}
+                    <div className="absolute top-2 left-2 text-jade/25 text-xs">卍</div>
+                    <div className="absolute top-2 right-2 text-jade/25 text-xs">卍</div>
+                    <div className="absolute bottom-2 left-2 text-jade/25 text-xs">卍</div>
+                    <div className="absolute bottom-2 right-2 text-jade/25 text-xs">卍</div>
 
-                  <div className="text-center pb-2.5 border-b border-border-custom/60">
-                    <span className="text-[10px] text-jade font-bold tracking-widest block mb-1">무료 분석</span>
-                    <h3 className="font-myeongjo text-base font-bold text-foreground">
-                      🎁 혜안당 무료 사주 보감
-                    </h3>
+                    <div className="text-center pb-2.5 border-b border-border-custom/60">
+                      <span className="text-[10px] text-jade font-bold tracking-widest block mb-1">무료 분석</span>
+                      <h3 className="font-myeongjo text-base font-bold text-foreground">
+                        🎁 혜안당 무료 사주 보감
+                      </h3>
+                    </div>
+
+                    <div className="space-y-4 text-xs font-light leading-relaxed">
+                      <p className="text-foreground-muted text-center font-traditional">
+                        귀하의 타고난 생년월일시 오행 기류를 정밀 분석하여, 사주 원국과 등급 및 희소성 분석 결과를 <strong>일체의 카드 등록이나 비용 없이</strong> 즉시 공개해 드립니다.
+                      </p>
+
+                      <div className="border-t border-border-custom/60 pt-4 space-y-2.5">
+                        <span className="font-bold text-foreground block">✔ 무료 제공 범위:</span>
+                        <ul className="space-y-2 pl-1">
+                          <li className="flex gap-2 items-start text-foreground-muted">
+                            <span className="text-jade font-bold">1.</span>
+                            <span><strong>사주 팔자 명식 원국 분석</strong></span>
+                          </li>
+                          <li className="flex gap-2 items-start text-foreground-muted">
+                            <span className="text-jade font-bold">2.</span>
+                            <span><strong>오행 에너지 분포 및 조화도</strong></span>
+                          </li>
+                          <li className="flex gap-2 items-start text-foreground-muted">
+                            <span className="text-jade font-bold">3.</span>
+                            <span><strong>내 사주 등급(1~7등급) 및 희소성 판정</strong></span>
+                          </li>
+                          <li className="flex gap-2 items-start text-foreground-muted">
+                            <span className="text-jade font-bold">4.</span>
+                            <span><strong>타고난 핵심 성향 해설</strong></span>
+                          </li>
+                        </ul>
+                      </div>
+
+                      <div className="border-t border-border-custom/60 pt-4 text-center">
+                        <button
+                          type="button"
+                          onClick={() => setReportGrade("premium")}
+                          className="text-xs text-brass font-bold hover:underline cursor-pointer"
+                        >
+                          ← 정통 정밀 사주 보감 신청하기
+                        </button>
+                      </div>
+
+                      <div className="border-t border-border-custom/60 pt-4 text-center text-[10px] text-foreground-muted/70">
+                        💡 정보 기입을 완료하고 하단의 <strong className="text-jade">"내 사주 무료 확인하기"</strong> 버튼을 누르면 즉시 사주 분석이 개시됩니다.
+                      </div>
+                    </div>
                   </div>
-
-                  <div className="space-y-4 text-xs font-light leading-relaxed">
-                    <p className="text-foreground-muted text-center font-traditional">
-                      귀하의 타고난 생년월일시 오행 기류를 정밀 분석하여, 사주 원국과 등급 및 희소성 분석 결과를 <strong>일체의 카드 등록이나 비용 없이</strong> 즉시 공개해 드립니다.
-                    </p>
-
-                    <div className="border-t border-border-custom/60 pt-4 space-y-2.5">
-                      <span className="font-bold text-foreground block">✔ 무료 제공 범위:</span>
-                      <ul className="space-y-2 pl-1">
-                        <li className="flex gap-2 items-start text-foreground-muted">
-                          <span className="text-jade font-bold">1.</span>
-                          <span><strong>사주 팔자 명식 원국 분석</strong></span>
-                        </li>
-                        <li className="flex gap-2 items-start text-foreground-muted">
-                          <span className="text-jade font-bold">2.</span>
-                          <span><strong>오행 에너지 분포 및 조화도</strong></span>
-                        </li>
-                        <li className="flex gap-2 items-start text-foreground-muted">
-                          <span className="text-jade font-bold">3.</span>
-                          <span><strong>내 사주 등급(1~7등급) 및 희소성 판정</strong></span>
-                        </li>
-                        <li className="flex gap-2 items-start text-foreground-muted">
-                          <span className="text-jade font-bold">4.</span>
-                          <span><strong>타고난 핵심 성향 해설</strong></span>
-                        </li>
-                      </ul>
-                    </div>
-
-                    <div className="border-t border-border-custom/60 pt-4 text-center">
-                      <button
-                        type="button"
-                        onClick={() => setReportGrade("premium")}
-                        className="text-xs text-brass font-bold hover:underline cursor-pointer"
-                      >
-                        ← 정통 정밀 사주 보감 신청하기
-                      </button>
-                    </div>
-
-                    <div className="border-t border-border-custom/60 pt-4 text-center text-[10px] text-foreground-muted/70">
-                      💡 정보 기입을 완료하고 하단의 <strong className="text-jade">"내 사주 등급 확인하기"</strong> 버튼을 누르면 즉시 사주 분석이 개시됩니다.
-                    </div>
-                  </div>
-                </div>
+                  {/* 모바일 화면 전용 확인 버튼 (무료체험판) */}
+                  <button
+                    type="submit"
+                    form="saju-input-form"
+                    className="lg:hidden w-full mt-5 py-4 bg-jade text-background hover:bg-jade-dark rounded-lg font-myeongjo text-lg font-bold shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    내 사주 무료 확인하기
+                  </button>
+                </>
               )}
             </div>
           </div>
@@ -2322,7 +2332,7 @@ function InputFormContent() {
       {/* Footer */}
       <footer className="bg-background border-t border-border-custom py-8 mt-auto">
         <div className="max-w-6xl mx-auto px-6 text-center text-xs text-foreground-muted font-light">
-          © 2026 혜안당. All rights reserved. 본 프로젝트는 혜안당 사주/타로 서비스 개발을 위한 데모 페이지입니다.
+          © 2026 혜안당. All rights reserved.
         </div>
       </footer>
     </div>

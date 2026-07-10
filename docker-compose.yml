@@ -2,15 +2,19 @@ version: '3.8'
 
 services:
   hyeandang:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: node:20-alpine
     container_name: hyeandang-saju
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
     ports:
       - "3000:3000"
     env_file:
       - .env.local
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - PORT=3000
+    command: sh -c "npm install --legacy-peer-deps && npm run dev"
     restart: always
