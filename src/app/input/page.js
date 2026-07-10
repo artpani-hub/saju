@@ -600,7 +600,7 @@ function InputFormContent() {
   const validateForm = () => {
     if (!formData.name.trim()) return "성명을 입력해 주세요.";
     if (productKey !== "today") {
-      if (!formData.email.trim() || !formData.email.includes("@")) return "올바른 이메일 주소를 입력해 주세요.";
+      if (formData.email.trim() && !formData.email.includes("@")) return "올바른 이메일 주소를 입력해 주세요.";
     }
     if (!formData.phone.trim() || formData.phone.length < 9) return "올바른 연락처를 입력해 주세요.";
     if (productKey === "tarot" && selectedCards.length < 3) return "속마음 타로 카드를 3장 선택해 주세요.";
@@ -1565,7 +1565,7 @@ function InputFormContent() {
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="email" className="block text-xs font-semibold text-foreground mb-1.5">결과 수신 이메일</label>
+                      <label htmlFor="email" className="block text-xs font-semibold text-foreground mb-1.5">결과 수신 이메일 <span className="text-foreground-muted font-normal text-[10px] ml-1">(선택)</span></label>
                       <input
                         type="email"
                         id="email"
