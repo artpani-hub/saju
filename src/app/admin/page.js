@@ -287,7 +287,7 @@ export default function AdminPage() {
     }
   }, [isLoggedIn]);
 
-  // Q&A 데이터 로드
+  // Q&A 데이터 로드 & 실시간 폴링 (5초 주기)
   useEffect(() => {
     if (!isLoggedIn) return;
     const fetchInquiries = async () => {
@@ -302,6 +302,9 @@ export default function AdminPage() {
       }
     };
     fetchInquiries();
+
+    const intervalId = setInterval(fetchInquiries, 5000);
+    return () => clearInterval(intervalId);
   }, [isLoggedIn]);
 
   const handleSaveReply = async (inqId) => {
@@ -436,7 +439,7 @@ export default function AdminPage() {
     }
   }, []);
 
-  // 2. 주문 데이터 로드
+  // 2. 주문 데이터 로드 & 실시간 폴링 (5초 주기)
   useEffect(() => {
     if (!isLoggedIn) return;
     const fetchOrders = async () => {
@@ -451,6 +454,9 @@ export default function AdminPage() {
       }
     };
     fetchOrders();
+
+    const intervalId = setInterval(fetchOrders, 5000);
+    return () => clearInterval(intervalId);
   }, [isLoggedIn]);
 
   const handleLogin = () => {
