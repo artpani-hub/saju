@@ -67,25 +67,6 @@ function ensureFile() {
         day: "20",
         hour: "08:30",
         worryText: "올해 유독 회사 일이 안 풀려서 스트레스가 많고 이직 준비를 하려는데 자격증 합격이나 다른 곳으로의 기운이 따를지 조언을 부탁드립니다."
-      },
-      {
-        id: 1001,
-        name: "최준혁",
-        email: "junhyuk@mail.com",
-        phone: "010-8888-9999",
-        productName: "심층 종합 운세 리포트",
-        amount: 50000,
-        status: "failed",
-        sajuGanji: "辛未년 壬辰월 癸亥일 (진시)",
-        emailStatus: "unsent",
-        createdAt: "2026-05-23 11:20",
-        gender: "male",
-        calendar: "solar",
-        year: "1991",
-        month: "4",
-        day: "12",
-        hour: "08:00",
-        worryText: "올해 주식 투자로 손실이 좀 크게 났는데, 언제쯤 재물 운이 회복되어 손실을 복구할 수 있을지 알고 싶습니다."
       }
     ], null, 2), "utf8");
   }
