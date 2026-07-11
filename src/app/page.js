@@ -259,11 +259,13 @@ export default function Home() {
           </h1>
           
           <p className="text-lg md:text-xl text-foreground-muted max-w-2xl mx-auto leading-relaxed mb-6 font-light font-traditional">
-            언제 씨를 뿌리고 언제 수확해야 할지 아는 것만으로도 수많은 실패를 줄일 수 있습니다.
+            언제 씨를 뿌리고 언제 수확해야 할지<br />
+            아는 것만으로도 수많은 실패를 줄일 수 있습니다.
           </p>
 
           <p className="text-sm md:text-base text-brass max-w-2xl mx-auto leading-relaxed mb-10 font-normal font-traditional">
-            평생의 자산 흐름과 위기의 타이밍 등, 혜안당 보감에 잠겨 있는 귀하만의 5가지 비밀 중 첫 장을 즉시 열어드립니다.
+            평생의 자산 흐름과 위기의 타이밍 등,<br />
+            혜안당 보감에 잠겨 있는 귀하만의 5가지 비밀 중 첫 장을 즉시 열어드립니다.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
