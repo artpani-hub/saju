@@ -3700,6 +3700,23 @@ function ResultContent() {
             orders[matchedIdx].productName = "정통 토정비결";
           }
           localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+
+          // 서버 API PUT 업데이트 추가
+          try {
+            fetch("/api/orders", {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                adminPassword: "artpani1234",
+                id: orders[matchedIdx].id,
+                status: "paid",
+                reportGrade: targetGrade || orders[matchedIdx].reportGrade,
+                productName: orders[matchedIdx].productName
+              })
+            });
+          } catch (e) {
+            console.error("주문 paid API 업데이트 실패:", e);
+          }
         }
       }
     } catch (e) {
@@ -3735,8 +3752,26 @@ function ResultContent() {
           if (typeParam === "tojeong") {
             orders[matchedIdx].productName = "정통 토정비결";
           }
+          localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+
+          // 서버 API PUT 업데이트 추가
+          try {
+            fetch("/api/orders", {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                adminPassword: "artpani1234",
+                id: orders[matchedIdx].id,
+                status: "paid",
+                reportGrade: targetGrade,
+                productName: orders[matchedIdx].productName
+              })
+            });
+          } catch (e) {
+            console.error("업그레이드 paid API 업데이트 실패:", e);
+          }
         } else {
-          orders.push({
+          const newOrder = {
             id: Math.floor(Math.random() * 9000) + 1000,
             name: name,
             email: emailParam || "today_sms@hyeandang.com",
@@ -3753,9 +3788,21 @@ function ResultContent() {
             hour: hour,
             worryText: worryText || "오늘의 운세",
             reportGrade: targetGrade
-          });
+          };
+          orders.push(newOrder);
+          localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+
+          // 서버 API POST 생성 추가
+          try {
+            fetch("/api/orders", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(newOrder)
+            });
+          } catch (e) {
+            console.error("신규 업그레이드 주문 API 등록 실패:", e);
+          }
         }
-        localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
       } catch (e) {
         console.error(e);
       }

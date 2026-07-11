@@ -415,96 +415,20 @@ export default function AdminPage() {
 
   // 2. 주문 데이터 로드
   useEffect(() => {
-    try {
-      const existingStr = localStorage.getItem("hyeandang_orders");
-      if (existingStr) {
-        setOrders(JSON.parse(existingStr));
-      } else {
-        const defaultOrders = [
-          {
-            id: 1004,
-            name: "이지혜",
-            email: "jihye@example.com",
-            phone: "010-1234-5678",
-            productName: "평생 종합 사주팔자",
-            amount: 30000,
-            status: "paid",
-            sajuGanji: "己亥年 己巳月 甲子일 (사시)",
-            emailStatus: "sent",
-            createdAt: "2026-05-23 17:15",
-            gender: "female",
-            calendar: "solar",
-            year: "1995",
-            month: "8",
-            day: "25",
-            hour: "10:00",
-            worryText: "이번 가을에 다니던 IT 회사를 퇴사하고 다른 회사 서비스 기획팀으로 이직을 준비하고 있는데 무사히 합격할 수 있을지 고민입니다."
-          },
-          {
-            id: 1003,
-            name: "김민우",
-            email: "minwoo@test.com",
-            phone: "010-9876-5432",
-            productName: "재물 & 비즈니스운",
-            amount: 20000,
-            status: "paid",
-            sajuGanji: "庚午년 戊子월 丙寅일 (오시)",
-            emailStatus: "sent",
-            createdAt: "2026-05-23 16:02",
-            gender: "male",
-            calendar: "solar",
-            year: "1990",
-            month: "6",
-            day: "15",
-            hour: "12:00",
-            worryText: "최근에 동업 제안을 받아 쇼핑몰 창업을 계획하고 있는데, 지금 시기에 돈을 대출받아 투자해도 괜찮을지 알고 싶습니다."
-          },
-          {
-            id: 1002,
-            name: "박서연",
-            email: "seoyeon@example.net",
-            phone: "010-5555-4444",
-            productName: "신년 운세 / 토정비결",
-            amount: 35000,
-            status: "paid",
-            sajuGanji: "癸酉년 乙丑월 己未일 (묘시)",
-            emailStatus: "failed",
-            createdAt: "2026-05-23 14:45",
-            gender: "female",
-            calendar: "solar",
-            year: "1993",
-            month: "1",
-            day: "20",
-            hour: "08:30",
-            worryText: "올해 유독 회사 일이 안 풀려서 스트레스가 많고 이직 준비를 하려는데 자격증 합격이나 다른 곳으로의 기운이 따를지 조언을 부탁드립니다."
-          },
-          {
-            id: 1001,
-            name: "최준혁",
-            email: "junhyuk@mail.com",
-            phone: "010-8888-9999",
-            productName: "그 사람의 속마음 (타로)",
-            amount: 10000,
-            status: "failed",
-            sajuGanji: "-",
-            emailStatus: "pending",
-            createdAt: "2026-05-23 11:20",
-            gender: "male",
-            calendar: "solar",
-            year: "1994",
-            month: "5",
-            day: "12",
-            hour: "unknown",
-            worryText: "그 사람이 요즘 저한테 연락이 뜸한데 도대체 속마음이 무엇인지 알고 싶습니다."
-          },
-        ];
-        setOrders(defaultOrders);
-        localStorage.setItem("hyeandang_orders", JSON.stringify(defaultOrders));
+    if (!isLoggedIn) return;
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch("/api/orders?adminPassword=artpani1234");
+        if (response.ok) {
+          const data = await response.json();
+          setOrders(data);
+        }
+      } catch (e) {
+        console.error(e);
       }
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
+    };
+    fetchOrders();
+  }, [isLoggedIn]);
 
   const handleLogin = () => {
     if (passwordInput === "artpani1234") {
@@ -526,17 +450,33 @@ export default function AdminPage() {
     setEditForm({ name: order.name, email: order.email, phone: order.phone });
   };
 
-  const saveEdit = (id) => {
-    setOrders(prev => {
-      const updated = prev.map(order =>
-        order.id === id ? { ...order, ...editForm } : order
-      );
-      try {
-        localStorage.setItem("hyeandang_orders", JSON.stringify(updated));
-      } catch (e) {}
-      return updated;
-    });
-    setEditingId(null);
+  const saveEdit = async (id) => {
+    try {
+      const response = await fetch("/api/orders", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          adminPassword: "artpani1234",
+          id: id,
+          ...editForm
+        })
+      });
+      if (response.ok) {
+        setOrders(prev => {
+          const updated = prev.map(order =>
+            order.id === id ? { ...order, ...editForm } : order
+          );
+          return updated;
+        });
+        setEditingId(null);
+        alert("고객 정보가 수정되었습니다.");
+      } else {
+        alert("고객 정보 수정에 실패했습니다.");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("서버 통신 중 오류가 발생했습니다.");
+    }
   };
 
   const handleEditChange = (e) => {
@@ -624,13 +564,19 @@ export default function AdminPage() {
         const resData = await response.json();
         
         if (resData.success) {
+          await fetch("/api/orders", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              adminPassword: "artpani1234",
+              id: id,
+              emailStatus: "sent"
+            })
+          });
           setOrders(prev => {
             const updated = prev.map(order =>
               order.id === id ? { ...order, emailStatus: "sent" } : order
             );
-            try {
-              localStorage.setItem("hyeandang_orders", JSON.stringify(updated));
-            } catch (e) {}
             return updated;
           });
           alert(`[주문번호 ${id}] 고객 이메일(${targetOrder.email})로 분석 결과 보고서 메일을 성공적으로 재발송하였습니다.`);
@@ -654,7 +600,7 @@ export default function AdminPage() {
         } else {
           smsContent = buildGeneralSmsTextFromOrder(targetOrder);
         }
-
+ 
         const response = await fetch("/api/sms", {
           method: "POST",
           headers: {
@@ -666,17 +612,23 @@ export default function AdminPage() {
             title: isTodayProduct ? "[혜안당 오늘의운세]" : "[혜안당 사주분석]"
           }),
         });
-
+ 
         const resData = await response.json();
         
         if (resData.success) {
+          await fetch("/api/orders", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              adminPassword: "artpani1234",
+              id: id,
+              emailStatus: "sent"
+            })
+          });
           setOrders(prev => {
             const updated = prev.map(order =>
               order.id === id ? { ...order, emailStatus: "sent" } : order
             );
-            try {
-              localStorage.setItem("hyeandang_orders", JSON.stringify(updated));
-            } catch (e) {}
             return updated;
           });
           alert(`[주문번호 ${id}] 고객 휴대폰(${targetOrder.phone})으로 분석 결과 문자메시지를 성공적으로 재발송하였습니다.`);
@@ -686,13 +638,19 @@ export default function AdminPage() {
       }
     } catch (error) {
       console.error("재전송 오류:", error);
+      await fetch("/api/orders", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          adminPassword: "artpani1234",
+          id: id,
+          emailStatus: "failed"
+        })
+      });
       setOrders(prev => {
         const updated = prev.map(order =>
           order.id === id ? { ...order, emailStatus: "failed" } : order
         );
-        try {
-          localStorage.setItem("hyeandang_orders", JSON.stringify(updated));
-        } catch (e) {}
         return updated;
       });
       alert(`[주문번호 ${id}] 발송 실패: ${error.message || "서버 통신 오류가 발생했습니다."}`);

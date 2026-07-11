@@ -626,7 +626,7 @@ function InputFormContent() {
     }
   };
 
-  const startAnalysis = () => {
+  const startAnalysis = async () => {
     setStep("processing");
     
     try {
@@ -786,6 +786,17 @@ function InputFormContent() {
         }
         localStorage.setItem("hyeandang_orders", JSON.stringify(currentOrders));
 
+        // 서버 API 추가 (실시간 주문 연동)
+        try {
+          await fetch("/api/orders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newOrder)
+          });
+        } catch (e) {
+          console.error("주문 API 전송 실패:", e);
+        }
+
         // 쿠폰 사용 카운트 증가 처리
         if (appliedCoupon) {
           try {
@@ -935,6 +946,21 @@ function InputFormContent() {
                 if (targetIdx > -1) {
                   ordersList[targetIdx].emailStatus = newOrder.emailStatus;
                   localStorage.setItem("hyeandang_orders", JSON.stringify(ordersList));
+
+                  // 서버 API 업데이트 추가
+                  try {
+                    await fetch("/api/orders", {
+                      method: "PUT",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        adminPassword: "artpani1234",
+                        id: orderId,
+                        emailStatus: newOrder.emailStatus
+                      })
+                    });
+                  } catch (e) {
+                    console.error("주문 emailStatus API 업데이트 실패:", e);
+                  }
                 }
               }
             } catch (err) {}
