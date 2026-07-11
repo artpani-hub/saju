@@ -236,7 +236,7 @@ export default function AdminPage() {
   const [statsDateFilter, setStatsDateFilter] = useState("all"); // all, today, 7days, 30days, custom
   const [statsStartDate, setStatsStartDate] = useState("");
   const [statsEndDate, setStatsEndDate] = useState("");
-  const [statsCategoryFilter, setStatsCategoryFilter] = useState("all"); // all, saju, gunghap, tarot, newyear
+  const [statsCategoryFilter, setStatsCategoryFilter] = useState("all"); // all, saju, gunghap, tarot, newyear, free
 
   const showCrmAlert = (message, type = "info") => {
     setCrmAlert({ show: true, message, type });
@@ -1404,6 +1404,7 @@ export default function AdminPage() {
       if (statsCategoryFilter === "saju") return c.key === "saju";
       if (statsCategoryFilter === "newyear") return c.key === "newyear";
       if (statsCategoryFilter === "tarot") return c.key === "tarot";
+      if (statsCategoryFilter === "free") return c.key === "free_saju";
       if (statsCategoryFilter === "etc") {
         return c.key === "wealth" || c.key === "dream" || c.key === "today" || c.key === "other";
       }
@@ -1500,6 +1501,7 @@ export default function AdminPage() {
               <option value="saju">평생 종합 사주</option>
               <option value="newyear">신년 운세 / 토정비결</option>
               <option value="tarot">1:1 맞춤 타로</option>
+              <option value="free">무료 사주 확인하기</option>
               <option value="etc">기타 (오늘의 운세, 꿈해몽, 재물 등)</option>
             </select>
           </div>
