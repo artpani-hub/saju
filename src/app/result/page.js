@@ -3679,44 +3679,108 @@ function ResultContent() {
     }
   }, [reportGrade, name, year, month, day, debugUnlock]);
 
+  const getLocalDateString = () => {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, "0");
+    const d = String(now.getDate()).padStart(2, "0");
+    const hh = String(now.getHours()).padStart(2, "0");
+    const mm = String(now.getMinutes()).padStart(2, "0");
+    return `${y}-${m}-${d} ${hh}:${mm}`;
+  };
+
   const updateLocalStorageOrderToPaid = (targetGrade) => {
     try {
       const existingStr = localStorage.getItem("hyeandang_orders");
+      let orders = [];
       if (existingStr) {
-        const orders = JSON.parse(existingStr);
-        const matchedIdx = Array.isArray(orders) ? orders.findIndex(o => 
-          o &&
-          o.name === name && 
-          parseInt(o.year) === year &&
-          parseInt(o.month) === month &&
-          parseInt(o.day) === day
-        ) : -1;
-        if (matchedIdx > -1) {
-          orders[matchedIdx].status = "paid";
-          if (targetGrade) {
-            orders[matchedIdx].reportGrade = targetGrade;
-          }
-          if (typeParam === "tojeong") {
-            orders[matchedIdx].productName = "정통 토정비결";
-          }
-          localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+        try {
+          orders = JSON.parse(existingStr);
+          if (!Array.isArray(orders)) orders = [];
+        } catch (e) {
+          orders = [];
+        }
+      }
 
-          // 서버 API PUT 업데이트 추가
+      const matchedIdx = orders.findIndex(o => 
+        o &&
+        o.name === name && 
+        parseInt(o.year) === year &&
+        parseInt(o.month) === month &&
+        parseInt(o.day) === day
+      );
+
+      if (matchedIdx > -1) {
+        orders[matchedIdx].status = "paid";
+        if (targetGrade) {
+          orders[matchedIdx].reportGrade = targetGrade;
+        }
+        if (typeParam === "tojeong") {
+          orders[matchedIdx].productName = "정통 토정비결";
+        }
+        localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+
+        // 서버 API PUT 업데이트 추가
+        try {
+          fetch("/api/orders", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              adminPassword: "artpani1234",
+              id: orders[matchedIdx].id,
+              status: "paid",
+              reportGrade: targetGrade || orders[matchedIdx].reportGrade,
+              productName: orders[matchedIdx].productName
+            })
+          });
+        } catch (e) {
+          console.error("주문 paid API 업데이트 실패:", e);
+        }
+      } else {
+        // [방어 로직] 임시 저장된 모바일/결제 정보가 없을 경우 복구하여 주문 생성 후 서버 POST 등록
+        const tempStr = localStorage.getItem("hyeandang_temp_upgrade_info");
+        let restoredEmail = emailParam || "today_sms@hyeandang.com";
+        let restoredPhone = phoneParam || "010-0000-0000";
+        let restoredAmount = 30000;
+        if (tempStr) {
           try {
-            fetch("/api/orders", {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                adminPassword: "artpani1234",
-                id: orders[matchedIdx].id,
-                status: "paid",
-                reportGrade: targetGrade || orders[matchedIdx].reportGrade,
-                productName: orders[matchedIdx].productName
-              })
-            });
-          } catch (e) {
-            console.error("주문 paid API 업데이트 실패:", e);
-          }
+            const tempInfo = JSON.parse(tempStr);
+            restoredEmail = tempInfo.email || restoredEmail;
+            restoredPhone = tempInfo.phone || restoredPhone;
+            restoredAmount = tempInfo.amount || restoredAmount;
+          } catch (e) {}
+        }
+        
+        const newOrder = {
+          id: Math.floor(Math.random() * 9000) + 1000,
+          name: name,
+          email: restoredEmail,
+          phone: restoredPhone,
+          productName: typeParam === "tojeong" ? "정통 토정비결" : (type === "newyear" ? "신년운세" : "평생 종합 사주팔자"),
+          amount: restoredAmount,
+          status: "paid",
+          createdAt: getLocalDateString(),
+          gender: genderVal || "female",
+          calendar: calendar,
+          year: String(year),
+          month: String(month),
+          day: String(day),
+          hour: hour,
+          worryText: worryText || "오늘의 운세",
+          reportGrade: targetGrade || "premium"
+        };
+        orders.push(newOrder);
+        localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+
+        // 서버 API POST 생성
+        try {
+          fetch("/api/orders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newOrder)
+          });
+        } catch (e) {
+          console.error("신규 주문 API 복구 등록 실패:", e);
         }
       }
     } catch (e) {
@@ -3779,7 +3843,7 @@ function ResultContent() {
             productName: typeParam === "tojeong" ? "정통 토정비결" : (type === "newyear" ? "신년운세" : "평생 종합 사주팔자"),
             amount: amount,
             status: "paid",
-            createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
+            createdAt: getLocalDateString(),
             gender: genderVal || "female",
             calendar: calendar,
             year: String(year),
@@ -3875,7 +3939,7 @@ function ResultContent() {
           productName: typeParam === "tojeong" ? "정통 토정비결" : (type === "newyear" ? "신년운세" : "평생 종합 사주팔자"),
           amount: amount,
           status: "pending",
-          createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
+          createdAt: getLocalDateString(),
           gender: genderVal || "female",
           calendar: calendar,
           year: String(year),

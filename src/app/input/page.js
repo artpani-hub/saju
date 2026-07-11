@@ -1047,6 +1047,17 @@ function InputFormContent() {
         currentOrders.unshift(pendingOrder);
       }
       localStorage.setItem("hyeandang_orders", JSON.stringify(currentOrders));
+
+      // 서버 API 전송 추가 (대기 주문 등록)
+      try {
+        fetch("/api/orders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(pendingOrder)
+        });
+      } catch (e) {
+        console.error("대기 주문 API 전송 실패:", e);
+      }
     } catch (e) {
       console.error("Pending order 임시 저장 실패:", e);
     }
