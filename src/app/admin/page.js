@@ -289,62 +289,81 @@ export default function AdminPage() {
 
   // Q&A 데이터 로드
   useEffect(() => {
-    try {
-      const existingStr = localStorage.getItem("hyeandang_inquiries");
-      if (existingStr) {
-        setInquiries(JSON.parse(existingStr));
-      } else {
-        const defaultInquiries = [
-          {
-            id: "inq_171928372619",
-            type: "delivery",
-            name: "이지혜",
-            phone: "010-1234-5678",
-            orderId: 1004,
-            content: "결제를 완료했는데 메일과 문자가 모두 오지 않습니다. 확인 부탁드립니다.",
-            password: "1234",
-            status: "pending",
-            reply: "",
-            createdAt: "2026-06-29 11:35"
-          }
-        ];
-        setInquiries(defaultInquiries);
-        localStorage.setItem("hyeandang_inquiries", JSON.stringify(defaultInquiries));
+    if (!isLoggedIn) return;
+    const fetchInquiries = async () => {
+      try {
+        const response = await fetch("/api/inquiry?adminPassword=artpani1234");
+        if (response.ok) {
+          const data = await response.json();
+          setInquiries(data);
+        }
+      } catch (e) {
+        console.error(e);
       }
-    } catch (e) {
-      console.error(e);
-    }
+    };
+    fetchInquiries();
   }, [isLoggedIn]);
 
-  const handleSaveReply = (inqId) => {
+  const handleSaveReply = async (inqId) => {
     if (!replyText.trim()) {
       alert("답변 내용을 입력해 주세요.");
       return;
     }
-    const updated = inquiries.map(inq => {
-      if (inq.id === inqId) {
-        return {
-          ...inq,
-          status: "answered",
+    try {
+      const repliedAt = new Date().toISOString().replace('T', ' ').substring(0, 16);
+      const response = await fetch("/api/inquiry", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          adminPassword: "artpani1234",
+          id: inqId,
           reply: replyText.trim(),
-          repliedAt: new Date().toISOString().replace('T', ' ').substring(0, 16)
-        };
+          status: "answered",
+          repliedAt
+        })
+      });
+      if (response.ok) {
+        const updated = inquiries.map(inq => {
+          if (inq.id === inqId) {
+            return {
+              ...inq,
+              status: "answered",
+              reply: replyText.trim(),
+              repliedAt
+            };
+          }
+          return inq;
+        });
+        setInquiries(updated);
+        setReplyingInquiryId(null);
+        setReplyText("");
+        alert("답변이 성공적으로 등록되었습니다.");
+      } else {
+        alert("답변 등록에 실패했습니다.");
       }
-      return inq;
-    });
-    setInquiries(updated);
-    localStorage.setItem("hyeandang_inquiries", JSON.stringify(updated));
-    setReplyingInquiryId(null);
-    setReplyText("");
-    alert("답변이 성공적으로 등록되었습니다.");
+    } catch (e) {
+      console.error(e);
+      alert("서버 통신 중 오류가 발생했습니다.");
+    }
   };
 
-  const handleDeleteInquiry = (inqId) => {
+  const handleDeleteInquiry = async (inqId) => {
     if (!confirm("해당 문의를 삭제하시겠습니까?")) return;
-    const updated = inquiries.filter(inq => inq.id !== inqId);
-    setInquiries(updated);
-    localStorage.setItem("hyeandang_inquiries", JSON.stringify(updated));
-    alert("문의가 삭제되었습니다.");
+    try {
+      const response = await fetch(`/api/inquiry?adminPassword=artpani1234&id=${inqId}`, {
+        method: "DELETE"
+      });
+      if (response.ok) {
+        const updated = inquiries.filter(inq => inq.id !== inqId);
+        setInquiries(updated);
+        alert("문의가 삭제되었습니다.");
+      } else {
+        alert("문의 삭제에 실패했습니다.");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("서버 통신 중 오류가 발생했습니다.");
+    }
   };
 
   // 날짜 포맷팅 헬퍼 (YYYY-MM-DD)
@@ -723,6 +742,23 @@ export default function AdminPage() {
   };
 
   const filteredOrders = getFilteredOrders();
+
+  const getFilteredInquiries = () => {
+    return inquiries.filter(inq => {
+      if (inquiryFilterType !== "all" && inq.type !== inquiryFilterType) return false;
+      if (inquiryFilterStatus !== "all" && inq.status !== inquiryFilterStatus) return false;
+      if (inquirySearch) {
+        const term = inquirySearch.toLowerCase();
+        const nameMatch = inq.name && inq.name.toLowerCase().includes(term);
+        const contentMatch = inq.content && inq.content.toLowerCase().includes(term);
+        const phoneMatch = inq.phone && inq.phone.includes(term);
+        if (!nameMatch && !contentMatch && !phoneMatch) return false;
+      }
+      return true;
+    });
+  };
+
+  const filteredInquiries = getFilteredInquiries();
 
   // 4. 기간별 매출 및 건수 통계 계산 (검색 필터를 배제한 순수 기간 데이터 기준)
   const getPeriodStats = () => {
@@ -2523,9 +2559,10 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Inquiries Table */}
+            {/* Inquiries Table / Cards */}
             <div className="border border-border-custom rounded-lg bg-background overflow-hidden shadow-sm">
-              <div className="overflow-x-auto">
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
                     <tr className="bg-background-secondary border-b border-border-custom text-foreground font-semibold">
@@ -2539,30 +2576,8 @@ export default function AdminPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border-custom/50">
-                    {inquiries.filter(inq => {
-                      if (inquiryFilterType !== "all" && inq.type !== inquiryFilterType) return false;
-                      if (inquiryFilterStatus !== "all" && inq.status !== inquiryFilterStatus) return false;
-                      if (inquirySearch) {
-                        const term = inquirySearch.toLowerCase();
-                        const nameMatch = inq.name && inq.name.toLowerCase().includes(term);
-                        const contentMatch = inq.content && inq.content.toLowerCase().includes(term);
-                        const phoneMatch = inq.phone && inq.phone.includes(term);
-                        if (!nameMatch && !contentMatch && !phoneMatch) return false;
-                      }
-                      return true;
-                    }).length > 0 ? (
-                      inquiries.filter(inq => {
-                        if (inquiryFilterType !== "all" && inq.type !== inquiryFilterType) return false;
-                        if (inquiryFilterStatus !== "all" && inq.status !== inquiryFilterStatus) return false;
-                        if (inquirySearch) {
-                          const term = inquirySearch.toLowerCase();
-                          const nameMatch = inq.name && inq.name.toLowerCase().includes(term);
-                          const contentMatch = inq.content && inq.content.toLowerCase().includes(term);
-                          const phoneMatch = inq.phone && inq.phone.includes(term);
-                          if (!nameMatch && !contentMatch && !phoneMatch) return false;
-                        }
-                        return true;
-                      }).map((inq) => (
+                    {filteredInquiries.length > 0 ? (
+                      filteredInquiries.map((inq) => (
                         <tr key={inq.id} className="hover:bg-background-secondary/30 transition-colors">
                           <td className="p-4">
                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
@@ -2675,6 +2690,123 @@ export default function AdminPage() {
                     )}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden divide-y divide-border-custom/50">
+                {filteredInquiries.length > 0 ? (
+                  filteredInquiries.map((inq) => (
+                    <div key={inq.id} className="p-4 space-y-3 hover:bg-background-secondary/10 transition-colors">
+                      <div className="flex items-center justify-between">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
+                          inq.type === "delivery"
+                            ? "bg-brass/5 border-brass/20 text-brass-dark"
+                            : "bg-gray-50 border-gray-200 text-gray-600"
+                        }`}>
+                          {inq.type === "delivery" ? "발송 문의" : "기타 문의"}
+                        </span>
+                        <span className="text-[10px] text-foreground-muted">{inq.createdAt}</span>
+                      </div>
+                      
+                      <div className="space-y-1">
+                        <div className="text-sm font-bold text-foreground">
+                          {inq.name} <span className="text-xs text-foreground-muted font-normal">({inq.phone})</span>
+                        </div>
+                        {inq.orderId && (
+                          <div className="text-xs text-foreground-muted">
+                            연동 주문:{" "}
+                            <button
+                              onClick={() => {
+                                setCurrentMenuTab("orders");
+                                setSearchTerm(String(inq.orderId));
+                              }}
+                              className="text-brass font-bold hover:underline"
+                            >
+                              #{inq.orderId}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="text-xs bg-background-secondary/20 p-3 rounded border border-border-custom/50 space-y-2">
+                        <p className="whitespace-pre-wrap leading-relaxed text-foreground">{inq.content}</p>
+                        {inq.reply && (
+                          <div className="mt-2 bg-[#FAF6EE] p-3 rounded border border-[#A3845B]/20 text-[11px] text-gray-700">
+                            <strong className="text-[#A3845B] block mb-1">✍️ 답변 ({inq.repliedAt}):</strong>
+                            {inq.reply}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1.5">
+                        <div>
+                          {inq.status === "pending" ? (
+                            <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-medium text-[10px]">
+                              대기 중
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded font-medium text-[10px]">
+                              답변 완료
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex gap-2">
+                          {replyingInquiryId === inq.id ? (
+                            <div className="space-y-2 w-full text-left bg-gray-50 p-2.5 rounded border border-border-custom">
+                              <textarea
+                                value={replyText}
+                                onChange={(e) => setReplyText(e.target.value)}
+                                placeholder="답변 내용을 작성해 주세요."
+                                rows={4}
+                                className="w-full text-xs p-1.5 border border-border-custom rounded bg-white focus:outline-none focus:border-brass text-foreground"
+                              />
+                              <div className="flex justify-end gap-1.5">
+                                <button
+                                  onClick={() => handleSaveReply(inq.id)}
+                                  className="bg-brass text-background px-3 py-1 rounded text-xs font-bold hover:bg-brass-dark cursor-pointer animate-none"
+                                >
+                                  완료
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setReplyingInquiryId(null);
+                                    setReplyText("");
+                                  }}
+                                  className="border border-border-custom text-foreground-muted px-3 py-1 rounded text-xs hover:bg-background-secondary cursor-pointer"
+                                >
+                                  취소
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => {
+                                  setReplyingInquiryId(inq.id);
+                                  setReplyText(inq.reply || "");
+                                }}
+                                className="flex-1 text-center border border-brass/50 text-brass px-3 py-1.5 rounded hover:bg-brass hover:text-background transition-all text-xs font-semibold cursor-pointer"
+                              >
+                                {inq.reply ? "답변 수정" : "답변 달기"}
+                              </button>
+                              <button
+                                onClick={() => handleDeleteInquiry(inq.id)}
+                                className="text-center border border-red-200 text-red-600 px-3 py-1.5 rounded hover:bg-red-500 hover:text-white transition-all text-xs font-semibold cursor-pointer"
+                              >
+                                삭제
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-8 text-center text-foreground-muted font-light text-xs">
+                    조회 조건에 부합하는 문의 사항이 없습니다.
+                  </div>
+                )}
               </div>
             </div>
           </div>

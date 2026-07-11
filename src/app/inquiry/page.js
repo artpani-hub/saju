@@ -129,7 +129,7 @@ function InquiryContent() {
   };
 
   // Submit Inquiry
-  const handleWriteSubmit = (e) => {
+  const handleWriteSubmit = async (e) => {
     e.preventDefault();
     setFormError("");
     setSuccessMessage("");
@@ -156,13 +156,6 @@ function InquiryContent() {
     }
 
     try {
-      const existingStr = localStorage.getItem("hyeandang_inquiries");
-      let inquiries = [];
-      if (existingStr) {
-        inquiries = JSON.parse(existingStr);
-        if (!Array.isArray(inquiries)) inquiries = [];
-      }
-
       const newInquiry = {
         id: `inq_${new Date().getTime()}`,
         type: writeForm.type,
@@ -176,26 +169,32 @@ function InquiryContent() {
         createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16)
       };
 
-      inquiries.unshift(newInquiry);
-      localStorage.setItem("hyeandang_inquiries", JSON.stringify(inquiries));
+      const response = await fetch("/api/inquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newInquiry)
+      });
 
-      setSuccessMessage("고객 문의가 정상적으로 접수되었습니다. [내 문의 내역 확인] 탭에서 답변 상태를 확인해 보세요!");
-      
-      // Reset form (except phone/name for convenience)
-      setWriteForm(prev => ({
-        ...prev,
-        content: "",
-        password: "",
-        agree: false
-      }));
-      setMatchedOrders([]);
+      if (response.ok) {
+        setSuccessMessage("고객 문의가 정상적으로 접수되었습니다. [내 문의 내역 확인] 탭에서 답변 상태를 확인해 보세요!");
+        // Reset form (except phone/name for convenience)
+        setWriteForm(prev => ({
+          ...prev,
+          content: "",
+          password: "",
+          agree: false
+        }));
+        setMatchedOrders([]);
+      } else {
+        setFormError("접수 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+      }
     } catch (e) {
       setFormError("접수 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
     }
   };
 
   // Check Inquiries
-  const handleCheckInquiries = (e) => {
+  const handleCheckInquiries = async (e) => {
     e.preventDefault();
     setCheckError("");
     setMyInquiries([]);
@@ -211,25 +210,17 @@ function InquiryContent() {
     }
 
     try {
-      const existingStr = localStorage.getItem("hyeandang_inquiries");
-      if (existingStr) {
-        const inquiries = JSON.parse(existingStr);
-        if (Array.isArray(inquiries)) {
-          const cleanInputPhone = checkForm.phone.replace(/[^0-9]/g, "");
-          const filtered = inquiries.filter(inq => {
-            if (!inq) return false;
-            const inqPhone = inq.phone.replace(/[^0-9]/g, "");
-            return inqPhone === cleanInputPhone && inq.password === checkForm.password;
-          });
-          setMyInquiries(filtered);
-          if (filtered.length === 0) {
-            setCheckError("일치하는 문의 내역이 없습니다. 전화번호 또는 비밀번호를 다시 확인해 주세요.");
-          }
-        } else {
-          setCheckError("등록된 문의 내역이 존재하지 않습니다.");
+      const cleanInputPhone = checkForm.phone.replace(/[^0-9]/g, "");
+      const response = await fetch(`/api/inquiry?phone=${encodeURIComponent(cleanInputPhone)}&password=${encodeURIComponent(checkForm.password)}`);
+      
+      if (response.ok) {
+        const filtered = await response.json();
+        setMyInquiries(filtered);
+        if (filtered.length === 0) {
+          setCheckError("일치하는 문의 내역이 없습니다. 전화번호 또는 비밀번호를 다시 확인해 주세요.");
         }
       } else {
-        setCheckError("등록된 문의 내역이 존재하지 않습니다.");
+        setCheckError("문의 내역을 가져오는 중 오류가 발생했습니다.");
       }
     } catch (e) {
       setCheckError("조회 중 오류가 발생했습니다.");
