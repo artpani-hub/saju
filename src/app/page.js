@@ -254,12 +254,12 @@ export default function Home() {
           </div>
           
           <h1 className="font-myeongjo text-4xl md:text-5xl font-bold text-foreground tracking-tight leading-[1.3] mb-6">
-            하늘이 내린 귀하의 평생 사주첩 속<br />
-            <span className="text-brass">5가지 운명의 비밀은?</span>
+            사주는 미신이 아니라<br />
+            <span className="text-brass">미래 전략입니다.</span>
           </h1>
           
           <p className="text-lg md:text-xl text-foreground-muted max-w-2xl mx-auto leading-relaxed mb-10 font-light font-traditional">
-            평생의 자산 흐름과 위기의 타이밍 등, 혜안당 보감에 잠겨 있는 귀하만의 5가지 비밀 중 첫 장을 즉시 열어드립니다.
+            언제 씨를 뿌리고 언제 수확해야 할지 아는 것만으로도 수많은 실패를 줄일 수 있습니다.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
