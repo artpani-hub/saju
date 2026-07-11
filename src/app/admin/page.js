@@ -236,7 +236,7 @@ export default function AdminPage() {
   const [statsDateFilter, setStatsDateFilter] = useState("all"); // all, today, 7days, 30days, custom
   const [statsStartDate, setStatsStartDate] = useState("");
   const [statsEndDate, setStatsEndDate] = useState("");
-  const [statsCategoryFilter, setStatsCategoryFilter] = useState("all"); // all, saju, gunghap, tarot, newyear, free
+  const [statsCategoryFilter, setStatsCategoryFilter] = useState("all"); // all, saju, newyear, wealth, tarot, gunghap, dream, today, free, etc
 
   const showCrmAlert = (message, type = "info") => {
     setCrmAlert({ show: true, message, type });
@@ -1400,14 +1400,15 @@ export default function AdminPage() {
     // 1. 카테고리 필터링
     const filteredCategories = catStats.categories.filter(c => {
       if (statsCategoryFilter === "all") return true;
-      if (statsCategoryFilter === "gunghap") return c.key.startsWith("gunghap_");
       if (statsCategoryFilter === "saju") return c.key === "saju";
       if (statsCategoryFilter === "newyear") return c.key === "newyear";
+      if (statsCategoryFilter === "wealth") return c.key === "wealth";
       if (statsCategoryFilter === "tarot") return c.key === "tarot";
+      if (statsCategoryFilter === "gunghap") return c.key.startsWith("gunghap_");
+      if (statsCategoryFilter === "dream") return c.key === "dream";
+      if (statsCategoryFilter === "today") return c.key === "today";
       if (statsCategoryFilter === "free") return c.key === "free_saju";
-      if (statsCategoryFilter === "etc") {
-        return c.key === "wealth" || c.key === "dream" || c.key === "today" || c.key === "other";
-      }
+      if (statsCategoryFilter === "etc") return c.key === "other";
       return true;
     });
 
@@ -1497,12 +1498,15 @@ export default function AdminPage() {
               className="bg-background border border-border-custom rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-brass text-foreground bg-white"
             >
               <option value="all">전체 상품 카테고리</option>
-              <option value="gunghap">연인 궁합 계열 (기본/밀착/재회)</option>
-              <option value="saju">평생 종합 사주</option>
-              <option value="newyear">신년 운세 / 토정비결</option>
-              <option value="tarot">1:1 맞춤 타로</option>
-              <option value="free">무료 사주 확인하기</option>
-              <option value="etc">기타 (오늘의 운세, 꿈해몽, 재물 등)</option>
+              <option value="saju">사주팔자</option>
+              <option value="newyear">신년운세 / 토정비결</option>
+              <option value="wealth">재물 / 비즈니스운</option>
+              <option value="tarot">타로상담</option>
+              <option value="gunghap">연인궁합</option>
+              <option value="dream">꿈해몽</option>
+              <option value="today">오늘의 운세</option>
+              <option value="free">무료사주</option>
+              <option value="etc">기타</option>
             </select>
           </div>
         </div>
