@@ -389,6 +389,29 @@ export default function AdminPage() {
     return new Date(year, month, day, 0, 0, 0, 0);
   };
 
+  // 브라우저 호환성을 위한 안전한 날짜 파싱 헬퍼 (Safari 등 대응)
+  const safeParseDate = (str) => {
+    if (!str) return new Date();
+    const parts = str.split(/[- :\/]/);
+    if (parts.length >= 5) {
+      return new Date(
+        parseInt(parts[0], 10),
+        parseInt(parts[1], 10) - 1,
+        parseInt(parts[2], 10),
+        parseInt(parts[3], 10),
+        parseInt(parts[4], 10)
+      );
+    }
+    if (parts.length >= 3) {
+      return new Date(
+        parseInt(parts[0], 10),
+        parseInt(parts[1], 10) - 1,
+        parseInt(parts[2], 10)
+      );
+    }
+    return new Date(str);
+  };
+
   // 직접 지정(custom) 선택 시 기본 범위(최근 7일) 설정
   useEffect(() => {
     if (dateFilter === "custom" && (!startDate || !endDate)) {
@@ -663,7 +686,7 @@ export default function AdminPage() {
   const getFilteredOrders = () => {
     return orders.filter(order => {
       if (!order.createdAt) return false;
-      const orderDate = new Date(order.createdAt.replace(/-/g, "/"));
+      const orderDate = safeParseDate(order.createdAt);
       const now = new Date();
       
       const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -722,7 +745,7 @@ export default function AdminPage() {
   const getPeriodStats = () => {
     const periodOrders = orders.filter(order => {
       if (!order.createdAt) return false;
-      const orderDate = new Date(order.createdAt.replace(/-/g, "/"));
+      const orderDate = safeParseDate(order.createdAt);
       const now = new Date();
       
       const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -817,7 +840,7 @@ export default function AdminPage() {
   const getCategoryStats = () => {
     const periodOrders = orders.filter(order => {
       if (!order.createdAt) return false;
-      const orderDate = new Date(order.createdAt.replace(/-/g, "/"));
+      const orderDate = safeParseDate(order.createdAt);
       const now = new Date();
       const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const orderDayStart = new Date(orderDate.getFullYear(), orderDate.getMonth(), orderDate.getDate());
