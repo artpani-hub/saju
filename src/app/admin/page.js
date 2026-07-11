@@ -885,6 +885,7 @@ export default function AdminPage() {
       tarot: { label: "1:1 맞춤 타로 상담", orderCount: 0, paidCount: 0, revenue: 0 },
       dream: { label: "꿈해몽", orderCount: 0, paidCount: 0, revenue: 0 },
       today: { label: "오늘의 운세", orderCount: 0, paidCount: 0, revenue: 0 },
+      free_saju: { label: "무료 사주 확인", orderCount: 0, paidCount: 0, revenue: 0 },
       other: { label: "기타", orderCount: 0, paidCount: 0, revenue: 0 },
     };
 
@@ -892,7 +893,11 @@ export default function AdminPage() {
       const name = o.productName || "";
       let catKey = "other";
 
-      if (name.includes("궁합")) {
+      const isFreeOrder = name.includes("무료") || o.reportGrade === "free" || o.status === "free";
+
+      if (isFreeOrder) {
+        catKey = "free_saju";
+      } else if (name.includes("궁합")) {
         if (name.includes("속궁합") || name.includes("밀착")) {
           catKey = "gunghap_deep";
         } else if (name.includes("재회")) {
@@ -915,7 +920,7 @@ export default function AdminPage() {
       }
 
       categories[catKey].orderCount++;
-      if (o.status === "paid") {
+      if (o.status === "paid" || o.status === "free") {
         categories[catKey].paidCount++;
         categories[catKey].revenue += o.amount || 0;
       }
@@ -2286,7 +2291,7 @@ export default function AdminPage() {
                 조회 범위 내 필터링된 주문: <strong className="text-foreground">{filteredOrders.length}</strong>건
               </div>
               <div>
-                * 신청된 테스트 데이터는 브라우저의 localStorage를 통해 로컬에서 동기화 유지됩니다.
+                * 모든 고객 문의 및 결제 주문 내역은 혜안당 서버 데이터베이스에 안전하게 영구 저장되며 실시간으로 자동 갱신됩니다.
               </div>
             </div>
 
