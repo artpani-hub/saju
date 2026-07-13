@@ -370,6 +370,48 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Features Section */}
+      <section id="features" className="py-20 md:py-28 border-b border-border-custom">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-xs font-bold tracking-widest text-brass block mb-1 uppercase">WHY HYEANDANG</span>
+            <h2 className="font-myeongjo text-3xl font-bold text-foreground mb-4">혜안당 리포트의 특별함</h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center p-4">
+              <div className="w-12 h-12 bg-brass/10 text-brass rounded-full flex items-center justify-center mx-auto mb-4">
+                <Compass className="w-6 h-6" />
+              </div>
+              <h3 className="font-myeongjo text-lg font-bold text-foreground mb-2">전통 역학 기반의 정밀성</h3>
+              <p className="text-sm text-foreground-muted leading-relaxed font-light">
+                가벼운 오락형 운세가 아닙니다. 공인된 만세력 알고리즘을 사용해 음양오행의 분포와 육친(六親) 관계를 정밀 분석합니다.
+              </p>
+            </div>
+            
+            <div className="text-center p-4">
+              <div className="w-12 h-12 bg-jade/10 text-jade rounded-full flex items-center justify-center mx-auto mb-4">
+                <Sparkles className="w-6 h-6" />
+              </div>
+              <h3 className="font-myeongjo text-lg font-bold text-foreground mb-2">고민 맞춤형 개인화</h3>
+              <p className="text-sm text-foreground-muted leading-relaxed font-light">
+                고객님이 겪고 계신 현실 상황(직장 스트레스, 연애 갈등 등)을 오행의 기운과 조화시켜 한 편의 완성도 높은 에세이 형식의 솔루션을 제공합니다.
+              </p>
+            </div>
+
+            <div className="text-center p-4">
+              <div className="w-12 h-12 bg-brass/10 text-brass rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mail className="w-6 h-6" />
+              </div>
+              <h3 className="font-myeongjo text-lg font-bold text-foreground mb-2">이메일 자동 발송</h3>
+              <p className="text-sm text-foreground-muted leading-relaxed font-light">
+                복잡한 상담 예약과 일정 조율 필요 없이, 결제가 끝난 직후 시스템이 분석을 시작하여 10분 내에 이메일 보관함으로 리포트가 전송됩니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Today's Fortune Lead Magnet Section */}
       <section id="today-fortune" className="py-20 border-b border-border-custom bg-background-secondary/10">
         <div className="max-w-4xl mx-auto px-6">
@@ -967,47 +1009,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-20 md:py-28 border-b border-border-custom">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-xs font-bold tracking-widest text-brass block mb-1 uppercase">WHY HYEANDANG</span>
-            <h2 className="font-myeongjo text-3xl font-bold text-foreground mb-4">혜안당 리포트의 특별함</h2>
-          </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-4">
-              <div className="w-12 h-12 bg-brass/10 text-brass rounded-full flex items-center justify-center mx-auto mb-4">
-                <Compass className="w-6 h-6" />
-              </div>
-              <h3 className="font-myeongjo text-lg font-bold text-foreground mb-2">전통 역학 기반의 정밀성</h3>
-              <p className="text-sm text-foreground-muted leading-relaxed font-light">
-                가벼운 오락형 운세가 아닙니다. 공인된 만세력 알고리즘을 사용해 음양오행의 분포와 육친(六親) 관계를 정밀 분석합니다.
-              </p>
-            </div>
-            
-            <div className="text-center p-4">
-              <div className="w-12 h-12 bg-jade/10 text-jade rounded-full flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="w-6 h-6" />
-              </div>
-              <h3 className="font-myeongjo text-lg font-bold text-foreground mb-2">고민 맞춤형 개인화</h3>
-              <p className="text-sm text-foreground-muted leading-relaxed font-light">
-                고객님이 겪고 계신 현실 상황(직장 스트레스, 연애 갈등 등)을 오행의 기운과 조화시켜 한 편의 완성도 높은 에세이 형식의 솔루션을 제공합니다.
-              </p>
-            </div>
-
-            <div className="text-center p-4">
-              <div className="w-12 h-12 bg-brass/10 text-brass rounded-full flex items-center justify-center mx-auto mb-4">
-                <Mail className="w-6 h-6" />
-              </div>
-              <h3 className="font-myeongjo text-lg font-bold text-foreground mb-2">이메일 자동 발송</h3>
-              <p className="text-sm text-foreground-muted leading-relaxed font-light">
-                복잡한 상담 예약과 일정 조율 필요 없이, 결제가 끝난 직후 시스템이 분석을 시작하여 10분 내에 이메일 보관함으로 리포트가 전송됩니다.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* FAQ Section */}
       <section id="faq" className="py-20 md:py-28 border-b border-border-custom bg-background-secondary/20">
