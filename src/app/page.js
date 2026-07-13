@@ -412,6 +412,74 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section id="faq" className="py-20 md:py-28 border-b border-border-custom bg-background-secondary/20">
+        <div className="max-w-3xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <HelpCircle className="w-8 h-8 text-brass mx-auto mb-2" />
+            <h2 className="font-myeongjo text-3xl font-bold text-foreground">자주 묻는 질문</h2>
+          </div>
+
+          <div className="space-y-6">
+            <div className="border border-border-custom bg-background rounded-lg p-5">
+              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 생년월일을 양력으로 적어야 하나요, 음력으로 적어야 하나요?</h3>
+              <p className="text-sm text-foreground-muted leading-relaxed font-light">
+                👉 입력 화면에서 음력과 양력을 선택하여 기입하실 수 있습니다. 또한, 윤달 여부와 정확한 탄생 시를 추가하면 더욱 세밀한 분석이 가능합니다.
+              </p>
+            </div>
+
+            <div className="border border-border-custom bg-background rounded-lg p-5">
+              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 리포트는 언제 이메일로 받아볼 수 있나요?</h3>
+              <p className="text-sm text-foreground-muted leading-relaxed font-light">
+                👉 결제 완료 즉시 만세력 산출 및 혜안당 맞춤 분석 솔루션이 작동합니다. 대기자 수에 따라 다르나 보통 결제 완료 후 5분에서 최대 15분 내에 입력하신 이메일 주소로 전송됩니다.
+              </p>
+            </div>
+
+            <div className="border border-border-custom bg-background rounded-lg p-5">
+              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 제공되는 분석 결과는 신뢰할 수 있나요?</h3>
+              <p className="text-sm text-foreground-muted leading-relaxed font-light">
+                👉 혜안당은 검증된 사주 명리학의 연주, 월주, 일주, 시주 계산 공식을 정밀 데이터화하여 1차 분석을 한 뒤, 혜안당 고유의 정교한 해설 기술을 더하여 읽기 편안하고 풍부한 문맥을 완성합니다. 정밀 튜닝된 로직을 통해 정통 명리학 이론을 왜곡 없이 정확하게 전달하고 있습니다.
+              </p>
+            </div>
+
+            <div className="border border-border-custom bg-background rounded-lg p-5">
+              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 리포트는 어떤 형식으로 제공되나요?</h3>
+              <p className="text-sm text-foreground-muted leading-relaxed font-light">
+                👉 PDF 파일 형식으로 전달드리며, 언제든 꺼내 다시 확인할 수 있습니다.
+              </p>
+            </div>
+
+            <div className="border border-border-custom bg-background rounded-lg p-5">
+              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 사주풀이와 운세풀이랑 뭐가 다른가요?</h3>
+              <p className="text-sm text-foreground-muted leading-relaxed font-light">
+                👉 단순한 복사, 붙여넣기의 운세가 아니라, 사주 원국과 흐름을 기반으로 전반적인 팔자를 구조적으로 풀어드립니다.
+              </p>
+            </div>
+
+            <div className="border border-border-custom bg-background rounded-lg p-5">
+              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 생년월일만 알면 가능한가요? (태어난 시간은 몰라도 되나요?)</h3>
+              <p className="text-sm text-foreground-muted leading-relaxed font-light">
+                👉 태어난 시간을 알면 더 정밀한 풀이가 가능하지만, 시간을 몰라도 흐름 리포트 작성은 충분히 가능합니다.
+              </p>
+            </div>
+
+            <div className="border border-border-custom bg-background rounded-lg p-5">
+              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 다른 사주 상담이랑 뭐가 다른가요?</h3>
+              <p className="text-sm text-foreground-muted leading-relaxed font-light">
+                👉 어려운 한자나 뜬구름 잡는 이야기가 아니라, 이해할 수 있는 언어로 정리해드리며 리포트로 남기기 때문에 언제든 꺼내보실 수 있습니다.
+              </p>
+            </div>
+
+            <div className="border border-border-custom bg-background rounded-lg p-5">
+              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 한 가지 운만 정밀하게 볼 수 있나요?</h3>
+              <p className="text-sm text-foreground-muted leading-relaxed font-light">
+                👉 네 가능합니다. 고객문의로 남겨 주시면 결재후 상담 도와드리겠습니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Today's Fortune Lead Magnet Section */}
       <section id="today-fortune" className="py-20 border-b border-border-custom bg-background-secondary/10">
         <div className="max-w-4xl mx-auto px-6">
@@ -1011,73 +1079,7 @@ export default function Home() {
 
 
 
-      {/* FAQ Section */}
-      <section id="faq" className="py-20 md:py-28 border-b border-border-custom bg-background-secondary/20">
-        <div className="max-w-3xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <HelpCircle className="w-8 h-8 text-brass mx-auto mb-2" />
-            <h2 className="font-myeongjo text-3xl font-bold text-foreground">자주 묻는 질문</h2>
-          </div>
 
-          <div className="space-y-6">
-            <div className="border border-border-custom bg-background rounded-lg p-5">
-              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 생년월일을 양력으로 적어야 하나요, 음력으로 적어야 하나요?</h3>
-              <p className="text-sm text-foreground-muted leading-relaxed font-light">
-                👉 입력 화면에서 음력과 양력을 선택하여 기입하실 수 있습니다. 또한, 윤달 여부와 정확한 탄생 시를 추가하면 더욱 세밀한 분석이 가능합니다.
-              </p>
-            </div>
-
-            <div className="border border-border-custom bg-background rounded-lg p-5">
-              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 리포트는 언제 이메일로 받아볼 수 있나요?</h3>
-              <p className="text-sm text-foreground-muted leading-relaxed font-light">
-                👉 결제 완료 즉시 만세력 산출 및 혜안당 맞춤 분석 솔루션이 작동합니다. 대기자 수에 따라 다르나 보통 결제 완료 후 5분에서 최대 15분 내에 입력하신 이메일 주소로 전송됩니다.
-              </p>
-            </div>
-
-            <div className="border border-border-custom bg-background rounded-lg p-5">
-              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 제공되는 분석 결과는 신뢰할 수 있나요?</h3>
-              <p className="text-sm text-foreground-muted leading-relaxed font-light">
-                👉 혜안당은 검증된 사주 명리학의 연주, 월주, 일주, 시주 계산 공식을 정밀 데이터화하여 1차 분석을 한 뒤, 혜안당 고유의 정교한 해설 기술을 더하여 읽기 편안하고 풍부한 문맥을 완성합니다. 정밀 튜닝된 로직을 통해 정통 명리학 이론을 왜곡 없이 정확하게 전달하고 있습니다.
-              </p>
-            </div>
-
-            <div className="border border-border-custom bg-background rounded-lg p-5">
-              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 리포트는 어떤 형식으로 제공되나요?</h3>
-              <p className="text-sm text-foreground-muted leading-relaxed font-light">
-                👉 PDF 파일 형식으로 전달드리며, 언제든 꺼내 다시 확인할 수 있습니다.
-              </p>
-            </div>
-
-            <div className="border border-border-custom bg-background rounded-lg p-5">
-              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 사주풀이와 운세풀이랑 뭐가 다른가요?</h3>
-              <p className="text-sm text-foreground-muted leading-relaxed font-light">
-                👉 단순한 복사, 붙여넣기의 운세가 아니라, 사주 원국과 흐름을 기반으로 전반적인 팔자를 구조적으로 풀어드립니다.
-              </p>
-            </div>
-
-            <div className="border border-border-custom bg-background rounded-lg p-5">
-              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 생년월일만 알면 가능한가요? (태어난 시간은 몰라도 되나요?)</h3>
-              <p className="text-sm text-foreground-muted leading-relaxed font-light">
-                👉 태어난 시간을 알면 더 정밀한 풀이가 가능하지만, 시간을 몰라도 흐름 리포트 작성은 충분히 가능합니다.
-              </p>
-            </div>
-
-            <div className="border border-border-custom bg-background rounded-lg p-5">
-              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 다른 사주 상담이랑 뭐가 다른가요?</h3>
-              <p className="text-sm text-foreground-muted leading-relaxed font-light">
-                👉 어려운 한자나 뜬구름 잡는 이야기가 아니라, 이해할 수 있는 언어로 정리해드리며 리포트로 남기기 때문에 언제든 꺼내보실 수 있습니다.
-              </p>
-            </div>
-
-            <div className="border border-border-custom bg-background rounded-lg p-5">
-              <h3 className="font-myeongjo font-bold text-base text-foreground mb-2">Q. 한 가지 운만 정밀하게 볼 수 있나요?</h3>
-              <p className="text-sm text-foreground-muted leading-relaxed font-light">
-                👉 네 가능합니다. 고객문의로 남겨 주시면 결재후 상담 도와드리겠습니다.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="bg-background border-t border-border-custom py-12 text-xs text-foreground-muted">
