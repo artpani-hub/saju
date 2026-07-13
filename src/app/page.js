@@ -263,26 +263,6 @@ export default function Home() {
             아는 것만으로도 수많은 실패를 줄일 수 있습니다.
           </p>
 
-          <p className="text-sm md:text-base text-brass max-w-2xl mx-auto leading-relaxed mb-10 font-normal font-traditional">
-            평생의 자산 흐름과 위기의 타이밍 등,<br />
-            혜안당 보감에 잠겨 있는 귀하만의 5가지 비밀 중 첫 장을 즉시 열어드립니다.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/input?product=saju&reportGrade=free"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#8B221E] hover:bg-[#6D1B18] text-white px-8 py-4 rounded-md text-base font-medium shadow-md transition-all duration-300 transform hover:-translate-y-0.5 font-traditional tracking-wider"
-            >
-              <Scroll className="w-5 h-5 text-brass-light" />
-              내 사주 무료 확인하기 ➔
-            </Link>
-            <a
-              href="#services"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-brass/50 text-brass bg-background-secondary/50 px-8 py-4 rounded-md text-base font-medium hover:bg-background-secondary transition-all"
-            >
-              운세 상품 보기
-            </a>
-          </div>
 
           {/* 실시간 혜안당 보감 열람 현황 */}
           <div className="mt-12 pt-8 border-t border-border-custom/50 max-w-2xl mx-auto space-y-6">
@@ -476,6 +456,36 @@ export default function Home() {
                 👉 네 가능합니다. 고객문의로 남겨 주시면 결재후 상담 도와드리겠습니다.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 무료 사주 확인 배너 (히어로에서 하향 이동된 CTA 영역) */}
+      <section className="py-12 border-b border-border-custom bg-[#8B221E]/5 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{
+          backgroundImage: `radial-gradient(circle, var(--foreground-muted) 1px, transparent 1px)`,
+          backgroundSize: '16px 16px'
+        }} />
+        <div className="max-w-4xl mx-auto text-center px-6 relative z-10 space-y-6">
+          <p className="text-sm md:text-base text-brass leading-relaxed font-normal font-traditional">
+            평생의 자산 흐름과 위기의 타이밍 등,<br />
+            혜안당 보감에 잠겨 있는 귀하만의 5가지 비밀 중 첫 장을 즉시 열어드립니다.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/input?product=saju&reportGrade=free"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#8B221E] hover:bg-[#6D1B18] text-white px-8 py-4 rounded-md text-base font-medium shadow-md transition-all duration-300 transform hover:-translate-y-0.5 font-traditional tracking-wider"
+            >
+              <Scroll className="w-5 h-5 text-brass-light" />
+              내 사주 무료 확인하기 ➔
+            </Link>
+            <a
+              href="#services"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-brass/50 text-brass bg-background-secondary/50 px-8 py-4 rounded-md text-base font-medium hover:bg-background-secondary transition-all"
+            >
+              운세 상품 보기
+            </a>
           </div>
         </div>
       </section>
