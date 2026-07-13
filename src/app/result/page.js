@@ -3732,16 +3732,6 @@ function ResultContent() {
         (o.status === "pending" || o.status === "ready")
       );
 
-      if (matchedIdx === -1) {
-        matchedIdx = orders.findIndex(o => 
-          o &&
-          o.name === name && 
-          parseInt(o.year) === year &&
-          parseInt(o.month) === month &&
-          parseInt(o.day) === day
-        );
-      }
-
       if (matchedIdx > -1) {
         orders[matchedIdx].status = "paid";
         if (targetGrade) {
@@ -3843,16 +3833,6 @@ function ResultContent() {
           parseInt(o.day) === day &&
           (o.status === "pending" || o.status === "ready")
         );
-
-        if (matchedIdx === -1) {
-          matchedIdx = orders.findIndex(o => 
-            o &&
-            o.name === name && 
-            parseInt(o.year) === year &&
-            parseInt(o.month) === month &&
-            parseInt(o.day) === day
-          );
-        }
         if (matchedIdx > -1) {
           orders[matchedIdx].status = "paid";
           orders[matchedIdx].reportGrade = targetGrade;
