@@ -9,49 +9,49 @@ import { ArrowLeft, Check, Sparkles, AlertCircle, Calendar, Clock, User, Phone, 
 // Product information dictionary
 const products = {
   saju: {
-    title: "평생 종합 사주팔자",
+    title: "평생 종합 사주팔자 (37페이지 이상 PDF보고서)",
     category: "사주팔자",
-    price: 34900,
+    price: 14900,
     originalPrice: 55000,
     desc: "타고난 오행 분포, 대운의 흐름, 전반적인 라이프사이클 솔루션 제공",
   },
   newyear: {
-    title: "신년운세",
+    title: "신년운세 (51페이지 이상 PDF보고서)",
     category: "신년운세",
-    price: 34900,
+    price: 14900,
     originalPrice: 55000,
     desc: "한 해의 전체적인 기운과 방향성, 월별 상세 운세 가이드",
   },
   tojeong: {
-    title: "토정비결",
+    title: "토정비결 (30페이지 이상 PDF보고서)",
     category: "토정비결",
-    price: 29900,
+    price: 14900,
     originalPrice: 36900,
     desc: "조선 정통 토정 이지함의 비결로 풀어보는 한 해의 신수비결과 월별 지침",
   },
   wealth: {
     title: "재물 & 비즈니스운",
     category: "비즈니스",
-    price: 20000,
+    price: 19900,
     desc: "평생의 재물 성향, 재운이 도래하는 시기 및 커리어/투자 제언",
   },
   tarot: {
     title: "1:1 맞춤 타로 상담사",
     category: "타로 상담",
-    price: 10000,
+    price: 9900,
     desc: "선택하신 가장 고민인 분야를 중점으로 타로 카드가 제시하는 미래와 조언",
   },
   gunghap: {
     title: "연인 궁합",
     category: "연인 궁합",
-    price: 26900,
+    price: 19900,
     originalPrice: 49500,
     desc: "두 사람의 타고난 오행 분포 조화, 밀착/정서적 궁합, 백년해로 타이밍 및 관계 유지 솔루션 제공",
   },
   dream: {
     title: "꿈해몽 & 사주 조율",
     category: "꿈해몽",
-    price: 20000,
+    price: 9900,
     desc: "어젯밤 꿈의 길흉 해몽과 내 사주 오행의 동조 현상 분석. 꿈이 현실과 어떤 관계인지 명리학으로 풀어드립니다.",
   },
   today: {
@@ -413,6 +413,97 @@ function InputFormContent() {
     }
   }, [productKey, reportGrade, gunghapType, appliedCoupon]);
 
+  // 입력 폼 실시간 임시 보관 처리
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("hyeandang_draft_form_data", JSON.stringify(formData));
+    }
+  }, [formData]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("hyeandang_draft_product_key", productKey);
+    }
+  }, [productKey]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("hyeandang_draft_report_grade", reportGrade);
+    }
+  }, [reportGrade]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("hyeandang_draft_gunghap_type", gunghapType);
+    }
+  }, [gunghapType]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("hyeandang_draft_privacy_agreed", privacyAgreed ? "true" : "false");
+    }
+  }, [privacyAgreed]);
+
+  // 마운트 시 임시 저장 정보 복원
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const draftForm = localStorage.getItem("hyeandang_draft_form_data");
+        if (draftForm) {
+          const parsed = JSON.parse(draftForm);
+          setFormData(prev => ({ ...prev, ...parsed }));
+          if (parsed.worryText) {
+            setCharCount(parsed.worryText.length);
+          }
+        }
+        
+        const draftProd = localStorage.getItem("hyeandang_draft_product_key");
+        if (draftProd && products[draftProd]) {
+          setProductKey(draftProd);
+        }
+        
+        const draftGrade = localStorage.getItem("hyeandang_draft_report_grade");
+        if (draftGrade) {
+          setReportGrade(draftGrade);
+        }
+        
+        const draftGunghap = localStorage.getItem("hyeandang_draft_gunghap_type");
+        if (draftGunghap) {
+          setGunghapType(draftGunghap);
+        }
+
+        const draftPrivacy = localStorage.getItem("hyeandang_draft_privacy_agreed");
+        if (draftPrivacy === "true") {
+          setPrivacyAgreed(true);
+        }
+      } catch (e) {
+        console.error("임시 정보 복원 오류:", e);
+      }
+    }
+  }, []);
+
+  // 결제창 단계에서 모바일/브라우저 뒤로가기 제어
+  useEffect(() => {
+    if (step === "paying") {
+      // paying 단계 진입 시 히스토리에 가상 지점 추가
+      window.history.pushState({ step: "paying" }, "");
+    }
+  }, [step]);
+
+  useEffect(() => {
+    const handlePopState = (e) => {
+      if (step === "paying") {
+        // 뒤로가기 발생 시 홈화면 이탈 차단하고 입력 폼 복구
+        setStep("form");
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [step]);
+
   // step === "processing" 진행 상황 실시간 타이머
   useEffect(() => {
     if (step !== "processing") {
@@ -452,6 +543,16 @@ function InputFormContent() {
             if (selectedCards.length > 0) {
               queryParams.set("cards", selectedCards.join(","));
             }
+            
+            // 결제 성공 및 분석 화면 이동 전 임시 저장 폼 데이터 클리어
+            if (typeof window !== "undefined") {
+              localStorage.removeItem("hyeandang_draft_form_data");
+              localStorage.removeItem("hyeandang_draft_product_key");
+              localStorage.removeItem("hyeandang_draft_report_grade");
+              localStorage.removeItem("hyeandang_draft_gunghap_type");
+              localStorage.removeItem("hyeandang_draft_privacy_agreed");
+            }
+
             router.push(`/result?${queryParams.toString()}`);
           }, 600);
           return 100;
@@ -523,6 +624,7 @@ function InputFormContent() {
     const hourParam = searchParams.get("hour");
     const phoneParam = searchParams.get("phone");
     const reportGradeParam = searchParams.get("reportGrade");
+    const gunghapTypeParam = searchParams.get("gunghapType");
 
     if (nameParam || phoneParam) {
       setFormData(prev => ({
@@ -547,6 +649,9 @@ function InputFormContent() {
 
     if (reportGradeParam) {
       setReportGrade(reportGradeParam);
+    }
+    if (gunghapTypeParam) {
+      setGunghapType(gunghapTypeParam);
     }
   }, [searchParams]);
 
@@ -642,9 +747,9 @@ function InputFormContent() {
         : (products[productKey]?.price || 30000);
       const finalPrice = reportGrade === "free" ? 0 : ((productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
         ? (reportGrade === "deep" 
-          ? base + 15000 
-          : reportGrade === "sms" 
-          ? Math.max(5000, base - 20000) 
+          ? base + 35000 
+          : reportGrade === "premium" 
+          ? base + 20000 
           : base)
         : base);
       const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
@@ -978,7 +1083,7 @@ function InputFormContent() {
   };
 
   // 결제 전 모바일 리다이렉트 대비용 대기 주문(ready) 생성 및 임시 저장
-  const savePendingOrder = () => {
+  const savePendingOrder = async () => {
     try {
       const now = new Date();
       const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -990,9 +1095,9 @@ function InputFormContent() {
         : (products[productKey]?.price || 30000);
       const finalPrice = reportGrade === "free" ? 0 : ((productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
         ? (reportGrade === "deep" 
-          ? base + 15000 
-          : reportGrade === "sms" 
-          ? Math.max(5000, base - 20000) 
+          ? base + 35000 
+          : reportGrade === "premium" 
+          ? base + 20000 
           : base)
         : base);
       const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
@@ -1050,7 +1155,7 @@ function InputFormContent() {
 
       // 서버 API 전송 추가 (대기 주문 등록)
       try {
-        fetch("/api/orders", {
+        await fetch("/api/orders", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(pendingOrder)
@@ -1066,7 +1171,7 @@ function InputFormContent() {
   // 실제 포트원 결제창 호출 및 처리 (V2 마이그레이션)
   const handlePortonePayment = async () => {
     // 결제창 띄우기 직전, 대기 주문 정보를 로컬 스토리지에 미리 기록 (모바일 리다이렉트 대응)
-    savePendingOrder();
+    await savePendingOrder();
 
     const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "store-312155f8-f523-4067-a568-285c7bbec6e0";
     const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "";
@@ -1090,9 +1195,9 @@ function InputFormContent() {
       : activeProduct.price;
     const finalPrice = (productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
       ? (reportGrade === "deep" 
-        ? base + 15000 
-        : reportGrade === "sms" 
-        ? Math.max(5000, base - 20000) 
+        ? base + 35000 
+        : reportGrade === "premium" 
+        ? base + 20000 
         : base)
       : base;
     const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
@@ -1102,7 +1207,7 @@ function InputFormContent() {
 
     try {
       const redirectUrl = typeof window !== "undefined"
-        ? `${window.location.origin}/result?name=${encodeURIComponent(formData.name)}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendarType}&year=${formData.birthYear}&month=${formData.birthMonth}&day=${formData.birthDay}&hour=${formData.birthHour}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText)}&email=${encodeURIComponent(formData.email)}&phone=${encodeURIComponent(formData.phone)}&reportGrade=${reportGrade}&partnerName=${encodeURIComponent(formData.partnerName || "")}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendarType}&partnerYear=${formData.partnerBirthYear}&partnerMonth=${formData.partnerBirthMonth}&partnerDay=${formData.partnerBirthDay}&partnerHour=${formData.partnerBirthHour}&gunghapType=${gunghapType}&imp_success=true`
+        ? `${window.location.origin}/result?name=${encodeURIComponent(formData.name)}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendarType}&year=${formData.birthYear}&month=${formData.birthMonth}&day=${formData.birthDay}&hour=${formData.birthHour}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText)}&email=${encodeURIComponent(formData.email)}&phone=${encodeURIComponent(formData.phone)}&reportGrade=${reportGrade}&partnerName=${encodeURIComponent(formData.partnerName || "")}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendarType}&partnerYear=${formData.partnerBirthYear}&partnerMonth=${formData.partnerBirthMonth}&partnerDay=${formData.partnerBirthDay}&partnerHour=${formData.partnerBirthHour}&gunghapType=${gunghapType}`
         : "https://saju.artpani.com/result";
 
       const paymentData = {
@@ -1185,9 +1290,9 @@ function InputFormContent() {
       {/* Main Container */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-6 py-10 md:py-16">
         {step === "form" && (
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Left side: Form (Takes 2 cols) */}
-            <div className="lg:col-span-2 space-y-8">
+          <div className="max-w-2xl mx-auto space-y-8">
+            {/* Centered input form */}
+            <div className="space-y-8">
               <div>
                 <h1 className="font-myeongjo text-3xl font-bold text-foreground mb-2">운세 정보 입력</h1>
                 <p className="text-sm text-foreground-muted font-light">
@@ -1727,197 +1832,285 @@ function InputFormContent() {
                   </label>
                 </div>
 
-                {/* PC 화면 전용 결제 제출 버튼 */}
+                {/* 할인 쿠폰 등록 */}
+                {reportGrade !== "free" && (
+                  <div className="border border-border-custom bg-background rounded-lg p-4 mb-4 space-y-2 text-left">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-semibold text-foreground">할인 쿠폰 등록</span>
+                      {appliedCoupon && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAppliedCoupon(null);
+                            setCouponCode("");
+                            setCouponSuccess("");
+                            setCouponError("");
+                          }}
+                          className="text-[10px] text-red-500 hover:underline cursor-pointer"
+                        >
+                          쿠폰 해제
+                        </button>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value)}
+                        disabled={!!appliedCoupon}
+                        placeholder="쿠폰 코드를 입력하세요"
+                        className="flex-1 bg-background border border-border-custom rounded px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:border-brass disabled:opacity-60"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleApplyCoupon}
+                        disabled={!!appliedCoupon}
+                        className="bg-brass text-background font-semibold px-3 py-1.5 rounded text-xs hover:bg-brass-dark disabled:opacity-50 cursor-pointer"
+                      >
+                        적용
+                      </button>
+                    </div>
+                    {couponError && <p className="text-[10px] text-red-500 font-medium">{couponError}</p>}
+                    {couponSuccess && <p className="text-[10px] text-jade font-medium">{couponSuccess}</p>}
+                  </div>
+                )}
+
+                {/* 선택한 상품 요약 박스 */}
+                {reportGrade !== "free" && (
+                  <div className="bg-brass/5 border border-brass/20 rounded-lg p-4 mb-4 text-left">
+                    <div className="flex justify-between items-baseline mb-1">
+                      <span className="text-[10px] text-foreground-muted font-light">{activeProduct.category}</span>
+                      <span className="text-xs text-brass font-bold">선택 상품 보감</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-base font-bold text-foreground font-myeongjo">
+                        {activeProduct.title.split(" (")[0]}
+                        {(productKey === "saju" || productKey === "newyear" || productKey === "tojeong") && (
+                          <span className="text-xs font-semibold text-brass ml-1.5 font-sans">
+                            {reportGrade === "premium" ? "(고급 리포트)" : reportGrade === "deep" ? "(심화 리포트)" : "(문자 요약)"}
+                          </span>
+                        )}
+                        {productKey === "gunghap" && (
+                          <span className="text-xs font-semibold text-brass ml-1.5 font-sans">
+                            {gunghapType === "deep_compatibility" ? "(밀착 궁합)" : gunghapType === "reunion" ? "(재회운)" : "(궁합)"}
+                          </span>
+                        )}
+                      </span>
+                      <span className="text-lg font-bold text-brass font-sans">
+                        {(() => {
+                          const base = productKey === "gunghap" 
+                            ? (gunghapType === "reunion" ? 19900 : 26900)
+                            : activeProduct.price;
+                          const finalPrice = (productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
+                            ? (reportGrade === "deep" 
+                              ? base + 35000 
+                              : reportGrade === "premium" 
+                              ? base + 20000 
+                              : base)
+                            : base;
+                          return getDiscountedPrice(finalPrice).toLocaleString();
+                        })()}원
+                      </span>
+                    </div>
+                    {/* 상세 괄호 페이지 스펙 노출 */}
+                    {(productKey === "saju" || productKey === "newyear" || productKey === "tojeong" || appliedCoupon) && (
+                      <div className="mt-1 border-t border-brass/10 pt-1 flex justify-between items-center text-[10px] text-foreground-muted">
+                        <span>
+                          {productKey === "saju" && "(37페이지 이상 PDF보고서)"}
+                          {productKey === "newyear" && "(51페이지 이상 PDF보고서)"}
+                          {productKey === "tojeong" && "(30페이지 이상 PDF보고서)"}
+                        </span>
+                        {appliedCoupon && (
+                          <span className="text-red-500 font-medium">쿠폰 할인 적용 완료</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 결제 제출 버튼 */}
                 <button
                   type="submit"
-                  className="hidden lg:block w-full py-4 bg-jade text-background rounded-lg font-myeongjo text-lg font-bold shadow-md hover:bg-jade-dark hover:shadow-lg transition-all cursor-pointer"
+                  className="w-full py-4 bg-jade text-background rounded-lg font-myeongjo text-lg font-bold shadow-md hover:bg-jade-dark hover:shadow-lg transition-all cursor-pointer"
                 >
                   {reportGrade === "free" ? "내 사주 무료 확인하기" : "기입 완료 및 결제 진행"}
                 </button>
+                {/* 다른 상품 보러 가기 링크 */}
+                <Link
+                  href="/"
+                  className="flex w-full mt-3 py-3 border border-border-custom hover:border-brass text-foreground-muted hover:text-brass rounded-lg font-myeongjo text-sm font-semibold transition-all cursor-pointer items-center justify-center gap-1 bg-background"
+                >
+                  다른 상품 보러 가기
+                </Link>
               </form>
             </div>
 
-            {/* Right side: Product selection and invoice */}
-            <div className="space-y-6">
+            {/* Right side: Product selection and invoice - HIDDEN FOR SIMPLICITY */}
+            <div className="hidden lg:hidden">
               {reportGrade !== "free" ? (
                 <div className="border border-border-custom bg-background rounded-lg p-6 sticky top-24">
                   <h3 className="font-myeongjo text-lg font-bold text-foreground mb-4 pb-2 border-b border-border-custom">
                     선택된 상품 보감
                   </h3>
 
-                  {/* Micro selector */}
-                  <div className="space-y-2.5 mb-6">
-                    {Object.entries(products).map(([key, value]) => {
-                      const isSelected = productKey === key;
-                      const showGradeSelector = isSelected && (key === "saju" || key === "newyear" || key === "tojeong");
-                      const showGunghapSelector = isSelected && key === "gunghap";
-                      return (
-                        <div key={key} className="space-y-2">
+                  {/* Selected Product Grade / Type Customizers */}
+                  <div className="space-y-4 mb-6">
+                    {/* 리포트 등급 선택 박스 (사주, 신년운세, 토정비결인 경우만) */}
+                    {(productKey === "saju" || productKey === "newyear" || productKey === "tojeong") && (
+                      <div className="p-3.5 bg-background-secondary/40 border border-border-custom/50 rounded-lg space-y-2.5 transition-all text-left">
+                        <span className="text-[10px] font-semibold text-foreground block tracking-wider">리포트 등급 선택</span>
+                        <div className="space-y-2">
                           <button
                             type="button"
-                            onClick={() => handleSelectProduct(key)}
+                            onClick={() => setReportGrade("sms")}
                             className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
-                              isSelected
-                                ? "border-brass bg-brass/5"
-                                : "border-border-custom bg-background hover:bg-background-secondary/30"
+                              reportGrade === "sms"
+                                ? "border-brass bg-brass/10"
+                                : "border-border-custom bg-background hover:bg-background-secondary/20"
                             }`}
                           >
                             <div>
-                              <span className="text-[10px] text-foreground-muted block font-light">{value.category}</span>
-                              <span className="text-sm font-bold text-foreground">{value.title}</span>
-                            </div>
-                            <div className="text-right">
-                              {value.originalPrice && (
-                                <span className="text-[10px] text-foreground-muted line-through block">
-                                  {value.originalPrice.toLocaleString()}원
-                                </span>
-                              )}
-                              <span className="text-sm font-bold text-brass">
-                                {value.price.toLocaleString()}원
+                              <span className="text-[11px] font-bold text-foreground flex items-center gap-1">
+                                💬 문자메시지 요약 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span>
+                              </span>
+                              <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
+                                핵심 요약본 모바일 문자/카카오톡 전송
                               </span>
                             </div>
+                            <span className="text-[10px] text-foreground-muted shrink-0 whitespace-nowrap pl-2">추가금 없음</span>
                           </button>
 
-                          {/* Report Grade Selector inline under selected saju/newyear product */}
-                          {showGradeSelector && (
-                            <div className="p-3.5 bg-background-secondary/40 border border-border-custom/50 rounded-lg space-y-2.5 mt-1.5 transition-all">
-                              <span className="text-[10px] font-semibold text-foreground block tracking-wider">리포트 등급 선택</span>
-                              <div className="space-y-2">
-                                <button
-                                  type="button"
-                                  onClick={() => setReportGrade("premium")}
-                                  className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
-                                    reportGrade === "premium"
-                                      ? "border-brass bg-brass/10"
-                                      : "border-border-custom bg-background hover:bg-background-secondary/20"
-                                  }`}
-                                >
-                                  <div>
-                                    <span className="text-[11px] font-bold text-foreground flex items-center gap-1">
-                                      ✨ 고급 리포트 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span>
-                                    </span>
-                                    <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
-                                      사주원국, 오행분석, 평생운 등 종합 분석
-                                    </span>
-                                  </div>
-                                  <span className="text-[10px] text-foreground-muted">추가금 없음</span>
-                                </button>
-
-                                {productKey !== "tojeong" && (
-                                <button
-                                  type="button"
-                                  onClick={() => setReportGrade("deep")}
-                                  className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
-                                    reportGrade === "deep"
-                                      ? "border-[#5F7A68] bg-[#5F7A68]/10"
-                                      : "border-border-custom bg-background hover:bg-background-secondary/20"
-                                  }`}
-                                >
-                                  <div>
-                                    <span className="text-[11px] font-bold text-[#5F7A68] flex items-center gap-1">
-                                      👑 프리미엄 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span>
-                                    </span>
-                                    <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
-                                      고급 리포트 전체 + 신년운세 + 용신/대운 + 질문 심화 풀이
-                                    </span>
-                                  </div>
-                                  <span className="text-[10px] font-bold text-[#5F7A68]">+15,000원</span>
-                                </button>
+                          <button
+                            type="button"
+                            onClick={() => setReportGrade("premium")}
+                            className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+                              reportGrade === "premium"
+                                ? "border-[#5F7A68] bg-[#5F7A68]/10"
+                                : "border-border-custom bg-background hover:bg-background-secondary/20"
+                            }`}
+                          >
+                            <div>
+                              <span className="text-[11px] font-bold text-[#5F7A68] flex items-center gap-1">
+                                ✨ 고급 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span>
+                              </span>
+                              {productKey === "saju" && (
+                                <span className="text-[9.5px] text-[#917249] block mt-0.5 font-bold font-sans">
+                                  (37페이지 이상 pdf 분석지 <span className="opacity-45 font-normal text-foreground-muted">일부가림)</span>
+                                </span>
                               )}
-
-                                <button
-                                  type="button"
-                                  onClick={() => setReportGrade("sms")}
-                                  className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
-                                    reportGrade === "sms"
-                                      ? "border-gray-500 bg-gray-500/10"
-                                      : "border-border-custom bg-background hover:bg-background-secondary/20"
-                                  }`}
-                                >
-                                  <div>
-                                    <span className="text-[11px] font-bold text-foreground flex items-center gap-1">
-                                      💬 문자메시지 요약
-                                    </span>
-                                    <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
-                                      핵심 요약본 모바일 문자/카카오톡 전송
-                                    </span>
-                                  </div>
-                                  <span className="text-[10px] font-bold text-red-500">-20,000원</span>
-                                </button>
-                              </div>
+                              {productKey === "newyear" && (
+                                <span className="text-[9.5px] text-[#917249] block mt-0.5 font-bold font-sans">
+                                  (51페이지 이상 pdf 분석지 <span className="opacity-45 font-normal text-foreground-muted">일부가림)</span>
+                                </span>
+                              )}
+                              {productKey === "tojeong" && (
+                                <span className="text-[9.5px] text-[#917249] block mt-0.5 font-bold font-sans">
+                                  (30페이지 이상 pdf 분석지 <span className="opacity-45 font-normal text-foreground-muted">일부가림)</span>
+                                </span>
+                              )}
                             </div>
-                          )}
+                            <span className="text-[10px] font-bold text-[#5F7A68] shrink-0 whitespace-nowrap pl-2">+20,000원</span>
+                          </button>
 
-                          {/* Gunghap Category Selector */}
-                          {showGunghapSelector && (
-                            <div className="p-3.5 bg-background-secondary/40 border border-border-custom/50 rounded-lg space-y-2.5 mt-1.5 transition-all">
-                              <span className="text-[10px] font-semibold text-foreground block tracking-wider">궁합 유형 선택</span>
-                              <div className="space-y-2">
-                                <button
-                                  type="button"
-                                  onClick={() => setGunghapType("compatibility")}
-                                  className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center gap-3 ${
-                                    gunghapType === "compatibility"
-                                      ? "border-brass bg-brass/10"
-                                      : "border-border-custom bg-background hover:bg-background-secondary/20"
-                                  }`}
-                                >
-                                  <div className="flex-1 min-w-0">
-                                    <span className="text-[11px] font-bold text-foreground flex items-center gap-1">
-                                      💕 궁합 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span>
-                                    </span>
-                                    <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
-                                      두 사람의 오행 상성, 성격/가치관 궁합, 백년해로 지수
-                                    </span>
-                                  </div>
-                                  <span className="text-[10px] font-bold text-brass whitespace-nowrap flex-shrink-0 text-right">26,900원</span>
-                                </button>
-
-                                <button
-                                  type="button"
-                                  onClick={() => setGunghapType("deep_compatibility")}
-                                  className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center gap-3 ${
-                                    gunghapType === "deep_compatibility"
-                                      ? "border-[#C2185B] bg-[#C2185B]/10"
-                                      : "border-border-custom bg-background hover:bg-background-secondary/20"
-                                  }`}
-                                >
-                                  <div className="flex-1 min-w-0">
-                                    <span className="text-[11px] font-bold text-[#C2185B] flex items-center gap-1">
-                                      🔥 밀착 궁합 <span className="text-[8px] bg-[#C2185B]/15 text-[#C2185B] px-1.5 py-0.5 rounded font-normal">인기</span>
-                                    </span>
-                                    <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
-                                      음양 오행의 성향, 정서적 밀착도, 행동 성향 상세 분석
-                                    </span>
-                                  </div>
-                                  <span className="text-[10px] font-bold text-[#C2185B] whitespace-nowrap flex-shrink-0 text-right">26,900원</span>
-                                </button>
-
-                                <button
-                                  type="button"
-                                  onClick={() => setGunghapType("reunion")}
-                                  className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center gap-3 ${
-                                    gunghapType === "reunion"
-                                      ? "border-[#5F7A68] bg-[#5F7A68]/10"
-                                      : "border-border-custom bg-background hover:bg-background-secondary/20"
-                                  }`}
-                                >
-                                  <div className="flex-1 min-w-0">
-                                    <span className="text-[11px] font-bold text-[#5F7A68] flex items-center gap-1">
-                                      🌿 재회운
-                                    </span>
-                                    <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
-                                      헤어진 연인과의 재회 가능성, 재결합 시기 및 조언
-                                    </span>
-                                  </div>
-                                  <span className="text-[10px] font-bold text-[#5F7A68] whitespace-nowrap flex-shrink-0 text-right">19,900원</span>
-                                </button>
+                          {productKey !== "tojeong" && (
+                            <button
+                              type="button"
+                              onClick={() => setReportGrade("deep")}
+                              className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center ${
+                                reportGrade === "deep"
+                                  ? "border-[#C2185B] bg-[#C2185B]/10"
+                                  : "border-border-custom bg-background hover:bg-background-secondary/20"
+                              }`}
+                            >
+                              <div>
+                                <span className="text-[11px] font-bold text-[#C2185B] flex items-center gap-1">
+                                  👑 프리미엄 리포트 <span className="text-[8px] bg-[#C2185B]/15 text-[#C2185B] px-1.5 py-0.5 rounded font-normal">심화</span>
+                                </span>
+                                {productKey === "saju" && (
+                                  <span className="text-[9.5px] text-[#C2185B] block mt-0.5 font-bold font-sans">
+                                    (37페이지 이상 pdf 분석지)
+                                  </span>
+                                )}
+                                {productKey === "newyear" && (
+                                  <span className="text-[9.5px] text-[#C2185B] block mt-0.5 font-bold font-sans">
+                                    (51페이지 이상 pdf 분석지)
+                                  </span>
+                                )}
                               </div>
-                            </div>
+                              <span className="text-[10px] font-bold text-[#C2185B] shrink-0 whitespace-nowrap pl-2">+35,000원</span>
+                            </button>
                           )}
                         </div>
-                      );
-                    })}
+                      </div>
+                    )}
+
+                    {/* 궁합 유형 선택 박스 (연인 궁합인 경우만) */}
+                    {productKey === "gunghap" && (
+                      <div className="p-3.5 bg-background-secondary/40 border border-border-custom/50 rounded-lg space-y-2.5 transition-all text-left">
+                        <span className="text-[10px] font-semibold text-foreground block tracking-wider">궁합 유형 선택</span>
+                        <div className="space-y-2">
+                          <button
+                            type="button"
+                            onClick={() => setGunghapType("compatibility")}
+                            className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center gap-3 ${
+                              gunghapType === "compatibility"
+                                ? "border-brass bg-brass/10"
+                                : "border-border-custom bg-background hover:bg-background-secondary/20"
+                            }`}
+                          >
+                            <div className="flex-1 min-w-0">
+                              <span className="text-[11px] font-bold text-foreground flex items-center gap-1">
+                                💕 궁합 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span>
+                              </span>
+                              <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
+                                두 사람의 오행 상성, 성격/가치관 궁합, 백년해로 지수
+                              </span>
+                            </div>
+                            <span className="text-[10px] font-bold text-brass whitespace-nowrap flex-shrink-0 text-right">26,900원</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setGunghapType("deep_compatibility")}
+                            className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center gap-3 ${
+                              gunghapType === "deep_compatibility"
+                                ? "border-[#C2185B] bg-[#C2185B]/10"
+                                : "border-border-custom bg-background hover:bg-background-secondary/20"
+                            }`}
+                          >
+                            <div className="flex-1 min-w-0">
+                              <span className="text-[11px] font-bold text-[#C2185B] flex items-center gap-1">
+                                🔥 밀착 궁합 <span className="text-[8px] bg-[#C2185B]/15 text-[#C2185B] px-1.5 py-0.5 rounded font-normal">인기</span>
+                              </span>
+                              <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
+                                음양 오행의 성향, 정서적 밀착도, 행동 성향 상세 분석
+                              </span>
+                            </div>
+                            <span className="text-[10px] font-bold text-[#C2185B] whitespace-nowrap flex-shrink-0 text-right">26,900원</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setGunghapType("reunion")}
+                            className={`w-full text-left p-3 rounded-lg border transition-all flex justify-between items-center gap-3 ${
+                              gunghapType === "reunion"
+                                ? "border-[#5F7A68] bg-[#5F7A68]/10"
+                                : "border-border-custom bg-background hover:bg-background-secondary/20"
+                            }`}
+                          >
+                            <div className="flex-1 min-w-0">
+                              <span className="text-[11px] font-bold text-[#5F7A68] flex items-center gap-1">
+                                🌿 재회운
+                              </span>
+                              <span className="text-[9px] text-foreground-muted block mt-0.5 font-light">
+                                헤어진 연인과의 재회 가능성, 재결합 시기 및 조언
+                              </span>
+                            </div>
+                            <span className="text-[10px] font-bold text-[#5F7A68] whitespace-nowrap flex-shrink-0 text-right">19,900원</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Info block */}
@@ -1957,56 +2150,14 @@ function InputFormContent() {
                       : activeProduct.price;
                     const finalPrice = (productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
                       ? (reportGrade === "deep" 
-                        ? base + 15000 
-                        : reportGrade === "sms" 
-                        ? Math.max(5000, base - 20000) 
+                        ? base + 35000 
+                        : reportGrade === "premium" 
+                        ? base + 20000 
                         : base)
                       : base;
                     const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
                     return (
                       <div className="space-y-2 mb-6">
-                        {/* Coupon Register Form */}
-                        {reportGrade !== "free" && (
-                          <div className="border-t border-b border-border-custom/50 py-3 mb-3 space-y-2">
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs font-semibold text-foreground">할인 쿠폰 등록</span>
-                              {appliedCoupon && (
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setAppliedCoupon(null);
-                                    setCouponCode("");
-                                    setCouponSuccess("");
-                                    setCouponError("");
-                                  }}
-                                  className="text-[10px] text-red-500 hover:underline cursor-pointer"
-                                >
-                                  쿠폰 해제
-                                </button>
-                              )}
-                            </div>
-                            <div className="flex gap-2">
-                              <input
-                                type="text"
-                                value={couponCode}
-                                onChange={(e) => setCouponCode(e.target.value)}
-                                disabled={!!appliedCoupon}
-                                placeholder="쿠폰 코드를 입력하세요"
-                                className="flex-1 bg-background border border-border-custom rounded px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:border-brass disabled:opacity-60"
-                              />
-                              <button
-                                type="button"
-                                onClick={handleApplyCoupon}
-                                disabled={!!appliedCoupon}
-                                className="bg-brass text-background font-semibold px-3 py-1.5 rounded text-xs hover:bg-brass-dark disabled:opacity-50 cursor-pointer"
-                              >
-                                적용
-                              </button>
-                            </div>
-                            {couponError && <p className="text-[10px] text-red-500 font-medium">{couponError}</p>}
-                            {couponSuccess && <p className="text-[10px] text-jade font-medium">{couponSuccess}</p>}
-                          </div>
-                        )}
 
                         <div className="flex justify-between text-xs text-foreground-muted">
                           <span>분석 대행 수수료</span>
@@ -2045,6 +2196,13 @@ function InputFormContent() {
                   >
                     {reportGrade === "free" ? "확인하기" : "기입 완료 및 결제 진행"}
                   </button>
+                  {/* 다른 상품 보러 가기 링크 (모바일) */}
+                  <Link
+                    href="/"
+                    className="lg:hidden flex w-full mt-3 py-3 border border-border-custom hover:border-brass text-foreground-muted hover:text-brass rounded-lg font-myeongjo text-sm font-semibold transition-all cursor-pointer items-center justify-center gap-1 bg-background"
+                  >
+                    다른 상품 보러 가기
+                  </Link>
                 </div>
               ) : (
                 <>
@@ -2140,9 +2298,9 @@ function InputFormContent() {
                     : activeProduct.price;
                   const finalPrice = (productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
                     ? (reportGrade === "deep" 
-                      ? base + 15000 
-                      : reportGrade === "sms" 
-                      ? Math.max(5000, base - 20000) 
+                      ? base + 35000 
+                      : reportGrade === "premium" 
+                      ? base + 20000 
                       : base)
                     : base;
                   const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
@@ -2175,7 +2333,7 @@ function InputFormContent() {
             <div className="flex gap-3">
               <button
                 type="button"
-                onClick={() => setStep("form")}
+                onClick={() => window.history.back()}
                 className="flex-1 py-3 border border-border-custom hover:bg-background rounded text-sm text-foreground-muted transition-colors"
               >
                 취소하기

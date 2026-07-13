@@ -13,6 +13,10 @@ const uploadQueue = [];
 function walkDir(localPath, remoteSubPath) {
   const files = fs.readdirSync(localPath);
   for (const file of files) {
+    // 서버 데이터 유실을 막기 위해 data 폴더 및 불필요한 폴더 업로드 제외
+    if (file === 'data' || file === '.git' || file === 'node_modules') {
+      continue;
+    }
     const fullLocalPath = path.join(localPath, file);
     const fullRemotePath = path.posix.join(remoteSubPath, file);
     const stat = fs.statSync(fullLocalPath);

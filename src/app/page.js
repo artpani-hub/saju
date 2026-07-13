@@ -697,54 +697,51 @@ export default function Home() {
               </div>
               <div>
                 <span className="text-xs font-semibold text-jade tracking-wider uppercase block mb-1">사주팔자</span>
-                <h3 className="font-myeongjo text-xl font-bold text-foreground mb-2 group-hover:text-brass transition-colors">평생 종합 사주팔자</h3>
+                <h3 className="font-myeongjo text-xl font-bold text-foreground mb-1 group-hover:text-brass transition-colors">평생 종합 사주팔자</h3>
+                <span className="text-[11px] font-bold text-brass block mb-3 font-sans">(37페이지 이상 PDF보고서)</span>
                 <p className="text-sm text-foreground-muted leading-relaxed mb-4 font-light">
                   타고난 오행 분포, 평생의 흐름을 짚어주는 10년 주기 대운, 인생의 황금기와 솔루션을 포함한 종합 보고서.
                 </p>
 
                 {/* 등급별 요금 안내 박스 */}
-                <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-2 font-light text-foreground-muted">
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-1.5 text-foreground font-medium">✨ 고급 리포트 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span></span>
-                    <div className="text-right">
-                      <span className="line-through text-foreground-muted/60 text-[10px] block">55,000원</span>
-                      <span className="font-bold text-brass">34,900원</span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-1.5 text-[#5F7A68] font-medium">👑 심화 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span></span>
-                    <div className="text-right">
-                      <span className="line-through text-foreground-muted/60 text-[10px] block">70,000원</span>
-                      <span className="font-bold text-[#5F7A68]">49,900원</span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-1.5 font-medium text-gray-700">💬 문자메시지 요약</span>
+                <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-1 font-light text-foreground-muted">
+                  <Link 
+                    href="/input?product=saju&reportGrade=sms"
+                    className="flex justify-between items-center p-2.5 -mx-1.5 rounded-lg hover:bg-background/80 hover:shadow-sm border border-transparent hover:border-border-custom/50 transition-all cursor-pointer"
+                  >
+                    <span className="flex items-center gap-1.5 font-medium text-gray-700">💬 문자메시지 요약 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span></span>
                     <div className="text-right">
                       <span className="line-through text-foreground-muted/60 text-[10px] block">35,000원</span>
-                      <span className="font-bold text-gray-700">14,900원</span>
+                      <span className="font-bold text-brass">14,900원</span>
                     </div>
-                  </div>
+                  </Link>
+                  <Link 
+                    href="/input?product=saju&reportGrade=premium"
+                    className="flex justify-between items-center p-2.5 -mx-1.5 rounded-lg hover:bg-background/80 hover:shadow-sm border border-transparent hover:border-border-custom/50 transition-all cursor-pointer"
+                  >
+                    <div className="flex flex-col text-left">
+                      <span className="flex items-center gap-1.5 text-[#5F7A68] font-medium">✨ 고급 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span></span>
+                      <span className="text-[9.5px] text-[#917249] block mt-0.5 font-bold font-sans">(37페이지 이상 pdf 분석지 <span className="opacity-45 font-normal text-foreground-muted">일부가림)</span></span>
+                    </div>
+                    <div className="text-right">
+                      <span className="line-through text-foreground-muted/60 text-[10px] block">55,000원</span>
+                      <span className="font-bold text-[#5F7A68]">34,900원</span>
+                    </div>
+                  </Link>
+                  <Link 
+                    href="/input?product=saju&reportGrade=deep"
+                    className="flex justify-between items-center p-2.5 -mx-1.5 rounded-lg hover:bg-background/80 hover:shadow-sm border border-transparent hover:border-border-custom/50 transition-all cursor-pointer"
+                  >
+                    <div className="flex flex-col text-left">
+                      <span className="flex items-center gap-1.5 text-[#C2185B] font-medium">👑 심화 리포트 <span className="text-[8px] bg-[#C2185B]/15 text-[#C2185B] px-1.5 py-0.5 rounded font-normal">인기</span></span>
+                      <span className="text-[9.5px] text-[#C2185B] block mt-0.5 font-bold font-sans">(37페이지 이상 pdf 분석지)</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="line-through text-foreground-muted/60 text-[10px] block">70,000원</span>
+                      <span className="font-bold text-[#C2185B]">49,900원</span>
+                    </div>
+                  </Link>
                 </div>
-              </div>
-              <div>
-                <div className="border-t border-border-custom pt-4 mb-4">
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-xs text-foreground-muted line-through">55,000원~</span>
-                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">37% 할인</span>
-                  </div>
-                  <div className="flex items-baseline gap-1 mt-0.5">
-                    <span className="text-2xl font-bold text-foreground">34,900</span>
-                    <span className="text-xs text-foreground-muted">원~</span>
-                  </div>
-                </div>
-                <Link
-                  href="/input?product=saju"
-                  className="w-full inline-flex items-center justify-center gap-1 bg-brass text-background py-2 rounded text-sm font-medium hover:bg-brass-dark transition-colors"
-                >
-                  신청하기
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
               </div>
             </div>
 
@@ -752,54 +749,51 @@ export default function Home() {
             <div className="border border-border-custom bg-background rounded-lg p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
               <div>
                 <span className="text-xs font-semibold text-brass tracking-wider uppercase block mb-1">신년운세</span>
-                <h3 className="font-myeongjo text-xl font-bold text-foreground mb-2 group-hover:text-brass transition-colors">신년운세</h3>
+                <h3 className="font-myeongjo text-xl font-bold text-foreground mb-1 group-hover:text-brass transition-colors">신년운세</h3>
+                <span className="text-[11px] font-bold text-brass block mb-3 font-sans">(51페이지 이상 PDF보고서)</span>
                 <p className="text-sm text-foreground-muted leading-relaxed mb-4 font-light">
                   새해에 가장 많이 찾는 상품으로, 한 해의 총체적인 흐름, 오행의 상생상극 융합 및 신수비결 분석.
                 </p>
 
                 {/* 등급별 요금 안내 박스 */}
-                <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-2 font-light text-foreground-muted">
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-1.5 text-foreground font-medium">✨ 고급 리포트 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span></span>
-                    <div className="text-right">
-                      <span className="line-through text-foreground-muted/60 text-[10px] block">55,000원</span>
-                      <span className="font-bold text-brass">34,900원</span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-1.5 text-[#5F7A68] font-medium">👑 심화 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span></span>
-                    <div className="text-right">
-                      <span className="line-through text-foreground-muted/60 text-[10px] block">70,000원</span>
-                      <span className="font-bold text-[#5F7A68]">49,900원</span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-1.5 font-medium text-gray-700">💬 문자메시지용</span>
+                <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-1 font-light text-foreground-muted">
+                  <Link 
+                    href="/input?product=newyear&reportGrade=sms"
+                    className="flex justify-between items-center p-2.5 -mx-1.5 rounded-lg hover:bg-background/80 hover:shadow-sm border border-transparent hover:border-border-custom/50 transition-all cursor-pointer"
+                  >
+                    <span className="flex items-center gap-1.5 font-medium text-gray-700">💬 문자메시지 요약 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span></span>
                     <div className="text-right">
                       <span className="line-through text-foreground-muted/60 text-[10px] block">40,000원</span>
-                      <span className="font-bold text-gray-700">14,900원</span>
+                      <span className="font-bold text-brass">14,900원</span>
                     </div>
-                  </div>
+                  </Link>
+                  <Link 
+                    href="/input?product=newyear&reportGrade=premium"
+                    className="flex justify-between items-center p-2.5 -mx-1.5 rounded-lg hover:bg-background/80 hover:shadow-sm border border-transparent hover:border-border-custom/50 transition-all cursor-pointer"
+                  >
+                    <div className="flex flex-col text-left">
+                      <span className="flex items-center gap-1.5 text-[#5F7A68] font-medium">✨ 고급 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span></span>
+                      <span className="text-[9.5px] text-[#917249] block mt-0.5 font-bold font-sans">(51페이지 이상 pdf 분석지 <span className="opacity-45 font-normal text-foreground-muted">일부가림)</span></span>
+                    </div>
+                    <div className="text-right">
+                      <span className="line-through text-foreground-muted/60 text-[10px] block">55,000원</span>
+                      <span className="font-bold text-[#5F7A68]">34,900원</span>
+                    </div>
+                  </Link>
+                  <Link 
+                    href="/input?product=newyear&reportGrade=deep"
+                    className="flex justify-between items-center p-2.5 -mx-1.5 rounded-lg hover:bg-background/80 hover:shadow-sm border border-transparent hover:border-border-custom/50 transition-all cursor-pointer"
+                  >
+                    <div className="flex flex-col text-left">
+                      <span className="flex items-center gap-1.5 text-[#C2185B] font-medium">👑 심화 리포트 <span className="text-[8px] bg-[#C2185B]/15 text-[#C2185B] px-1.5 py-0.5 rounded font-normal">인기</span></span>
+                      <span className="text-[9.5px] text-[#C2185B] block mt-0.5 font-bold font-sans">(51페이지 이상 pdf 분석지)</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="line-through text-foreground-muted/60 text-[10px] block">70,000원</span>
+                      <span className="font-bold text-[#C2185B]">49,900원</span>
+                    </div>
+                  </Link>
                 </div>
-              </div>
-              <div>
-                <div className="border-t border-border-custom pt-4 mb-4">
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-xs text-foreground-muted line-through">55,000원~</span>
-                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">37% 할인</span>
-                  </div>
-                  <div className="flex items-baseline gap-1 mt-0.5">
-                    <span className="text-2xl font-bold text-foreground">34,900</span>
-                    <span className="text-xs text-foreground-muted">원~</span>
-                  </div>
-                </div>
-                <Link
-                  href="/input?product=newyear"
-                  className="w-full inline-flex items-center justify-center gap-1 bg-background-secondary border border-border-custom text-foreground py-2 rounded text-sm font-medium hover:border-brass hover:text-brass transition-colors"
-                >
-                  신청하기
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
               </div>
             </div>
 
@@ -807,47 +801,38 @@ export default function Home() {
             <div className="border border-border-custom bg-background rounded-lg p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
               <div>
                 <span className="text-xs font-semibold text-brass tracking-wider uppercase block mb-1">토정비결</span>
-                <h3 className="font-myeongjo text-xl font-bold text-foreground mb-2 group-hover:text-brass transition-colors">토정비결</h3>
+                <h3 className="font-myeongjo text-xl font-bold text-foreground mb-1 group-hover:text-brass transition-colors">토정비결</h3>
+                <span className="text-[11px] font-bold text-brass block mb-3 font-sans">(30페이지 이상 PDF보고서)</span>
                 <p className="text-sm text-foreground-muted leading-relaxed mb-4 font-light">
                   조선 정통 토정 이지함 선생의 원본 해석에 따른 1년 신수비결과 생존 전략.
                 </p>
 
                 {/* 등급별 요금 안내 박스 */}
-                <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-2 font-light text-foreground-muted">
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-1.5 text-foreground font-medium">✨ 고급 리포트 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span></span>
-                    <div className="text-right">
-                      <span className="line-through text-foreground-muted/60 text-[10px] block">36,900원</span>
-                      <span className="font-bold text-brass">29,900원</span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-1.5 font-medium text-gray-700">💬 문자메시지 요약</span>
+                <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-1 font-light text-foreground-muted">
+                  <Link 
+                    href="/input?product=tojeong&reportGrade=sms"
+                    className="flex justify-between items-center p-2.5 -mx-1.5 rounded-lg hover:bg-background/80 hover:shadow-sm border border-transparent hover:border-border-custom/50 transition-all cursor-pointer"
+                  >
+                    <span className="flex items-center gap-1.5 font-medium text-gray-700">💬 문자메시지 요약 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span></span>
                     <div className="text-right">
                       <span className="line-through text-foreground-muted/60 text-[10px] block">25,000원</span>
-                      <span className="font-bold text-gray-700">9,900원</span>
+                      <span className="font-bold text-brass">14,900원</span>
                     </div>
-                  </div>
+                  </Link>
+                  <Link 
+                    href="/input?product=tojeong&reportGrade=premium"
+                    className="flex justify-between items-center p-2.5 -mx-1.5 rounded-lg hover:bg-background/80 hover:shadow-sm border border-transparent hover:border-border-custom/50 transition-all cursor-pointer"
+                  >
+                    <div className="flex flex-col text-left">
+                      <span className="flex items-center gap-1.5 text-[#5F7A68] font-medium">✨ 고급 리포트 <span className="text-[8px] bg-[#5F7A68]/15 text-[#5F7A68] px-1.5 py-0.5 rounded font-normal">추천</span></span>
+                      <span className="text-[9.5px] text-[#917249] block mt-0.5 font-bold font-sans">(30페이지 이상 pdf 분석지 <span className="opacity-45 font-normal text-foreground-muted">일부가림)</span></span>
+                    </div>
+                    <div className="text-right">
+                      <span className="line-through text-foreground-muted/60 text-[10px] block">36,900원</span>
+                      <span className="font-bold text-[#5F7A68]">34,900원</span>
+                    </div>
+                  </Link>
                 </div>
-              </div>
-              <div>
-                <div className="border-t border-border-custom pt-4 mb-4">
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-xs text-foreground-muted line-through">36,900원~</span>
-                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">19% 할인</span>
-                  </div>
-                  <div className="flex items-baseline gap-1 mt-0.5">
-                    <span className="text-2xl font-bold text-foreground">29,900</span>
-                    <span className="text-xs text-foreground-muted">원~</span>
-                  </div>
-                </div>
-                <Link
-                  href="/input?product=tojeong"
-                  className="w-full inline-flex items-center justify-center gap-1 bg-background-secondary border border-border-custom text-foreground py-2 rounded text-sm font-medium hover:border-brass hover:text-brass transition-colors"
-                >
-                  신청하기
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
               </div>
             </div>
 
@@ -864,10 +849,10 @@ export default function Home() {
                 <div className="border-t border-border-custom pt-4 mb-4">
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-xs text-foreground-muted line-through">30,000원</span>
-                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">33% 할인</span>
+                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">34% 할인</span>
                   </div>
                   <div className="flex items-baseline gap-1 mt-0.5">
-                    <span className="text-2xl font-bold text-foreground">20,000</span>
+                    <span className="text-2xl font-bold text-foreground">19,900</span>
                     <span className="text-xs text-foreground-muted">원</span>
                   </div>
                 </div>
@@ -893,7 +878,7 @@ export default function Home() {
               <div>
                 <div className="border-t border-border-custom pt-4 mb-4">
                   <div className="flex items-baseline gap-1 mt-0.5">
-                    <span className="text-2xl font-bold text-foreground">10,000</span>
+                    <span className="text-2xl font-bold text-foreground">9,900</span>
                     <span className="text-xs text-foreground-muted">원</span>
                   </div>
                 </div>
@@ -920,39 +905,29 @@ export default function Home() {
                 </p>
 
                 {/* 카테고리별 요금 안내 박스 */}
-                <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-2 font-light text-foreground-muted">
-                  <div className="flex justify-between items-center gap-2">
+                <div className="bg-background-secondary/50 rounded-lg p-3.5 mb-6 border border-border-custom/50 text-[11px] space-y-1 font-light text-foreground-muted">
+                  <Link 
+                    href="/input?product=gunghap&gunghapType=compatibility"
+                    className="flex justify-between items-center p-2.5 -mx-1.5 rounded-lg hover:bg-background/80 hover:shadow-sm border border-transparent hover:border-border-custom/50 transition-all cursor-pointer gap-2"
+                  >
                     <span className="flex items-center gap-1.5 text-foreground font-medium whitespace-nowrap">💕 궁합 <span className="text-[8px] bg-brass/10 text-brass px-1.5 py-0.5 rounded font-normal">기본</span></span>
                     <span className="font-semibold text-brass whitespace-nowrap flex-shrink-0">26,900원</span>
-                  </div>
-                  <div className="flex justify-between items-center gap-2">
+                  </Link>
+                  <Link 
+                    href="/input?product=gunghap&gunghapType=deep_compatibility"
+                    className="flex justify-between items-center p-2.5 -mx-1.5 rounded-lg hover:bg-background/80 hover:shadow-sm border border-transparent hover:border-border-custom/50 transition-all cursor-pointer gap-2"
+                  >
                     <span className="flex items-center gap-1.5 text-[#C2185B] font-medium whitespace-nowrap">🔥 밀착 궁합 <span className="text-[8px] bg-[#C2185B]/15 text-[#C2185B] px-1.5 py-0.5 rounded font-normal">인기</span></span>
                     <span className="font-semibold text-[#C2185B] whitespace-nowrap flex-shrink-0">26,900원</span>
-                  </div>
-                  <div className="flex justify-between items-center gap-2">
+                  </Link>
+                  <Link 
+                    href="/input?product=gunghap&gunghapType=reunion"
+                    className="flex justify-between items-center p-2.5 -mx-1.5 rounded-lg hover:bg-background/80 hover:shadow-sm border border-transparent hover:border-border-custom/50 transition-all cursor-pointer gap-2"
+                  >
                     <span className="flex items-center gap-1.5 text-[#5F7A68] font-medium whitespace-nowrap">🌿 재회운</span>
                     <span className="font-semibold text-[#5F7A68] whitespace-nowrap flex-shrink-0">19,900원</span>
-                  </div>
+                  </Link>
                 </div>
-              </div>
-              <div>
-                <div className="border-t border-border-custom pt-4 mb-4">
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-xs text-foreground-muted line-through">49,500원</span>
-                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">45% 할인</span>
-                  </div>
-                  <div className="flex items-baseline gap-1 mt-0.5">
-                    <span className="text-2xl font-bold text-foreground">26,900</span>
-                    <span className="text-xs text-foreground-muted">원~</span>
-                  </div>
-                </div>
-                <Link
-                  href="/input?product=gunghap"
-                  className="w-full inline-flex items-center justify-center gap-1 bg-background-secondary border border-border-custom text-foreground py-2 rounded text-sm font-medium hover:border-brass hover:text-brass transition-colors"
-                >
-                  신청하기
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
               </div>
             </div>
 
@@ -972,10 +947,10 @@ export default function Home() {
                 <div className="border-t border-border-custom pt-4 mb-4">
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-xs text-foreground-muted line-through">30,000원</span>
-                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">33% 할인</span>
+                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">67% 할인</span>
                   </div>
                   <div className="flex items-baseline gap-1 mt-0.5">
-                    <span className="text-2xl font-bold text-foreground">20,000</span>
+                    <span className="text-2xl font-bold text-foreground">9,900</span>
                     <span className="text-xs text-foreground-muted">원</span>
                   </div>
                 </div>

@@ -3469,7 +3469,9 @@ function ResultContent() {
           })()
         );
         // 모바일 리다이렉트 등으로 들어왔을 때 해당 주문 정보를 로컬 스토리지에 업데이트
-        updateLocalStorageOrderToPaid(currentGradeParam);
+        (async () => {
+          await updateLocalStorageOrderToPaid(currentGradeParam);
+        })();
         
         // [모바일 리다이렉트 대응] 결제 완료 시점 메일 및 문자 자동 전송 처리
         const sendNotificationOnMobileRedirect = async () => {
@@ -3689,7 +3691,7 @@ function ResultContent() {
     return `${y}-${m}-${d} ${hh}:${mm}`;
   };
 
-  const updateLocalStorageOrderToPaid = (targetGrade) => {
+  const updateLocalStorageOrderToPaid = async (targetGrade) => {
     try {
       const existingStr = localStorage.getItem("hyeandang_orders");
       let orders = [];
@@ -3702,13 +3704,24 @@ function ResultContent() {
         }
       }
 
-      const matchedIdx = orders.findIndex(o => 
+      let matchedIdx = orders.findIndex(o => 
         o &&
         o.name === name && 
         parseInt(o.year) === year &&
         parseInt(o.month) === month &&
-        parseInt(o.day) === day
+        parseInt(o.day) === day &&
+        (o.status === "pending" || o.status === "ready")
       );
+
+      if (matchedIdx === -1) {
+        matchedIdx = orders.findIndex(o => 
+          o &&
+          o.name === name && 
+          parseInt(o.year) === year &&
+          parseInt(o.month) === month &&
+          parseInt(o.day) === day
+        );
+      }
 
       if (matchedIdx > -1) {
         orders[matchedIdx].status = "paid";
@@ -3722,7 +3735,7 @@ function ResultContent() {
 
         // 서버 API PUT 업데이트 추가
         try {
-          fetch("/api/orders", {
+          await fetch("/api/orders", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -3774,7 +3787,7 @@ function ResultContent() {
 
         // 서버 API POST 생성
         try {
-          fetch("/api/orders", {
+          await fetch("/api/orders", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newOrder)
@@ -3791,7 +3804,7 @@ function ResultContent() {
   const handleUpgradeFromSms = (grade, amount) => {
     if (typeof window === "undefined") return;
 
-    const updateLocalStorageOrderGrade = (targetGrade) => {
+    const updateLocalStorageOrderGrade = async (targetGrade) => {
       try {
         const existingStr = localStorage.getItem("hyeandang_orders");
         let orders = [];
@@ -3803,13 +3816,24 @@ function ResultContent() {
             orders = [];
           }
         }
-        const matchedIdx = orders.findIndex(o => 
+        let matchedIdx = orders.findIndex(o => 
           o &&
           o.name === name && 
           parseInt(o.year) === year &&
           parseInt(o.month) === month &&
-          parseInt(o.day) === day
+          parseInt(o.day) === day &&
+          (o.status === "pending" || o.status === "ready")
         );
+
+        if (matchedIdx === -1) {
+          matchedIdx = orders.findIndex(o => 
+            o &&
+            o.name === name && 
+            parseInt(o.year) === year &&
+            parseInt(o.month) === month &&
+            parseInt(o.day) === day
+          );
+        }
         if (matchedIdx > -1) {
           orders[matchedIdx].status = "paid";
           orders[matchedIdx].reportGrade = targetGrade;
@@ -3820,7 +3844,7 @@ function ResultContent() {
 
           // 서버 API PUT 업데이트 추가
           try {
-            fetch("/api/orders", {
+            await fetch("/api/orders", {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -3858,7 +3882,7 @@ function ResultContent() {
 
           // 서버 API POST 생성 추가
           try {
-            fetch("/api/orders", {
+            await fetch("/api/orders", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(newOrder)
@@ -3872,8 +3896,8 @@ function ResultContent() {
       }
     };
 
-    const performUpgrade = () => {
-      updateLocalStorageOrderGrade(grade);
+    const performUpgrade = async () => {
+      await updateLocalStorageOrderGrade(grade);
       setIsPaid(true);
       
       const url = new URL(window.location.href);
@@ -3998,7 +4022,7 @@ function ResultContent() {
       if (resolvedPhone) queryParams.set("phone", resolvedPhone);
 
       const redirectUrl = typeof window !== "undefined"
-        ? `${window.location.origin}/result?${queryParams.toString()}&imp_success=true`
+        ? `${window.location.origin}/result?${queryParams.toString()}`
         : "https://saju.artpani.com/result";
 
       PortOne.requestPayment({
@@ -4167,7 +4191,7 @@ function ResultContent() {
     }
   };
 
-  const handlePortonePayment = () => {
+  const handlePortonePayment = async () => {
     if (typeof window === "undefined") return;
 
     const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "store-312155f8-f523-4067-a568-285c7bbec6e0";
@@ -4202,7 +4226,7 @@ function ResultContent() {
     if (!channelKey) {
       alert("[개발자 테스트 안내] V2 결제 채널 키가 지정되지 않아 모의 결제를 즉시 완료합니다.\n\n확인을 누르시면 결제완료 처리되고 상세 보고서 잠금이 풀립니다.");
       setIsPaid(true);
-      updateLocalStorageOrderToPaid(currentGrade);
+      await updateLocalStorageOrderToPaid(currentGrade);
       return;
     }
 
@@ -4220,18 +4244,20 @@ function ResultContent() {
       queryParams.set("reportGrade", currentGrade);
 
       const redirectUrl = typeof window !== "undefined" 
-        ? `${window.location.origin}/result?${queryParams.toString()}&imp_success=true`
+        ? `${window.location.origin}/result?${queryParams.toString()}`
         : "https://saju.artpani.com/result";
 
       const isTojeong = typeParam === "tojeong";
       const paymentTitle = isTojeong ? `${name}님 정통 토정비결 보고서` : `${name}님 정통 사주 풀이 보고서`;
+
+      const amount = currentGrade === "deep" ? 49900 : (currentGrade === "premium" ? 34900 : 14900);
 
       PortOne.requestPayment({
         storeId,
         channelKey,
         paymentId: `payment_${new Date().getTime()}`,
         name: paymentTitle,
-        totalAmount: 34900,
+        totalAmount: amount,
         currency: "KRW",
         payMethod: "CARD",
         redirectUrl: redirectUrl,
@@ -4256,7 +4282,7 @@ function ResultContent() {
               setTimeout(async () => {
                 setIsProcessing(false);
                 setIsPaid(true);
-                updateLocalStorageOrderToPaid();
+                await updateLocalStorageOrderToPaid();
 
                 // 이메일 자동 발송 트리거 연동 (결제 정보에서 입력한 이메일 주소 사용)
                 const targetEmail = emailParam || (rsp && rsp.buyer_email);

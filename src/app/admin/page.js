@@ -200,6 +200,7 @@ export default function AdminPage() {
   const [dateFilter, setDateFilter] = useState("all"); // all, today, 7days, 30days, custom
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState("all"); // all, paid, failed, pending
   const [refreshingId, setRefreshingId] = useState(null);
 
   // Q&A Inquiry States
@@ -224,6 +225,7 @@ export default function AdminPage() {
   const [crmAlert, setCrmAlert] = useState({ show: false, message: "", type: "info" });
   const [selectedSmsCoupon, setSelectedSmsCoupon] = useState("");
   const [sendCouponSmsOnCreate, setSendCouponSmsOnCreate] = useState(false);
+  const [selectedCustomerDetail, setSelectedCustomerDetail] = useState(null);
 
   // Touch Logs States
   const [touchLogs, setTouchLogs] = useState([]);
@@ -292,7 +294,7 @@ export default function AdminPage() {
     if (!isLoggedIn) return;
     const fetchInquiries = async () => {
       try {
-        const response = await fetch("/api/inquiry?adminPassword=artpani1234");
+        const response = await fetch("/api/inquiry?adminPassword=artpani1234", { cache: "no-store" });
         if (response.ok) {
           const data = await response.json();
           setInquiries(data);
@@ -444,7 +446,7 @@ export default function AdminPage() {
     if (!isLoggedIn) return;
     const fetchOrders = async () => {
       try {
-        const response = await fetch("/api/orders?adminPassword=artpani1234");
+        const response = await fetch("/api/orders?adminPassword=artpani1234", { cache: "no-store" });
         if (response.ok) {
           const data = await response.json();
           setOrders(data);
@@ -720,6 +722,15 @@ export default function AdminPage() {
         }
       }
       
+      // 결제 상태 필터 조건 적용
+      if (paymentStatusFilter !== "all") {
+        if (paymentStatusFilter === "pending") {
+          if (order.status !== "pending" && order.status !== "ready") return false;
+        } else {
+          if (order.status !== paymentStatusFilter) return false;
+        }
+      }
+      
       return (
         order.name.includes(searchTerm) ||
         order.email.includes(searchTerm) ||
@@ -816,11 +827,19 @@ export default function AdminPage() {
           totalSpent: 0,
           hasFreeOrder: false,
           purchasedProducts: new Set(),
+          orderHistory: [],
           lastOrderDate: o.createdAt || "-"
         };
       }
       const cust = customerMap[cleanPhone];
       cust.totalOrders++;
+      cust.orderHistory.push({
+        id: o.id,
+        productName: o.productName || "알 수 없는 상품",
+        amount: o.amount || 0,
+        status: o.status || "pending",
+        createdAt: o.createdAt || "-"
+      });
       if (o.status === "paid") {
         cust.paidOrders++;
         cust.totalSpent += o.amount || 0;
@@ -838,7 +857,8 @@ export default function AdminPage() {
 
     return Object.values(customerMap).map(c => ({
       ...c,
-      purchasedProducts: Array.from(c.purchasedProducts).join(", ")
+      purchasedProducts: Array.from(c.purchasedProducts).join(", "),
+      orderHistory: c.orderHistory.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     }));
   };
 
@@ -1753,8 +1773,12 @@ export default function AdminPage() {
                   <tbody className="divide-y divide-border-custom/50">
                     {filteredCustomers.length > 0 ? (
                       filteredCustomers.map((cust) => (
-                        <tr key={cust.phone} className="hover:bg-background-secondary/30 transition-colors">
-                          <td className="p-4 text-center">
+                        <tr 
+                          key={cust.phone} 
+                          className="hover:bg-background-secondary/50 transition-colors cursor-pointer"
+                          onClick={() => setSelectedCustomerDetail(cust)}
+                        >
+                          <td className="p-4 text-center" onClick={(e) => e.stopPropagation()}>
                             <input
                               type="checkbox"
                               checked={selectedCustomerPhones.includes(cust.phone)}
@@ -1996,11 +2020,130 @@ export default function AdminPage() {
                 )}
               </div>
             </div>
-          </div>
         </div>
+
+        {/* CRM 고객 상세 모달 팝업 */}
+        {selectedCustomerDetail && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 overflow-y-auto">
+            <div className="bg-white border border-[#E2DDD5] rounded-xl max-w-2xl w-full shadow-2xl overflow-hidden max-h-[85vh] flex flex-col animate-fadeIn">
+              {/* 모달 헤더 */}
+              <div className="bg-[#FAF8F6] border-b border-[#E2DDD5] p-5 flex justify-between items-center">
+                <div>
+                  <h3 className="font-myeongjo text-lg font-bold text-foreground flex items-center gap-2">
+                    👤 고객 상세 정보 & 구매 이력
+                  </h3>
+                  <p className="text-[11px] text-foreground-muted font-light mt-0.5">선택하신 고객의 주문 신청 및 결제 시도 전체 내역을 확인합니다.</p>
+                </div>
+                <button
+                  onClick={() => setSelectedCustomerDetail(null)}
+                  className="text-foreground-muted hover:text-foreground text-lg font-bold w-8 h-8 rounded-full hover:bg-background-secondary flex items-center justify-center transition-colors cursor-pointer"
+                >
+                  &times;
+                </button>
+              </div>
+
+              {/* 모달 바디 */}
+              <div className="p-6 overflow-y-auto space-y-6 flex-1">
+                {/* 고객 기본 정보 */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-background-secondary/40 border border-border-custom p-4 rounded-lg text-xs">
+                  <div>
+                    <span className="text-foreground-muted block mb-0.5">성명 (성별)</span>
+                    <strong className="text-foreground text-sm font-bold flex items-center gap-1">
+                      {selectedCustomerDetail.name}
+                      <span className={`text-[9px] px-1 rounded-sm ${
+                        selectedCustomerDetail.gender === "female" ? "bg-pink-50 text-pink-500" : "bg-blue-50 text-blue-500"
+                      }`}>
+                        {selectedCustomerDetail.gender === "female" ? "여성" : "남성"}
+                      </span>
+                    </strong>
+                  </div>
+                  <div>
+                    <span className="text-foreground-muted block mb-0.5">연락처</span>
+                    <strong className="text-foreground text-sm font-mono">{selectedCustomerDetail.phone}</strong>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="text-foreground-muted block mb-0.5">이메일</span>
+                    <strong className="text-foreground text-sm font-sans break-all">{selectedCustomerDetail.email}</strong>
+                  </div>
+                </div>
+
+                {/* 주문 상세 이력 목록 */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-xs text-foreground flex items-center gap-1.5 border-b border-border-custom/50 pb-2">
+                    📋 상세 신청 및 시도 이력 ({selectedCustomerDetail.orderHistory.length}건)
+                  </h4>
+                  
+                  <div className="border border-border-custom rounded-lg bg-background overflow-hidden shadow-sm">
+                    <table className="w-full text-left border-collapse text-xs">
+                      <thead>
+                        <tr className="bg-background-secondary border-b border-border-custom text-foreground font-semibold">
+                          <th className="p-3 w-16 text-center">주문 ID</th>
+                          <th className="p-3">신청 상품명</th>
+                          <th className="p-3 text-right">금액</th>
+                          <th className="p-3 text-center">상태</th>
+                          <th className="p-3">신청 일시</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border-custom/50">
+                        {selectedCustomerDetail.orderHistory.length > 0 ? (
+                          selectedCustomerDetail.orderHistory.map((item, idx) => (
+                            <tr key={item.id || idx} className="hover:bg-background-secondary/20 transition-colors">
+                              <td className="p-3 text-center text-foreground-muted font-mono">{item.id}</td>
+                              <td className="p-3 font-semibold text-foreground">{item.productName}</td>
+                              <td className="p-3 text-right font-bold text-foreground">
+                                {item.amount > 0 ? `${item.amount.toLocaleString()}원` : "0원"}
+                              </td>
+                              <td className="p-3 text-center">
+                                <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                                  item.status === "paid" 
+                                    ? "bg-jade/10 text-jade" 
+                                    : item.status === "free"
+                                    ? "bg-blue-50 text-blue-600 border border-blue-100"
+                                    : "bg-amber-50 text-amber-700 border border-amber-200"
+                                }`}>
+                                  {item.status === "paid" 
+                                    ? "결제완료" 
+                                    : item.status === "free" 
+                                    ? "무료체험" 
+                                    : "미결제(시도)"}
+                                </span>
+                              </td>
+                              <td className="p-3 text-foreground-muted">
+                                {item.createdAt ? item.createdAt.replace("T", " ").substring(0, 19) : "-"}
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="5" className="p-6 text-center text-foreground-muted">신청 이력이 없습니다.</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              {/* 모달 푸터 */}
+              <div className="bg-[#FAF8F6] border-t border-[#E2DDD5] p-4 flex justify-between items-center text-xs">
+                <div className="text-foreground-muted font-medium">
+                  총 결제 횟수: <strong className="text-jade">{selectedCustomerDetail.paidOrders}건</strong> / 
+                  누적 결제액: <strong className="text-brass">{selectedCustomerDetail.totalSpent.toLocaleString()}원</strong>
+                </div>
+                <button
+                  onClick={() => setSelectedCustomerDetail(null)}
+                  className="bg-brass hover:bg-brass-dark text-background font-bold px-4 py-2 rounded transition-colors shadow-sm cursor-pointer"
+                >
+                  닫기
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    );
-  };
+    </div>
+  );
+};
 
   if (!isLoggedIn) {
     return (
@@ -2279,6 +2422,20 @@ export default function AdminPage() {
                 )}
               </div>
               
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-foreground-muted">결제 상태:</span>
+                <select
+                  value={paymentStatusFilter}
+                  onChange={(e) => setPaymentStatusFilter(e.target.value)}
+                  className="bg-background border border-border-custom rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-brass text-foreground bg-white"
+                >
+                  <option value="all">전체 결제 상태</option>
+                  <option value="paid">결제 완료</option>
+                  <option value="failed">결제 실패</option>
+                  <option value="pending">미결제 대기</option>
+                </select>
+              </div>
+
               <div className="relative w-full lg:max-w-xs">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-foreground-muted" />
                 <input
@@ -2286,7 +2443,7 @@ export default function AdminPage() {
                   placeholder="고객명, 이메일, 상품명 검색"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-background border border-border-custom rounded pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-brass"
+                  className="w-full bg-background border border-border-custom rounded pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-brass text-foreground"
                 />
               </div>
             </div>
@@ -2373,6 +2530,16 @@ export default function AdminPage() {
                             {order.status === "failed" && (
                               <span className="inline-flex items-center gap-1 bg-red-50 text-red-600 px-2 py-0.5 rounded font-medium text-[10px]">
                                 <AlertTriangle className="w-3 h-3" /> 결제 실패
+                              </span>
+                            )}
+                            {(order.status === "ready" || order.status === "pending") && (
+                              <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-600 px-2 py-0.5 rounded font-medium text-[10px]">
+                                <AlertTriangle className="w-3 h-3" /> 결제 대기
+                              </span>
+                            )}
+                            {order.status === "free" && (
+                              <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-medium text-[10px]">
+                                <CheckCircle2 className="w-3 h-3" /> 무료 체험
                               </span>
                             )}
                           </td>
