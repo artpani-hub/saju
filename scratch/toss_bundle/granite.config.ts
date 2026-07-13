@@ -3,7 +3,7 @@ import { defineConfig } from '@apps-in-toss/web-framework/config';
 export default defineConfig({
   appName: 'hyeandang',
   brand: {
-    displayName: '혜안당',
+    displayName: '혜안당 운세',
     primaryColor: '#A3845B',
     icon: 'https://saju.artpani.com/scratch/toss_assets/logo_light.png',
   },

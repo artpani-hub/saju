@@ -3478,7 +3478,8 @@ function ResultContent() {
         );
         // 모바일 리다이렉트 등으로 들어왔을 때 해당 주문 정보를 로컬 스토리지에 업데이트
         (async () => {
-          await updateLocalStorageOrderToPaid(currentGradeParam);
+          const paymentIdParam = params.get("paymentId") || "";
+          await updateLocalStorageOrderToPaid(currentGradeParam, paymentIdParam);
         })();
         
         // [모바일 리다이렉트 대응] 결제 완료 시점 메일 및 문자 자동 전송 처리
@@ -3710,7 +3711,7 @@ function ResultContent() {
     return `${y}-${m}-${d} ${hh}:${mm}`;
   };
 
-  const updateLocalStorageOrderToPaid = async (targetGrade) => {
+  const updateLocalStorageOrderToPaid = async (targetGrade, paymentId) => {
     try {
       const existingStr = localStorage.getItem("hyeandang_orders");
       let orders = [];
@@ -3737,6 +3738,9 @@ function ResultContent() {
         if (targetGrade) {
           orders[matchedIdx].reportGrade = targetGrade;
         }
+        if (paymentId) {
+          orders[matchedIdx].paymentId = paymentId;
+        }
         if (typeParam === "tojeong") {
           orders[matchedIdx].productName = "정통 토정비결";
         }
@@ -3752,7 +3756,8 @@ function ResultContent() {
               id: orders[matchedIdx].id,
               status: "paid",
               reportGrade: targetGrade || orders[matchedIdx].reportGrade,
-              productName: orders[matchedIdx].productName
+              productName: orders[matchedIdx].productName,
+              paymentId: paymentId || orders[matchedIdx].paymentId
             })
           });
         } catch (e) {
@@ -3789,7 +3794,8 @@ function ResultContent() {
           day: String(day),
           hour: hour,
           worryText: worryText || "오늘의 운세",
-          reportGrade: targetGrade || "premium"
+          reportGrade: targetGrade || "premium",
+          paymentId: paymentId || ""
         };
         orders.push(newOrder);
         localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
@@ -4226,7 +4232,7 @@ function ResultContent() {
     if (!channelKey) {
       alert("[개발자 테스트 안내] V2 결제 채널 키가 지정되지 않아 모의 결제를 즉시 완료합니다.\n\n확인을 누르시면 결제완료 처리되고 상세 보고서 잠금이 풀립니다.");
       setIsPaid(true);
-      await updateLocalStorageOrderToPaid(currentGrade);
+      await updateLocalStorageOrderToPaid(currentGrade, `payment_mock_${new Date().getTime()}`);
       return;
     }
 
@@ -4282,7 +4288,7 @@ function ResultContent() {
               setTimeout(async () => {
                 setIsProcessing(false);
                 setIsPaid(true);
-                await updateLocalStorageOrderToPaid();
+                await updateLocalStorageOrderToPaid(currentGrade, rsp.paymentId);
 
                 // 이메일 자동 발송 트리거 연동 (결제 정보에서 입력한 이메일 주소 사용)
                 const targetEmail = emailParam || (rsp && rsp.buyer_email);

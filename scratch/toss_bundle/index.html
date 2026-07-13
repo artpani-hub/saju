@@ -3,15 +3,100 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>혜안당</title>
-  <script>
-    // 혜안당 공식 실서버 주소로 즉시 안전하게 리다이렉트 처리합니다.
-    window.location.replace("https://saju.artpani.com");
-  </script>
+  <title>혜안당 운세</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #FAF8F5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #333333;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .container {
+      text-align: center;
+      max-width: 320px;
+      width: 100%;
+      background-color: #ffffff;
+      border: 1px solid #EAE5DD;
+      border-radius: 16px;
+      padding: 40px 24px;
+      box-shadow: 0 4px 12px rgba(163, 132, 91, 0.08);
+    }
+    .logo-container {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px auto;
+      border-radius: 50%;
+      background-color: #FAF8F5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #E5DFD5;
+      overflow: hidden;
+    }
+    .logo-img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+    }
+    .title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1A1A1A;
+      margin: 0 0 8px 0;
+      letter-spacing: -0.5px;
+    }
+    .desc {
+      font-size: 12px;
+      color: #777777;
+      line-height: 1.6;
+      margin: 0 0 28px 0;
+      word-break: keep-all;
+    }
+    .btn-redirect {
+      display: block;
+      width: 100%;
+      background-color: #A3845B;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 0;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      text-decoration: none;
+      box-shadow: 0 2px 6px rgba(163, 132, 91, 0.2);
+    }
+    .btn-redirect:active {
+      background-color: #8C6F49;
+    }
+  </style>
 </head>
-<body style="margin: 0; background-color: #F9F8F6;">
-  <div style="display: flex; height: 100vh; align-items: center; justify-content: center; font-family: 'Malgun Gothic', sans-serif; color: #A3845B; font-weight: bold;">
-    혜안당으로 이동 중입니다...
+<body>
+  <div class="container">
+    <div class="logo-container">
+      <img src="https://saju.artpani.com/scratch/toss_assets/logo_light.png" alt="혜안당" class="logo-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'50\' r=\'40\' fill=\'%23A3845B\'/><text x=\'50\' y=\'58\' font-size=\'30\' text-anchor=\'middle\' fill=\'white\' font-weight=\'bold\'>혜</text></svg>'"/>
+    </div>
+    <h1 class="title">혜안당 운세</h1>
+    <p class="desc">
+      안전하고 신뢰할 수 있는 혜안당 공식 서비스 페이지로 이동하여 사주 및 궁합 상세 분석을 시작합니다.
+    </p>
+    <button class="btn-redirect" onclick="redirectToHyeandang()">
+      혜안당 서비스로 이동하기
+    </button>
   </div>
+
+  <script>
+    function redirectToHyeandang() {
+      window.location.replace("https://saju.artpani.com");
+    }
+  </script>
 </body>
 </html>
