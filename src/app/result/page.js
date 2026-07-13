@@ -8344,7 +8344,7 @@ function ResultContent() {
         )}
 
         {/* SMS 요약 보고서일 때 유료 결제 유도 하단 고정 플로팅 바 (오늘의 운세 및 무료 사주는 제외) */}
-        {type !== "today" && type !== "tarot" && type !== "gunghap" && type !== "wealth" && reportGrade === "sms" && (
+        {type !== "today" && type !== "tarot" && type !== "gunghap" && type !== "wealth" && type !== "dream" && reportGrade === "sms" && (
           typeParam === "tojeong" ? (
             <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
               <button
