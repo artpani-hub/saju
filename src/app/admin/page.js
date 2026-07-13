@@ -429,7 +429,7 @@ export default function AdminPage() {
     }
   }, [dateFilter]);
   const [editingId, setEditingId] = useState(null);
-  const [editForm, setEditForm] = useState({ name: "", email: "", phone: "" });
+  const [editForm, setEditForm] = useState({ name: "", email: "", phone: "", status: "pending", amount: 0 });
 
   // 1. 로그인 인증 체크 (sessionStorage 활용)
   useEffect(() => {
@@ -478,31 +478,39 @@ export default function AdminPage() {
 
   const startEdit = (order) => {
     setEditingId(order.id);
-    setEditForm({ name: order.name, email: order.email, phone: order.phone });
+    setEditForm({ 
+      name: order.name, 
+      email: order.email || "", 
+      phone: order.phone || "",
+      status: order.status || "pending",
+      amount: order.amount || 0
+    });
   };
 
   const saveEdit = async (id) => {
     try {
+      const parsedAmount = parseInt(editForm.amount) || 0;
+      const updatedForm = { ...editForm, amount: parsedAmount };
       const response = await fetch("/api/orders", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           adminPassword: "artpani1234",
           id: id,
-          ...editForm
+          ...updatedForm
         })
       });
       if (response.ok) {
         setOrders(prev => {
           const updated = prev.map(order =>
-            order.id === id ? { ...order, ...editForm } : order
+            order.id === id ? { ...order, ...updatedForm } : order
           );
           return updated;
         });
         setEditingId(null);
-        alert("고객 정보가 수정되었습니다.");
+        alert("고객 주문 정보가 수정되었습니다.");
       } else {
-        alert("고객 정보 수정에 실패했습니다.");
+        alert("고객 주문 정보 수정에 실패했습니다.");
       }
     } catch (e) {
       console.error(e);
@@ -2519,28 +2527,61 @@ export default function AdminPage() {
                           </td>
                           <td className="p-4 font-medium text-foreground">{order.productName}</td>
                           <td className="p-4 text-right font-bold text-foreground">
-                            {order.amount.toLocaleString()}원
+                            {editingId === order.id ? (
+                              <input
+                                type="number"
+                                name="amount"
+                                value={editForm.amount}
+                                onChange={handleEditChange}
+                                className="w-20 text-right bg-background border border-border-custom rounded px-2 py-0.5 text-xs text-foreground focus:outline-none focus:border-brass"
+                                placeholder="금액"
+                              />
+                            ) : (
+                              `${order.amount.toLocaleString()}원`
+                            )}
                           </td>
                           <td className="p-4">
-                            {order.status === "paid" && (
-                              <span className="inline-flex items-center gap-1 bg-jade/10 text-jade px-2 py-0.5 rounded font-medium text-[10px]">
-                                <CheckCircle2 className="w-3 h-3" /> 결제 완료
-                              </span>
-                            )}
-                            {order.status === "failed" && (
-                              <span className="inline-flex items-center gap-1 bg-red-50 text-red-600 px-2 py-0.5 rounded font-medium text-[10px]">
-                                <AlertTriangle className="w-3 h-3" /> 결제 실패
-                              </span>
-                            )}
-                            {(order.status === "ready" || order.status === "pending") && (
-                              <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-600 px-2 py-0.5 rounded font-medium text-[10px]">
-                                <AlertTriangle className="w-3 h-3" /> 결제 대기
-                              </span>
-                            )}
-                            {order.status === "free" && (
-                              <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-medium text-[10px]">
-                                <CheckCircle2 className="w-3 h-3" /> 무료 체험
-                              </span>
+                            {editingId === order.id ? (
+                              <select
+                                name="status"
+                                value={editForm.status}
+                                onChange={handleEditChange}
+                                className="bg-background border border-border-custom rounded px-1 py-0.5 text-xs text-foreground focus:outline-none focus:border-brass"
+                              >
+                                <option value="pending">결제 대기</option>
+                                <option value="paid">결제 완료</option>
+                                <option value="failed">결제 실패</option>
+                                <option value="free">무료 체험</option>
+                                <option value="cancelled">결제 취소</option>
+                              </select>
+                            ) : (
+                              <>
+                                {order.status === "paid" && (
+                                  <span className="inline-flex items-center gap-1 bg-jade/10 text-jade px-2 py-0.5 rounded font-medium text-[10px]">
+                                    <CheckCircle2 className="w-3 h-3" /> 결제 완료
+                                  </span>
+                                )}
+                                {order.status === "failed" && (
+                                  <span className="inline-flex items-center gap-1 bg-red-50 text-red-600 px-2 py-0.5 rounded font-medium text-[10px]">
+                                    <AlertTriangle className="w-3 h-3" /> 결제 실패
+                                  </span>
+                                )}
+                                {order.status === "cancelled" && (
+                                  <span className="inline-flex items-center gap-1 bg-red-100 text-red-700 px-2 py-0.5 rounded font-medium text-[10px]">
+                                    <AlertTriangle className="w-3 h-3" /> 결제 취소
+                                  </span>
+                                )}
+                                {(order.status === "ready" || order.status === "pending") && (
+                                  <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-600 px-2 py-0.5 rounded font-medium text-[10px]">
+                                    <AlertTriangle className="w-3 h-3" /> 결제 대기
+                                  </span>
+                                )}
+                                {order.status === "free" && (
+                                  <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-medium text-[10px]">
+                                    <CheckCircle2 className="w-3 h-3" /> 무료 체험
+                                  </span>
+                                )}
+                              </>
                             )}
                           </td>
                           <td className="p-4 text-foreground-muted font-traditional">
