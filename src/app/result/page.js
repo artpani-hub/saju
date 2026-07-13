@@ -3363,16 +3363,24 @@ function ResultContent() {
         const existingStr = localStorage.getItem("hyeandang_orders");
         if (existingStr) {
           const orders = JSON.parse(existingStr);
-          const matched = Array.isArray(orders) ? orders.find(o => 
-            o &&
-            o.name === name && 
-            o.status === "paid" &&
-            parseInt(o.year) === year &&
-            parseInt(o.month) === month &&
-            parseInt(o.day) === day
-          ) : null;
-          if (matched && matched.reportGrade) {
-            return matched.reportGrade;
+          if (Array.isArray(orders)) {
+            const matchedOrders = orders.filter(o => 
+              o &&
+              o.name === name && 
+              o.status === "paid" &&
+              parseInt(o.year) === year &&
+              parseInt(o.month) === month &&
+              parseInt(o.day) === day
+            );
+            if (matchedOrders.length > 0) {
+              const GRADE_RANK = { deep: 4, premium: 3, sms: 2, free: 1 };
+              matchedOrders.sort((a, b) => {
+                const rankA = GRADE_RANK[a.reportGrade] || 0;
+                const rankB = GRADE_RANK[b.reportGrade] || 0;
+                return rankB - rankA;
+              });
+              return matchedOrders[0].reportGrade;
+            }
           }
         }
       } catch (e) {
@@ -3643,14 +3651,25 @@ function ResultContent() {
       if (existingStr) {
         try {
           const orders = JSON.parse(existingStr);
-          paidOrder = Array.isArray(orders) ? orders.find(o => 
-            o &&
-            o.name === name && 
-            o.status === "paid" &&
-            parseInt(o.year) === year &&
-            parseInt(o.month) === month &&
-            parseInt(o.day) === day
-          ) : null;
+          if (Array.isArray(orders)) {
+            const matchedOrders = orders.filter(o => 
+              o &&
+              o.name === name && 
+              o.status === "paid" &&
+              parseInt(o.year) === year &&
+              parseInt(o.month) === month &&
+              parseInt(o.day) === day
+            );
+            if (matchedOrders.length > 0) {
+              const GRADE_RANK = { deep: 4, premium: 3, sms: 2, free: 1 };
+              matchedOrders.sort((a, b) => {
+                const rankA = GRADE_RANK[a.reportGrade] || 0;
+                const rankB = GRADE_RANK[b.reportGrade] || 0;
+                return rankB - rankA;
+              });
+              paidOrder = matchedOrders[0];
+            }
+          }
         } catch(e) {
           console.error(e);
         }
@@ -3952,7 +3971,8 @@ function ResultContent() {
         o.name === name && 
         parseInt(o.year) === year &&
         parseInt(o.month) === month &&
-        parseInt(o.day) === day
+        parseInt(o.day) === day &&
+        o.reportGrade === grade
       );
       if (matchedIdx === -1) {
         orders.push({
