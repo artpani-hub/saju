@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Script from "next/script";
@@ -282,6 +282,7 @@ const buildGeneralSmsText = (name, productName, email, phone, productKey, formDa
 function InputFormContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const isDraftRestored = useRef(false);
 
   // Selected product state
   const [productKey, setProductKey] = useState("saju");
@@ -415,31 +416,31 @@ function InputFormContent() {
 
   // 입력 폼 실시간 임시 보관 처리
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && isDraftRestored.current) {
       localStorage.setItem("hyeandang_draft_form_data", JSON.stringify(formData));
     }
   }, [formData]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && isDraftRestored.current) {
       localStorage.setItem("hyeandang_draft_product_key", productKey);
     }
   }, [productKey]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && isDraftRestored.current) {
       localStorage.setItem("hyeandang_draft_report_grade", reportGrade);
     }
   }, [reportGrade]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && isDraftRestored.current) {
       localStorage.setItem("hyeandang_draft_gunghap_type", gunghapType);
     }
   }, [gunghapType]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && isDraftRestored.current) {
       localStorage.setItem("hyeandang_draft_privacy_agreed", privacyAgreed ? "true" : "false");
     }
   }, [privacyAgreed]);
@@ -478,6 +479,8 @@ function InputFormContent() {
         }
       } catch (e) {
         console.error("임시 정보 복원 오류:", e);
+      } finally {
+        isDraftRestored.current = true;
       }
     }
   }, []);
