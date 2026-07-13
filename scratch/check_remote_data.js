@@ -6,14 +6,21 @@ const conn = new Client();
 conn.on('ready', () => {
   console.log('SSH Connected.');
   
-  // 1. json, bak, backup files search
-  conn.exec('find /home/www/saju-artpani -name "*.bak*" -o -name "*backup*" -o -name "*.json.bak" || true', (err, stream) => {
+  conn.exec('cat /home/www/saju-artpani/frontend/data/orders.json', (err, stream) => {
     if (err) throw err;
+    let output = '';
     stream.on('close', () => {
+      console.log('--- REMOTE DB ORDERS ---');
+      try {
+        const orders = JSON.parse(output);
+        console.log(JSON.stringify(orders.slice(0, 15), null, 2)); // 최근 15개 출력
+      } catch (e) {
+        console.log('Raw output:', output);
+      }
       conn.end();
       console.log('SSH Closed.');
     }).on('data', (data) => {
-      process.stdout.write(data);
+      output += data.toString();
     }).stderr.on('data', (data) => {
       process.stderr.write(data);
     });

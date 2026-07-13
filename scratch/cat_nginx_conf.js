@@ -1,8 +1,12 @@
 const { Client } = require('ssh2');
+const path = require('path');
+const fs = require('fs');
+
 const conn = new Client();
 conn.on('ready', () => {
   console.log('SSH Connected.');
-  conn.exec('cat /etc/nginx/conf.d/icit.conf', (err, stream) => {
+  // 원격의 진짜 사주 설정 파일 내용을 출력
+  conn.exec('cat /home/www/saju-artpani/nginx.conf', (err, stream) => {
     if (err) throw err;
     stream.on('close', () => {
       conn.end();
@@ -16,6 +20,6 @@ conn.on('ready', () => {
 }).connect({
   host: '121.125.61.114',
   port: 22,
-  username: 'artpani',
-  password: 'Artpani!2026_x'
+  username: 'saju-artpani',
+  privateKey: fs.readFileSync(path.join(require('os').homedir(), '.ssh', 'id_ed25519_121_125_61_114'))
 });

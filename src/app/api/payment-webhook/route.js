@@ -6,8 +6,20 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    console.log("PortOne Webhook received:", JSON.stringify(body));
+    let body = {};
+    const contentType = req.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+      body = await req.json();
+    } else {
+      const rawText = await req.text();
+      try {
+        body = JSON.parse(rawText);
+      } catch (e) {
+        const params = new URLSearchParams(rawText);
+        body = Object.fromEntries(params.entries());
+      }
+    }
+    console.log("PortOne Webhook received (parsed):", JSON.stringify(body));
 
     // V2 웹훅 페이로드 규격 분석
     let paymentId = body.data?.paymentId || body.paymentId;

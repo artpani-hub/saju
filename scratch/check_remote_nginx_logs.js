@@ -5,8 +5,8 @@ const fs = require('fs');
 const conn = new Client();
 
 conn.on('ready', () => {
-  console.log('SSH Client Connected. Fetching pm2 logs...');
-  conn.exec('pm2 logs saju-app --lines 100 --nostream', (execErr, stream) => {
+  console.log('SSH Client Connected. Fetching nginx access logs...');
+  conn.exec('tail -n 200 /var/log/nginx/access.log | grep "payment-webhook"', (execErr, stream) => {
     if (execErr) {
       console.error(execErr);
       conn.end();
@@ -14,7 +14,7 @@ conn.on('ready', () => {
     }
     let output = '';
     stream.on('close', (code) => {
-      console.log('PM2 LOGS OUTPUT:\n', output);
+      console.log('NGINX ACCESS LOGS:\n', output);
       conn.end();
     }).on('data', (data) => {
       output += data.toString();

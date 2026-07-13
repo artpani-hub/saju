@@ -1,18 +1,51 @@
 const { Client } = require('ssh2');
+const path = require('path');
+const fs = require('fs');
+
 const conn = new Client();
 conn.on('ready', () => {
-  console.log('SSH Client Ready');
-  // 3012 포트의 /result 페이지로 curl을 보내 상태 코드 확인
-  const url = 'http://localhost:3012/result?name=%EB%85%B8%EC%9D%80%EA%B2%BD&gender=female&type=newyear&calendar=solar&year=1995&month=5&day=15&hour=%EB%AA%A8%EB%A6%84';
-  conn.exec(`curl -o /dev/null -s -w "%{http_code}\\n" "${url}"`, (err, stream) => {
+  console.log('SSH Connected.');
+  
+  // 원격 서버 내부(localhost:3012)에서 웹훅 API로 모의 취소 웹훅 POST 요청을 전송해보고 응답 로깅
+  const testPayload = JSON.stringify({
+    type: "Transaction.Cancelled",
+    data: {
+      paymentId: "payment_mock_test_1234",
+      status: "CANCELLED"
+    }
+  });
+
+  const cmd = `curl -s -X POST http://127.0.0.1:3012/api/payment-webhook \
+    -H "Content-Type: application/json" \
+    -d '${testPayload}'`;
+
+  console.log('Running test curl...');
+  conn.exec(cmd, (err, stream) => {
     if (err) throw err;
-    stream.on('close', () => conn.end())
-      .on('data', (d) => console.log('HTTP STATUS CODE FOR RESULT PAGE:', d.toString().trim()))
-      .stderr.on('data', (d) => console.log('STDERR:', d.toString()));
+    let output = '';
+    stream.on('close', () => {
+      console.log('Test Request Finished. Response:');
+      console.log(output);
+      
+      // 호출 직후 pm2 로그의 마지막 10줄 확인
+      console.log('\nFetching latest pm2 logs...');
+      conn.exec('pm2 logs saju-app --lines 15 --nostream', (logErr, logStream) => {
+        if (logErr) throw logErr;
+        let logOutput = '';
+        logStream.on('close', () => {
+          console.log(logOutput);
+          conn.end();
+        }).on('data', (d) => { logOutput += d.toString(); });
+      });
+    }).on('data', (data) => {
+      output += data.toString();
+    }).stderr.on('data', (data) => {
+      process.stderr.write(data);
+    });
   });
 }).connect({
   host: '121.125.61.114',
   port: 22,
   username: 'saju-artpani',
-  password: 'saju_artpani_ssh_2026!'
+  privateKey: fs.readFileSync(path.join(require('os').homedir(), '.ssh', 'id_ed25519_121_125_61_114'))
 });

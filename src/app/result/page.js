@@ -3478,7 +3478,7 @@ function ResultContent() {
         );
         // 모바일 리다이렉트 등으로 들어왔을 때 해당 주문 정보를 로컬 스토리지에 업데이트
         (async () => {
-          const paymentIdParam = params.get("paymentId") || "";
+          const paymentIdParam = params.get("payment_id") || params.get("paymentId") || params.get("merchant_uid") || "";
           await updateLocalStorageOrderToPaid(currentGradeParam, paymentIdParam);
         })();
         
