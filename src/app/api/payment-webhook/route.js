@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import { db } from "../../../lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -39,31 +38,32 @@ export async function POST(req) {
       return NextResponse.json({ success: true, message: "Ignored status event" });
     }
 
-    const dataDir = path.join(process.cwd(), "data");
-    const filePath = path.join(dataDir, "orders.json");
+    const orderIdStr = paymentId.replace("payment_", "");
 
-    if (fs.existsSync(filePath)) {
-      const fileContent = fs.readFileSync(filePath, "utf8");
-      let orders = JSON.parse(fileContent);
+    // DB에서 매칭되는 주문 조회 및 트랜잭션 취소 처리
+    try {
+      const result = await db.$transaction(async (tx) => {
+        // 1. 주문 상태를 CANCELLED로 업데이트
+        const order = await tx.order.update({
+          where: { id: orderIdStr },
+          data: { status: "CANCELLED" }
+        });
 
-      // paymentId 매칭 또는 o.id(숫자 부분) 대치
-      const orderIdStr = paymentId.replace("payment_", "");
-      const matchedIdx = orders.findIndex(o => 
-        o && (String(o.id) === orderIdStr || o.paymentId === paymentId)
-      );
+        // 2. 해당 주문 유저의 사주 리포트 unlocked 상태를 false로 잠금
+        await tx.sajuReport.updateMany({
+          where: { userId: order.userId },
+          data: { unlocked: false }
+        });
 
-      if (matchedIdx > -1) {
-        orders[matchedIdx].status = "cancelled";
-        fs.writeFileSync(filePath, JSON.stringify(orders, null, 2), "utf8");
-        console.log(`[Webhook success] Order ${orders[matchedIdx].id} status set to cancelled via webhook.`);
-        return NextResponse.json({ success: true, message: `Order status set to cancelled` });
-      } else {
-        console.log(`[Webhook mismatch] Order not found for paymentId: ${paymentId}`);
-        return NextResponse.json({ success: false, message: "Order not found" }, { status: 404 });
-      }
+        return order;
+      });
+
+      console.log(`[Webhook success] Order ${result.id} status set to CANCELLED via database transaction.`);
+      return NextResponse.json({ success: true, message: `Order status set to cancelled` });
+    } catch (dbErr) {
+      console.log(`[Webhook mismatch] Order not found for id: ${orderIdStr}, error: ${dbErr.message}`);
+      return NextResponse.json({ success: false, message: "Order not found in DB" }, { status: 404 });
     }
-
-    return NextResponse.json({ success: false, message: "Orders DB not found" }, { status: 500 });
   } catch (err) {
     console.error("Webhook parse error:", err);
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });

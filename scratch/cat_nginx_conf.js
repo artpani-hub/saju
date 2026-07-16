@@ -5,8 +5,8 @@ const fs = require('fs');
 const conn = new Client();
 conn.on('ready', () => {
   console.log('SSH Connected.');
-  // 원격의 진짜 사주 설정 파일 내용을 출력
-  conn.exec('cat /home/www/saju-artpani/nginx.conf', (err, stream) => {
+  // docker ps 또는 docker version 실행하여 도커 활성 상태 파악
+  conn.exec('docker ps || systemctl status docker || service docker status || true', (err, stream) => {
     if (err) throw err;
     stream.on('close', () => {
       conn.end();

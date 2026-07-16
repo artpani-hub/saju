@@ -3,23 +3,21 @@ const path = require('path');
 const fs = require('fs');
 
 const conn = new Client();
-
 conn.on('ready', () => {
-  console.log('SSH Client Connected. Fetching pm2 logs...');
-  conn.exec('pm2 logs saju-app --lines 100 --nostream', (execErr, stream) => {
-    if (execErr) {
-      console.error(execErr);
-      conn.end();
-      return;
-    }
+  console.log('SSH Connected.');
+  // saju-app-out.log 의 파일 마지막 200줄을 덤프
+  conn.exec('tail -n 200 /home/www/saju-artpani/.pm2/logs/saju-app-out.log', (err, stream) => {
+    if (err) throw err;
     let output = '';
-    stream.on('close', (code) => {
-      console.log('PM2 LOGS OUTPUT:\n', output);
+    stream.on('close', () => {
+      console.log('--- PM2 OUT LOG FILE ---');
+      console.log(output);
       conn.end();
+      console.log('SSH Closed.');
     }).on('data', (data) => {
       output += data.toString();
     }).stderr.on('data', (data) => {
-      output += 'STDERR: ' + data.toString();
+      process.stderr.write(data);
     });
   });
 }).connect({

@@ -33,3 +33,5 @@ Thumbs.db
 
 # misc
 *.pem
+
+/src/generated/prisma

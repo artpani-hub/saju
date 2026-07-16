@@ -1,0 +1,237 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "binary"
+}
+
+// 1. 고객(회원/비회원 통합) 관리
+model User {
+  id             String   @id @default(uuid())
+  name           String   // 고객명
+  birthYear      Int      // 생년월일 - 년
+  birthMonth     Int      // 생년월일 - 월
+  birthDay       Int      // 생년월일 - 일
+  calendarType   String   // 양력·음력
+  isLeapMonth    Boolean  @default(false) // 윤달 여부
+  birthHour      String?  // 출생시간 (예: "14:30" 또는 "시 모름")
+  birthPlace     String?  // 출생지역
+  gender         String   // 성별
+  phone          String   @unique // 연락처
+  email          String?  // 이메일
+  worryText      String?  // 상담 또는 질문 내용
+  grade          String   @default("NORMAL") // 고객 등급 (NORMAL, VIP 등)
+  deleteRequested Boolean @default(false) // 탈퇴·삭제 요청 여부
+  createdAt      DateTime @default(now())
+  
+  reports        SajuReport[]
+  orders         Order[]
+  inquiries      Inquiry[]
+  messageLogs    MessageLog[]
+  promotionsUsed PromotionUse[]
+}
+
+// 2. 고객정보 수정 이력 (비회원 정보 변경 추적용)
+model SajuReportHistory {
+  id           String   @id @default(uuid())
+  reportId     String
+  report       SajuReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  fieldName    String   // 출생시간 변경, 음력·양력 변경, 생년월일 오입력, 이름 변경, 연락처 변경 등
+  oldValue     String?
+  newValue     String?
+  adminName    String   @default("관리자") // 처리 관리자
+  reason       String   @default("고객 요청") // 변경 사유
+  changedAt    DateTime @default(now())
+}
+
+// 3. 사주 보고서 구성 및 개별 리포트 기록
+model SajuReport {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  unlocked       Boolean  @default(false)
+  status         String   @default("INPUT_COMPLETED") // 정보 입력 -> 결제 대기 -> 결제 완료 -> 사주 분석 중 -> 보고서 생성 완료 -> 고객 전달 완료
+  createdAt      DateTime @default(now())
+  
+  histories      SajuReportHistory[]
+}
+
+// 4. 상품 관리
+model Product {
+  id               String   @id @default(uuid())
+  name             String   // 상품명 (평생 종합사주, 신년운세, 토정비결, 재물&비즈니스운 등)
+  reportType       String   // 리포트 구분 (문자메시지요약, 고급리포트, 심화리포트 등)
+  price            Int      // 판매가격
+  discountPrice    Int?     // 할인가격
+  description      String?  // 상품 설명
+  pageCount        Int      @default(21) // 보고서 페이지 수
+  toc              String   // 보고서 목차 (JSON 포맷)
+  requiredInputs   String   // 필요한 고객 입력정보 항목 (JSON 포맷)
+  generationMethod String   @default("AUTO") // 결과 생성 방식 (AUTO, MANUAL)
+  pdfTemplate      String?  // PDF 템플릿 경로/설정
+  estimatedTime    String   // 예상 생성시간 안내
+  isSale           Boolean  @default(true) // 판매 여부
+  displayOrder     Int      @default(0) // 노출 순서
+  createdAt        DateTime @default(now())
+}
+
+// 5. 주문 및 결제 관리
+model Order {
+  id             String   @id @default(uuid()) // 주문번호
+  applicationNum String   @unique // 신청번호
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productName    String   // 상품명
+  amount         Int      // 결제금액
+  paymentMethod  String   // 결제수단
+  status         String   // 결제상태 (결제 대기, 결제 완료, 결제 실패, 결제 취소, 부분 환불, 전체 환불, 입금 확인 대기)
+  reportStatus   String   // 보고서 상태 (대기, 제작 중, 생성 완료, 발송 완료)
+  refundStatus   String?  // 환불상태 (없음, 환불 요청, 환불 완료)
+  cashReceiptInfo String? // 현금영수증 정보
+  isDuplicate    Boolean  @default(false) // 중복 결제 여부
+  paymentDate    DateTime? // 결제일
+  createdAt      DateTime @default(now())
+}
+
+// 6. 메시지 및 고객 문의 관리
+model Inquiry {
+  id           String   @id @default(uuid())
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  type         String   // 문의 유형 (신청정보 수정, 보고서 내용 문의, 보고서 재발급, 링크 접속 오류, 결제 문의, 환불 문의, 개인정보 삭제 요청, 기타 문의)
+  content      String   // 문의 내용
+  answer       String?  // 답변 내용
+  status       String   @default("PENDING") // PENDING, ANSWERED
+  createdAt    DateTime @default(now())
+}
+
+// 자동 발송 메시지 및 발송 내역
+model MessageLog {
+  id          String   @id @default(uuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  phone       String   // 연락처
+  msgType     String   // 메시지 종류 (신청 접수 완료, 결제 대기 안내, 결제 완료 안내, 보고서 생성 시작, 보고서 생성 완료, 보고서 확인 링크, 입력정보 오류 안내, 환불 완료, 링크 만료 예정, 추가 상품 안내 등)
+  content     String   // 발송 내용
+  status      String   // 성공·실패
+  isRead      Boolean  @default(false) // 확인 여부
+  createdAt   DateTime @default(now()) // 발송일
+}
+
+// 7. 프로모션 관리
+model Promotion {
+  id           String   @id @default(uuid())
+  code         String   @unique // 프로모션/할인쿠폰 코드, 추천인 코드, 제휴업체 코드, 광고 매체별 전용 코드
+  type         String   // 프로모션 유형 (할인쿠폰, 기간 할인, 첫 구매 할인, 재구매 할인, 특정 상품 할인, 무료 보고서 이벤트, 결제금액별 할인 등)
+  value        Int      // 할인 수치
+  maxUses      Int      @default(1) // 최대 사용 횟수
+  usedCount    Int      @default(0) // 실제 사용 횟수
+  expiryDate   DateTime? // 만료일
+  isActive     Boolean  @default(true) // 활성화 여부
+  createdAt    DateTime @default(now())
+  
+  uses         PromotionUse[]
+}
+
+// 비회원 프로모션 중복 사용 방지 트래커
+model PromotionUse {
+  id          String   @id @default(uuid())
+  promotionId String
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceFingerprint String? // 브라우저 또는 기기 식별값
+  usedAt      DateTime @default(now())
+}
+
+// 8. 보고서 템플릿 관리 (표지, 문구, 디자인)
+model ReportTemplate {
+  id                String   @id @default(uuid())
+  // 목차 활성화 여부 관리
+  tocCover          Boolean  @default(true) // 표지
+  tocElements       Boolean  @default(true) // 오행 분석
+  tocNature         Boolean  @default(true) // 타고난 성향
+  tocStrengths      Boolean  @default(true) // 강점과 약점
+  tocWealth         Boolean  @default(true) // 재물운
+  tocJob            Boolean  @default(true) // 직업운
+  tocBusiness       Boolean  @default(true) // 사업운
+  tocLove           Boolean  @default(true) // 연애·결혼운
+  tocHealth         Boolean  @default(true) // 건강운
+  tocDaeun          Boolean  @default(true) // 대운
+  tocYearly         Boolean  @default(true) // 연도별 운세
+  tocMonthly        Boolean  @default(true) // 월별 운세
+  tocActionGuide    Boolean  @default(true) // 행동 가이드
+  tocSummary        Boolean  @default(true) // 총평
+
+  // 문구 관리
+  interpretDayStem  String?  // 일간별 기본 해석
+  interpretElements String?  // 오행 과다·부족 해석
+  interpretSipsin   String?  // 십성별 해석
+  interpretDaeun    String?  // 대운별 해석
+  interpretWealth   String?  // 재물운 해석
+  suggestJob        String?  // 직업 추천 문구
+  warningText       String?  // 주의 문구
+  positivePhrases   String?  // 긍정적인 표현
+  forbiddenPhrases  String?  // 금지 표현
+
+  // 디자인 관리
+  coverDesign       String   @default("default") // 표지 디자인
+  themeColor        String   @default("#A3845B") // 보고서 색상
+  logoPath          String?  // 로고 이미지 경로
+  watermarkPath     String?  // 워터마크 이미지 경로
+  displayNameType   String   @default("name_only") // 고객명 표시 방식
+  showPageNumbers   Boolean  @default(true) // 페이지 번호 표시 여부
+  pdfFooterText     String?  // PDF 하단 문구
+  adBannerArea      String?  // 광고 또는 추천 상품 영역
+
+  createdAt         DateTime @default(now())
+}
+
+// 9. 통계 수집 데이터 모델
+model StatisticSummary {
+  id              String   @id @default(uuid())
+  date            DateTime @unique // 통계 일자
+  // 신청 통계
+  applicationCount Int      @default(0) // 신청 수
+  completedCount   Int      @default(0) // 생성 완료 수
+  failedCount      Int      @default(0) // 생성 오류 수
+  averageGenTime   Int      @default(0) // 평균 생성시간 (초)
+  funnelDropouts   Int      @default(0) // 고객 정보 입력 중 이탈률/건수
+  
+  // 매출 통계
+  totalRevenue     Int      @default(0) // 기간 매출
+  discountTotal    Int      @default(0) // 할인금액
+  refundTotal      Int      @default(0) // 환불금액
+  netRevenue       Int      @default(0) // 순매출
+  
+  // 유입 통계
+  refNaver         Int      @default(0) // 네이버 유입
+  refGoogle        Int      @default(0) // 구글 유입
+  refMeta          Int      @default(0) // 메타광고 유입
+  refInstagram     Int      @default(0) // 인스타그램 유입
+  refYoutube       Int      @default(0) // 유튜브 유입
+  refKakao         Int      @default(0) // 카카오 유입
+  refDirect        Int      @default(0) // 직접 접속
+  refAffiliate     Int      @default(0) // 제휴 링크 유입
+  
+  // 이용 통계
+  linkSentCount    Int      @default(0) // 링크 발송 수
+  openRate         Float    @default(0.0) // 보고서 열람률
+  pdfDownloadCount Int      @default(0) // PDF 다운로드 수
+  avgReadCount     Float    @default(0.0) // 평균 열람 횟수
+  reissueCount     Int      @default(0) // 재발급 건수
+  crossSellCount   Int      @default(0) // 추가 상품 구매 수
+}
+
+// 10. 시스템 설정
+model SystemSetting {
+  id              String   @id @default(uuid())
+  siteName        String   @default("혜안당")
+  privacyDuration Int      @default(365) // 개인정보 보유기간 (일)
+  termsAndConds   String?  // 약관·동의 설정
+  apiConfig       String?  // API 연동 설정 (JSON 포맷)
+  backupConfig    String?  // 백업 관리 설정 (JSON 포맷)
+  alertConfig     String?  // 알림 설정 (JSON 포맷)
+}
