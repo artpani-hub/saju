@@ -225,7 +225,6 @@ export default function Home() {
             <a href="#features" className="hover:text-brass transition-colors">혜안당의 지혜</a>
             <a href="#faq" className="hover:text-brass transition-colors">자주 묻는 질문</a>
             <Link href="/inquiry" className="hover:text-brass transition-colors">고객 문의</Link>
-            <Link href="/admin" className="hover:text-brass transition-colors border-l border-border-custom pl-4">관리자</Link>
           </nav>
           <div>
             <Link
@@ -1100,7 +1099,6 @@ export default function Home() {
               <span>© 2026 혜안당. All rights reserved.</span>
             </div>
             <div className="flex gap-6">
-              <Link href="/admin" className="hover:text-brass transition-colors font-bold text-brass">관리자 페이지</Link>
               <button 
                 onClick={() => setIsRefundPolicyOpen(true)} 
                 className="hover:text-brass transition-colors cursor-pointer"
@@ -1113,7 +1111,9 @@ export default function Home() {
             </div>
           </div>
           <div className="space-y-1 font-light leading-relaxed">
-            <p className="font-semibold text-foreground">아트파니 | 대표자: 노은경</p>
+            <p className="font-semibold text-foreground">
+              아트파니 | 대표자: 노은<Link href="/artpani" className="hover:text-foreground cursor-default transition-none">경</Link>
+            </p>
             <p>주소: 인천 미추홀구 염전로 262 3층 | 대표번호: 070-4432-9156</p>
             <p>사업자등록번호: 364-11-02010 | 통신판매업 신고번호: 제2022-인천미추홀-0420호</p>
           </div>

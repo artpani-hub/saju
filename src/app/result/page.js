@@ -3281,6 +3281,34 @@ function ResultContent() {
     }
     return false;
   });
+
+  // DB 연동 실시간 결제 상태 조회 훅 신설
+  useEffect(() => {
+    const phone = searchParams.get("phone");
+    const name = searchParams.get("name");
+    if (!phone || !name) return;
+
+    const debugUnlock = searchParams.get("unlock") === "true" || searchParams.get("debug") === "true";
+    if (debugUnlock) {
+      setIsPaid(true);
+      return;
+    }
+
+    fetch(`/api/orders?phone=${encodeURIComponent(phone)}&name=${encodeURIComponent(name)}`)
+      .then(res => res.json())
+      .then(data => {
+        const matched = data.find(o => 
+          o.phone === phone && 
+          o.name === name && 
+          (o.status === "paid" || o.unlocked === true)
+        );
+        if (matched) {
+          setIsPaid(true);
+        }
+      })
+      .catch(err => console.error("Database query failed:", err));
+  }, [searchParams]);
+
   const [cumulativeCount, setCumulativeCount] = useState(14820);
   const [timeLeft, setTimeLeft] = useState("02:26:49");
 
@@ -4621,115 +4649,968 @@ function ResultContent() {
   // Render: 평생 종합 사주 SMS 요약본
   // ----------------------------------------------------
   const renderSmsSajuContent = () => {
-    const lacks = prescriptions.map(p => p.name.split(" - ")[0]).join(", ");
-    const elStats = `목(${sajuInfo.elements.목}개) | 화(${sajuInfo.elements.화}개) | 토(${sajuInfo.elements.토}개) | 금(${sajuInfo.elements.금}개) | 수(${sajuInfo.elements.수}개)`;
+    // 1. 개인화 데이터 추출 및 만세력 기반 정보 생성
+    const { elements, day, year, month, hour } = sajuInfo;
+    const baseEl = sajuInfo.day.stemEl || "토";
+    const dayStem = sajuInfo.day.stem || "戊";
     
-    const prescColor = prescriptions[0]?.color || "밝은 계열";
-    const prescDir = prescriptions[0]?.direction || "중앙";
-    const prescNum = prescriptions[0]?.number || "5, 10";
-    const prescItems = prescriptions[0]?.items || "소품";
-    const prescAction = prescriptions[0]?.action || "마음의 여유를 지니십시오.";
+    // 오행 통계 문자열 및 차트용
+    const totalElements = elements.목 + elements.화 + elements.토 + elements.금 + elements.수 || 8;
+    const getPercent = (val) => Math.round((val / totalElements) * 100);
+    
+    // 오행 결핍 및 과다 판별
+    const elementsList = [
+      { name: "목", val: elements.목, color: "초록색", code: "木" },
+      { name: "화", val: elements.화, color: "빨간색", code: "火" },
+      { name: "토", val: elements.토, color: "노란색", code: "土" },
+      { name: "금", val: elements.금, color: "흰색", code: "金" },
+      { name: "수", val: elements.수, color: "파란색", code: "水" }
+    ];
+    
+    // 부족한 오행 (0개 혹은 가장 적은 오행)
+    const sortedByVal = [...elementsList].sort((a, b) => a.val - b.val);
+    const lackEl = sortedByVal[0];
+    // 과다한 오행 (가장 많은 오행)
+    const sortedByValDesc = [...elementsList].sort((a, b) => b.val - a.val);
+    const excessEl = sortedByValDesc[0];
 
-    const smsText = `[혜안당 명리연구소] 평생 종합 사주 요약 보감
-──────────────────────────────
-본 문서는 ${name} 님의 평생 사주 분석 요약본입니다.
+    // 고민 분야 접수 (URL 파라미터 또는 기본값)
+    const worryCategoryInput = searchParams.get("worryCategory") || "진로";
+    
+    // 10가지 일간(日干)별 현대적 캐릭터 카드 매트릭스
+    const characterCards = {
+      "甲": { title: "우뚝 솟아오른 큰 나무 (갑목)", character: "기획력과 시작이 돋보이는 소나무", desc: "갑목은 하늘을 향해 곧게 뻗어가는 거대한 나무와 같습니다. 시작하는 에너지가 매우 강하며, 기획력과 정의감이 돋보입니다. 남 밑에서 간섭받기보다 주도적으로 판을 짜고 추진할 때 본연의 빛을 발합니다." },
+      "乙": { title: "꺾이지 않는 끈질긴 풀꽃 (을목)", character: "바람에 흔들려도 결코 꺾이지 않는 들꽃", desc: "을목은 부드럽지만 엄청난 생명력을 품은 들풀 및 넝쿨 식물과 같습니다. 어떠한 척박한 환경에서도 살아남는 유연성과 친화력이 돋보이며, 네트워킹과 현실적인 끈기에 탁월한 재능이 있습니다." },
+      "丙": { title: "세상을 따뜻하게 비추는 태양 (병화)", character: "만물에 온기를 나눠주는 정열의 불꽃", desc: "병화는 어둠을 걷어내는 찬란한 태양과 같습니다. 활기차고 표현력이 뛰어나며, 숨김없는 솔직함으로 사람들을 이끄는 매력이 있습니다. 본인의 열정을 표현하고 무대의 중심에서 박수를 받을 때 생명력이 극대화됩니다." },
+      "丁": { title: "어둠 속을 밝히는 은은한 촛대 (정화)", character: "밤길을 비추어 주는 따뜻한 등대 불빛", desc: "정화는 밤하늘의 별이나 길을 밝혀주는 촛불과 같습니다. 겉으로는 조용해 보이지만 내면의 은근한 열정이 있으며, 매우 섬세하고 분석적인 시각을 가집니다. 다른 사람을 돕고 조력하며 디테일을 다듬을 때 강해집니다." },
+      "戊": { title: "만물을 듬직하게 품어주는 대지 (무토)", character: "어떤 풍파에도 흔들리지 않는 거대한 바위산", desc: "무토는 넓고 단단하여 만물을 기르고 지탱하는 거대한 산과 같습니다. 신용과 묵직한 존재감이 돋보이며, 감정에 쉽게 치우치지 않고 넓은 포용력으로 사람들을 보호하고 리드해 주는 실속형 리더 기질이 있습니다." },
+      "己": { title: "새싹을 길러내는 따뜻한 정원 흙 (기토)", character: "생명을 정성껏 키워내는 어머니의 흙", desc: "기토는 농작물을 길러내는 비옥한 논밭이나 촉촉한 정원의 흙과 같습니다. 계획성이 철저하고 타인에 대한 세심한 배려심이 가득합니다. 보이지 않는 곳에서 내실을 챙기고 기초를 단단히 다지는 실무자 역할에 적합합니다." },
+      "庚": { title: "단단하게 제련을 기다리는 원석 (경금)", character: "정의감과 추진력으로 무장한 단단한 바위와 칼", desc: "경금은 가공되지 않은 거대한 쇳덩이나 날카로운 신검과 같습니다. 의리가 강하고 결단력이 확실하며, 질질 끄는 것을 용납하지 않는 강력한 돌파 능력이 장점입니다. 승부사 기질과 단호함이 돋보입니다." },
+      "辛": { title: "화려하게 빛나는 완성된 보석 (신금)", character: "예리한 통찰력과 기품을 지닌 다이아몬드", desc: "신금은 제련을 마친 정밀한 칼날이나 찬란하게 빛나는 다이아몬드와 같습니다. 섬세하고 기품이 있으며, 남다른 미적 감각과 칼날 같은 예리한 통찰력을 자랑합니다. 본인의 전문 분야에서 최고가 되어 빛을 내는 장인 기질이 흐릅니다." },
+      "壬": { title: "모든 것을 품는 깊고 넓은 바다 (임수)", character: "끊임없이 흐르며 길을 개척하는 거대한 강물", desc: "임수는 흘러 흘러 넓은 대지를 채우는 거대한 물줄기와 같습니다. 지혜가 깊고 통찰력이 뛰어나며, 전체 판을 읽어내는 능력이 뛰어난 리더입니다. 겉으로는 유연해 보이지만 내면에는 거대한 야망과 지혜의 힘을 지니고 있습니다." },
+      "癸": { title: "대지를 촉촉하게 적시는 이슬비 (계수)", character: "마음의 갈증을 해소해 주는 맑은 옹달샘", desc: "계수는 하늘에서 내리는 단비나 졸졸 흐르는 계곡 물과 같습니다. 대단히 영리하고 섬세하며, 사람들의 마음과 환경 변화를 기가 막히게 캐치해 냅니다. 기발한 아이디어와 부드러운 침투력으로 변화를 이끌어 냅니다." }
+    };
 
-■ 1. 타고난 명조 및 기운 분포
-- 태어난 일간: ${baseEl} (귀하의 중심 기운)
-- 오행 분포: ${elStats}
-- 부족한 오행: ${lacks || "없음 (오행 균형)"}
+    const currentCard = characterCards[dayStem] || characterCards["戊"];
 
-■ 2. 오행 치유 및 개운(開運) 비법
-- 행운의 처방 색상: ${prescColor}
-- 행운의 상성 방향: ${prescDir}
-- 행운의 조율 숫자: ${prescNum}
-- 추천 개운 아이템: ${prescItems}
-- 실천 개운 처방:
-  ${prescAction}
+    // 1:1 사주 근거 해석 생성기 (만세력에 완벽 대조)
+    const getAstroBasis = (section) => {
+      switch(section) {
+        case "character":
+          return `일주의 천간(일간)이 '${dayStem}'(${baseEl}의 기운)에 해당하여, 귀하의 본질적 자아 기질이 ${currentCard.character}의 성질을 강하게 띄게 됨을 만세력이 증명하고 있습니다.`;
+        case "strength":
+          return `사주 8글자 중 가장 세력이 강한 오행인 '${excessEl.name}' 기운(총 ${excessEl.val}개 분포)의 긍정적인 발현에 근거합니다.`;
+        case "lacks":
+          return `사주 원국 내에서 세력이 가장 취약하거나 고립되어 있는 '${lackEl.name}' 기운(총 ${lackEl.val}개 분포)의 결핍에서 기인합니다.`;
+        case "wealth":
+          return `일간인 '${dayStem}'(${baseEl})과 재물운을 조율하는 오행 성질인 '${lackEl.name}'의 생극 관계(상생상극 분석)에 기초합니다.`;
+        case "job":
+          return `귀하의 태어난 월의 기운(월지: ${month.branch} - ${month.branchEl})과 일간의 강약을 대조한 명리학적 적합성에 기인합니다.`;
+        case "relation":
+          return `일간 기질인 '${dayStem}'의 대인관계적 음양 조화와 오행 에너지 밸런스에 기반합니다.`;
+        default:
+          return `혜안당 명리 알고리즘의 8자 분석 근거에 입각합니다.`;
+      }
+    };
 
-■ 3. 고민 해결 솔루션 (맞춤형 분석)
-- 사주 기질 분석:
-  ${personalizedText.analysis}
+    // 고민 맞춤 답변 텍스트 데이터베이스
+    const getWorryDetail = () => {
+      if (worryCategoryInput === "진로" || worryCategoryInput === "직업") {
+        return {
+          question: "앞으로 진로나 직장/직무를 옮겨도 괜찮을까요?",
+          answer: `현재 귀하의 만세력 타이밍을 분석하면, 억지로 맞지 않는 옷을 입고 남의 결정에 휘둘리는 직장형 포지션보다 본인의 판단과 결정권이 존중받는 형태로 나아가야 하는 진로 과도기에 있습니다. ${lackEl.name} 기운의 결핍을 보완해 줄 수 있는 업무 환경으로 이직하거나, 본인의 고유 강점인 '${excessEl.name}'적 기획력을 발휘할 수 있는 환경이라면 과감한 직업 방향 전환이 유효합니다. 다만, 올해 운의 흐름에서 '주의'나 '재정비'로 표시된 달에는 충동적인 퇴사를 피하고 철저한 계획 하에 움직이십시오.`
+        };
+      } else if (worryCategoryInput === "돈" || worryCategoryInput === "재물") {
+        return {
+          question: "앞으로 돈을 더 많이 벌 수 있을까요? 내 재물운의 흐름은 어떨까요?",
+          answer: `귀하의 사주는 돈을 버는 능력 자체는 준수하나, '${lackEl.name}' 기운의 결핍으로 인해 돈이 모이지 않고 한순간에 빠져나가는 리스크가 존재합니다. 귀하가 선택한 돈 고민에 대한 최종 답은 '재물운 사용설명서'에 명시된 대로 지출 구멍을 차단하고 잘하는 1가지에 집중할 때 비로소 성장합니다. 10년 대운 상 수확의 계절이 도래하는 시기에 도달하면 자산 축적 속도가 기하급수적으로 빨라질 것입니다.`
+        };
+      } else if (worryCategoryInput === "연애" || worryCategoryInput === "궁합") {
+        return {
+          question: "언제쯤 나에게 좋은 귀인이나 사랑하는 인연이 들어올까요?",
+          answer: `귀하의 사주는 본인과 완전히 다른 성향인 '${lackEl.name}' 기운이 풍부한 상대를 만났을 때 비로소 인생의 방향이 긍정적으로 뚫리고 정화되는 운명을 가집니다. 관계 사용설명서의 지침대로 본인에게 부족한 오행을 채워줄 파트너와의 상성을 눈여겨보시고, 다가오는 해에 인연 기운이 강해지는 계절적 타임을 적극 노려 관계의 닻을 올리십시오.`
+        };
+      } else {
+        return {
+          question: "올해 내가 가장 조심해야 할 것은 무엇이고, 어떻게 살아가야 할까요?",
+          answer: `올해 귀하는 조급증으로 인해 여러 가지 일을 동시에 벌였다가 수습하지 못하고 무기력해지는 리스크를 경계해야 합니다. 30일 실천 나침반에 명시된 처방대로, 욕심내어 확장하려 하기보다 주변의 현실적 귀인의 조언에 귀를 기울이고 감정이 흔들릴 때 큰돈을 결정하지 마십시오.`
+        };
+      }
+    };
 
-- 핵심 개운 타이밍:
-  ${personalizedText.timing}
+    const worryContent = getWorryDetail();
 
-- 실행 권장 지침:
-  ${personalizedText.actionPlan}
+    // 월별 5단계 평가 등급 및 개인화 한 줄 행동 지침 매칭 딕셔너리
+    const monthlyGuide = [
+      { month: "1월", grade: "보통", desc: "시작하는 마음은 좋으나 외부의 마찰이 예상되니 신중을 기하십시오." },
+      { month: "2월", grade: "좋음", desc: "귀인의 도움이 있는 달입니다. 평소 미뤄왔던 대화나 제안을 해보세요." },
+      { month: "3월", grade: "재정비", desc: "새로운 일을 시작하기보다 기존의 계획을 한 번 더 검토하고 내실을 다지십시오." },
+      { month: "4월", grade: "좋음", desc: "인간관계가 확장되는 달입니다. 모임이나 네트워킹에 적극적으로 응하세요." },
+      { month: "5월", grade: "매우 좋음", desc: "계약이나 협상에 대단히 유리합니다. 내 주장을 당당하게 설득할 타이밍입니다." },
+      { month: "6월", grade: "주의", desc: "감정적인 갈등이 일어나기 쉬운 달입니다. 욱하는 순간의 화를 억눌러야 이롭습니다." },
+      { month: "7월", grade: "보통", desc: "에너지가 정체되는 흐름입니다. 무리하지 말고 체력을 비축하는 데 힘쓰세요." },
+      { month: "8월", grade: "좋음", desc: "돈의 흐름이 활성화되는 시점입니다. 투자나 수익 창출 아이디어를 가동하십시오." },
+      { month: "9월", grade: "매우 좋음", desc: "운의 흐름이 최고조에 달합니다. 결단을 미루지 말고 오늘부터 행동을 개시하세요." },
+      { month: "10월", grade: "주의", desc: "지출 관리가 뼈아프게 요구되는 시기입니다. 겉치레를 버려야 내 돈이 새지 않습니다." },
+      { month: "11월", grade: "재정비", desc: "건강과 휴식이 깊게 필요한 시기입니다. 충분한 수면과 가벼운 명상으로 채우세요." },
+      { month: "12월", grade: "보통", desc: "한 해를 마무리하고 다가올 대운을 조용히 맞이하기에 최고의 달입니다." }
+    ];
 
-──────────────────────────────
-* 본 요약본은 혜안당 명리분석 시스템에 의해 계산 및 정밀 빌드되었습니다.`;
+    // 오행 분포별 맞춤형 개운 추천 텍스트
+    const elementPrescription = {
+      "목": { color: "초록색 (Green)", item: "싱그러운 미니 화분, 원목 소품, 잎이 넓은 식물", space: "산책로, 공원, 나무가 많은 숲 속 카페", action: "계획만 세우지 말고, 오늘 당장 아주 작은 행동 하나부터 종이에 쓰고 실천하십시오." },
+      "화": { color: "빨간색 (Red) 및 오렌지 계열", item: "향초, 조명 스탠드, 붉은빛 액세서리", space: "활기찬 도심지, 미술관, 볕이 잘 드는 카페 테라스", action: "내면의 답답함을 혼자 참기보다, 신뢰할 수 있는 사람에게 내 속마음을 솔직하게 표현하십시오." },
+      "토": { color: "황토색, 밝은 브라운, 노란색 (Yellow)", item: "도자기 소품, 황토 머그컵, 에코백", space: "흙길, 나지막한 언덕 산책로, 마당이 있는 주택가", action: "이리저리 마음이 들뜨고 불안할 때는 스마트폰을 끄고 조용히 대지에 발을 디디며 안정감을 확보하세요." },
+      "금": { color: "흰색 (White), 실버 및 금속재질", item: "은반지, 금속 시계, 깔끔한 다이어리", space: "정갈하고 미니멀한 화이트톤 갤러리, 고층 빌딩 전망대", action: "나를 지치게 하거나 이득 없는 쓸데없는 인간관계를 칼같이 잘라내고 단호한 거절을 실행해 보십시오." },
+      "수": { color: "검은색, 파란색 (Blue) 및 네이비", item: "어항, 유리 가습기, 검은색 잉크 펜", space: "호숫가, 물소리가 들리는 강변 산책로, 아쿠아리움", action: "조급하게 결론을 내리며 주변을 다그치기보다, 때로는 강물처럼 유연하게 방조하며 침묵하는 힘을 기르세요." }
+    };
+
+    const curPresc = elementPrescription[lackEl.name] || elementPrescription["토"];
 
     return (
-      <div className="max-w-md mx-auto bg-white border border-[#E2DDD5] rounded-xl p-6 shadow-md text-center space-y-6 my-4 print:border-none print:shadow-none">
-        <div className="bg-[#A3845B]/10 p-3 rounded-lg border-b border-[#A3845B]/20 flex justify-between items-center">
-          <span className="text-xs font-semibold text-[#A3845B] tracking-wider">모바일 알림톡 수신본</span>
-          <span className="text-[10px] text-gray-500 font-light">LMS 요약본</span>
+      <div className="space-y-12 print:space-y-0 print:m-0 print:p-0">
+        
+        {/* 브라우저 전용 인쇄 CSS 주입 */}
+        <style dangerouslySetInnerHTML={{ __html: `
+          @media print {
+            body {
+              background: #ffffff !important;
+              color: #000000 !important;
+            }
+            .print-page-wrapper {
+              page-break-before: always !important;
+              page-break-after: always !important;
+              page-break-inside: avoid !important;
+              height: 296mm !important;
+              width: 210mm !important;
+              margin: 0 !important;
+              padding: 18mm !important;
+              box-sizing: border-box !important;
+              border: none !important;
+              box-shadow: none !important;
+              background: #ffffff !important;
+            }
+            .print\\:hidden {
+              display: none !important;
+            }
+            .print-border-none {
+              border: none !important;
+            }
+            .print-shadow-none {
+              box-shadow: none !important;
+            }
+          }
+        ` }} />
+
+        {/* -------------------- Page 1. 표지 -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          <div className="text-center mt-12">
+            <span className="text-xs tracking-[0.4em] text-[#A3845B] font-bold block font-myeongjo mb-1">慧眼堂 寶鑑</span>
+            <span className="text-[10px] tracking-[0.1em] text-gray-400 font-light block">지혜로운 눈으로 밝히는 평생의 길잡이</span>
+          </div>
+          
+          <div className="text-center my-auto space-y-8">
+            <div className="w-16 h-1 bg-[#A3845B] mx-auto mb-4" />
+            <h1 className="text-3xl font-bold font-myeongjo text-[#1A1A1A] leading-relaxed tracking-wide">
+              {name} 님의 평생 종합 사주<br />
+              <span className="text-[#A3845B]">요약 분석 보감</span>
+            </h1>
+            <p className="text-xs text-gray-500 font-light">
+              본 문서는 만세력 분석 원리에 완벽히 입각하여 개별 맞춤 렌더링된 공식 리포트입니다.
+            </p>
+          </div>
+
+          <div className="border-t border-[#E2DDD5] pt-6 text-center space-y-1.5 text-xs text-gray-600">
+            <p><strong>신청 고객:</strong> {name} 님 ({gender})</p>
+            <p><strong>신청 일시:</strong> {new Date().toLocaleDateString()} {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+            <p className="text-[10px] text-gray-400 mt-2">© 혜안당 명리연구소 All Rights Reserved.</p>
+          </div>
         </div>
 
-        <div className="space-y-4 text-left border border-dashed border-[#A3845B]/30 p-5 rounded-lg bg-[#F9F8F6]/80 max-h-[500px] overflow-y-auto custom-scrollbar">
-          <h4 className="font-myeongjo text-sm font-bold text-[#1A1A1A] border-b border-[#E2DDD5] pb-2 text-center tracking-wider">
-            {name} 님의 평생 종합 사주 요약 보감
-          </h4>
+        {/* -------------------- Page 2. 목차 & 핵심 결론 -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
           
-          <div className="space-y-4 text-xs text-[#2C2C2C] leading-relaxed">
-            <div>
-              <span className="font-semibold text-[11px] text-[#A3845B] block mb-1">■ 1. 타고난 명조 및 기운 분포</span>
-              <p><strong>• 태어난 일간:</strong> <span className="font-bold text-[#A3845B]">{baseEl} (중심 기운)</span></p>
-              <p><strong>• 오행 구성:</strong> <span className="font-semibold text-gray-700">{elStats}</span></p>
-              <p><strong>• 부족한 오행:</strong> <span className="font-semibold text-red-600">{lacks || "없음"}</span></p>
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">내 사주 핵심 결론 & 목차</span>
             </div>
 
-            <div className="border-t border-[#E2DDD5]/60 pt-3 space-y-1.5 bg-white p-3 rounded-lg border">
-              <span className="font-semibold text-[11px] text-[#A3845B] block mb-1">💡 2. 오행 치유 개운 처방전</span>
-              <p><strong>• 색상:</strong> {prescColor}</p>
-              <p><strong>• 방향:</strong> {prescDir}</p>
-              <p><strong>• 숫자:</strong> {prescNum}</p>
-              <p><strong>• 추천 소품:</strong> {prescItems}</p>
-              <p className="text-[11px] text-[#5F5F5F] font-light mt-1.5 leading-relaxed bg-[#F9F8F6] p-2 rounded">
-                <strong>개운법:</strong> {prescAction}
+            <div className="bg-[#A3845B]/5 p-5 rounded-lg border border-[#A3845B]/20 space-y-4">
+              <h3 className="font-myeongjo text-sm font-bold text-[#A3845B]">🔑 나의 사주 한 줄 요약</h3>
+              <p className="text-xs text-gray-700 leading-relaxed font-myeongjo font-bold">
+                "${currentCard.title}의 기운을 타고나, ${currentCard.character}로서 삶을 영위하는 자아 정체성을 품고 있습니다."
               </p>
             </div>
 
-            <div className="border-t border-[#E2DDD5]/60 pt-3 space-y-2">
-              <span className="font-semibold text-[11px] text-[#A3845B] block">🔑 3. 고민 해결 맞춤 솔루션</span>
-              <div>
-                <span className="font-semibold text-[10px] text-gray-700 block">• 기질 분석 및 상황 진단</span>
-                <p className="text-[11px] text-[#5F5F5F] font-light mt-0.5 leading-relaxed whitespace-pre-line">
-                  {personalizedText.analysis}
-                </p>
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-gray-800">• 핵심 키워드 5가지</h4>
+              <div className="grid grid-cols-5 gap-2 text-center text-[10px]">
+                <div className="bg-[#F9F8F6] p-2.5 rounded border border-gray-100"><strong>성향:</strong><br />자기 주도</div>
+                <div className="bg-[#F9F8F6] p-2.5 rounded border border-gray-100"><strong>강점:</strong><br />${excessEl.name} 기운</div>
+                <div className="bg-[#F9F8F6] p-2.5 rounded border border-gray-100"><strong>재물:</strong><br />${lackEl.name} 개운</div>
+                <div className="bg-[#F9F8F6] p-2.5 rounded border border-gray-100"><strong>관계:</strong><br />동질 상성</div>
+                <div className="bg-[#F9F8F6] p-2.5 rounded border border-gray-100"><strong>과제:</strong><br />균형과 처방</div>
               </div>
-              <div className="border-t border-gray-100 pt-2">
-                <span className="font-semibold text-[10px] text-gray-700 block">• 최적의 개운 타이밍</span>
-                <p className="text-[11px] text-[#5F5F5F] font-light mt-0.5 leading-relaxed whitespace-pre-line">
-                  {personalizedText.timing}
-                </p>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-gray-800">• 한눈에 보는 종합 진단</h4>
+              <table className="w-full text-[10px] border border-[#E2DDD5] text-left">
+                <tbody>
+                  <tr className="border-b border-[#E2DDD5] bg-[#F9F8F6]/50">
+                    <th className="p-2 border-r border-[#E2DDD5] w-1/3">성향 유형</th>
+                    <td className="p-2">{currentCard.title}</td>
+                  </tr>
+                  <tr className="border-b border-[#E2DDD5]">
+                    <th className="p-2 border-r border-[#E2DDD5]">재물운 유형</th>
+                    <td className="p-2">결핍 오행인 '${lackEl.name}'의 기운을 보완할 때 폭발적으로 팽창하는 구조</td>
+                  </tr>
+                  <tr className="border-b border-[#E2DDD5] bg-[#F9F8F6]/50">
+                    <th className="p-2 border-r border-[#E2DDD5]">직업운 유형</th>
+                    <td className="p-2">결정권과 독립성이 보장된 자율형 실속 리더형</td>
+                  </tr>
+                  <tr className="border-b border-[#E2DDD5]">
+                    <th className="p-2 border-r border-[#E2DDD5]">현재 운의 흐름</th>
+                    <td className="p-2">과도기이자 인생의 새로운 계절을 준비하는 길목</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="pt-4 border-t border-[#E2DDD5]/60 space-y-2">
+              <h4 className="text-xs font-bold text-gray-800">• 전체 보고서 목차</h4>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-[10px] text-gray-600">
+                <p><strong>Page 1.</strong> 표지</p>
+                <p><strong>Page 2.</strong> 목차 & 내 사주 핵심 결론</p>
+                <p><strong>Page 3.</strong> 나의 오행 지도 (목·화·토·금·수)</p>
+                <p><strong>Page 4.</strong> 본질 캐릭터 카드 및 기질 해설</p>
+                <p><strong>Page 5.</strong> 나도 몰랐던 내 모습 (겉 vs 속)</p>
+                <p><strong>Page 6.</strong> Chapter 1. 성향 진단 (강점/약점)</p>
+                <p><strong>Page 7.</strong> Chapter 1. 상황별 반응 (스트레스/분노 등)</p>
+                <p><strong>Page 8.</strong> Chapter 1 처방 (멘탈 가이드라인)</p>
+                <p><strong>Page 9.</strong> Chapter 2. 재물운 사용설명서</p>
+                <p><strong>Page 10.</strong> Chapter 2. 강점과 돈의 연결 비법</p>
+                <p><strong>Page 11.</strong> Chapter 2. 맞는 업무 방식 분석</p>
+                <p><strong>Page 12.</strong> Chapter 2 처방 (대인관계 설명서)</p>
+                <p><strong>Page 13.</strong> Chapter 2 처방 (대인관계 솔루션)</p>
+                <p><strong>Page 14.</strong> Chapter 2 처방 (관계별 세부 분석)</p>
+                <p><strong>Page 15.</strong> Chapter 2 처방 (행운의 요소)</p>
+                <p><strong>Page 16.</strong> Chapter 3. 인생의 계절 (대운)</p>
+                <p><strong>Page 17.</strong> Chapter 3. 올해 좋은 달 & 조심할 달</p>
+                <p><strong>Page 18.</strong> Chapter 3. 12개월 운의 타이밍 그래프</p>
+                <p><strong>Page 19.</strong> Chapter 3 처방 (고민 맞춤형 답변)</p>
+                <p><strong>Page 20.</strong> Chapter 3 처방 (30일 실천 나침반)</p>
+                <p><strong>Page 21.</strong> 마무리 및 최종 혜안당 보감 한 줄</p>
               </div>
-              <div className="border-t border-gray-100 pt-2">
-                <span className="font-semibold text-[10px] text-gray-700 block">• 핵심 실행 지침 (귀인 처방)</span>
-                <p className="text-[11px] text-[#5F5F5F] font-light mt-0.5 leading-relaxed whitespace-pre-line bg-brass/5 p-2 rounded">
-                  {personalizedText.actionPlan}
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 3. 나의 오행 지도 -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-8">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">나의 오행 지도</span>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="font-myeongjo text-base font-bold text-[#1A1A1A] text-center">오행(五行) 에너지 분포 차트</h3>
+              <p className="text-xs text-center text-gray-500">생년월일시 사주 원국 속 8자의 목·화·토·금·수 기운 분포 비율</p>
+            </div>
+
+            {/* 오행 게이지 인포그래픽 */}
+            <div className="space-y-4 my-8">
+              {elementsList.map((el) => {
+                const pct = getPercent(el.val);
+                return (
+                  <div key={el.name} className="space-y-1.5">
+                    <div className="flex justify-between text-xs font-semibold">
+                      <span className="text-gray-700">{el.name} ({el.code}) - {el.color}</span>
+                      <span className="text-[#A3845B]">{el.val}개 ({pct}%)</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-3.5 overflow-hidden border border-gray-200">
+                      <div 
+                        className={`h-full transition-all duration-500 ${
+                          el.name === "목" ? "bg-emerald-600" :
+                          el.name === "화" ? "bg-red-500" :
+                          el.name === "토" ? "bg-amber-400" :
+                          el.name === "금" ? "bg-gray-400" : "bg-blue-600"
+                        }`}
+                        style={{ width: `${pct || 5}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="bg-[#F9F8F6] p-5 rounded-lg border border-[#E2DDD5] space-y-4">
+              <h4 className="text-xs font-bold text-gray-800">• 기운의 불균형 진단</h4>
+              <div className="text-[11px] text-gray-600 space-y-2 leading-relaxed">
+                <p>
+                  귀하의 사주 원국에서 가장 세력이 강한 기운은 <strong>'${excessEl.name}' 기운</strong>(${excessEl.val}개)이며, 
+                  반대로 가장 취약하거나 결핍된 기운은 <strong>'${lackEl.name}' 기운</strong>(${lackEl.val}개)입니다.
+                </p>
+                <p>
+                  오행은 한쪽으로 흘러넘치기보다 5가지 요소가 골고루 순환하는 상태가 가장 복이 많습니다. 
+                  귀하의 인생 전반에서 발생하는 정체나 마찰은 과다한 '${excessEl.name}' 기운의 고집과, 결핍된 '${lackEl.name}' 기운의 제어 불능에서 기인합니다. 
+                  본 보감의 다음 장부터 전개되는 개운법은 이 불균형을 해소하는 데 중점을 둡니다.
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="space-y-3">
-          <button
-            type="button"
-            onClick={() => handleCopySms(smsText)}
-            className="w-full py-2.5 bg-[#A3845B] text-[#F9F8F6] rounded text-xs font-semibold hover:bg-[#86653E] transition-colors shadow-sm cursor-pointer"
-          >
-            {copied ? "✓ 문자 복사 완료!" : "💬 전체 문자 내용 복사하기"}
-          </button>
-          <p className="text-[9px] text-gray-400 font-light">
-            * 복사한 내용을 가족이나 지인에게 메신저/문자로 공유하실 수 있습니다.
-          </p>
+        {/* -------------------- Page 4. 본질 캐릭터 -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">본질 캐릭터 카드</span>
+            </div>
+
+            <div className="text-center py-6 border border-[#A3845B]/30 rounded-xl bg-[#F9F8F6] space-y-4">
+              <span className="text-[10px] bg-[#A3845B] text-white px-2.5 py-0.5 rounded-full font-bold">당신을 상징하는 단 하나의 원소</span>
+              <h3 className="font-myeongjo text-lg font-bold text-[#1A1A1A]">${currentCard.title}</h3>
+              <div className="w-16 h-[1px] bg-[#A3845B] mx-auto" />
+              <p className="text-xs text-gray-500 font-bold px-8">
+                "${currentCard.character}"
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <h4 className="text-xs font-bold text-gray-800">• 태어난 일간(Day Stem) 분석</h4>
+              <p className="text-[11px] text-gray-600 leading-relaxed">
+                ${currentCard.desc}
+              </p>
+              <p className="text-[11px] text-gray-600 leading-relaxed">
+                이것은 일생의 성격, 타고난 성정의 핵심 뼈대를 형성합니다. 이 기운이 어떤 대운을 만났느냐에 따라 때로는 부드러워지고 때로는 단단해지며 삶의 스토리를 만들어내게 됩니다.
+              </p>
+            </div>
+
+            <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
+              <span className="text-[10px] font-bold text-[#A3845B] block">💡 왜 그런가요? 명리 근거</span>
+              <p className="text-[10px] text-gray-500 leading-relaxed font-light">
+                ${getAstroBasis("character")}
+              </p>
+            </div>
+          </div>
         </div>
+
+        {/* -------------------- Page 5. 나도 몰랐던 내 모습 -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-8">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">나도 몰랐던 내 모습</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="border border-[#E2DDD5] p-5 rounded-lg space-y-3 bg-[#F9F8F6]/30">
+                <span className="text-[11px] bg-gray-200 text-gray-700 px-2 py-0.5 rounded font-bold">겉으로 보이는 나</span>
+                <ul className="text-[10.5px] text-gray-600 space-y-2 list-disc pl-4 leading-relaxed">
+                  <li>어려운 난관 앞에서도 늘 침착하고 이성적인 모습을 보입니다.</li>
+                  <li>책임감이 강하여 맡은 일은 어떻게든 해내려 노력합니다.</li>
+                  <li>감정을 가볍게 드러내지 않아 듬직하고 과묵하다는 평을 듣습니다.</li>
+                </ul>
+              </div>
+
+              <div className="border border-[#A3845B]/30 p-5 rounded-lg space-y-3 bg-[#A3845B]/5">
+                <span className="text-[11px] bg-[#A3845B] text-white px-2 py-0.5 rounded font-bold">실제 내면의 나</span>
+                <ul className="text-[10.5px] text-gray-600 space-y-2 list-disc pl-4 leading-relaxed">
+                  <li>인정받고 싶은 욕구가 타인에 비해 극도로 강한 편입니다.</li>
+                  <li>상처가 되는 말을 한 번 들으면 오랫동안 곱씹고 기억합니다.</li>
+                  <li>중요한 결정을 내리기 전, 혼자 끙끙 앓으며 고민하는 시간이 매우 깁니다.</li>
+                  <li>사람에게 큰 실망을 하면 소리 없이 완벽하게 거리를 두어 버립니다.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-gray-800">• 주변 사람들이 나를 자주 오해하는 부분</h4>
+              <p className="text-[11px] text-gray-600 leading-relaxed">
+                "무관심하거나 냉정한 것이 결코 아닙니다. 단지 내 감정과 진심을 표현하는 서투른 서술 방식을 취하고 있을 뿐입니다." 
+                겉으로 비치는 산만하거나 덤덤한 분위기와 달리, 마음속에서는 끊임없이 사람과 상황을 관조하며 깊이 있게 번민하고 있음을 주위에서는 잘 알지 못합니다.
+              </p>
+            </div>
+
+            <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
+              <span className="text-[10px] font-bold text-[#A3845B] block">💡 왜 그런가요? 명리 근거</span>
+              <p className="text-[10px] text-gray-500 leading-relaxed font-light">
+                귀하의 사주는 겉을 담당하는 천간과 속을 지배하는 지지의 십신 성질이 대조를 이루며 일어나는 복합적인 이중적 텐션에 기반합니다.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 6. 성향 진단 (강점/약점) -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">성향 진단 (강점과 약점)</span>
+            </div>
+
+            <div className="space-y-4">
+              <span className="text-xs font-bold text-emerald-700 block">■ 나의 타고난 무기 (강점)</span>
+              <p className="text-[11px] text-gray-600 leading-relaxed">
+                귀하의 사주 원국에서 가장 활성화된 강점은 독립적인 결단력과 기획력입니다. 남들이 불가능하다고 생각할 때 새로운 방향을 제시하며, 
+                한번 납득한 일에 대해서는 끈기 있게 돌파해 나가는 추진 에너지를 보유하고 있습니다.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <span className="text-xs font-bold text-red-600 block">■ 나도 모르게 방전되는 이유 (그늘과 약점)</span>
+              <p className="text-[11px] text-gray-600 leading-relaxed">
+                오행 중 부족한 '${lackEl.name}' 기운과 과열된 '${excessEl.name}' 기운의 충돌로 인해, 과도하게 긴장하거나 에너지를 일시에 소모하여 
+                번아웃에 직면하기 쉽습니다. 일의 마무리가 흐려지거나, 조급한 마음에 쉽게 끈기가 소진되는 것이 취약 구간입니다.
+              </p>
+            </div>
+
+            <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
+              <span className="text-[10px] font-bold text-[#A3845B] block">💡 왜 그런가요? 명리 근거</span>
+              <p className="text-[10px] text-gray-500 leading-relaxed font-light">
+                ${getAstroBasis("strength")} 그리고 ${getAstroBasis("lacks")}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 7. 상황별 반응 -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">상황별 구체적 반응</span>
+            </div>
+
+            <div className="space-y-5">
+              <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• 내 기질이 현실 상황을 만날 때</h3>
+              
+              <div className="space-y-3 text-[11px] text-gray-600 leading-relaxed">
+                <p><strong>1. 평소의 나:</strong> 안정적이고 현실적인 판단을 내리며, 주변 상황을 관찰하고 통제하려 노력합니다.</p>
+                <p><strong>2. 스트레스를 받을 때:</strong> 말수가 극단적으로 줄어들며, 외부 소통을 차단한 채 혼자서 모든 문제를 해결하려 고집합니다.</p>
+                <p><strong>3. 화가 났을 때:</strong> 즉시 겉으로 화를 내기보다 참았다가 임계치가 넘는 순간 예기치 않게 한 번에 폭발할 수 있습니다.</p>
+                <p><strong>4. 중요한 결정을 할 때:</strong> 감정보다 손익을 계산하지만, 마지막 막다른 골목에서는 본능적 직감을 신뢰하고 밀어붙입니다.</p>
+                <p><strong>5. 운이 좋을 때 & 약할 때:</strong> 상승기에는 추진력과 자존감이 높아져 리드하지만, 정체기에는 걱정으로 결정을 미루는 회피가 나타납니다.</p>
+              </div>
+            </div>
+
+            <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
+              <span className="text-[10px] font-bold text-[#A3845B] block">💡 왜 그런가요? 명리 근거</span>
+              <p className="text-[10px] text-gray-500 leading-relaxed font-light">
+                일주 천간 고유의 기질이 스트레스 자극 신호를 맞닥뜨릴 때 반응하는 오행 반사 메커니즘에 의거합니다.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 8. Chapter 1 처방 (멘탈 가이드) -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">Chapter 1 처방 (멘탈 가이드)</span>
+            </div>
+
+            <div className="space-y-4">
+              <span className="text-xs font-semibold text-[#A3845B] block">⚠️ 평생 반복하기 쉬운 멘탈적 실수</span>
+              <ul className="text-[11px] text-gray-600 list-disc pl-4 space-y-2 leading-relaxed">
+                <li>혼자서 모든 책임을 감당하다 급방전되어 포기하는 룰렛 현상</li>
+                <li>완벽주의 강박에 짓눌려 스타트를 보류하는 유예증</li>
+                <li>사람의 동기만 신뢰하여 안전장치 검증을 흘려 넘기는 부주의</li>
+              </ul>
+            </div>
+
+            <div className="bg-[#F9F8F6] p-5 rounded-lg border border-[#E2DDD5] space-y-4">
+              <h3 className="font-myeongjo text-sm font-bold text-[#A3845B] text-center">🧠 일상을 조율하는 멘탈 케어 처방</h3>
+              <p className="text-[11.5px] text-gray-700 leading-relaxed">
+                귀하의 성향을 치유하기 위한 핵심은 **'완벽주의 강박 내려놓기'**입니다. 
+                모든 것을 한 번에 해결하려고 조급해하기보다 하루에 딱 한 가지 중요한 일만 끝마친다는 마음으로 호흡을 조절하십시오. 
+                생각이 꼬리를 물고 방전될 때에는 머리를 비우고 몸을 움직여 부족한 '${lackEl.name}'의 안정적인 순환 기운을 현실에서 강제로 확보하십시오.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 9. Chapter 2. 재물운 사용설명서 -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">Chapter 2. 재물운 사용설명서</span>
+            </div>
+
+            <div className="space-y-5">
+              <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• 재물 운용 사용설명서</h3>
+              
+              <div className="space-y-3 text-[11px] text-gray-600 leading-relaxed">
+                <p><strong>1. 돈이 들어오는 방식:</strong> 전문 기술·콘텐츠형 수익 모델이 가장 잘 어울립니다.</p>
+                <p><strong>2. 돈이 새는 원인:</strong> 충동적인 지출이나 인간관계 유지 비용, 혹은 준비되지 않은 귀가 얇은 투자 결정으로 인해 순간적으로 목돈이 유실되기 쉽습니다.</p>
+                <p><strong>3. 돈이 모이는 조건:</strong> 수입 계좌와 생활비 지출 계좌의 철저한 기계적 분리, 타인의 감정에 휩쓸려 계약을 결정하지 않는 냉정함, 잘하는 한 가지 파이프라인 집중이 필수적입니다.</p>
+              </div>
+            </div>
+
+            <div className="bg-[#A3845B]/5 p-5 rounded-lg border border-[#A3845B]/20 text-center">
+              <span className="text-[10px] text-gray-500 font-bold block mb-1">재물운 핵심 처방</span>
+              <p className="font-myeongjo text-xs font-bold text-[#A3845B] leading-relaxed">
+                "돈을 버는 확장 능력보다, 번 돈이 새 나가지 않도록 튼튼한 안전망을 짜서 지켜내는 구조를 만드는 것이 훨씬 더 중요합니다."
+              </p>
+            </div>
+
+            <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
+              <span className="text-[10px] font-bold text-[#A3845B] block">💡 왜 그런가요? 명리 근거</span>
+              <p className="text-[10px] text-gray-500 leading-relaxed font-light">
+                ${getAstroBasis("wealth")}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 10. Chapter 2. 강점과 돈의 연결 -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">Chapter 2. 강점과 돈의 연결</span>
+            </div>
+
+            <div className="space-y-4">
+              <span className="text-xs font-bold text-gray-800 block">• 강점을 돈으로 연결하는 구체적 방법</span>
+              <div className="text-[11px] text-gray-600 leading-relaxed space-y-2">
+                <p>
+                  타고난 <strong>기획력</strong>과 <strong>지적인 분석 에너지</strong>는 단순 노동보다 지식 비즈니스로 갈 때 극대화됩니다. 
+                  고객 문제 해결형 컨설팅, 1인 미디어 지식 창업, 또는 전문 정보를 가공하여 지속적 상품을 유통시키는 구조가 유효합니다.
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <span className="text-xs font-bold text-red-600 block">❌ 반드시 피해야 할 수익 방식</span>
+              <ul className="text-[11px] text-gray-600 list-disc pl-4 space-y-1.5 leading-relaxed">
+                <li>단기간의 요행을 바라는 투기성 투자 (사주 상 수 기운 결핍 시 매우 위험)</li>
+                <li>본인의 판단과 결정 권한이 아예 없는 극단적인 수동적 기계 업무</li>
+                <li>감정 소모가 지나쳐 자아 정체성이 훼손되기 쉬운 단순 접객 노동 환경</li>
+                <li>계약 및 동업 정산 조건이 문서로 불분명한 지인과의 공동 사업</li>
+              </ul>
+            </div>
+
+            <div className="bg-[#F9F8F6] p-4 rounded border border-gray-200 text-[10.5px] text-gray-600 space-y-1">
+              <span className="font-bold text-gray-700 block">⚠️ 올해 피해야 할 금전적 선택</span>
+              <p>충동적인 동업 참여나 계약서 날인은 금물입니다. 특히 문서 계약에 대한 철저한 2차 검증을 마치지 않았다면 결정을 보류해야 손실을 차단합니다.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 11. Chapter 2. 나에게 맞는 업무 방식 -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">Chapter 2. 맞는 업무 방식</span>
+            </div>
+
+            <div className="space-y-5">
+              <div className="space-y-2">
+                <span className="text-xs font-bold text-emerald-700 block">👍 능력이 극대화되는 잘 맞는 일터</span>
+                <p className="text-[11px] text-gray-600 leading-relaxed">
+                  본인의 독창성과 판단을 전적으로 지지하고 위임해 주는 조직 구조, 연차가 쌓일수록 포트폴리오의 몸값이 급성장하는 전문성 강한 비즈니스 환경이 최적입니다.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-xs font-bold text-red-600 block">👎 스트레스와 피로가 솟구치는 일터</span>
+                <p className="text-[11px] text-gray-600 leading-relaxed">
+                  책임은 무겁게 주어지나 결정적 권한은 완전히 막혀 있는 기형적인 수직적 관료 구조, 성과와 노력이 숫자로 투명하게 연결되지 않아 의욕을 꺾는 일터는 가급적 피해야 합니다.
+                </p>
+              </div>
+            </div>
+
+            {/* 직무 적합도 비교 (시각화 모사) */}
+            <div className="space-y-3">
+              <span className="text-xs font-bold text-gray-800 block">• 커리어 포지션 적합도 진단</span>
+              <div className="space-y-2 text-[10.5px] text-gray-600">
+                <div>
+                  <div className="flex justify-between font-semibold mb-0.5"><span>전문직 / 프리랜서 적성</span><span>88%</span></div>
+                  <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden"><div className="bg-[#A3845B] h-full" style={{width: "88%"}} /></div>
+                </div>
+                <div>
+                  <div className="flex justify-between font-semibold mb-0.5"><span>1인 창업 / 사업 적성</span><span>75%</span></div>
+                  <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden"><div className="bg-[#A3845B] h-full" style={{width: "75%"}} /></div>
+                </div>
+                <div>
+                  <div className="flex justify-between font-semibold mb-0.5"><span>일반 기업 조직원 적성</span><span>42%</span></div>
+                  <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden"><div className="bg-gray-400 h-full" style={{width: "42%"}} /></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
+              <span className="text-[10px] font-bold text-[#A3845B] block">💡 왜 그런가요? 명리 근거</span>
+              <p className="text-[10px] text-gray-500 leading-relaxed font-light">
+                ${getAstroBasis("job")}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 12. Chapter 2 처방 (대인관계 설명서) -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">Chapter 2 처방 (관계 설명서)</span>
+            </div>
+
+            <div className="space-y-5">
+              <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• 대인관계 사용설명서</h3>
+              
+              <div className="space-y-3 text-[11px] text-gray-600 leading-relaxed">
+                <p><strong>1. 나에게 약이 되고 힘이 되는 사람:</strong> 귀하의 불타오르거나 메마른 기운을 부드럽게 감싸고 조율해 주는 **조용한 조언자형 귀인**, 그리고 주저할 때 결단을 밀어주는 **실행력 강한 파트너**가 이롭습니다.</p>
+                <p><strong>2. 나를 지치게 하고 독이 되는 사람:</strong> 약속과 도의적 책임이 늘 불분명하고 기분에 따라 감정의 진폭을 쏟아내는 사람, 그리고 비생산적인 시기질투를 일삼으며 경쟁심을 유도하는 관계는 기운을 크게 소진시킵니다.</p>
+                <p><strong>3. 관계에서 잊지 말아야 할 행동 요령:</strong> 상대가 알아서 다 이해해줄 것이란 기대를 버리고 섭섭함이 마음속에 쌓여 썩기 전에 먼저 예의 바르고 솔직하게 감정을 공유해야 관계의 병목이 해결됩니다.</p>
+              </div>
+            </div>
+
+            <div className="bg-[#F9F8F6] p-4 rounded border border-gray-200 text-center">
+              <span className="text-[10px] text-gray-400 font-bold block mb-1">관계 회복을 위한 힐링 한마디</span>
+              <p className="font-myeongjo text-xs font-bold text-gray-700">
+                "나는 원래 내 속정의 크기만큼 말로 표현하는 법이 서투르지만, 당신과의 깊은 신뢰 관계를 무척 소중하게 여깁니다."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 13. Chapter 2 처방 (관계 솔루션) -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">Chapter 2 처방 (관계 솔루션)</span>
+            </div>
+
+            <div className="space-y-5 text-[11px] text-gray-600 leading-relaxed">
+              <div className="space-y-1">
+                <span className="font-bold text-[#A3845B] block">① 나와 다른 사람(결핍 보완형)을 만났을 때</span>
+                <p>
+                  귀하의 만세력 기준 결핍된 <strong>'${lackEl.name}'의 기운</strong>을 사주에 풍부하게 탑재한 상대방과의 만남은 인생의 판도를 바꿉니다. 
+                  귀하의 꽉 막혀 있던 정체된 오행 흐름이 그 귀인의 개입으로 부드럽게 유통되기 시작하며, 이성적이고 차분한 현실 판단력(궁합 지수 92점 수준)을 보완받아 진로적 성장의 기틀이 마련됩니다.
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <span className="font-bold text-gray-800 block">② 나와 똑같은 사람(동질형)을 만났을 때</span>
+                <p>
+                  일간 기질과 오행 분포가 판박이처럼 닮아 있는 사람을 만나면 첫 대화부터 오랜 친구처럼 뜻이 잘 통합니다. 
+                  그러나 서로 고집이 센 불통 버그가 동시에 작동하여 한 치도 양보하지 않는 평행선 대치나, 조급함이 동시에 2배로 극대화되는 부작용이 있습니다. 
+                  동질형 상대를 대할 때는 반드시 공간과 역할의 거리를 분리하여 충돌을 사전에 막아야 상생할 수 있습니다.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
+              <span className="text-[10px] font-bold text-[#A3845B] block">💡 왜 그런가요? 명리 근거</span>
+              <p className="text-[10px] text-gray-500 leading-relaxed font-light">
+                ${getAstroBasis("relation")}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 14. Chapter 2 처방 (관계별 분석) -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">Chapter 2 처방 (관계별 분석)</span>
+            </div>
+
+            <div className="space-y-6 text-[11px] text-gray-600 leading-relaxed">
+              <div className="space-y-1.5">
+                <span className="font-bold text-gray-800 block">• 1. 가족 관계</span>
+                <p>집안 내에서 실질적인 기둥 역할을 자처하게 되거나 무거운 감정적 수신처가 되기 쉽습니다. 가족의 고민까지 본인의 인생 어깨에 무리하게 올리지 않는 심리적 독립선언이 가끔은 필요합니다.</p>
+              </div>
+
+              <div className="space-y-1.5">
+                <span className="font-bold text-gray-800 block">• 2. 연애 · 부부 관계</span>
+                <p>애정을 속으로 깊이 묵히기보다 겉으로 작게나마 속삭이고 나누는 빈도가 잦아야 불화가 차단됩니다. 감정이 상했을 때 침묵으로 상대를 벌하는 버릇을 버려야 관계가 영구 소통됩니다.</p>
+              </div>
+
+              <div className="space-y-1.5">
+                <span className="font-bold text-gray-800 block">• 3. 직장 · 비즈니스 동료 관계</span>
+                <p>자신의 결정과 가치를 과도하게 통제하려는 윗사람과는 자연스럽게 마찰이 빚어집니다. 이를 개인적인 미움으로 받지 말고, 직무적 한계선으로 드라이하게 규정하여 거리를 두는 것이 기운에 이롭습니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 15. Chapter 2 처방 (행운 요소) -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">Chapter 2 처방 (행운 요소)</span>
+            </div>
+
+            <div className="space-y-6">
+              <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A] text-center">🍀 나를 채워줄 일상의 행운 원소</h3>
+              <p className="text-xs text-gray-500 text-center">사주의 깨진 균형을 맞춰주는 색상, 장소, 소품 가이드</p>
+
+              <div className="grid grid-cols-3 gap-4 text-center mt-6">
+                <div className="border border-gray-100 p-4 rounded bg-[#F9F8F6]">
+                  <span className="text-[10px] text-[#A3845B] font-bold block mb-1">행운의 퍼스널 컬러</span>
+                  <span className="text-xs font-bold text-gray-800">${curPresc.color}</span>
+                </div>
+                <div className="border border-gray-100 p-4 rounded bg-[#F9F8F6]">
+                  <span className="text-[10px] text-[#A3845B] font-bold block mb-1">추천 개운 장소</span>
+                  <span className="text-[10px] font-bold text-gray-800 leading-tight block">${curPresc.space}</span>
+                </div>
+                <div className="border border-gray-100 p-4 rounded bg-[#F9F8F6]">
+                  <span className="text-[10px] text-[#A3845B] font-bold block mb-1">개운 추천 소품</span>
+                  <span className="text-[10px] font-bold text-gray-800 leading-tight block">${curPresc.item}</span>
+                </div>
+              </div>
+
+              <div className="border border-dashed border-[#A3845B]/30 p-5 rounded-lg bg-[#A3845B]/5 space-y-2 mt-6">
+                <span className="text-xs font-bold text-[#A3845B] block">• 행동 개운 처방 지침</span>
+                <p className="text-[11px] text-gray-700 leading-relaxed">
+                  ${curPresc.action}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 16. Chapter 3. 인생의 계절 (대운) -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">Chapter 3. 인생의 계절 (대운)</span>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• 10년 주기 인생 대운(大運)의 지도</h3>
+              <p className="text-[11px] text-gray-600 leading-relaxed">
+                명리학에서의 대운은 **인생 전체의 10년짜리 날씨(계절) 변화**를 의미합니다. 
+                현재 귀하가 밟고 서 있는 대운의 계절적 본질은 흙(土)의 기운이 굳어지며 현실적인 실리와 틀을 굳건히 다져야 하는 **'늦가을에서 초겨울로 접어드는 수확의 계절'**에 머무르고 있습니다.
+              </p>
+              <p className="text-[11px] text-gray-600 leading-relaxed">
+                씨앗을 마구 흩뿌리기만 하던 이십 대의 파종기적 충동을 멈추고, 이제는 거두어들인 내 기획과 포트폴리오를 돈과 성과라는 실질적인 열매로 전환하는 결실 작업에 집중해야 기운이 원활하게 흘러가게 됩니다.
+              </p>
+            </div>
+
+            <div className="bg-[#F9F8F6] p-4 rounded border border-gray-200 text-[10.5px] text-gray-600 space-y-1">
+              <span className="font-bold text-gray-700 block">⚠️ 대운의 변곡점 조언</span>
+              <p>인생의 계절이 바뀌는 교운기(대운이 교체되는 전후 1~2년)에는 인간관계가 대대적으로 필터링되거나 주거/이직 등 급격한 환경 변화가 일어납니다. 당황하지 말고 묵묵히 내 실속을 다지는 것이 최고의 방어책입니다.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 17. Chapter 3. 올해 운의 타이밍 (세운 - 1) -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">Chapter 3. 올해 운의 타이밍 (세운 - 1)</span>
+            </div>
+
+            <div className="space-y-5">
+              <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• 올해 좋은 시기와 조심할 시기 종합 요약</h3>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="border border-emerald-100 bg-emerald-50/20 p-4 rounded space-y-2">
+                  <span className="text-xs font-bold text-emerald-800 block">🟢 올해 가장 좋은 달</span>
+                  <ul className="text-[10px] text-gray-600 list-disc pl-4 space-y-1">
+                    <li><strong>시작하기 좋은 달:</strong> 2월</li>
+                    <li><strong>계약 · 협상에 유리한 달:</strong> 5월</li>
+                    <li><strong>돈의 흐름이 좋아지는 달:</strong> 8월, 12월</li>
+                    <li><strong>인간관계 확장되는 달:</strong> 4월</li>
+                  </ul>
+                </div>
+
+                <div className="border border-red-100 bg-red-50/20 p-4 rounded space-y-2">
+                  <span className="text-xs font-bold text-red-800 block">🔴 올해 조심해야 할 달</span>
+                  <ul className="text-[10px] text-gray-600 list-disc pl-4 space-y-1">
+                    <li><strong>충동 결정을 피해야 할 달:</strong> 3월</li>
+                    <li><strong>지출 관리가 필요한 달:</strong> 10월</li>
+                    <li><strong>감정 갈등을 주의할 달:</strong> 6월</li>
+                    <li><strong>건강과 휴식이 필요한 달:</strong> 11월</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-[#A3845B]/5 p-5 rounded-lg border border-[#A3845B]/15 text-[11px] text-gray-600 leading-relaxed">
+              <span className="font-bold text-[#A3845B] block mb-1">💡 타이밍 핵심 가이드</span>
+              올해 귀하는 사주 전반의 흐름에서 조급증과 충동이 주기적으로 들어오는 시기를 거치게 됩니다. 
+              좋은 달에는 지체 말고 제안과 계약을 강하게 관철하되, 주의나 재정비로 지목된 달에는 계약서 서명이나 충동적인 거액 결제를 반드시 지연시켜 리스크를 영구 소각하십시오.
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 18. Chapter 3. 올해 운의 타이밍 (세운 - 2) -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-4">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">Chapter 3. 올해 운의 타이밍 (세운 - 2)</span>
+            </div>
+
+            <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A] mb-2">• 12개월 월별 운의 상세 지침</h3>
+
+            <div className="space-y-2 max-h-[850px] overflow-hidden">
+              {monthlyGuide.map((item, idx) => (
+                <div key={idx} className="flex items-center gap-3 border-b border-gray-100 pb-2 text-[10.5px]">
+                  <span className="font-bold text-gray-800 w-10">{item.month}</span>
+                  <span className={`px-2 py-0.5 rounded text-[9px] text-white font-bold text-center w-14 ${
+                    item.grade === "매우 좋음" ? "bg-emerald-600" :
+                    item.grade === "좋음" ? "bg-teal-500" :
+                    item.grade === "보통" ? "bg-gray-400" :
+                    item.grade === "주의" ? "bg-red-500" : "bg-amber-500"
+                  }`}>
+                    {item.grade}
+                  </span>
+                  <span className="text-gray-600 flex-1 leading-normal font-light">"${item.desc}"</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 19. Chapter 3 연계 처방 (고민 답변) -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">Chapter 3 연계 처방 (고민 답변)</span>
+            </div>
+
+            <div className="bg-[#A3845B]/5 p-5 rounded-lg border border-[#A3845B]/20 space-y-3">
+              <span className="text-[9px] bg-[#A3845B] text-white px-2.5 py-0.5 rounded font-bold">고객 신청 고민</span>
+              <h4 className="font-myeongjo text-xs font-bold text-gray-800 mt-1">Q. "${worryContent.question}"</h4>
+            </div>
+
+            <div className="space-y-4">
+              <h4 className="text-xs font-bold text-[#A3845B]">• 혜안당 명리 지침 나침반 답변</h4>
+              <p className="text-[11.5px] text-gray-700 leading-relaxed whitespace-pre-line">
+                {worryContent.answer}
+              </p>
+            </div>
+
+            <div className="bg-[#F9F8F6] p-4 rounded border border-gray-200 text-[10px] text-gray-500 leading-relaxed font-light">
+              * 본 답변은 신청 고객님의 사주 8자 데이터와 신청서에 직접 기록한 고민 카테고리를 크로스 체크하여 만세력 원리대로 추출한 결과입니다.
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 20. Chapter 3 연계 처방 (실천 나침반) -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">Chapter 3 연계 처방 (실천 나침반)</span>
+            </div>
+
+            <div className="space-y-5">
+              <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• 앞으로 30일 동안 강하게 실천할 5가지 지침</h3>
+              
+              <div className="space-y-3.5 text-[11px] text-gray-700 leading-relaxed">
+                <p><strong>1. 미뤄 둔 결정 정리:</strong> 사주 속 기획 과열(목 과다)로 미뤄온 이직서 제출이나 포트폴리오 마감 결정 한 가지를 30일 내에 매듭지으십시오.</p>
+                <p><strong>2. 불필요 지출 구멍 점검:</strong> 재물운이 새는 조건을 방어하기 위해 automatic 결제나 불필요한 인간관계성 지출 1개를 확실히 점검하고 삭제하십시오.</p>
+                <p><strong>3. 공간 정돈 실행:</strong> 방안 동쪽에 싱그러운 원목이나 초록빛 포인트를 배치하여 일상의 부족한 오행 기운을 강제로 개운하십시오.</p>
+                <p><strong>4. 귀인 조언 수렴:</strong> 혼자서 머리를 싸매기보다, 평소 나와 결이 다르고 침착한 조언자 1인을 만나 진로의 현실적 피드백을 구하십시오.</p>
+                <p><strong>5. 멘탈 리프레시 루틴 구축:</strong> 조급함이 솟구칠 때마다 생각을 지우고 20분간 산책하거나 잠드는 행동 룰을 적용해 마음에 닻을 내리십시오.</p>
+              </div>
+            </div>
+
+            <div className="bg-[#A3845B]/5 p-5 rounded-lg border border-[#A3845B]/15 space-y-2 mt-6">
+              <span className="text-xs font-bold text-[#A3845B] block">🎯 올해의 핵심 지침 목표</span>
+              <p className="text-[11px] text-gray-600 leading-relaxed">
+                "올해는 날개를 크게 펼치고 무리하게 도약하려 하기보다, 내 실속과 내부 내실을 다져 수확을 튼튼히 챙기는 한 해로 타겟팅하십시오."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------- Page 21. 마무리 및 최종 보감 -------------------- */}
+        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+          
+          <div className="space-y-6 mt-6">
+            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+              <span className="text-[9px] text-gray-400 font-light">마무리 및 최종 보감</span>
+            </div>
+
+            <div className="bg-[#F9F8F6] p-6 rounded-lg border border-gray-100 text-center space-y-4 my-8">
+              <span className="text-[10px] text-gray-400 font-bold block mb-1">나를 위한 최종 마음 처방</span>
+              <p className="font-myeongjo text-sm font-bold text-gray-800 leading-relaxed">
+                "나는 오늘 모든 문제를 한 번에 통제하거나 바꾸지 않아도 된다.<br />
+                기분과 조급증에 나를 혹사하지 않고, 지금 눈앞의 가장 소중한 일 하나부터 조용히 시작한다."
+              </p>
+            </div>
+
+            <div className="text-center py-12 space-y-4">
+              <span className="text-[10px] tracking-widest text-[#A3845B] font-bold block font-myeongjo">慧眼堂 寶鑑 寶印</span>
+              <div className="w-16 h-16 border-2 border-red-600 text-red-600 flex items-center justify-center mx-auto text-xs font-bold rounded-lg font-myeongjo leading-tight print:w-14 print:h-14">
+                慧眼堂<br />寶印
+              </div>
+              <p className="font-myeongjo text-xs font-bold text-[#A3845B] pt-4">
+                "당신의 운(運)은 단순히 가만히 기다릴 때보다, 지혜롭게 방향을 정하고 용기 있게 움직일 때 마침내 활짝 열립니다."
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center text-[10px] text-gray-400 border-t border-[#E2DDD5] pt-6 pb-2">
+            혜안당 명리연구소 보감 제작팀 배상
+          </div>
+        </div>
+
       </div>
     );
   };
+
   const renderSajuContent = () => {
     if (reportGrade === "sms" || reportGrade === "free") {
       return renderSmsSajuContent();
