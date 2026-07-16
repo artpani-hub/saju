@@ -815,6 +815,7 @@ export default function AdminPage() {
                 <option value="all">전체 결제상태</option>
                 <option value="paid">결제 완료</option>
                 <option value="pending">결제 대기</option>
+                <option value="cancelled">결제 취소</option>
               </select>
 
               <select
@@ -870,9 +871,17 @@ export default function AdminPage() {
                       <td className="p-4 font-bold text-[#212529]">{order.amount?.toLocaleString()} 원</td>
                       <td className="p-4">
                         <span className={`px-2 py-1 rounded text-xs font-bold ${
-                          order.status === "paid" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
+                          order.status === "paid" 
+                            ? "bg-green-100 text-green-800" 
+                            : order.status === "cancelled"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-yellow-100 text-yellow-800"
                         }`}>
-                          {order.status.toUpperCase()}
+                          {order.status === "paid" 
+                            ? "결제완료" 
+                            : order.status === "cancelled" 
+                              ? "결제취소" 
+                              : "결제대기"}
                         </span>
                       </td>
                       <td className="p-4">
