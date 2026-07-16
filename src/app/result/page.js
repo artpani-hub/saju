@@ -3272,6 +3272,12 @@ const renderDaeunOrbitSvg = (baseEl) => {
 function ResultContent() {
   const searchParams = useSearchParams();
   const [copied, setCopied] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const [isPaid, setIsPaid] = useState(() => {
     if (typeof window !== "undefined") {
       const debugUnlock = window.location.search.includes("unlock=true") || window.location.search.includes("debug=true");
@@ -4823,7 +4829,7 @@ function ResultContent() {
 
           <div className="border-t border-[#E2DDD5] pt-6 text-center space-y-1.5 text-xs text-gray-600">
             <p><strong>신청 고객:</strong> {name} 님 ({gender})</p>
-            <p><strong>신청 일시:</strong> {new Date().toLocaleDateString()} {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+            <p><strong>신청 일시:</strong> {mounted ? `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}` : ''}</p>
             <p className="text-[10px] text-gray-400 mt-2">© 혜안당 명리연구소 All Rights Reserved.</p>
           </div>
         </div>
