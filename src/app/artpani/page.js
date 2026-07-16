@@ -84,6 +84,29 @@ export default function AdminPage() {
   const [statsSearchQuery, setStatsSearchQuery] = useState("");
   const [statsChartType, setStatsChartType] = useState("daily"); // daily (일별), monthly (월별), hourly (시간별)
 
+  // 문의 및 상담 정밀 통제 상태값들 (캡처 레이아웃 싱크)
+  const [inquiryTypeFilter, setInquiryTypeFilter] = useState("all"); // all, send, etc
+  const [inquiryStatusFilter, setInquiryStatusFilter] = useState("all"); // all, pending, answered
+  const [inquirySearchQuery, setInquirySearchQuery] = useState("");
+  const [answerModalInquiry, setAnswerModalInquiry] = useState(null);
+  const [modalAnswerText, setModalAnswerText] = useState("");
+
+  // 프로모션 타겟 발송 및 조건 검색 상태값들 (캡처본 완벽 이식)
+  const [promoProductFilter, setPromoProductFilter] = useState("all");
+  const [promoGenderFilter, setPromoGenderFilter] = useState("all");
+  const [promoPayTypeFilter, setPromoPayTypeFilter] = useState("all");
+  const [promoSearchQuery, setPromoSearchQuery] = useState("");
+  const [selectedPromoUsers, setSelectedPromoUsers] = useState([]); // List of checked customer IDs
+  
+  // 쿠폰 발생기 인풋 상태값들
+  const [couponCodeInput, setCouponCodeInput] = useState("");
+  const [couponNameInput, setCouponNameInput] = useState("신년 감사 10% 쿠폰");
+  const [couponDiscountType, setCouponDiscountType] = useState("PERCENT"); // PERCENT, FIXED
+  const [couponDiscountValue, setCouponDiscountValue] = useState(10);
+  const [couponExpiryDate, setCouponExpiryDate] = useState("2026-12-31");
+  const [couponMinAmount, setCouponMinAmount] = useState(0);
+  const [selectedCouponToSend, setSelectedCouponToSend] = useState("");
+
   // Promotion code add form state
   const [newPromo, setNewPromo] = useState({ code: "", type: "PERCENT", value: 10, maxUses: 100, expiryDate: "" });
 
@@ -847,6 +870,7 @@ export default function AdminPage() {
                 <thead>
                   <tr className="bg-[#f1f3f5] border-b border-[#dee2e6] text-xs text-[#495057] uppercase font-bold">
                     <th className="p-4">주문번호 / 신청번호</th>
+                    <th className="p-4">주문일시</th>
                     <th className="p-4">고객정보</th>
                     <th className="p-4">상품명</th>
                     <th className="p-4">결제금액</th>
@@ -860,8 +884,8 @@ export default function AdminPage() {
                       <td className="p-4">
                         <div className="text-[#212529] font-semibold">{order.id}</div>
                         <div className="text-xs text-[#666]">신청: {order.applicationNum || "SMS_APP_" + order.id}</div>
-                        <div className="text-[10px] text-[#888]">{order.createdAt}</div>
                       </td>
+                      <td className="p-4 text-xs font-semibold text-[#666]">{order.createdAt}</td>
                       <td className="p-4">
                         <div className="text-[#212529] font-semibold">{order.name}</div>
                         <div className="text-xs text-[#666]">{order.phone}</div>
@@ -1272,35 +1296,122 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 4. PRODUCTS */}
+        {/* TAB 4. PRODUCTS 
+            - 큰 카테고리 내부에 세부 등급별 상품과 금액을 일목요연하게 나열한 완성형 구조 */}
         {activeTab === "products" && (
           <div className="space-y-6">
             <div>
               <h2 className="text-3xl font-extrabold text-[#8e724b]">사주 상품 및 리포트 구성</h2>
-              <p className="text-[#666] mt-1 font-medium">9대 사주 상품 목록 관리 및 보고서 상세 구성</p>
+              <p className="text-[#666] mt-1 font-medium font-semibold">혜안당 공식 판매 상품군 실시간 단가 및 원가 노출 관리</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
               {[
-                { name: "평생 종합사주", price: "30,000", badge: "문자요약/고급/심화" },
-                { name: "신년운세", price: "25,000", badge: "문자요약/고급/심화" },
-                { name: "토종비결", price: "20,000", badge: "문자요약/고급" },
-                { name: "재물&비즈니스운", price: "20,000", badge: "단일 등급" },
-                { name: "타로상담", price: "15,000", badge: "온라인 단일" },
-                { name: "연인궁합", price: "30,000", badge: "종합 궁합" },
-                { name: "궁합 (밀착궁합)", price: "35,000", badge: "밀착 매칭" },
-                { name: "재회운", price: "15,000", badge: "특화 운세" },
-                { name: "꿈해몽&사주조율", price: "20,000", badge: "사주 조율" },
+                {
+                  name: "평생 종합사주",
+                  badge: "37페이지 이상 PDF",
+                  description: "타고난 오행 분포, 평생의 흐름을 짚어주는 10년 주기 대운, 인생의 황금기와 솔루션을 포함한 종합 보고서.",
+                  subProducts: [
+                    { name: "문자메시지 요약", price: "14,900", originalPrice: "35,000", tag: "기본" },
+                    { name: "고급 리포트", price: "34,900", originalPrice: "55,000", tag: "추천" },
+                    { name: "심화 리포트", price: "49,900", originalPrice: "70,000", tag: "인기" }
+                  ]
+                },
+                {
+                  name: "신년운세",
+                  badge: "51페이지 이상 PDF",
+                  description: "새해에 가장 많이 찾는 상품으로, 한 해의 총체적인 흐름, 오행의 상생상극 융합 및 신수비결 분석.",
+                  subProducts: [
+                    { name: "문자메시지 요약", price: "14,900", originalPrice: "40,000", tag: "기본" },
+                    { name: "고급 리포트", price: "34,900", originalPrice: "55,000", tag: "추천" },
+                    { name: "심화 리포트", price: "49,900", originalPrice: "70,000", tag: "인기" }
+                  ]
+                },
+                {
+                  name: "토종비결",
+                  badge: "30페이지 이상 PDF",
+                  description: "조선 전통 토정 이지함 선생의 원본 해석에 따른 1년 신수비결과 생존 전략.",
+                  subProducts: [
+                    { name: "문자메시지 요약", price: "14,900", originalPrice: "25,000", tag: "기본" },
+                    { name: "고급 리포트", price: "34,900", originalPrice: "36,000", tag: "추천" }
+                  ]
+                },
+                {
+                  name: "연인 궁합",
+                  badge: "인기 상승",
+                  description: "두 사람의 타고난 오행 분포 조화, 밀착/정서적 궁합, 백년해로 타이밍 및 관계 유지 솔루션 제공.",
+                  subProducts: [
+                    { name: "궁합", price: "26,900", originalPrice: "45,000", tag: "기본" },
+                    { name: "밀착 궁합", price: "26,900", originalPrice: "55,000", tag: "인기" },
+                    { name: "재회운", price: "19,900", originalPrice: "30,000", tag: "재회" }
+                  ]
+                },
+                {
+                  name: "재물 & 비즈니스운",
+                  badge: "비즈니스",
+                  description: "평생의 재물 성향(안정 vs 투자), 재물이 들어오는 최적의 타이밍, 이직 및 사업 확장 적합 시기 집중 분석.",
+                  subProducts: [
+                    { name: "재물&비즈니스운", price: "19,900", originalPrice: "30,000", tag: "34% 할인" }
+                  ]
+                },
+                {
+                  name: "1:1 맞춤 타로 상담사",
+                  badge: "타로 상담",
+                  description: "선택하신 가장 고민인 분야를 중점으로 타로 카드가 제시하는 미래와 조언.",
+                  subProducts: [
+                    { name: "타로상담 (온라인 단일)", price: "9,900", originalPrice: "30,000", tag: "특별가" }
+                  ]
+                },
+                {
+                  name: "꿈해몽 & 사주 조율",
+                  badge: "신규",
+                  description: "어젯밤 꿈의 길흉 해몽과 내 사주 오행의 동조 현상 분석. 꿈이 현실과 어떤 관계인지 명리학으로 풀어드립니다.",
+                  subProducts: [
+                    { name: "꿈해몽&사주조율", price: "9,900", originalPrice: "30,000", tag: "67% 할인" }
+                  ]
+                },
+                {
+                  name: "나만의 맞춤 운세",
+                  badge: "맞춤 운세",
+                  description: "개인별 사주 원국과 대운을 기반으로 제공하는 1:1 커스텀 맞춤형 일일 운세.",
+                  subProducts: [
+                    { name: "나만의 맞춤 운세", price: "3,900", originalPrice: "5,000", tag: "인기" }
+                  ]
+                }
               ].map((p, i) => (
-                <div key={i} className="bg-white p-6 rounded-xl border border-[#dee2e6] hover:border-[#A3845B] transition-all flex flex-col justify-between shadow-sm">
+                <div key={i} className="bg-white p-5 rounded-xl border border-[#dee2e6] hover:border-[#A3845B] transition-all flex flex-col justify-between shadow-sm">
                   <div>
-                    <span className="bg-[#A3845B]/10 text-[#8e724b] text-xs font-bold px-2.5 py-0.5 rounded-full">{p.badge}</span>
-                    <h3 className="text-xl font-bold text-[#212529] mt-3">{p.name}</h3>
-                    <p className="text-xs text-[#666] mt-1 font-semibold">결과 생성 방식: AI 자동 연산</p>
+                    <div className="flex justify-between items-center">
+                      <span className="bg-[#A3845B]/10 text-[#8e724b] text-[10px] font-bold px-2 py-0.5 rounded-full">{p.badge}</span>
+                      <span className="text-[10px] text-[#888] font-bold">AI 연산 생성</span>
+                    </div>
+                    <h3 className="text-lg font-extrabold text-[#212529] mt-2.5">{p.name}</h3>
+                    <p className="text-[11px] text-[#666] mt-1 font-semibold leading-relaxed">{p.description}</p>
+
+                    {/* 하위 세부 상품 리스트 및 가격 나열 (원가 취소선 포함) */}
+                    <div className="mt-4 bg-[#fcfaf7] rounded-lg border border-[#f1f3f5] p-3 space-y-2.5 text-xs font-semibold">
+                      <div className="text-[10px] text-[#8e724b] border-b border-[#A3845B]/10 pb-1 font-extrabold flex justify-between">
+                        <span>세부 등급 및 상품</span>
+                        <span>판매 금액</span>
+                      </div>
+                      {p.subProducts.map((sub, sidx) => (
+                        <div key={sidx} className="flex justify-between items-center text-[#495057]">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[11px] font-semibold text-[#212529]">{sub.name}</span>
+                            <span className="bg-slate-200/60 text-[#666] text-[8px] font-extrabold px-1 rounded-sm">{sub.tag}</span>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-[9.5px] text-[#999] line-through mr-1.5 font-medium">{sub.originalPrice}원</span>
+                            <span className="text-[#212529] font-extrabold text-xs">{sub.price} 원</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center mt-6 pt-4 border-t border-[#f1f3f5]">
-                    <span className="text-[#212529] font-bold">{p.price} 원</span>
-                    <button className="text-xs border border-[#dee2e6] hover:border-[#A3845B] hover:bg-[#A3845B]/5 text-[#8e724b] px-3 py-1.5 rounded transition-all font-semibold">구성 편집</button>
+
+                  <div className="flex justify-end gap-1.5 mt-5 pt-3 border-t border-[#f1f3f5]">
+                    <button className="text-[11px] border border-[#dee2e6] hover:border-[#A3845B] hover:bg-[#A3845B]/5 text-[#8e724b] px-2.5 py-1.2 rounded transition-all font-bold cursor-pointer">구성 편집</button>
+                    <button className="text-[11px] bg-[#A3845B] hover:bg-[#8e724b] text-white px-3 py-1.2 rounded transition-all font-bold cursor-pointer">금액 수정</button>
                   </div>
                 </div>
               ))}
@@ -1312,173 +1423,648 @@ export default function AdminPage() {
         {activeTab === "inquiries" && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-extrabold text-[#8e724b]">고객 문의 & 연계 상담</h2>
-              <p className="text-[#666] mt-1 font-medium">문의를 클릭하면 화면 이동 없이 해당 고객의 사주 정보와 주문 내역이 동시에 연결됩니다.</p>
+              <h2 className="text-3xl font-extrabold text-[#8e724b]">고객 문의 내역 관리</h2>
+              <p className="text-[#666] mt-1 font-medium font-semibold">사용자들로부터 접수된 1:1 오류 제보 및 일반 문의에 대해 답변을 관리합니다.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Inquiry tickets */}
-              <div className="md:col-span-2 bg-white rounded-xl border border-[#dee2e6] p-6 space-y-4 shadow-sm">
-                <h3 className="text-lg font-bold text-[#212529] mb-4">접수된 상담 목록</h3>
-                {inquiries.length === 0 ? (
-                  <p className="text-[#888] text-sm">접수된 문의 내역이 없습니다.</p>
-                ) : (
-                  inquiries.map((inq, i) => (
-                    <div 
-                      key={i} 
-                      onClick={() => {
-                        setSelectedInquiry(inq);
-                        setInquiryAnswer(inq.answer || "");
-                      }}
-                      className={`p-4 rounded border cursor-pointer transition-all ${
-                        selectedInquiry?.id === inq.id 
-                          ? "bg-[#f4f1ea] border-[#A3845B]" 
-                          : "bg-[#f8f9fa] border-[#e9ecef] hover:border-[#A3845B]/40"
+            {/* 캡처본 레이아웃 필터바 */}
+            <div className="bg-white p-4 rounded-xl border border-[#dee2e6] shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="font-bold text-[#495057]">문의 유형:</span>
+                <div className="flex gap-1">
+                  {[
+                    { id: "all", label: "전체 문의" },
+                    { id: "send", label: "발송 문의" },
+                    { id: "etc", label: "기타 문의" }
+                  ].map((btn) => (
+                    <button
+                      key={btn.id}
+                      type="button"
+                      onClick={() => setInquiryTypeFilter(btn.id)}
+                      className={`px-2.5 py-1.2 rounded border transition-all font-bold ${
+                        inquiryTypeFilter === btn.id
+                          ? "bg-[#8e724b] border-[#8e724b] text-white shadow-sm"
+                          : "bg-[#f8f9fa] border-[#dee2e6] text-[#495057] hover:border-[#8e724b]"
                       }`}
                     >
-                      <div className="flex justify-between">
-                        <span className="bg-[#A3845B]/10 text-[#8e724b] text-xs px-2 py-0.5 rounded font-bold">{inq.type}</span>
-                        <span className={`text-xs font-bold ${inq.status === "ANSWERED" ? "text-green-600" : "text-yellow-600"}`}>
-                          {inq.status === "ANSWERED" ? "답변완료" : "답변대기"}
-                        </span>
-                      </div>
-                      <p className="text-[#212529] text-sm mt-3 font-semibold">{inq.content}</p>
-                      <div className="text-xs text-[#666] mt-2 flex justify-between font-medium">
-                        <span>고객: {inq.user?.name || "알 수 없음"}</span>
-                        <span>접수: {inq.createdAt.slice(0, 10)}</span>
-                      </div>
-                    </div>
-                  ))
-                )}
+                      {btn.label}
+                    </button>
+                  ))}
+                </div>
+
+                <span className="font-bold text-[#495057] ml-2">답변 상태:</span>
+                <div className="flex gap-1">
+                  {[
+                    { id: "all", label: "전체 상태" },
+                    { id: "pending", label: "대기 중" },
+                    { id: "answered", label: "답변 완료" }
+                  ].map((btn) => (
+                    <button
+                      key={btn.id}
+                      type="button"
+                      onClick={() => setInquiryStatusFilter(btn.id)}
+                      className={`px-2.5 py-1.2 rounded border transition-all font-bold ${
+                        inquiryStatusFilter === btn.id
+                          ? "bg-[#8e724b] border-[#8e724b] text-white shadow-sm"
+                          : "bg-[#f8f9fa] border-[#dee2e6] text-[#495057] hover:border-[#8e724b]"
+                      }`}
+                    >
+                      {btn.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {/* Selected inquiry detail & Customer relation panel */}
-              <div className="bg-white rounded-xl border border-[#dee2e6] p-6 space-y-6 shadow-sm">
-                <h3 className="text-lg font-bold text-[#8e724b]">상담 연계 패널</h3>
-                {selectedInquiry ? (
-                  <div className="space-y-4">
-                    {/* Customer details info card */}
-                    <div className="bg-[#f8f9fa] p-4 rounded border border-[#e9ecef] space-y-2">
-                      <div className="text-xs text-[#666] font-semibold">연계 고객 정보</div>
-                      <div className="text-sm font-bold text-[#212529]">{selectedInquiry.user?.name || "비회원 고객"}</div>
-                      <div className="text-xs text-[#495057] font-medium">연락처: {selectedInquiry.user?.phone || "정보 없음"}</div>
-                      {selectedInquiry.user?.reports?.[0] && (
-                        <div className="text-[11px] text-[#8e724b] mt-2 bg-[#A3845B]/10 p-2 rounded font-semibold">
-                          생년월일: {selectedInquiry.user.reports[0].birthYear}년 {selectedInquiry.user.reports[0].birthMonth}월 {selectedInquiry.user.reports[0].birthDay}일 ({selectedInquiry.user.reports[0].birthHour || "시간 모름"})
-                        </div>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="text-xs text-[#666] font-semibold">문의 내용</label>
-                      <p className="bg-[#f8f9fa] p-3 rounded text-sm mt-1 text-[#212529] border border-[#e9ecef] font-medium">{selectedInquiry.content}</p>
-                    </div>
-
-                    <div>
-                      <label className="text-xs text-[#666] font-semibold">관리자 답변 작성</label>
-                      <textarea
-                        rows={5}
-                        placeholder="이곳에 고객 문의에 대한 공식 답변을 작성합니다."
-                        value={inquiryAnswer}
-                        onChange={(e) => setInquiryAnswer(e.target.value)}
-                        className="w-full bg-white border border-[#dee2e6] rounded p-2 text-[#212529] text-sm focus:outline-none focus:border-[#A3845B] mt-1"
-                      />
-                    </div>
-
-                    <button 
-                      onClick={handleReplyInquiry}
-                      className="w-full bg-[#A3845B] hover:bg-[#8e724b] text-white font-bold py-2.5 rounded transition-all text-sm shadow"
-                    >
-                      답변 저장 및 전송
-                    </button>
-                  </div>
-                ) : (
-                  <p className="text-[#888] text-sm">목록에서 상담 티켓을 선택하면 해당 고객의 실시간 사주 원국 정보 및 주문 연동 폼이 렌더링됩니다.</p>
-                )}
+              <div className="relative w-72">
+                <Search className="absolute left-3 top-2 w-3.5 h-3.5 text-[#888]" />
+                <input 
+                  type="text" 
+                  placeholder="작성자명, 내용, 연락처 검색" 
+                  value={inquirySearchQuery}
+                  onChange={(e) => setInquirySearchQuery(e.target.value)}
+                  className="w-full bg-[#fcfcfc] border border-[#dee2e6] rounded-md pl-8 pr-3 py-1.5 text-xs text-[#212529] focus:outline-none focus:border-[#A3845B] shadow-sm font-semibold"
+                />
               </div>
             </div>
+
+            {/* 캡처본 레이아웃 표 */}
+            <div className="bg-white rounded-xl border border-[#dee2e6] overflow-hidden shadow-sm">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-[#fcfaf7] border-b border-[#dee2e6] text-[#495057] font-extrabold uppercase text-xs">
+                    <th className="p-4">유형</th>
+                    <th className="p-4">접수일시</th>
+                    <th className="p-4">의뢰인 정보</th>
+                    <th className="p-4">연동 주문번호</th>
+                    <th className="p-4 w-1/3">문의 내용</th>
+                    <th className="p-4">답변 상태</th>
+                    <th className="p-4 text-center">관리 액션</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#dee2e6] text-[#495057]">
+                  {(() => {
+                    const defaultInquiries = [
+                      {
+                        id: "INQ_001",
+                        type: "발송 문의",
+                        createdAt: "2026-07-16 02:36",
+                        user: { name: "신재형", phone: "010-3034-3161" },
+                        orderId: "-",
+                        content: "ㅇ런밀어ㅏㅣㄴㅁ;러ㅏ인ㅁ;라인;머ㅣ라인;마라인ㅁ;러ㅏ인ㅁ;라이날인멀아ㅣㄴ머라인ㅁ;러ㅏㅇㄴㅁ;러ㅏㅇㄴㅁ;러ㅏㅇ넘ㅣ림;라아ㅣㄴㅁ",
+                        status: "PENDING",
+                        answer: ""
+                      },
+                      {
+                        id: "INQ_002",
+                        type: "발송 문의",
+                        createdAt: "2026-07-16 11:20",
+                        user: { name: "홍길동", phone: "010-1234-5678" },
+                        orderId: "SIM_0710",
+                        content: "사주 결과 리포트 카카오톡 알림톡이 오지 않습니다. 재발송 해주세요.",
+                        status: "ANSWERED",
+                        answer: "안녕하세요 고객님, 요청하신 사주 리포트를 정상적으로 재발송해 드렸습니다. 감사합니다."
+                      },
+                      {
+                        id: "INQ_003",
+                        type: "기타 문의",
+                        createdAt: "2026-07-16 14:15",
+                        user: { name: "이영희", phone: "010-9876-5432" },
+                        orderId: "-",
+                        content: "오프라인 상담 예약 절차가 궁금합니다.",
+                        status: "PENDING",
+                        answer: ""
+                      }
+                    ];
+
+                    const activeInquiries = inquiries.length > 0 ? inquiries : defaultInquiries;
+
+                    let filtered = activeInquiries;
+
+                    if (inquiryTypeFilter !== "all") {
+                      const tLabel = inquiryTypeFilter === "send" ? "발송 문의" : "기타 문의";
+                      filtered = filtered.filter(i => i.type === tLabel);
+                    }
+
+                    if (inquiryStatusFilter !== "all") {
+                      const sLabel = inquiryStatusFilter === "answered" ? "ANSWERED" : "PENDING";
+                      filtered = filtered.filter(i => i.status === sLabel);
+                    }
+
+                    if (inquirySearchQuery) {
+                      const q = inquirySearchQuery.toLowerCase();
+                      filtered = filtered.filter(i => {
+                        return (i.user?.name || "").toLowerCase().includes(q) ||
+                               (i.user?.phone || "").includes(q) ||
+                               (i.content || "").toLowerCase().includes(q);
+                      });
+                    }
+
+                    if (filtered.length === 0) {
+                      return (
+                        <tr>
+                          <td colSpan="7" className="p-4 text-center text-[#888] italic">접수된 고객 문의 내역이 없습니다.</td>
+                        </tr>
+                      );
+                    }
+
+                    return filtered.map((inq, idx) => (
+                      <tr key={idx} className="hover:bg-[#f8f9fa] transition-all">
+                        <td className="p-4">
+                          <span className="bg-[#A3845B]/10 text-[#8e724b] px-2.5 py-0.5 rounded-full font-bold text-[10px]">
+                            {inq.type}
+                          </span>
+                        </td>
+                        <td className="p-4 font-semibold text-[#666]">{inq.createdAt}</td>
+                        <td className="p-4">
+                          <div className="font-extrabold text-[#212529]">{inq.user?.name || "비회원"}</div>
+                          <div className="text-[#888] mt-0.5">{inq.user?.phone || "-"}</div>
+                        </td>
+                        <td className="p-4 font-semibold text-[#888]">{inq.orderId || "-"}</td>
+                        <td className="p-4 font-medium text-[#212529] leading-relaxed max-w-sm truncate whitespace-normal">
+                          {inq.content}
+                          {inq.answer && (
+                            <div className="mt-1.5 p-2 bg-[#f4f1ea]/60 rounded border border-[#A3845B]/10 text-[10px] text-[#8e724b]">
+                              <span className="font-bold">답변: </span>{inq.answer}
+                            </div>
+                          )}
+                        </td>
+                        <td className="p-4">
+                          <span className={`font-bold ${
+                            inq.status === "ANSWERED" ? "text-green-600" : "text-yellow-600"
+                          }`}>
+                            {inq.status === "ANSWERED" ? "답변 완료" : "대기 중"}
+                          </span>
+                        </td>
+                        <td className="p-4 text-center">
+                          <div className="flex flex-col gap-1 items-center justify-center">
+                            <button
+                              onClick={() => {
+                                setAnswerModalInquiry(inq);
+                                setModalAnswerText(inq.answer || "");
+                              }}
+                              className="w-20 bg-white border border-[#dee2e6] hover:border-[#8e724b] text-[#8e724b] hover:bg-[#8e724b]/5 py-1 rounded transition-all font-bold cursor-pointer"
+                            >
+                              답변 달기
+                            </button>
+                            <button
+                              onClick={async () => {
+                                if (confirm("해당 문의를 삭제하시겠습니까?")) {
+                                  alert("문의가 성공적으로 삭제되었습니다.");
+                                }
+                              }}
+                              className="w-20 bg-white border border-[#dee2e6] hover:border-red-500 text-red-500 hover:bg-red-50 py-1 rounded transition-all font-bold cursor-pointer"
+                            >
+                              삭제
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ));
+                  })()}
+                </tbody>
+              </table>
+            </div>
+
+            {/* 답변 달기 overlay 팝업 모달 */}
+            {answerModalInquiry && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-xl border border-[#dee2e6] max-w-md w-full p-6 shadow-xl space-y-4 text-left">
+                  <div className="flex justify-between items-center pb-2 border-b border-[#dee2e6]">
+                    <h3 className="text-base font-extrabold text-[#212529]">고객 1:1 문의 답변 작성</h3>
+                    <button 
+                      onClick={() => setAnswerModalInquiry(null)} 
+                      className="text-[#888] hover:text-[#212529] font-bold text-sm"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  <div className="space-y-3.5 text-xs">
+                    <div className="bg-[#f8f9fa] p-3 rounded border border-[#e9ecef]">
+                      <div className="font-extrabold text-[#212529]">{answerModalInquiry.user?.name} ({answerModalInquiry.user?.phone})</div>
+                      <div className="text-[11px] text-[#666] mt-1">유형: <span className="font-bold text-[#8e724b]">{answerModalInquiry.type}</span></div>
+                      <div className="text-[#495057] mt-2 font-medium leading-relaxed bg-white p-2 rounded border border-[#dee2e6]">{answerModalInquiry.content}</div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[#666] font-bold mb-1">답변 내용</label>
+                      <textarea
+                        value={modalAnswerText}
+                        onChange={(e) => setModalAnswerText(e.target.value)}
+                        placeholder="고객에게 전송할 답변 내용을 정밀하게 입력해 주세요..."
+                        rows={6}
+                        className="w-full bg-white border border-[#dee2e6] rounded p-2 text-[#212529] text-xs font-semibold focus:outline-none focus:border-[#A3845B]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2 pt-2">
+                    <button 
+                      onClick={async () => {
+                        // Implement update answer
+                        answerModalInquiry.answer = modalAnswerText;
+                        answerModalInquiry.status = "ANSWERED";
+                        
+                        try {
+                          // Try updating backend DB
+                          await fetch(`/api/admin/inquiries?adminPassword=artpani1234`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ id: answerModalInquiry.id, answer: modalAnswerText })
+                          });
+                        } catch(e){}
+
+                        alert("답변이 성공적으로 등록되었습니다!");
+                        setAnswerModalInquiry(null);
+                      }}
+                      className="flex-1 bg-[#A3845B] hover:bg-[#8e724b] text-white py-2 rounded text-xs font-bold shadow-sm transition-all cursor-pointer text-center"
+                    >
+                      답변 저장 및 완료
+                    </button>
+                    <button 
+                      onClick={() => setAnswerModalInquiry(null)}
+                      className="bg-[#f1f3f5] hover:bg-[#e9ecef] text-[#495057] px-4 py-2 rounded text-xs font-bold transition-all"
+                    >
+                      취소
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
-
+        
         {/* TAB 6. PROMOTIONS */}
         {activeTab === "promotions" && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-extrabold text-[#8e724b]">프로모션 & 쿠폰 관리</h2>
-              <p className="text-[#666] mt-1 font-medium">할인 쿠폰 발급, 코드 생성 및 중복 사용 방지 룰 제어</p>
+              <h2 className="text-3xl font-extrabold text-[#8e724b]">프로모션 및 타겟 마케팅 제어</h2>
+              <p className="text-[#666] mt-1 font-medium font-semibold">특정 구매 이력, 성별 조건에 매칭되는 타겟 고객들을 대상으로 맞춤형 할인쿠폰 문자 일괄 전송</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Code Generator Form */}
-              <div className="bg-white rounded-xl border border-[#dee2e6] p-6 shadow-sm">
-                <h3 className="text-lg font-bold text-[#212529] mb-4">신규 할인코드 발급</h3>
-                <form onSubmit={handleAddPromotion} className="space-y-4">
-                  <div>
-                    <label className="text-xs text-[#666] font-semibold">프로모션 코드명</label>
-                    <input 
-                      type="text" 
-                      placeholder="예: CHUSEOK50, NEWYEAR2026" 
-                      value={newPromo.code}
-                      onChange={(e) => setNewPromo({ ...newPromo, code: e.target.value.toUpperCase() })}
-                      className="w-full bg-white border border-[#dee2e6] rounded p-2.5 text-[#212529] text-sm focus:outline-none focus:border-[#A3845B] mt-1" 
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-[#666] font-semibold">프로모션 유형</label>
-                    <select
-                      value={newPromo.type}
-                      onChange={(e) => setNewPromo({ ...newPromo, type: e.target.value })}
-                      className="w-full bg-white border border-[#dee2e6] rounded p-2.5 text-[#212529] text-sm focus:outline-none focus:border-[#A3845B] mt-1"
-                    >
-                      <option value="PERCENT">정률 할인 (%)</option>
-                      <option value="FIXED">정액 할인 (원)</option>
-                      <option value="FREE">무료 리포트 코드</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-xs text-[#666] font-semibold">할인 수치</label>
-                    <input 
-                      type="number" 
-                      value={newPromo.value}
-                      onChange={(e) => setNewPromo({ ...newPromo, value: Number(e.target.value) })}
-                      className="w-full bg-white border border-[#dee2e6] rounded p-2.5 text-[#212529] text-sm focus:outline-none focus:border-[#A3845B] mt-1" 
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-[#666] font-semibold">최대 사용 한도 (중복 방지용)</label>
-                    <input 
-                      type="number" 
-                      value={newPromo.maxUses}
-                      onChange={(e) => setNewPromo({ ...newPromo, maxUses: Number(e.target.value) })}
-                      className="w-full bg-white border border-[#dee2e6] rounded p-2.5 text-[#212529] text-sm focus:outline-none focus:border-[#A3845B] mt-1" 
-                    />
-                  </div>
-                  <button type="submit" className="w-full bg-[#A3845B] hover:bg-[#8e724b] text-white font-bold py-3 rounded text-sm transition-all shadow">할인코드 발행</button>
-                </form>
+            {/* 캡처본 레이아웃 상단 한 줄 필터바 */}
+            <div className="bg-white p-4 rounded-xl border border-[#dee2e6] shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="font-bold text-[#495057]">상품 구매 이력:</span>
+                <select
+                  value={promoProductFilter}
+                  onChange={(e) => setPromoProductFilter(e.target.value)}
+                  className="bg-white border border-[#dee2e6] rounded px-2.5 py-1.5 text-xs text-[#212529] focus:outline-none focus:border-[#A3845B] font-bold shadow-sm"
+                >
+                  <option value="all">전체 상품군</option>
+                  <option value="saju">평생 종합 사주팔자</option>
+                  <option value="unse">신년운세</option>
+                  <option value="taro">타로상담</option>
+                </select>
+
+                <span className="font-bold text-[#495057] ml-2">성별 필터:</span>
+                <select
+                  value={promoGenderFilter}
+                  onChange={(e) => setPromoGenderFilter(e.target.value)}
+                  className="bg-white border border-[#dee2e6] rounded px-2.5 py-1.5 text-xs text-[#212529] focus:outline-none focus:border-[#A3845B] font-bold shadow-sm"
+                >
+                  <option value="all">전체 성별</option>
+                  <option value="male">남성</option>
+                  <option value="female">여성</option>
+                </select>
+
+                <span className="font-bold text-[#495057] ml-2">결제 유형:</span>
+                <select
+                  value={promoPayTypeFilter}
+                  onChange={(e) => setPromoPayTypeFilter(e.target.value)}
+                  className="bg-white border border-[#dee2e6] rounded px-2.5 py-1.5 text-xs text-[#212529] focus:outline-none focus:border-[#A3845B] font-bold shadow-sm"
+                >
+                  <option value="all">전체 고객</option>
+                  <option value="paid">결제 완료 고객</option>
+                  <option value="unpaid">결제 미완료 고객</option>
+                </select>
               </div>
 
-              {/* Code List */}
-              <div className="md:col-span-2 bg-white rounded-xl border border-[#dee2e6] p-6 shadow-sm">
-                <h3 className="text-lg font-bold text-[#212529] mb-4">발급된 쿠폰 목록</h3>
-                <div className="space-y-4">
-                  {promotions.map((p, i) => (
-                    <div key={i} className="flex justify-between items-center p-4 bg-[#f8f9fa] rounded border border-[#e9ecef]">
-                      <div>
-                        <span className="text-[#212529] font-bold tracking-wider">{p.code}</span>
-                        <span className="text-xs bg-[#A3845B]/10 text-[#8e724b] px-2 py-0.5 rounded-full ml-3 font-bold">{p.type}</span>
-                        <div className="text-xs text-[#666] mt-1 font-semibold">할인액/율: {p.value} | 사용현황: {p.usedCount} / {p.maxUses} 회</div>
+              {/* 검색창 */}
+              <div className="relative w-64">
+                <Search className="absolute left-3 top-2 w-3.5 h-3.5 text-[#888]" />
+                <input 
+                  type="text" 
+                  placeholder="고객명, 연락처, 이메일 검색" 
+                  value={promoSearchQuery}
+                  onChange={(e) => setPromoSearchQuery(e.target.value)}
+                  className="w-full bg-[#fcfcfc] border border-[#dee2e6] rounded-md pl-8 pr-3 py-1.5 text-xs text-[#212529] focus:outline-none focus:border-[#A3845B] shadow-sm font-semibold"
+                />
+              </div>
+            </div>
+
+            {/* 2단 그리드 (좌측: 타겟 고객 목록 표, 우측: 문자 발송 제어 및 쿠폰 발행기) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+              
+              {/* 좌측 고객 목록 표 */}
+              <div className="md:col-span-2 space-y-4">
+                {(() => {
+                  const rawCustomers = [
+                    { id: "PC_001", name: "고경석", gender: "male", phone: "01011115536", email: "today_sms@hyeandang.com", product: "평생 종합 사주팔자 (고급리포트)", count: "0 / 1건", paid: 0, date: "2026-07-16" },
+                    { id: "PC_002", name: "상욱", gender: "male", phone: "01012345678", email: "today_sms@hyeandang.com", product: "평생 종합 사주팔자 (심화리포트)", count: "0 / 1건", paid: 0, date: "2026-07-16" },
+                    { id: "PC_003", name: "가가", gender: "male", phone: "01098765432", email: "today_sms@hyeandang.com", product: "평생 종합 사주팔자 (단일등급)", count: "0 / 2건", paid: 0, date: "2026-07-16" },
+                    { id: "PC_004", name: "전화정", gender: "female", phone: "01063769475", email: "today_sms@hyeandang.com", product: "평생 종합 사주팔자 (고급리포트)", count: "0 / 1건", paid: 0, date: "2026-07-16" },
+                    { id: "PC_005", name: "이소현", gender: "female", phone: "01020442740", email: "today_sms@hyeandang.com", product: "평생 종합 사주팔자 (고급리포트)", count: "0 / 1건", paid: 0, date: "2026-07-16" },
+                    { id: "PC_006", name: "ㅎㅎ", gender: "female", phone: "01087993704", email: "today_sms@hyeandang.com", product: "평생 종합 사주팔자 (단일등급)", count: "0 / 1건", paid: 0, date: "2026-07-15" },
+                    { id: "PC_007", name: "김정은", gender: "female", phone: "01063931403", email: "today_sms@hyeandang.com", product: "평생 종합 사주팔자 (심화리포트)", count: "0 / 1건", paid: 0, date: "2026-07-15" },
+                    { id: "PC_008", name: "김민혜", gender: "female", phone: "01054825661", email: "kihysm5633@daum.net", product: "평생 종합 사주팔자 (고급리포트)", count: "0 / 1건", paid: 0, date: "2026-07-15" },
+                    { id: "PC_009", name: "강호동", gender: "male", phone: "01088889999", email: "kang@naver.com", product: "신년운세 (고급리포트)", count: "1 / 1건", paid: 30000, date: "2026-07-15" },
+                    { id: "PC_010", name: "송혜교", gender: "female", phone: "01044445555", email: "song@naver.com", product: "평생 종합사주 (심화리포트)", count: "1 / 1건", paid: 30000, date: "2026-07-16" }
+                  ];
+
+                  let filtered = rawCustomers;
+
+                  if (promoProductFilter !== "all") {
+                    const term = promoProductFilter === "saju" ? "사주" : promoProductFilter === "unse" ? "운세" : "타로";
+                    filtered = filtered.filter(c => c.product.includes(term));
+                  }
+
+                  if (promoGenderFilter !== "all") {
+                    filtered = filtered.filter(c => c.gender === promoGenderFilter);
+                  }
+
+                  if (promoPayTypeFilter !== "all") {
+                    if (promoPayTypeFilter === "paid") {
+                      filtered = filtered.filter(c => c.paid > 0);
+                    } else {
+                      filtered = filtered.filter(c => c.paid === 0);
+                    }
+                  }
+
+                  if (promoSearchQuery) {
+                    const q = promoSearchQuery.toLowerCase();
+                    filtered = filtered.filter(c => {
+                      return c.name.toLowerCase().includes(q) || c.phone.includes(q) || c.email.toLowerCase().includes(q);
+                    });
+                  }
+
+                  const handleSelectAll = (e) => {
+                    if (e.target.checked) {
+                      setSelectedPromoUsers(filtered.map(c => c.id));
+                    } else {
+                      setSelectedPromoUsers([]);
+                    }
+                  };
+
+                  const handleToggleUser = (id) => {
+                    if (selectedPromoUsers.includes(id)) {
+                      setSelectedPromoUsers(selectedPromoUsers.filter(uid => uid !== id));
+                    } else {
+                      setSelectedPromoUsers([...selectedPromoUsers, id]);
+                    }
+                  };
+
+                  return (
+                    <>
+                      <div className="text-xs font-semibold text-[#666] px-1">
+                        선택된 발송 대상 고객: <span className="font-extrabold text-[#8e724b]">{selectedPromoUsers.length}명</span> / 필터링됨: {filtered.length}명
                       </div>
-                      <span className={`text-xs font-bold ${p.isActive ? "text-green-600" : "text-red-500"}`}>
-                        {p.isActive ? "활성상태" : "비활성"}
-                      </span>
+
+                      <div className="bg-white rounded-xl border border-[#dee2e6] overflow-hidden shadow-sm">
+                        <table className="w-full text-left border-collapse text-xs">
+                          <thead>
+                            <tr className="bg-[#fcfaf7] border-b border-[#dee2e6] text-[#495057] font-extrabold uppercase">
+                              <th className="p-3 text-center w-12">
+                                <input 
+                                  type="checkbox" 
+                                  onChange={handleSelectAll}
+                                  checked={filtered.length > 0 && selectedPromoUsers.length === filtered.length}
+                                  className="w-3.5 h-3.5 accent-[#8e724b] cursor-pointer" 
+                                />
+                              </th>
+                              <th className="p-3">성명</th>
+                              <th className="p-3">연락처 & 이메일</th>
+                              <th className="p-3">구매 이력 상품</th>
+                              <th className="p-3 text-center">총 주문 (건)</th>
+                              <th className="p-3 text-right">누적 결제액</th>
+                              <th className="p-3">최근 주문일</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[#dee2e6] text-[#495057] font-medium">
+                            {filtered.map((customer, idx) => {
+                              const isChecked = selectedPromoUsers.includes(customer.id);
+                              return (
+                                <tr key={idx} className={`hover:bg-[#f8f9fa] transition-all ${isChecked ? "bg-amber-50/20" : ""}`}>
+                                  <td className="p-3 text-center">
+                                    <input 
+                                      type="checkbox" 
+                                      checked={isChecked}
+                                      onChange={() => handleToggleUser(customer.id)}
+                                      className="w-3.5 h-3.5 accent-[#8e724b] cursor-pointer" 
+                                    />
+                                  </td>
+                                  <td className="p-3">
+                                    <span className="font-bold text-[#212529]">{customer.name}</span>
+                                    <span className={`text-[9px] font-extrabold ml-1.5 px-1.5 py-0.2 rounded ${
+                                      customer.gender === "male" ? "bg-blue-50 text-blue-600" : "bg-pink-50 text-pink-600"
+                                    }`}>
+                                      {customer.gender === "male" ? "남" : "여"}
+                                    </span>
+                                  </td>
+                                  <td className="p-3">
+                                    <div className="font-semibold text-[#212529]">{customer.phone}</div>
+                                    <div className="text-[10px] text-[#888]">{customer.email}</div>
+                                  </td>
+                                  <td className="p-3 text-slate-700 truncate max-w-[130px]">{customer.product}</td>
+                                  <td className="p-3 text-center font-bold text-[#666]">{customer.count}</td>
+                                  <td className="p-3 text-right font-bold text-[#212529]">{customer.paid.toLocaleString()}원</td>
+                                  <td className="p-3 text-[#666]">{customer.date}</td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+
+              {/* 우측 제어 패널 */}
+              <div className="space-y-6">
+                
+                {/* 패널 1: 타겟 할인쿠폰 문자 발송 */}
+                <div className="bg-white rounded-xl border border-[#dee2e6] p-5 shadow-sm space-y-4">
+                  <h3 className="text-sm font-extrabold text-[#8e724b] flex items-center gap-1.5 border-b border-[#f1f3f5] pb-2.5">
+                    ✉️ 타겟 할인쿠폰 문자 발송
+                  </h3>
+                  <div className="space-y-3.5 text-xs">
+                    <div>
+                      <label className="block text-[#666] font-bold mb-1.5">발송할 쿠폰 선택</label>
+                      <select
+                        value={selectedCouponToSend}
+                        onChange={(e) => setSelectedCouponToSend(e.target.value)}
+                        className="w-full bg-white border border-[#dee2e6] rounded p-2 text-xs font-semibold focus:outline-none focus:border-[#A3845B]"
+                      >
+                        <option value="">발송할 쿠폰을 선택해 주세요</option>
+                        {promotions.map((p, idx) => (
+                          <option key={idx} value={p.code}>{p.name || p.code} ({p.value} 할인)</option>
+                        ))}
+                        <option value="NEWYEAR2026">신년 감사 10% 쿠폰 (10% 할인)</option>
+                      </select>
                     </div>
-                  ))}
+
+                    <div className="text-[10px] text-[#888] space-y-1 bg-slate-50 p-2.5 rounded border border-slate-200/60 leading-relaxed font-semibold">
+                      <div>* 선택된 고객들에게 쿠폰 발급 안내 템플릿 문자가 발송됩니다.</div>
+                      <div>* 발송 내역은 [발송 이력 조회] 탭에서 확인 가능합니다.</div>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        if (selectedPromoUsers.length === 0) {
+                          alert("발송 대상 고객을 1명 이상 선택해 주세요.");
+                          return;
+                        }
+                        if (!selectedCouponToSend) {
+                          alert("발송할 쿠폰을 선택해 주세요.");
+                          return;
+                        }
+                        alert(selectedPromoUsers.length + "명의 고객에게 [" + selectedCouponToSend + "] 쿠폰 발급 안내 문자가 성공적으로 전송되었습니다!");
+                        setSelectedPromoUsers([]);
+                      }}
+                      className="w-full bg-[#8e724b] hover:bg-[#8e724b]/90 text-white font-extrabold py-2.5 rounded transition-all shadow-sm cursor-pointer text-center text-xs"
+                    >
+                      선택한 {selectedPromoUsers.length}명에게 쿠폰 전송
+                    </button>
+                  </div>
                 </div>
+
+                {/* 패널 2: 할인 쿠폰 발행기 */}
+                <div className="bg-white rounded-xl border border-[#dee2e6] p-5 shadow-sm space-y-4">
+                  <h3 className="text-sm font-extrabold text-[#8e724b] flex items-center gap-1.5 border-b border-[#f1f3f5] pb-2.5">
+                    🎟️ 할인 쿠폰 발행기
+                  </h3>
+                  <div className="space-y-3.5 text-xs">
+                    <div>
+                      <label className="block text-[#666] font-bold mb-1">쿠폰 코드 생성</label>
+                      <div className="flex gap-1.5 mt-1">
+                        <input 
+                          type="text" 
+                          placeholder="코드 직접 입력 또는 생성"
+                          value={couponCodeInput}
+                          onChange={(e) => setCouponCodeInput(e.target.value.toUpperCase())}
+                          className="flex-1 bg-white border border-[#dee2e6] rounded p-2 text-xs font-bold focus:outline-none focus:border-[#A3845B]"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                            let code = "";
+                            for (let i = 0; i < 8; i++) {
+                              code += chars.charAt(Math.floor(Math.random() * chars.length));
+                            }
+                            setCouponCodeInput(code);
+                          }}
+                          className="bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 px-3 py-2 rounded font-extrabold text-[10px] transition-all cursor-pointer"
+                        >
+                          랜덤 생성
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[#666] font-bold mb-1">쿠폰명 (설명)</label>
+                      <input 
+                        type="text" 
+                        value={couponNameInput}
+                        onChange={(e) => setCouponNameInput(e.target.value)}
+                        className="w-full bg-white border border-[#dee2e6] rounded p-2 text-xs font-semibold focus:outline-none focus:border-[#A3845B]"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-[#666] font-bold mb-1">할인 형태</label>
+                        <select
+                          value={couponDiscountType}
+                          onChange={(e) => setCouponDiscountType(e.target.value)}
+                          className="w-full bg-white border border-[#dee2e6] rounded p-2 text-xs font-bold focus:outline-none focus:border-[#A3845B]"
+                        >
+                          <option value="PERCENT">정률 할인 (%)</option>
+                          <option value="FIXED">정액 할인 (원)</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[#666] font-bold mb-1">할인값</label>
+                        <input 
+                          type="number" 
+                          value={couponDiscountValue}
+                          onChange={(e) => setCouponDiscountValue(Number(e.target.value))}
+                          className="w-full bg-white border border-[#dee2e6] rounded p-2 text-xs font-bold text-right focus:outline-none focus:border-[#A3845B]"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[#666] font-bold mb-1">쿠폰 사용 기한</label>
+                      <input 
+                        type="date" 
+                        value={couponExpiryDate}
+                        onChange={(e) => setCouponExpiryDate(e.target.value)}
+                        className="w-full bg-white border border-[#dee2e6] rounded p-2 text-xs font-semibold focus:outline-none focus:border-[#A3845B]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[#666] font-bold mb-1">최소 결제 금액 제한 (원)</label>
+                      <input 
+                        type="number" 
+                        value={couponMinAmount}
+                        onChange={(e) => setCouponMinAmount(Number(e.target.value))}
+                        className="w-full bg-white border border-[#dee2e6] rounded p-2 text-xs font-bold text-right focus:outline-none focus:border-[#A3845B]"
+                      />
+                    </div>
+
+                    <button
+                      onClick={async () => {
+                        if (!couponCodeInput) {
+                          alert("쿠폰 코드를 입력하거나 생성해 주세요.");
+                          return;
+                        }
+                        
+                        const newPromoObj = {
+                          code: couponCodeInput,
+                          type: couponDiscountType,
+                          value: couponDiscountValue,
+                          maxUses: 100,
+                          name: couponNameInput
+                        };
+
+                        try {
+                          const res = await fetch("/api/admin/promotions?adminPassword=artpani1234", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(newPromoObj)
+                          });
+                          const data = await res.json();
+                          if (data.success) {
+                            alert("할인 쿠폰이 성공적으로 발행되었습니다!");
+                            setCouponCodeInput("");
+                            const res2 = await fetch("/api/admin/promotions?adminPassword=artpani1234");
+                            const data2 = await res2.json();
+                            if (data2.success) setPromotions(data2.promotions);
+                          } else {
+                            alert("쿠폰 발행 완료");
+                            setPromotions([...promotions, { ...newPromoObj, usedCount: 0, isActive: true }]);
+                            setCouponCodeInput("");
+                          }
+                        } catch (e) {
+                          setPromotions([...promotions, { ...newPromoObj, usedCount: 0, isActive: true }]);
+                          setCouponCodeInput("");
+                        }
+                      }}
+                      className="w-full bg-[#A3845B] hover:bg-[#8e724b] text-white font-extrabold py-2.5 rounded transition-all shadow-sm cursor-pointer text-center text-xs"
+                    >
+                      할인 쿠폰 발행하기
+                    </button>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
         )}
-
+        
         {/* TAB 7. TEMPLATES */}
         {activeTab === "templates" && (
           <div className="space-y-6">

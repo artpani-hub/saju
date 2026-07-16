@@ -1082,6 +1082,44 @@ export default function Home() {
                 </Link>
               </div>
             </div>
+
+            {/* Product Card 7 - Today Fortune Link Card */}
+            <div className="border border-border-custom bg-background rounded-lg p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+              <div className="absolute top-0 right-0 bg-[#5F7A68] text-background text-[10px] font-semibold px-3 py-1 rounded-bl-lg tracking-wider">
+                실시간
+              </div>
+              <div>
+                <span className="text-xs font-semibold text-[#5F7A68] tracking-wider uppercase block mb-1">오늘의 운세</span>
+                <h3 className="font-myeongjo text-xl font-bold text-foreground mb-2 group-hover:text-brass transition-colors">무료 띠별 & 오늘의 운세</h3>
+                <p className="text-sm text-foreground-muted leading-relaxed mb-6 font-light">
+                  개인별 사주 원국과 대운을 기반으로 제공하는 1:1 정밀 맞춤 운세 및 12띠별 실시간 무료 운세 확인.
+                </p>
+              </div>
+              <div>
+                <div className="border-t border-border-custom pt-4 mb-4">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-xs text-foreground-muted line-through">5,000원</span>
+                    <span className="text-[10px] font-bold text-jade bg-jade/10 px-1.5 py-0.5 rounded">22% 할인</span>
+                  </div>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-2xl font-bold text-foreground">3,900</span>
+                    <span className="text-xs text-foreground-muted">원 (무료 띠별 포함)</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setActiveTab("premium");
+                    setTimeout(() => {
+                      document.getElementById("today-fortune")?.scrollIntoView({ behavior: "smooth" });
+                    }, 50);
+                  }}
+                  className="w-full inline-flex items-center justify-center gap-1 bg-background-secondary border border-border-custom text-foreground py-2 rounded text-sm font-medium hover:border-brass hover:text-brass transition-colors cursor-pointer"
+                >
+                  운세 보러가기
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
