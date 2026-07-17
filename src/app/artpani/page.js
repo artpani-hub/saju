@@ -634,19 +634,37 @@ export default function AdminPage() {
                   }).length;
                   const paidCount = dayOrders.filter(o => {
                     const h = Number(o.createdAt.split(' ')[1]?.split(':')[0] || 0);
-                    return o.status === "paid" && h >= (item.queryStr - 4) && h < item.queryStr;
+                    if (h < (item.queryStr - 4) || h >= item.queryStr) return false;
+                    const statusLower = o.status?.toLowerCase();
+                    if (statusLower !== "paid") return false;
+                    if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return false;
+                    return true;
                   }).length;
                   const totalSales = dayOrders.filter(o => {
                     const h = Number(o.createdAt.split(' ')[1]?.split(':')[0] || 0);
-                    return o.status === "paid" && h >= (item.queryStr - 4) && h < item.queryStr;
+                    if (h < (item.queryStr - 4) || h >= item.queryStr) return false;
+                    const statusLower = o.status?.toLowerCase();
+                    if (statusLower !== "paid") return false;
+                    if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return false;
+                    return true;
                   }).reduce((sum, o) => sum + (o.amount || 0), 0);
 
                   return { dateLabel: item.label, totalCount, paidCount, totalSales };
                 } else {
                   const dayOrders = orders.filter(o => o.createdAt && o.createdAt.startsWith(item.queryStr));
                   const totalCount = dayOrders.length;
-                  const paidCount = dayOrders.filter(o => o.status === "paid").length;
-                  const totalSales = dayOrders.filter(o => o.status === "paid").reduce((sum, o) => sum + (o.amount || 0), 0);
+                  const paidCount = dayOrders.filter(o => {
+                    const statusLower = o.status?.toLowerCase();
+                    if (statusLower !== "paid") return false;
+                    if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return false;
+                    return true;
+                  }).length;
+                  const totalSales = dayOrders.filter(o => {
+                    const statusLower = o.status?.toLowerCase();
+                    if (statusLower !== "paid") return false;
+                    if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return false;
+                    return true;
+                  }).reduce((sum, o) => sum + (o.amount || 0), 0);
                   return { dateLabel: item.label, totalCount, paidCount, totalSales };
                 }
               });
