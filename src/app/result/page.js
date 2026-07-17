@@ -6041,23 +6041,29 @@ return val;
                 <div className="grid grid-cols-3 gap-4 bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 text-center shadow-inner">
                   <div className="space-y-1">
                     <span className="text-[9px] text-gray-400 block font-light">🎯 비즈니스 부합도</span>
-                    <strong className="text-sm font-bold text-[#A3845B]">{currentFL.successScore}%</strong>
-                    <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden max-w-[70px] mx-auto">
-                      <div className="bg-[#A3845B] h-full rounded-full" style={{ width: `${currentFL.successScore}%` }} />
+                    <div className={blurClass}>
+                      <strong className="text-sm font-bold text-[#A3845B] block">{currentFL.successScore}%</strong>
+                      <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden max-w-[70px] mx-auto">
+                        <div className="bg-[#A3845B] h-full rounded-full" style={{ width: `${currentFL.successScore}%` }} />
+                      </div>
                     </div>
                   </div>
                   <div className="space-y-1 border-x border-gray-200">
                     <span className="text-[9px] text-gray-400 block font-light">⚡ 리스크 민감도</span>
-                    <strong className="text-sm font-bold text-red-600">{currentFL.riskScore}%</strong>
-                    <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden max-w-[70px] mx-auto">
-                      <div className="bg-red-500 h-full rounded-full" style={{ width: `${currentFL.riskScore}%` }} />
+                    <div className={blurClass}>
+                      <strong className="text-sm font-bold text-red-600 block">{currentFL.riskScore}%</strong>
+                      <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden max-w-[70px] mx-auto">
+                        <div className="bg-red-500 h-full rounded-full" style={{ width: `${currentFL.riskScore}%` }} />
+                      </div>
                     </div>
                   </div>
                   <div className="space-y-1">
                     <span className="text-[9px] text-gray-400 block font-light">🤝 대인 시너지 지수</span>
-                    <strong className="text-sm font-bold text-blue-600">{currentFL.synergyScore}%</strong>
-                    <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden max-w-[70px] mx-auto">
-                      <div className="bg-blue-500 h-full rounded-full" style={{ width: `${currentFL.synergyScore}%` }} />
+                    <div className={blurClass}>
+                      <strong className="text-sm font-bold text-blue-600 block">{currentFL.synergyScore}%</strong>
+                      <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden max-w-[70px] mx-auto">
+                        <div className="bg-blue-500 h-full rounded-full" style={{ width: `${currentFL.synergyScore}%` }} />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -6066,7 +6072,7 @@ return val;
                 <div className="space-y-3">
                   <div className="bg-[#A3845B]/5 p-4 rounded-lg border border-[#A3845B]/20 space-y-1">
                     <span className="text-[10px] font-bold text-[#A3845B] block font-myeongjo">💡 {name} 님을 위한 금전적 강점 치환 전략</span>
-                    <p className="text-[11px] text-gray-600 leading-relaxed font-light font-sans">
+                    <p className={`text-[11px] text-gray-600 leading-relaxed font-light font-sans ${blurClass}`}>
                       {currentFL.connection}
                     </p>
                   </div>
@@ -6102,13 +6108,13 @@ return val;
                   <div className="grid grid-cols-2 gap-4 text-[10px] text-gray-300">
                     <div className="border-r border-gray-700/50 pr-4 flex flex-col justify-center">
                       <span className="text-green-400 block mb-0.5 font-bold">🟢 최상의 시너지 오행 파트너</span>
-                      <p className="text-white font-sans leading-relaxed">
+                      <p className={`text-white font-sans leading-relaxed ${blurClass}`}>
                         귀하에게 생산성과 자산 축적 안정성을 제공하는 인연은 <strong>{currentFL.bestPartner}</strong>을 품은 사람입니다.
                       </p>
                     </div>
                     <div className="flex flex-col justify-center">
                       <span className="text-red-400 block mb-0.5 font-bold">🔴 조율과 주의가 필요한 오행 파트너</span>
-                      <p className="text-white font-sans leading-relaxed">
+                      <p className={`text-white font-sans leading-relaxed ${blurClass}`}>
                         계약 마찰 및 불공정한 정산 리스크를 유발하기 쉬운 인연은 <strong>{currentFL.worstPartner}</strong>을 과다하게 품은 사람입니다.
                       </p>
                     </div>
