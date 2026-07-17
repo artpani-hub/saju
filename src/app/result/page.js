@@ -6506,44 +6506,124 @@ return val;
           );
         })()}
 
-        {/* -------------------- Page 13. Chapter 2 처방 (관계 솔루션) -------------------- */}
-        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
-          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
-          
-          <div className="space-y-6">
-            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
-              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
-              <span className="text-[9px] text-gray-400 font-light">Chapter 2 처방 (관계 솔루션)</span>
-            </div>
+        {/* -------------------- Page 14. Chapter 2 처방 (관계 솔루션) -------------------- */}
+        {(() => {
+          const relationAstroBasis = {
+            "목": {
+              lackDesc: "목(木) 일간은 성장의 지향성이 뚜렷하지만, 영양이 되는 토(土)나 생명수가 되는 수(Sub)가 결핍되면 쉽게 시들고 부러집니다. 사주에 수/토가 강한 상대를 만나면 메마른 뿌리에 수분이 돌고 대지에 단단히 안착하여 자신의 독창적인 기획 아이디어를 현실 자산으로 매끄럽게 연결시키는 기류(목극토, 수생목의 순환)가 발흥합니다.",
+              sameDesc: "동일한 목(木) 기운끼리 만나면 비겁(比劫)의 에너지가 강화되어 처음에는 강한 동질감과 추진력을 내뿜습니다. 그러나 서로 자기 방향으로만 가지를 뻗으려 하기 때문에 의견 불통의 목다목절(木多木折) 현상이 일어나기 쉬우므로 역할 분담이 확실해야 파국을 피합니다.",
+              healing: "생명수가 대지를 흐르듯 나의 뻗어 나가는 성취를 묵묵히 지원하는 넓은 가슴의 귀인들을 향해 감사함을 자주 입 밖으로 표현해 내는 것이야말로 최고의 관계 치유책입니다.",
+              lackScore: 92, sameScore: 58
+            },
+            "화": {
+              lackDesc: "화(火) 일간은 열정과 추진력이 뛰어나지만, 과열을 막아주는 수(水)나 에너지를 정돈해주는 금(金)이 없으면 순식간에 재로 변합니다. 수/금이 조화로운 조력자를 만나면 조열한 화기를 수생목-목생화의 흐름 또는 수극화의 적절한 제어 기류로 전환하여 냉정하고 현실적인 투자 판단력과 리스크 차단 능력을 가지게 됩니다.",
+              sameDesc: "같은 화(火) 기운의 만남은 불꽃이 합쳐져 2배의 파급력과 기획력을 내뿜지만, 감정의 롤러코스터와 홧김에 지르는 리스크 역시 2배로 폭발합니다. 작은 마찰에도 화다화멸(火多火滅)의 극단적인 관계 단절이 올 수 있으므로 한 발 물러선 완충 지대 배치가 필수적입니다.",
+              healing: "불길을 다스려 유용한 등대로 만드는 것은 깊은 밤하늘의 고요한 물결입니다. 감정이 과열될 때 차가운 수의 침묵과 이성적인 금의 태도를 잊지 마십시오.",
+              lackScore: 95, sameScore: 52
+            },
+            "토": {
+              lackDesc: "토(土) 일간은 포용력과 신용이 두터우나, 활동력인 목(木)이나 에너지인 화(火)가 부족하면 굳어버린 불모의 땅이 됩니다. 목/화가 발달한 인연을 곁에 두면 굳은 흙을 쟁기로 일궈 식물을 키우듯 창조적인 생명력이 촉발되며, 미루던 일을 과감히 실행으로 옮기는 강력한 의지와 비전이 형성됩니다.",
+              sameDesc: "동일한 토(土)의 기운은 태산이 겹치는 형국으로 극도의 신뢰와 묵직함을 주지만, 피차 변화를 거부하고 고집만 피우는 토다토붕(土多土崩)의 정체 현상이 일어납니다. 서로의 보수성에 갇혀 발전이 무뎌질 수 있으므로 정기적으로 대외적인 자극을 수용해야 조화를 이룹니다.",
+              healing: "넓은 대지는 묵묵히 모든 것을 받아들이지만, 물을 머금어 흐를 때에야 비로소 생명이 자랍니다. 섭섭함을 땅속 깊이 묻지 말고 즉각적으로 소통하여 흘려보내십시오.",
+              lackScore: 88, sameScore: 65
+            },
+            "금": {
+              lackDesc: "금(金) 일간은 예리한 결단과 분석이 돋보이지만, 유연한 수(水)나 지지 기반이 되는 토(土)가 메마르면 스스로 날이 부러지거나 외로워집니다. 수/토가 풍부한 동반자를 만나면 날선 성정이 부드럽게 세척(금수상청)되고 태산의 지원을 얻어, 본인의 예리한 지적 자산이 대중적 포용력과 융통성을 띠며 비약적으로 가치를 불리게 됩니다.",
+              sameDesc: "같은 금(金) 기운의 만남은 쇳소리가 부딪히는 형국(금다금결)으로 극단적인 공과 사의 경계를 세워 단기간에 큰 성과를 낼 수 있으나, 사소한 이견에도 서로에게 씻을 수 없는 차가운 비판의 칼날을 겨누게 됩니다. 피차 비수를 꽂지 않으려면 상호간의 의무와 배려를 공식적으로 규격화해야 합니다.",
+              healing: "칼날은 단단할 때 부러지고 부드러울 때 질겨집니다. 타인의 미숙함을 다그치기에 앞서 상대의 상황을 온화하게 포용해 주는 따뜻한 화(火)의 가치관을 품으십시오.",
+              lackScore: 92, sameScore: 60
+            },
+            "수": {
+              lackDesc: "수(水) 일간은 총명함과 유연성이 탁월하나, 방향타가 되는 목(木)이나 울타리가 되는 토(土)가 약하면 정처 없이 흐르다 증발하거나 썩게 됩니다. 목/토의 에너지가 강한 멘토를 곁에 두면 사방으로 퍼지던 생각이 가치 있는 물길로 수렴하여(토극수, 수생목) 구체적인 삶의 틀을 세우고 실제적인 재화와 커리어의 안정성을 성취합니다.",
+              sameDesc: "동일한 수(水) 기운의 조우는 넓은 바다를 이루어 거대한 무형의 지혜와 비즈니스 아이디어를 교류하지만, 서로 휩쓸리다 자산의 경계선이 무너지고 약속의 이행이 조류처럼 휩쓸려 사라지는 수다수범(수다수범)의 배신수가 숨어 있습니다. 반드시 계약서 작성과 공증을 거쳐 관계를 투명하게 해야 합니다.",
+              healing: "물은 어떤 형태의 그릇에도 적응하지만, 자신만의 확고한 제방(土)이 있어야 고인 물이 아닌 강물로 흐를 수 있습니다. 선을 긋는 것을 두려워 마십시오.",
+              lackScore: 90, sameScore: 55
+            }
+          };
 
-            <div className="space-y-5 text-[11px] text-gray-600 leading-relaxed">
-              <div className="space-y-1">
-                <span className="font-bold text-[#A3845B] block">① 나와 다른 사람(결핍 보완형)을 만났을 때</span>
-                <p>
-                  귀하의 만세력 기준 결핍된 <strong>&lsquo;{lackEl.name}&rsquo;의 기운</strong>을 사주에 풍부하게 탑재한 상대방과의 만남은 인생의 판도를 바꿉니다. 
-                  귀하의 꽉 막혀 있던 정체된 오행 흐름이 그 귀인의 개입으로 부드럽게 유통되기 시작하며, 이성적이고 차분한 현실 판단력(궁합 지수 92점 수준)을 보완받아 진로적 성장의 기틀이 마련됩니다.
-                </p>
+          const dayStemEl = sajuInfo?.day?.stemEl || "목";
+          const currentRelBasis = relationAstroBasis[dayStemEl] || relationAstroBasis["목"];
+
+          return (
+            <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+              <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+              
+              <div className="space-y-6">
+                {/* 헤더 */}
+                <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+                  <span className="text-[9px] text-gray-400 font-light">Chapter 2 처방 (관계 솔루션)</span>
+                </div>
+
+                {/* 타이틀 */}
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-gray-800 block font-myeongjo">• {name} 님의 맞춤형 인연 매칭 매커니즘</span>
+                  <p className="text-[10px] text-gray-500 font-light font-sans">
+                    사주 명리학의 보완적 오행 흐름(상생상극)에 입각하여 관계 시너지를 도식화합니다.
+                  </p>
+                </div>
+
+                {/* 시각화: 인연 유형별 시너지 점수 대시보드 */}
+                <div className="grid grid-cols-2 gap-4 bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 text-center shadow-inner">
+                  <div className="space-y-1">
+                    <span className="text-[9px] text-[#A3845B] block font-bold">✨ 결핍 보완형 귀인 시너지</span>
+                    <strong className="text-base font-bold text-[#A3845B]">{currentRelBasis.lackScore}%</strong>
+                    <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden max-w-[120px] mx-auto">
+                      <div className="bg-[#A3845B] h-full rounded-full" style={{ width: `${currentRelBasis.lackScore}%` }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1 border-l border-gray-200">
+                    <span className="text-[9px] text-gray-400 block font-bold">⚠️ 동질형 자아 충돌 지수</span>
+                    <strong className="text-base font-bold text-red-500">{currentRelBasis.sameScore}%</strong>
+                    <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden max-w-[120px] mx-auto">
+                      <div className="bg-red-400 h-full rounded-full" style={{ width: `${currentRelBasis.sameScore}%` }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 상세 분석 내용 */}
+                <div className="space-y-4 text-[11px] text-gray-600 leading-relaxed font-sans font-light">
+                  {/* 결핍 보완형 */}
+                  <div className="bg-emerald-50/20 p-4 rounded-lg border border-emerald-100/80 space-y-1.5">
+                    <span className="font-bold text-emerald-950 block">① 나와 다른 사람 (결핍 보완형 인연)</span>
+                    <p className="font-sans leading-relaxed text-gray-700">
+                      {currentRelBasis.lackDesc} 
+                      특히 귀하에게 결핍된 <strong>&lsquo;{lackEl.name}&rsquo;의 기운</strong>을 사주에 풍부하게 탑재한 상대방과의 조우는 인생의 정체된 물길을 부드럽게 유통시키는 최고의 인연 궁합이 될 수 있습니다.
+                    </p>
+                  </div>
+
+                  {/* 동질형 */}
+                  <div className="bg-red-50/10 p-4 rounded-lg border border-red-100/40 space-y-1.5">
+                    <span className="font-bold text-red-950 block">② 나와 똑같은 사람 (동질형 인연)</span>
+                    <p className="font-sans leading-relaxed text-gray-700">
+                      {currentRelBasis.sameDesc} 
+                      처음에는 말이 물 흐르듯 통하나 결정적 고비에서 서로 고집불통이 되거나 조급함이 2배로 배가되는 부작용을 동반합니다. 이 인연과는 업무 및 물리적 역할을 명확히 떼어놓는 것이 현명합니다.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 명리 근거 보강 패널 */}
+                <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
+                  <span className="text-[10px] font-bold text-[#A3845B] block font-myeongjo">💡 慧眼堂 명리학적 분석 배경</span>
+                  <p className="text-[10.5px] text-gray-600 leading-relaxed font-sans font-light">
+                    {getAstroBasis("relation")} 
+                    오행의 상생(相生)은 활력의 유입을 뜻하고 상극(相剋)은 불필요한 성질의 억제와 조율을 의미합니다. 대인관계의 마찰과 덕은 오로지 사주 팔자 속 글자들의 상호 관계성에서 빚어지는 기운의 운동 상태입니다.
+                  </p>
+                </div>
+
+                {/* 명리 개운 힐링 처방 카드 */}
+                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-2.5 shadow-inner">
+                  <span className="text-[10px] font-bold text-[#C2A378] tracking-wider block font-myeongjo text-center">🧘 {name} 님을 위한 명리 개운 힐링 메시지</span>
+                  <p className="text-[10.5px] text-gray-300 font-light font-sans leading-relaxed text-center">
+                    {currentRelBasis.healing}
+                  </p>
+                </div>
+
               </div>
-
-              <div className="space-y-1">
-                <span className="font-bold text-gray-800 block">② 나와 똑같은 사람(동질형)을 만났을 때</span>
-                <p>
-                  일간 기질과 오행 분포가 판박이처럼 닮아 있는 사람을 만나면 첫 대화부터 오랜 친구처럼 뜻이 잘 통합니다. 
-                  그러나 서로 고집이 센 불통 버그가 동시에 작동하여 한 치도 양보하지 않는 평행선 대치나, 조급함이 동시에 2배로 극대화되는 부작용이 있습니다. 
-                  동질형 상대를 대할 때는 반드시 공간과 역할의 거리를 분리하여 충돌을 사전에 막아야 상생할 수 있습니다.
-                </p>
-              </div>
+              <div className="text-right text-[9px] text-gray-300 pt-2">Page 14 / 22</div>
             </div>
-
-            <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
-              <span className="text-[10px] font-bold text-[#A3845B] block">💡 왜 그런가요? 명리 근거</span>
-              <p className="text-[10px] text-gray-500 leading-relaxed font-light">
-                {getAstroBasis("relation")}
-              </p>
-            </div>
-          </div>
-          <div className="text-right text-[9px] text-gray-300 pt-2">Page 14 / 22</div>
-        </div>
+          );
+        })()}
 
         {/* -------------------- Page 14. Chapter 2 처방 (관계별 분석) -------------------- */}
         <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
