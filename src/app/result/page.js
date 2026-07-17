@@ -4265,7 +4265,7 @@ return val;
       console.error("결제 요청 전 로컬스토리지 조회 실패:", e);
     }
 
-    const currentGrade = reportGrade || "premium";
+    const currentGrade = reportGrade === "free" ? "sms" : (reportGrade || "premium");
 
     // 로컬 환경 혹은 개발 테스트를 위해 채널 키가 없으면 바로 잠금 해제
     if (!channelKey) {
@@ -11456,8 +11456,8 @@ return val;
           )
         )}
 
-        {/* 오늘의 맞춤 운세 및 무료 사주 보고서 하단 고정 혜안당 운세 상품 이동 플로팅 바 */}
-        {(type === "today" || reportGrade === "free") && (
+        {/* 오늘의 맞춤 운세 혜안당 운세 상품 이동 플로팅 바 */}
+        {type === "today" && (
           <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
             <Link
               href="/#services"
@@ -11466,6 +11466,20 @@ return val;
               <span>🔮 혜안당 정밀 운세 상품 보러가기 (종합사주/신년운세)</span>
               <span className="text-lg">➔</span>
             </Link>
+          </div>
+        )}
+
+        {/* 무료 사주 보고서 하단 고정 문자요약 신청 플로팅 바 */}
+        {reportGrade === "free" && !isPaid && (
+          <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
+            <button
+              type="button"
+              onClick={handlePortonePayment}
+              className="w-full bg-[#8B221E] hover:bg-[#6D1B18] text-white py-4 px-6 rounded-xl font-myeongjo font-bold text-xs sm:text-sm flex items-center justify-between shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#8B221E]/20"
+            >
+              <span>내 사주 블러처리 확인하로 가기 14900원</span>
+              <span className="text-lg">➔</span>
+            </button>
           </div>
         )}
 
