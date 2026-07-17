@@ -409,7 +409,15 @@ export default function AdminPage() {
 
     // 2. Status Filter
     if (paymentStatusFilter !== "all") {
-      if (o.status.toLowerCase() !== paymentStatusFilter.toLowerCase()) return false;
+      const statusLower = o.status.toLowerCase();
+      const filterLower = paymentStatusFilter.toLowerCase();
+      
+      if (filterLower === "paid") {
+        // 결제 완료 필터일 경우 유료 결제완료(paid)와 무료 결제완료(free) 모두 포함
+        if (statusLower !== "paid" && statusLower !== "free") return false;
+      } else {
+        if (statusLower !== filterLower) return false;
+      }
     }
 
     // 3. Search Query and Type Filter
