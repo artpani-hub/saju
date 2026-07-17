@@ -888,6 +888,16 @@ export default function AdminPage() {
               </div>
             </div>
 
+            {/* 검색 결과 수량 노출 */}
+            <div className="flex justify-between items-center px-1">
+              <h3 className="text-sm font-bold text-[#495057] flex items-center gap-2">
+                주문 목록
+                <span className="text-xs bg-[#8e724b]/10 text-[#8e724b] px-2.5 py-0.5 rounded-full font-bold">
+                  검색 결과: {filteredOrders.length}건
+                </span>
+              </h3>
+            </div>
+
             <div className="bg-white rounded-xl border border-[#dee2e6] overflow-hidden shadow-sm">
               <table className="w-full text-left border-collapse">
                 <thead>
