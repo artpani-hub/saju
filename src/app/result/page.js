@@ -4373,7 +4373,7 @@ return val;
         storeId,
         channelKey,
         paymentId: `payment_${new Date().getTime()}`,
-        name: paymentTitle,
+        orderName: paymentTitle,
         totalAmount: amount,
         currency: "KRW",
         payMethod: "CARD",
@@ -4405,6 +4405,9 @@ return val;
                 const url = new URL(window.location.href);
                 url.searchParams.set("reportGrade", currentGrade);
                 window.location.href = url.toString();
+
+                // SMS 및 이메일 전송용 연락처 복원
+                const targetPhone = phoneParam || (rsp && rsp.buyer_tel);
 
                 // 이메일 자동 발송 트리거 연동 (결제 정보에서 입력한 이메일 주소 사용)
                 const targetEmail = emailParam || (rsp && rsp.buyer_email);
@@ -4483,7 +4486,6 @@ return val;
                 }
 
                 // SMS 자동 발송 트리거 연동 (유료 결제 성공 시 발송)
-                const targetPhone = phoneParam || (rsp && rsp.buyer_tel);
                 if (targetPhone && targetPhone.replace(/[^0-9]/g, "").length >= 9) {
                   try {
                     const smsQueryParams = new URLSearchParams({
