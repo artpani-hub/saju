@@ -206,9 +206,10 @@ export async function GET(req) {
     const adminPassword = searchParams.get("adminPassword");
     
     // If admin check passes, we can safely return the mock fallback list to guarantee client rendering!
-    if (adminPassword === "artpani1234") {
-      return NextResponse.json(fallbackOrdersList);
-    }
+    // Commented out to fetch real SQLite/MySQL DB orders instead of simulated mock data.
+    // if (adminPassword === "artpani1234") {
+    //   return NextResponse.json(fallbackOrdersList);
+    // }
     
     const queryPhone = searchParams.get("phone");
     const queryName = searchParams.get("name");
