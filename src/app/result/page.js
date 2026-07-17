@@ -6140,35 +6140,293 @@ return val;
           );
         })()}
 
-        {/* -------------------- Page 12. Chapter 2 처방 (대인관계 설명서) -------------------- */}
-        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
-          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
-          
-          <div className="space-y-6">
-            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
-              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
-              <span className="text-[9px] text-gray-400 font-light">Chapter 2 처방 (관계 설명서)</span>
-            </div>
+        {/* -------------------- Page 13. Chapter 2 처방 (대인관계 설명서) -------------------- */}
+        {(() => {
+          const relationshipData = {
+            "목": {
+              good1: {
+                title: "조용한 조언자형 귀인",
+                element: "수(水)·토(土)의 기운",
+                meaning: "나무(木)가 마르지 않도록 부드러운 수분(水)을 공급하고 단단히 뿌리내릴 영양가 높은 대지(土)가 되어주는 기운입니다.",
+                effect: "생각이 너무 많아 현실적 실행이 어려울 때 감정의 과부하를 막아 마음의 중심을 잡아주고, 차분하게 다음 단계로 전진할 수 있도록 돕습니다."
+              },
+              good2: {
+                title: "실행력 강한 파트너",
+                element: "화(火)·금(金)의 기운",
+                meaning: "나뭇가지를 뻗어나가게 하는 뜨거운 햇살(화)과 난잡한 가지를 예리하게 쳐주는 전지가위(금)의 기운입니다.",
+                effect: "계획에만 머물러 주저하고 있을 때 행동으로 옮기도록 따뜻한 자극을 주며, 시작한 일을 맺고 끊음이 확실한 결과물로 완성하도록 돕습니다."
+              },
+              bad1: {
+                title: "기복이 심하고 약속이 불분명한 사람",
+                element: "탁한 수(水)·화(火)의 기운",
+                meaning: "뿌리를 썩게 만드는 차갑고 탁한 고인 물(水)이나 주변을 일시에 태워 혼란을 초래하는 불안정한 불(火)의 기운입니다.",
+                effect: "일관성 없는 태도로 정서적인 고갈을 유발하며, 신뢰를 손상해 예기치 못한 마음의 큰 깊은 상처를 입힙니다."
+              },
+              bad2: {
+                title: "비생산적 경쟁을 유도하는 사람",
+                element: "부딪히는 금(金)·목(木)의 기운",
+                meaning: "서로 엉켜 자라지 못하게 상처를 주는 단단한 쇳날(金)과 가시 돋친 덤불(木)이 대립하는 형국입니다.",
+                effect: "성장의 시너지가 나지 않는 소모적인 마찰을 유발하여 정작 중요한 본인 커리어 성장에 집중하지 못하도록 분산시킵니다."
+              },
+              tips: [
+                {
+                  title: "'말하지 않아도 알겠지'라는 기대 내려놓기",
+                  element: "토(土)의 정체 극복",
+                  desc: "마음속에 섭섭함을 가둬두고 말하지 않는 것은 소통의 흐름을 막고 썩어 들어가는 흙탕물(土)과 같아, 관계의 만성 정체를 유발합니다."
+                },
+                {
+                  title: "예의 바르고 솔직하게 감정 공유하기",
+                  element: "금(金)의 정화와 수(水)의 흐름",
+                  desc: "오해가 깊어지기 전에 맺힌 응어리를 확실히 쳐내고(金), 고이지 않도록 대화를 통해 밖으로 부드럽게 흘려보내야(水) 관계의 맑은 순환이 이뤄집니다."
+                }
+              ]
+            },
+            "화": {
+              good1: {
+                title: "조용한 조언자형 귀인",
+                element: "수(水)·토(土)의 기운",
+                meaning: "뜨겁게 타오르는 열정(火)이나 건조하고 메마른 고집(金)을 부드럽게 식혀주고 품어주는 기운입니다.",
+                effect: "마치 메마른 대지에 내리는 단비(水)나, 뜨거운 열기를 묵묵히 품어주는 넓은 흙(土)처럼 감정의 과부하를 막아주고 마음의 안정을 찾아줍니다."
+              },
+              good2: {
+                title: "실행력 강한 파트너",
+                element: "목(木)·금(金)의 기운",
+                meaning: "주저하고 망설일 때 새로운 시작의 싹을 틔우는 기운(木)과, 칼로 자르듯 확실한 결단력을 내리는 기운(金)입니다.",
+                effect: "생각에만 머물러 있을 때 등을 따뜻하게 밀어주어 행동하게 만들고, 흐지부지될 수 있는 일을 명확한 결과물로 만들어내도록 돕습니다."
+              },
+              bad1: {
+                title: "약속과 책임이 불분명하고 감정 기복이 심한 사람",
+                element: "탁한 수(水)·화(火)의 기운",
+                meaning: "갈피를 잡지 못하고 이리저리 흔들리는 탁한 물(水)이나, 예고 없이 사방으로 튀며 주변을 태워버리는 불안정한 불(火)의 기운입니다.",
+                effect: "규칙성 없이 쏟아지는 감정의 롤러코스터는 고객님의 정신적 에너지를 빠르게 고갈시키며, 신뢰의 근간을 흔들어 큰 정신적 내상을 입힙니다."
+              },
+              bad2: {
+                title: "비생산적인 시기질투와 경쟁을 유도하는 사람",
+                element: "부딪히는 금(金)·목(木)의 기운",
+                meaning: "굳이 부딪쳐 상처를 내는 날카로운 가위(金)와 뾰족한 가시나무(木)가 서로 맞서는 형국입니다.",
+                effect: "서로 성장을 돕는 건강한 경쟁이 아니라, 에너지를 깎아내리는 불필요한 마찰을 만들어내어 정작 중요한 일에 집중하지 못하게 기운을 분산시킵니다."
+              },
+              tips: [
+                {
+                  title: "'말하지 않아도 알겠지'라는 기대 내려놓기",
+                  element: "토(土)의 정체 극복",
+                  desc: "마음속에 섭섭함을 담아두고 표현하지 않는 것은 흐르지 못하고 고여서 썩어가는 흙탕물(土)과 같습니다."
+                },
+                {
+                  title: "예의 바르고 솔직하게 감정 공유하기",
+                  element: "금(金)의 정화와 수(水)의 흐름",
+                  desc: "오해가 깊어지기 전에 맺힌 감정을 명확하게 잘라내고(金), 고이지 않도록 대화를 통해 밖으로 부드럽게 흘려보내야(水) 합니다. 섭섭한 감정을 예의 바르게 즉시 표현하는 것이야말로 관계의 숨통을 틔우고 기운을 맑게 순환시키는 가장 좋은 방법입니다."
+                }
+              ]
+            },
+            "토": {
+              good1: {
+                title: "따뜻한 활력소형 귀인",
+                element: "화(火)·목(木)의 기운",
+                meaning: "차가운 대지(土)를 온화하게 데워주는 태양(火)과 대지의 흙을 일깨워 생명을 기르는 나무(목)의 기운입니다.",
+                effect: "자칫 나태와 매너리즘에 안주하려 할 때 긍정적인 삶의 동기를 유발하고 행동하게 만드는 활력을 제공합니다."
+              },
+              good2: {
+                title: "실질적 결실의 동반자",
+                element: "금(金)·수(水)의 기운",
+                meaning: "흙 속의 노다지를 캐내도록 가치를 증명하는 철광석(금)과 대지를 기름지게 흐르며 적시는 물(수)의 기운입니다.",
+                effect: "막연한 관계에 그치지 않고 본인의 전문 기술이나 자산이 가치 창출로 연계되도록 정량적인 비즈니스 뼈대를 보강해줍니다."
+              },
+              bad1: {
+                title: "약속 이행이 모호하고 감정적인 사람",
+                element: "탁한 수(水)·화(火)의 기운",
+                meaning: "대지를 침식하여 흐리게 만드는 흙탕물(수)이나, 순식간에 자원을 태워 재만 남기는 변덕스러운 화마(화)의 기운입니다.",
+                effect: "믿음을 무기 삼아 금전적, 심리적인 손실을 끼치며 일상의 안정적인 리듬을 어지럽힙니다."
+              },
+              bad2: {
+                title: "성장을 해치고 깎아내리는 관계",
+                element: "부딪히는 금(金)·목(木)의 기운",
+                meaning: "단단 바위(금)와 깊은 가시뿌리(목)가 타협 없이 대립하여 기반을 부스러뜨리는 형상입니다.",
+                effect: "사사건건 대립과 냉소를 안겨주어 본래 품고 있는 중용의 평화로운 감정을 해치고 위축감을 조장합니다."
+              },
+              tips: [
+                {
+                  title: "우유부단한 양보와 침묵 단절하기",
+                  element: "금(金)의 선 긋기 적용",
+                  desc: "좋은 게 좋다는 식의 애매한 태도는 상대방에게 만만한 신호로 읽힙니다. 아닌 일에는 확실하고 정중히 마침표(金)를 찍어야 합니다."
+                },
+                {
+                  title: "맺힌 감정을 막힘 없이 유통시키기",
+                  element: "수(수)의 흐름과 목(목)의 대화",
+                  desc: "섭섭함을 마음 깊이 매장하여 굳히는 습관을 버리고, 시원스럽게 대화의 창구(목)를 열어 즉시 풀어내야(수) 정서적 병목이 치료됩니다."
+                }
+              ]
+            },
+            "금": {
+              good1: {
+                title: "조용한 조언자형 귀인",
+                element: "수(水)·토(土)의 기운",
+                meaning: "메마르고 날카로운 고집(金)을 부드럽게 식혀주는 맑은 물(水)과 차가운 성정을 아우르고 품어주는 대지(土)의 기운입니다.",
+                effect: "신경이 날카롭게 벼려져 있을 때 마음의 긴장을 차분히 가라앉혀 주고 이성적인 대안을 제시해 줍니다."
+              },
+              good2: {
+                title: "실행력 강한 파트너",
+                element: "목(木)·화(火)의 기운",
+                meaning: "새로운 일의 단초를 활력 있게 제안하는 새싹(木)과, 굳어진 생각을 가치 있게 단련시키는 제련 불꽃(火)의 기운입니다.",
+                effect: "홀로 냉철한 분석에만 머무를 때 행동하도록 등을 따뜻하게 밀어주고 본인의 능력을 세상에 알리는 교두보가 되어 줍니다."
+              },
+              bad1: {
+                title: "약속과 책임이 불분명한 사람",
+                element: "탁한 수(水)·화(火)의 기운",
+                meaning: "경계 없이 흩어지며 금속을 부식시키는 탁한 물(水)이나 예측 불가능하게 타올라 틀을 해치는 불안정한 불(火)의 기운입니다.",
+                effect: "이해관계와 정산이 불투명하여 철저한 귀하의 규율을 깨뜨리고 심각한 신뢰의 내상과 피로를 야기합니다."
+              },
+              bad2: {
+                title: "날 선 마찰과 시기를 일삼는 사람",
+                element: "부딪히는 금(金)·목(木)의 기운",
+                meaning: "서로 굳이 맞부딪혀 상처를 내는 날카로운 가위(金)와 가시나무(木)가 격돌하는 형국입니다.",
+                effect: "공동의 성장 대신 무의미한 자존심 대립과 냉소적인 평판 공격을 반복하여 정작 중요한 업무 시너지를 훼손시킵니다."
+              },
+              tips: [
+                {
+                  title: "'완벽주의적 잣대' 상대에게 들이대지 않기",
+                  element: "토(土)의 중용과 포용",
+                  desc: "타인에게 지나치게 완벽한 결단과 도덕을 바라는 것은 스스로를 고립시키는 벽이 되기 쉽습니다."
+                },
+                {
+                  title: "날카로운 거절 끝에 온기 얹기",
+                  element: "화(화)의 따뜻함과 수(수)의 소통",
+                  desc: "옳고 그름을 칼같이 정돈하여 단번에 잘라내는(금) 버릇을 버리고, 상대방의 상황을 배려하는 조화로운 표현법(수)과 온화함(화)을 보완할 때 천하의 귀인이 귀하의 곁으로 모여듭니다."
+                }
+              ]
+            },
+            "수": {
+              good1: {
+                title: "방향타가 되어주는 귀인",
+                element: "목(木)·토(土)의 기운",
+                meaning: "흐르는 물결(水)이 범람하지 않게 울타리가 되는 제방(土)과 마르지 않고 맑게 흐르도록 발원이 되는 암반(金)의 기운입니다.",
+                effect: "생각이 너무 넓게 흩어져서 수습이 안 될 때, 핵심을 간추려 현실의 물길을 터주고 안정적인 삶의 틀을 세워주어 든든한 등대가 되어줍니다."
+              },
+              good2: {
+                title: "생산성을 높이는 파트너",
+                element: "화(火)·금(金)의 기운",
+                meaning: "물이 마르지 않도록 끊임없이 공급하는 바위 샘물(금)과 차가운 물에 빛과 열기를 가하는 뜨거운 에너지(화)의 기운입니다.",
+                effect: "아이디어가 무형의 공간에 정체되지 않고 실제로 자본과 비즈니스 가치로 신속하게 실현되도록 강력한 추진 동력을 부가해 줍니다."
+              },
+              bad1: {
+                title: "기복이 극도로 심하고 산만한 사람",
+                element: "탁한 화(火)·수(水)의 기운",
+                meaning: "수시로 증발을 자극하는 변덕스러운 불꽃(화)과 오염되어 방향성을 흐리는 탁한 소용돌이(수)의 기운입니다.",
+                effect: "일관성 없는 롤러코스터식 요구로 정서적 자산을 갉아먹고, 신뢰를 무너뜨려 자아를 정체시키고 지치게 만듭니다."
+              },
+              bad2: {
+                title: "자유를 억압하고 마찰을 빚는 관계",
+                element: "부딪히는 토(土)·금(金)의 기운",
+                meaning: "물의 맑은 유통을 가로막고 흙탕을 채우는 돌벽(토)과 경계를 옭아매는 무디고 거친 철조망(금)의 조우입니다.",
+                effect: "귀하의 타고난 총명함과 유연한 발상을 제약하고 억지 규칙만을 주입하여 숨통을 조이게 만듭니다."
+              },
+              tips: [
+                {
+                  title: "모호한 관계의 경계를 바로잡기",
+                  element: "토(土)의 제방 형성",
+                  desc: "거절하지 못하고 무조건 흡수해 주려는 습관은 결국 관계 속의 침식과 번아웃을 부릅니다. 확실한 자기 한계선(토)을 상대에게 밝히는 태도가 먼저입니다."
+                },
+                {
+                  title: "단호하게 매듭짓고 소통하기",
+                  element: "금(금)의 단호함과 목(목)의 표출",
+                  desc: "미련을 가지고 지체하는 대신 아닌 일은 정중하고 신속하게 마침표를 찍고(금), 새로운 희망적 소통의 싹(목)을 열어젖히는 것이 건강한 마음 순환을 이루는 최고의 방책입니다."
+                }
+              ]
+            }
+          };
 
-            <div className="space-y-5">
-              <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• 대인관계 사용설명서</h3>
+          const dayStemEl = sajuInfo?.day?.stemEl || "목";
+          const currentRel = relationshipData[dayStemEl] || relationshipData["목"];
+
+          return (
+            <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+              <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
               
-              <div className="space-y-3 text-[11px] text-gray-600 leading-relaxed">
-                <p><strong>1. 나에게 약이 되고 힘이 되는 사람:</strong> 귀하의 불타오르거나 메마른 기운을 부드럽게 감싸고 조율해 주는 **조용한 조언자형 귀인**, 그리고 주저할 때 결단을 밀어주는 **실행력 강한 파트너**가 이롭습니다.</p>
-                <p><strong>2. 나를 지치게 하고 독이 되는 사람:</strong> 약속과 도의적 책임이 늘 불분명하고 기분에 따라 감정의 진폭을 쏟아내는 사람, 그리고 비생산적인 시기질투를 일삼으며 경쟁심을 유도하는 관계는 기운을 크게 소진시킵니다.</p>
-                <p><strong>3. 관계에서 잊지 말아야 할 행동 요령:</strong> 상대가 알아서 다 이해해줄 것이란 기대를 버리고 섭섭함이 마음속에 쌓여 썩기 전에 먼저 예의 바르고 솔직하게 감정을 공유해야 관계의 병목이 해결됩니다.</p>
-              </div>
-            </div>
+              <div className="space-y-5">
+                {/* 헤더 */}
+                <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+                  <span className="text-[9px] text-gray-400 font-light">Chapter 2 처방 (관계 설명서)</span>
+                </div>
 
-            <div className="bg-[#F9F8F6] p-4 rounded border border-gray-200 text-center">
-              <span className="text-[10px] text-gray-400 font-bold block mb-1">관계 회복을 위한 힐링 한마디</span>
-              <p className="font-myeongjo text-xs font-bold text-gray-700">
-                "나는 원래 내 속정의 크기만큼 말로 표현하는 법이 서투르지만, 당신과의 깊은 신뢰 관계를 무척 소중하게 여깁니다."
-              </p>
+                {/* 타이틀 */}
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-gray-800 block font-myeongjo">• {name} 님의 대인관계 에고 포트폴리오</span>
+                  <p className="text-[10px] text-gray-500 font-light font-sans">
+                    사주 원국의 조화도에 근거하여 귀하의 삶에 약이 되는 귀인 인연과 경계해야 할 소진 인연을 조율합니다.
+                  </p>
+                </div>
+
+                {/* 1. 나에게 약이 되고 힘이 되는 사람 (상생의 에너지) */}
+                <div className="space-y-2">
+                  <span className="text-xs font-bold text-emerald-800 block flex items-center gap-1.5 font-myeongjo">🟢 1. 나에게 약이 되고 힘이 되는 사람 (상생과 조화의 파트너)</span>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="bg-emerald-50/30 p-3.5 rounded-lg border border-emerald-100/80 space-y-1.5">
+                      <div className="flex justify-between items-center border-b border-emerald-100 pb-1">
+                        <strong className="text-[11px] text-emerald-900 font-semibold">{currentRel.good1.title}</strong>
+                        <span className="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full font-light font-sans">{currentRel.good1.element}</span>
+                      </div>
+                      <p className="text-[10px] text-emerald-800 font-bold font-sans">{currentRel.good1.meaning}</p>
+                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentRel.good1.effect}</p>
+                    </div>
+
+                    <div className="bg-emerald-50/30 p-3.5 rounded-lg border border-emerald-100/80 space-y-1.5">
+                      <div className="flex justify-between items-center border-b border-emerald-100 pb-1">
+                        <strong className="text-[11px] text-emerald-900 font-semibold">{currentRel.good2.title}</strong>
+                        <span className="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full font-light font-sans">{currentRel.good2.element}</span>
+                      </div>
+                      <p className="text-[10px] text-emerald-800 font-bold font-sans">{currentRel.good2.meaning}</p>
+                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentRel.good2.effect}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. 나를 지치게 하고 독이 되는 사람 (상극의 에너지) */}
+                <div className="space-y-2">
+                  <span className="text-xs font-bold text-red-700 block flex items-center gap-1.5 font-myeongjo">🔴 2. 나를 지치게 하고 독이 되는 사람 (상극과 소진의 관계)</span>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="bg-red-50/20 p-3.5 rounded-lg border border-red-100/50 space-y-1.5">
+                      <div className="flex justify-between items-center border-b border-red-100 pb-1">
+                        <strong className="text-[11px] text-red-900 font-semibold">{currentRel.bad1.title}</strong>
+                        <span className="text-[9px] bg-red-100 text-red-800 px-1.5 py-0.5 rounded-full font-light font-sans">{currentRel.bad1.element}</span>
+                      </div>
+                      <p className="text-[10px] text-red-800 font-bold font-sans">{currentRel.bad1.meaning}</p>
+                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentRel.bad1.effect}</p>
+                    </div>
+
+                    <div className="bg-red-50/20 p-3.5 rounded-lg border border-red-100/50 space-y-1.5">
+                      <div className="flex justify-between items-center border-b border-red-100 pb-1">
+                        <strong className="text-[11px] text-red-900 font-semibold">{currentRel.bad2.title}</strong>
+                        <span className="text-[9px] bg-red-100 text-red-800 px-1.5 py-0.5 rounded-full font-light font-sans">{currentRel.bad2.element}</span>
+                      </div>
+                      <p className="text-[10px] text-red-800 font-bold font-sans">{currentRel.bad2.meaning}</p>
+                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentRel.bad2.effect}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. 관계에서 잊지 말아야 할 행동 요령 (소통의 처방) */}
+                <div className="space-y-2">
+                  <span className="text-xs font-bold text-gray-800 block flex items-center gap-1.5 font-myeongjo">💡 3. 관계에서 잊지 말아야 할 행동 요령 (소통과 순환의 지혜)</span>
+                  <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3 shadow-inner">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[10px] text-gray-300">
+                      <div className="border-r border-gray-700/50 pr-4 flex flex-col justify-center space-y-1">
+                        <span className="text-[#C2A378] font-bold text-[10.5px] block font-myeongjo">🟢 {currentRel.tips[0].title} ({currentRel.tips[0].element})</span>
+                        <p className="text-white leading-relaxed font-light font-sans">{currentRel.tips[0].desc}</p>
+                      </div>
+                      <div className="flex flex-col justify-center space-y-1">
+                        <span className="text-[#C2A378] font-bold text-[10.5px] block font-myeongjo">🟢 {currentRel.tips[1].title} ({currentRel.tips[1].element})</span>
+                        <p className="text-white leading-relaxed font-light font-sans">{currentRel.tips[1].desc}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div className="text-right text-[9px] text-gray-300 pt-2">Page 13 / 22</div>
             </div>
-          </div>
-          <div className="text-right text-[9px] text-gray-300 pt-2">Page 13 / 22</div>
-        </div>
+          );
+        })()}
 
         {/* -------------------- Page 13. Chapter 2 처방 (관계 솔루션) -------------------- */}
         <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
