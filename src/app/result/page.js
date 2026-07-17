@@ -6918,33 +6918,135 @@ return val;
         })()}
 
         {/* -------------------- Page 16. Chapter 3. 인생의 계절 (대운) -------------------- */}
-        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
-          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+        {(() => {
+          // birthYear를 기준으로 연령대 계산
+          const birthYear = parseInt(year) || 1995;
+          const currentYear = 2026;
+          const userAge = currentYear - birthYear + 1;
           
-          <div className="space-y-6">
-            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
-              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
-              <span className="text-[9px] text-gray-400 font-light">Chapter 3. 인생의 계절 (대운)</span>
-            </div>
+          let agePhase = "청장년기 수확의 여름/가을";
+          let ageDesc = "씨앗을 마구 흩뿌리기만 하던 이십 대의 파종기를 지나, 이제는 축적된 기획과 포트폴리오를 실질적인 열매(성과)로 전환하는 결실 작업에 나설 시기입니다.";
+          let weatherIcon = "☀️";
+          let weatherState = "햇살 (수확의 시기)";
+          let weatherColor = "text-amber-600";
 
-            <div className="space-y-4">
-              <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• 10년 주기 인생 대운(大運)의 지도</h3>
-              <p className="text-[11px] text-gray-600 leading-relaxed">
-                명리학에서의 대운은 **인생 전체의 10년짜리 날씨(계절) 변화**를 의미합니다. 
-                현재 귀하가 밟고 서 있는 대운의 계절적 본질은 흙(土)의 기운이 굳어지며 현실적인 실리와 틀을 굳건히 다져야 하는 **'늦가을에서 초겨울로 접어드는 수확의 계절'**에 머무르고 있습니다.
-              </p>
-              <p className="text-[11px] text-gray-600 leading-relaxed">
-                씨앗을 마구 흩뿌리기만 하던 이십 대의 파종기적 충동을 멈추고, 이제는 거두어들인 내 기획과 포트폴리오를 돈과 성과라는 실질적인 열매로 전환하는 결실 작업에 집중해야 기운이 원활하게 흘러가게 됩니다.
-              </p>
-            </div>
+          if (userAge < 25) {
+            agePhase = "청소년기 파종의 봄";
+            ageDesc = "아직은 인생의 방향성을 다각도로 테스트하며 씨앗을 넓게 뿌려야 하는 생동의 봄철입니다. 서둘러 결과를 내기보다 다양한 지식과 경험을 흡수하십시오.";
+            weatherIcon = "🌱";
+            weatherState = "새싹 (성장의 시기)";
+            weatherColor = "text-emerald-600";
+          } else if (userAge >= 50) {
+            agePhase = "중장년기 성숙의 겨울";
+            ageDesc = "이제껏 일궈온 자산을 굳건하게 지켜내고 무리한 투자를 차단하며, 내면의 정신적 완성도와 후학 양성에 집중해야 하는 고요하고 단단한 계절입니다.";
+            weatherIcon = "❄️";
+            weatherState = "결빙 (축적과 휴식의 시기)";
+            weatherColor = "text-blue-700";
+          }
 
-            <div className="bg-[#F9F8F6] p-4 rounded border border-gray-200 text-[10.5px] text-gray-600 space-y-1">
-              <span className="font-bold text-gray-700 block">⚠️ 대운의 변곡점 조언</span>
-              <p>인생의 계절이 바뀌는 교운기(대운이 교체되는 전후 1~2년)에는 인간관계가 대대적으로 필터링되거나 주거/이직 등 급격한 환경 변화가 일어납니다. 당황하지 말고 묵묵히 내 실속을 다지는 것이 최고의 방어책입니다.</p>
+          const daeunAstroBasis = {
+            "목": {
+              title: "목(木) 일간의 현실적 안착과 실리 확보",
+              desc: "현재 귀하는 사방으로 가지만 뻗던 충동을 제어하고, 내 활동의 단단한 터전이 되는 토(土) 재성을 확보해 나가야 하는 대운의 흐름에 들어서 있습니다. 겉만 그럴싸한 일의 벌림보다 실제 나에게 떨어지는 지분과 소유권을 확립하는 결실주의 태도가 10년을 지배할 것입니다.",
+              remedy: "대운이 교체되는 교운기 전후에는 생각의 급격한 꺾임과 진로 방향에 대한 심한 조급함이 일어납니다. 외부의 화려한 제안을 경계하고, 묵직하게 공부하고 지식(인성)을 다져 놓는 것이 최고의 방어막입니다."
+            },
+            "화": {
+              title: "화(火) 일간의 냉철한 자산 치환과 열기 조율",
+              desc: "현재 귀하는 맹목적으로 열정을 사르기보다, 차가운 금(金) 재성을 통해 기획과 노력을 실물 경제적 가치로 굳히는 대운의 수확 기류에 머무르고 있습니다. 충동적인 소비 구멍을 차단하고 문서화된 영구적 재화로 통장을 이동시키십시오.",
+              remedy: "교운기 주변에서는 감정의 기복(조울)과 대인관계의 대대적인 물갈이가 동반됩니다. 인간관계의 서운함을 사적으로 마음에 깊이 두지 마시고 이성적 수(水)의 절제로 감정의 온도를 적정하게 낮추어 처세하십시오."
+            },
+            "토": {
+              title: "토(土) 일간의 보수성 탈피와 새로운 씨앗 개척",
+              desc: "현재 귀하는 보수적인 굳어짐을 거부하고, 비옥한 흙을 파헤쳐 생명을 키우는 목(木) 관성의 도전을 수용해야 하는 10년 대운의 활력 기로에 서 있습니다. 머뭇거리던 이직, 새로운 기술 학습, 주체적 1인 사업 등을 추진할 때 기운이 트입니다.",
+              remedy: "교운기 전후에는 주거나 부서의 급격한 이동수, 터전의 변경이 크게 발생합니다. 과거의 방식을 미련 없이 버리고 몸을 유연하게 하여 식상(금)의 추진력을 가동하는 것이 개운의 열쇠입니다."
+            },
+            "금": {
+              title: "금(金) 일간의 날카로움 이완과 유연성 수용",
+              desc: "현재 귀하는 예리한 칼날을 잠시 칼집에 넣고, 흐르는 수(水) 식상의 유연함과 타인에 대한 대중적 포용력을 길러야 하는 대운의 기하학적 순환 단계에 있습니다. 시시비비를 가려 선을 긋기보다 타인의 부족함을 넉넉히 수용할 때 그들이 내 귀인이 됩니다.",
+              remedy: "교운기 전후에는 육체적/정신적 과부하로 인한 관절 및 면역 체계의 무리가 오기 쉽습니다. 내 고집의 칼날로 스스로를 해치지 마시고 토(土)의 아늑한 휴식과 안정을 의도적으로 수혈하십시오."
+            },
+            "수": {
+              title: "수(水) 일간의 제방 구축과 무형 자산의 문서화",
+              desc: "현재 귀하는 정처 없이 사방으로 흐르던 아이디어의 강물이 단단한 흙 제방(토(土) 관성)을 만나 구체적인 사회적 기둥과 안정적 직책으로 고정되는 10년 대운의 본질을 겪고 있습니다. 계약의 문서화와 공식 직함을 확보하십시오.",
+              remedy: "교운기 주변에는 정 때문에 계약이 모호해져 자산의 피해를 보거나 배신수가 작동할 여지가 있습니다. 공사 구분을 철저히 하고 모든 관계는 금(金)의 공식 공증 및 약속의 형식을 빌려 다지십시오."
+            }
+          };
+
+          const dayStemEl = sajuInfo?.day?.stemEl || "목";
+          const currentDaeun = daeunAstroBasis[dayStemEl] || daeunAstroBasis["목"];
+
+          return (
+            <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+              <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+              
+              <div className="space-y-6">
+                {/* 헤더 */}
+                <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+                  <span className="text-[9px] text-gray-400 font-light">Chapter 3. 인생의 계절 (대운)</span>
+                </div>
+
+                {/* 타이틀 */}
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-gray-800 block font-myeongjo">• {name} 님의 10년 주기 대운(大運)의 지도</span>
+                  <p className="text-[10px] text-gray-500 font-light font-sans">
+                    대운은 인생 전체를 주관하는 거대한 계절의 변화(10년짜리 기상청 날씨)를 보여줍니다.
+                  </p>
+                </div>
+
+                {/* 시각화: 현재 대운의 기상 상태 대시보드 */}
+                <div className="flex items-center gap-4 bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 shadow-inner">
+                  <div className="text-4xl shrink-0">{weatherIcon}</div>
+                  <div className="space-y-1 flex-1">
+                    <span className="text-[9px] text-gray-400 block font-bold">현재 대운 기상 모니터</span>
+                    <strong className={`text-xs font-bold ${weatherColor} block`}>{weatherState}</strong>
+                    <p className="text-[9.5px] text-gray-500 font-light font-sans leading-relaxed">
+                      귀하는 현재 만 {userAge}세의 나이로 명리학적 <strong>&lsquo;{agePhase}&rsquo;</strong>의 한복판을 지나고 있습니다.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 상세 분석 내용 */}
+                <div className="space-y-4 text-[11px] text-gray-600 leading-relaxed font-sans font-light">
+                  <div className="space-y-1.5">
+                    <span className="font-bold text-gray-800 block flex items-center gap-1">🍀 10년 대운의 본질적 기류</span>
+                    <p className="font-sans leading-relaxed text-gray-700">
+                      명리학에서의 대운은 10년마다 순환하는 날씨의 이동입니다. {ageDesc}
+                    </p>
+                  </div>
+
+                  <div className="bg-amber-50/20 p-4 rounded-lg border border-amber-100/50 space-y-1.5">
+                    <span className="font-bold text-amber-950 block">🔑 {currentDaeun.title}</span>
+                    <p className="font-sans leading-relaxed text-gray-700">
+                      {currentDaeun.desc}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 대운의 변곡점 조언 (명리 근거 패널) */}
+                <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
+                  <span className="text-[10px] font-bold text-[#A3845B] block font-myeongjo">💡 慧眼堂 교운기(交運期) 신호 분석</span>
+                  <p className="text-[10.5px] text-gray-600 leading-relaxed font-sans font-light">
+                    {currentDaeun.remedy} 
+                    인생의 계절이 바뀌기 직전에는 낡은 인연이 정리되고 새로운 환경에 직면하는 폭풍우 같은 1~2년의 과도기를 거치게 됩니다. 당황하지 말고 내면의 닻을 내리십시오.
+                  </p>
+                </div>
+
+                {/* 대운 개운법 카드 (하단 여백 제거용) */}
+                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-2 shadow-inner">
+                  <span className="text-[10px] font-bold text-[#C2A378] tracking-wider block font-myeongjo text-center">🧘 대운을 내 편으로 만드는 최고의 마인드셋</span>
+                  <p className="text-[10.5px] text-gray-300 font-light font-sans leading-relaxed text-center font-sans">
+                    대운의 바람이 불어올 때 돛을 올려 항해하는 자만이 성공을 거머쥡니다.
+                    <br />
+                    조급하게 타인과 비교하기보다 <strong>나의 계절 속도에 맞추어 씨앗을 여물게 하는 실리주의</strong>를 평생 기억하십시오.
+                  </p>
+                </div>
+
+              </div>
+              <div className="text-right text-[9px] text-gray-300 pt-2">Page 17 / 22</div>
             </div>
-          </div>
-          <div className="text-right text-[9px] text-gray-300 pt-2">Page 17 / 22</div>
-        </div>
+          );
+        })()}
 
         {/* -------------------- Page 17. Chapter 3. 올해 운의 타이밍 (세운 - 1) -------------------- */}
         <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
