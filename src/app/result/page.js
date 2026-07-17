@@ -4660,6 +4660,9 @@ return val;
   // Render: 평생 종합 사주 SMS 요약본
   // ----------------------------------------------------
   const renderSmsSajuContent = () => {
+    const isFree = (reportGrade === "free" && !isPaid) || (reportGrade === "premium" && !isPaid) || (reportGrade === "sms" && !isPaid);
+    const blurClass = isFree ? "blur-[5px] select-none pointer-events-none" : "";
+
     // 1. 개인화 데이터 추출 및 만세력 기반 정보 생성
     const { elements, day, year, month, hour } = sajuInfo;
     const baseEl = sajuInfo.day.stemEl || "토";
@@ -5029,7 +5032,7 @@ return val;
               <h3 className="font-myeongjo text-sm font-bold text-[#A3845B] flex items-center gap-1.5">
                 <span>🔑</span> 나의 사주 한 줄 요약
               </h3>
-              <p className="text-sm text-gray-800 leading-relaxed font-myeongjo font-bold tracking-wide">
+              <p className={`text-sm text-gray-800 leading-relaxed font-myeongjo font-bold tracking-wide ${blurClass}`}>
                 &ldquo;{currentCard.title}의 기운을 타고나, {currentCard.character}로서 삶을 영위하는 자아 정체성을 품고 있습니다.&rdquo;
               </p>
             </div>
@@ -5039,23 +5042,23 @@ return val;
               <div className="grid grid-cols-5 gap-3 text-center">
                 <div className="bg-[#F9F8F6] p-4 rounded-xl border border-gray-200/80 flex flex-col justify-between min-h-[125px] shadow-sm">
                   <span className="text-[11px] font-bold text-gray-800 border-b border-[#E2DDD5]/80 pb-1.5 mb-2 block">성향<br />자기 주도</span>
-                  <p className="text-[10px] text-gray-500 leading-relaxed text-left font-light">타인의 간섭 없이 내 주관대로 결정하고 주도적으로 행동할 때 성취 에너지가 가장 강하게 솟구칩니다.</p>
+                  <p className={`text-[10px] text-gray-500 leading-relaxed text-left font-light ${blurClass}`}>타인의 간섭 없이 내 주관대로 결정하고 주도적으로 행동할 때 성취 에너지가 가장 강하게 솟구칩니다.</p>
                 </div>
                 <div className="bg-[#F9F8F6] p-4 rounded-xl border border-gray-200/80 flex flex-col justify-between min-h-[125px] shadow-sm">
                   <span className="text-[11px] font-bold text-emerald-700 border-b border-[#E2DDD5]/80 pb-1.5 mb-2 block">강점<br />{excessEl.name} 기운</span>
-                  <p className="text-[10px] text-gray-500 leading-relaxed text-left font-light">사주 원국에 풍부한 &lsquo;{excessEl.name}&rsquo;의 에너지는 위기 돌파와 강력한 아이디어 기획력의 원천입니다.</p>
+                  <p className={`text-[10px] text-gray-500 leading-relaxed text-left font-light ${blurClass}`}>사주 원국에 풍부한 &lsquo;{excessEl.name}&rsquo;의 에너지는 위기 돌파와 강력한 아이디어 기획력의 원천입니다.</p>
                 </div>
                 <div className="bg-[#F9F8F6] p-4 rounded-xl border border-gray-200/80 flex flex-col justify-between min-h-[125px] shadow-sm">
                   <span className="text-[11px] font-bold text-amber-700 border-b border-[#E2DDD5]/80 pb-1.5 mb-2 block">재물<br />{lackEl.name} 개운</span>
-                  <p className="text-[10px] text-gray-500 leading-relaxed text-left font-light">부족한 &lsquo;{lackEl.name}&rsquo; 기운을 일상 인테리어, 컬러 처방 등으로 채워줄 때 재정의 지출 구멍이 단단히 막힙니다.</p>
+                  <p className={`text-[10px] text-gray-500 leading-relaxed text-left font-light ${blurClass}`}>부족한 &lsquo;{lackEl.name}&rsquo; 기운을 일상 인테리어, 컬러 처방 등으로 채워줄 때 재정의 지출 구멍이 단단히 막힙니다.</p>
                 </div>
                 <div className="bg-[#F9F8F6] p-4 rounded-xl border border-gray-200/80 flex flex-col justify-between min-h-[125px] shadow-sm">
                   <span className="text-[11px] font-bold text-gray-800 border-b border-[#E2DDD5]/80 pb-1.5 mb-2 block">관계<br />동질 상성</span>
-                  <p className="text-[10px] text-gray-500 leading-relaxed text-left font-light">나와 기질이 유사한 사람과는 소통이 매우 빠르나, 고집이 충돌하기 쉬우므로 역할 분리가 최고의 지혜입니다.</p>
+                  <p className={`text-[10px] text-gray-500 leading-relaxed text-left font-light ${blurClass}`}>나와 기질이 유사한 사람과는 소통이 매우 빠르나, 고집이 충돌하기 쉬우므로 역할 분리가 최고의 지혜입니다.</p>
                 </div>
                 <div className="bg-[#F9F8F6] p-4 rounded-xl border border-gray-200/80 flex flex-col justify-between min-h-[125px] shadow-sm">
                   <span className="text-[11px] font-bold text-red-600 border-b border-[#E2DDD5]/80 pb-1.5 mb-2 block">과제<br />균형과 처방</span>
-                  <p className="text-[10px] text-gray-500 leading-relaxed text-left font-light">과열된 기운의 속도를 늦추고, 결여된 기운을 채워 육체와 정신의 음양 밸런스를 상생 상태로 관리하는 것입니다.</p>
+                  <p className={`text-[10px] text-gray-500 leading-relaxed text-left font-light ${blurClass}`}>과열된 기운의 속도를 늦추고, 결여된 기운을 채워 육체와 정신의 음양 밸런스를 상생 상태로 관리하는 것입니다.</p>
                 </div>
               </div>
             </div>
@@ -5066,19 +5069,19 @@ return val;
                 <tbody>
                   <tr className="border-b border-[#E2DDD5] bg-[#F9F8F6]/60">
                     <th className="p-3.5 border-r border-[#E2DDD5] w-1/4 font-semibold text-gray-700 text-center">성향 유형</th>
-                    <td className="p-3.5 text-gray-800">{currentCard.title}</td>
+                    <td className={`p-3.5 text-gray-800 ${blurClass}`}>{currentCard.title}</td>
                   </tr>
                   <tr className="border-b border-[#E2DDD5]">
                     <th className="p-3.5 border-r border-[#E2DDD5] font-semibold text-gray-700 text-center">재물운 유형</th>
-                    <td className="p-3.5 text-gray-800">결핍 오행인 &lsquo;{lackEl.name}&rsquo;의 기운을 적극적으로 보완하여 재운을 발복시키는 구조</td>
+                    <td className={`p-3.5 text-gray-800 ${blurClass}`}>결핍 오행인 &lsquo;{lackEl.name}&rsquo;의 기운을 적극적으로 보완하여 재운을 발복시키는 구조</td>
                   </tr>
                   <tr className="border-b border-[#E2DDD5] bg-[#F9F8F6]/60">
                     <th className="p-3.5 border-r border-[#E2DDD5] font-semibold text-gray-700 text-center">직업운 유형</th>
-                    <td className="p-3.5 text-gray-800">본인의 주도적 결정권과 독립성이 보장된 자율형 실속 리더형</td>
+                    <td className={`p-3.5 text-gray-800 ${blurClass}`}>본인의 주도적 결정권과 독립성이 보장된 자율형 실속 리더형</td>
                   </tr>
                   <tr className="border-b border-[#E2DDD5]">
                     <th className="p-3.5 border-r border-[#E2DDD5] font-semibold text-gray-700 text-center">현재 운의 흐름</th>
-                    <td className="p-3.5 text-gray-800">과도기이자 인생의 새로운 계절(대운 변곡점)을 견고히 준비하는 길목</td>
+                    <td className={`p-3.5 text-gray-800 ${blurClass}`}>과도기이자 인생의 새로운 계절(대운 변곡점)을 견고히 준비하는 길목</td>
                   </tr>
                 </tbody>
               </table>
@@ -5091,7 +5094,7 @@ return val;
                 </span>
                 <span className="text-[9px] text-[#A3845B]/70 tracking-widest font-myeongjo">慧眼堂 寶鑑 專用</span>
               </div>
-              <div className="text-[11px] text-gray-700 leading-relaxed font-light space-y-2.5">
+              <div className={`text-[11px] text-gray-700 leading-relaxed font-light space-y-2.5 ${blurClass}`}>
                 <p>
                   귀하의 사주는 본질적 자아를 뜻하는 일주의 천간이 <strong>&lsquo;{dayStem}&rsquo;</strong>일간에 해당하여, 어떠한 방해나 외부 압력에도 타협하지 않고 자신만의 가치를 실현하고자 하는 성정이 깊게 내재되어 있습니다. 8자 전반의 에너지 흐름을 보면, 가장 강력한 영향력을 행사하는 <strong>&lsquo;{excessEl.name}&rsquo; 기운</strong>의 장점을 실생활과 비즈니스에서 발휘해내는 능력이 아주 탁월합니다.
                 </p>
@@ -6696,7 +6699,7 @@ return val;
                 </div>
 
                 {/* 시각화: 인연 유형별 시너지 점수 대시보드 */}
-                <div className="grid grid-cols-2 gap-4 bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 text-center shadow-inner">
+                <div className={`grid grid-cols-2 gap-4 bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 text-center shadow-inner ${blurClass}`}>
                   <div className="space-y-1">
                     <span className="text-[9px] text-[#A3845B] block font-bold">✨ 결핍 보완형 귀인 시너지</span>
                     <strong className="text-base font-bold text-[#A3845B]">{currentRelBasis.lackScore}%</strong>
@@ -6714,7 +6717,7 @@ return val;
                 </div>
 
                 {/* 상세 분석 내용 */}
-                <div className="space-y-4 text-[11px] text-gray-600 leading-relaxed font-sans font-light">
+                <div className={`space-y-4 text-[11px] text-gray-600 leading-relaxed font-sans font-light ${blurClass}`}>
                   {/* 결핍 보완형 */}
                   <div className="bg-emerald-50/20 p-4 rounded-lg border border-emerald-100/80 space-y-1.5">
                     <span className="font-bold text-emerald-950 block">① 나와 다른 사람 (결핍 보완형 인연)</span>
@@ -6735,7 +6738,7 @@ return val;
                 </div>
 
                 {/* 명리 근거 보강 패널 */}
-                <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
+                <div className={`bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2 ${blurClass}`}>
                   <span className="text-[10px] font-bold text-[#A3845B] block font-myeongjo">💡 慧眼堂 명리학적 분석 배경</span>
                   <p className="text-[10.5px] text-gray-600 leading-relaxed font-sans font-light">
                     {getAstroBasis("relation")} 
@@ -6744,7 +6747,7 @@ return val;
                 </div>
 
                 {/* 명리 개운 힐링 처방 카드 */}
-                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-2.5 shadow-inner">
+                <div className={`bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-2.5 shadow-inner ${blurClass}`}>
                   <span className="text-[10px] font-bold text-[#C2A378] tracking-wider block font-myeongjo text-center">🧘 {name} 님을 위한 명리 개운 힐링 메시지</span>
                   <p className="text-[10.5px] text-gray-300 font-light font-sans leading-relaxed text-center">
                     {currentRelBasis.healing}
@@ -6845,7 +6848,7 @@ return val;
                 </div>
 
                 {/* 📊 에고 진단 수치 도출의 명리학적 배경 */}
-                <div className="bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/40 space-y-2 text-[10px] text-gray-500 leading-relaxed font-sans font-light">
+                <div className={`bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/40 space-y-2 text-[10px] text-gray-500 leading-relaxed font-sans font-light ${blurClass}`}>
                   <span className="font-bold text-[#A3845B] block font-myeongjo">📊 관계 지수 도출의 명리학적 분석 근거</span>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3 border-t border-gray-200/60 pt-2 text-[9.5px]">
                     <div className="space-y-0.5 text-left">
@@ -6882,7 +6885,7 @@ return val;
                 </div>
 
                 {/* 세부 분석 내용 */}
-                <div className="space-y-4 text-[11px] text-gray-600 leading-relaxed font-sans font-light">
+                <div className={`space-y-4 text-[11px] text-gray-600 leading-relaxed font-sans font-light ${blurClass}`}>
                   {/* 가족 */}
                   <div className="bg-white p-3.5 rounded-lg border border-[#E2DDD5] shadow-sm space-y-1">
                     <span className="font-bold text-gray-800 block flex items-center gap-1">👨‍👩‍👧 1. 가족 관계 분석</span>
@@ -6909,7 +6912,7 @@ return val;
                 </div>
 
                 {/* 대인관계 개운 수호 비책 카드 */}
-                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-2 shadow-inner">
+                <div className={`bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-2 shadow-inner ${blurClass}`}>
                   <span className="text-[10px] font-bold text-[#C2A378] tracking-wider block font-myeongjo text-center">🧘 {name} 님의 대인관계 에고 개운 수호 비책</span>
                   <p className="text-[10.5px] text-gray-300 font-light font-sans leading-relaxed text-center font-sans">
                     귀하의 오행 성향상, 인간관계적 마찰이나 내적 피로가 누적될 때는 다음과 같이 행동하십시오.
@@ -7008,13 +7011,13 @@ return val;
                 </div>
 
                 {/* 명리학적 처방 근거 */}
-                <div className="text-[10.5px] text-gray-600 leading-relaxed font-sans font-light bg-emerald-50/10 p-3.5 rounded-lg border border-emerald-100/30">
+                <div className={`text-[10.5px] text-gray-600 leading-relaxed font-sans font-light bg-emerald-50/10 p-3.5 rounded-lg border border-emerald-100/30 ${blurClass}`}>
                   귀하의 사주는 <strong>{lackElName}({lackElCode})의 기운</strong>이 {elementsCount[lackElName] === 0 ? "원국 내에 존재하지 않는 무(無)존재 상태" : `${elementsCount[lackElName]}개로 극히 취약한 상태`}입니다. 
                   명리학에서 일상 환경 처방은 사주 내에 결여된 고유 주파수를 외부로부터 수혈하여 기류의 막힘을 풀어내고 삶의 에너지를 균형 있게 순환시키는 개운(開運)의 촉매제 역할을 수행합니다.
                 </div>
 
                 {/* 🍀 나를 채워줄 일상의 행운 원소 */}
-                <div className="space-y-2">
+                <div className={`space-y-2 ${blurClass}`}>
                   <span className="font-myeongjo text-xs font-bold text-[#A3845B] block">• 나를 채워줄 일상의 행운 원소 ({lackElName}의 보완)</span>
                   <div className="grid grid-cols-3 gap-3.5 text-center">
                     <div className="border border-gray-100 p-3.5 rounded bg-[#F9F8F6] space-y-1">
@@ -7033,7 +7036,7 @@ return val;
                 </div>
 
                 {/* 행동 개운 처방 지침 */}
-                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-2.5 shadow-inner">
+                <div className={`bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-2.5 shadow-inner ${blurClass}`}>
                   <span className="text-[10px] font-bold text-[#C2A378] tracking-wider block font-myeongjo text-center">🧘 {name} 님을 위한 부족 오행({lackElName}) 기반 생활 행동 강령</span>
                   <p className="text-[10.5px] text-gray-300 font-light font-sans leading-relaxed text-center font-sans">
                     의복이나 소품(Color & Item)보다 강력한 개운은 나의 평소 행동적 무의식을 조율하는 것입니다. 
@@ -7128,7 +7131,7 @@ return val;
                 </div>
 
                 {/* 시각화: 현재 대운의 기상 상태 대시보드 */}
-                <div className="flex items-center gap-4 bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 shadow-inner">
+                <div className={`flex items-center gap-4 bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 shadow-inner ${blurClass}`}>
                   <div className="text-4xl shrink-0">{weatherIcon}</div>
                   <div className="space-y-1 flex-1">
                     <span className="text-[9px] text-gray-400 block font-bold">현재 대운 기상 모니터</span>
@@ -7140,7 +7143,7 @@ return val;
                 </div>
 
                 {/* 상세 분석 내용 */}
-                <div className="space-y-4 text-[11px] text-gray-600 leading-relaxed font-sans font-light">
+                <div className={`space-y-4 text-[11px] text-gray-600 leading-relaxed font-sans font-light ${blurClass}`}>
                   <div className="space-y-1.5">
                     <span className="font-bold text-gray-800 block flex items-center gap-1">🍀 10년 대운의 본질적 기류</span>
                     <p className="font-sans leading-relaxed text-gray-700">
@@ -7157,7 +7160,7 @@ return val;
                 </div>
 
                 {/* 대운의 변곡점 조언 (명리 근거 패널) */}
-                <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
+                <div className={`bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2 ${blurClass}`}>
                   <span className="text-[10px] font-bold text-[#A3845B] block font-myeongjo">💡 慧眼堂 교운기(交運期) 신호 분석</span>
                   <p className="text-[10.5px] text-gray-600 leading-relaxed font-sans font-light">
                     {currentDaeun.remedy} 
@@ -7166,7 +7169,7 @@ return val;
                 </div>
 
                 {/* 대운 변곡점(정체기) 및 마인드셋 (하단 여백 제거용 통합 패널) */}
-                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3 shadow-inner">
+                <div className={`bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3 shadow-inner ${blurClass}`}>
                   <div className="border-b border-gray-700/50 pb-1.5 flex justify-between items-center text-[10px]">
                     <span className="font-bold text-[#C2A378] font-myeongjo">🧘 {name} 님의 대운 변곡점(교운기) & 정체기 극복 처방</span>
                     <span className="text-gray-400">대운수(大運數): {daeunNum}</span>
@@ -7312,7 +7315,7 @@ return val;
                 </div>
 
                 {/* 시각화: 분기별 기류 타임라인 대시보드 */}
-                <div className="bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 space-y-3.5 shadow-inner">
+                <div className={`bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 space-y-3.5 shadow-inner ${blurClass}`}>
                   <span className="text-[10.5px] font-bold text-[#A3845B] font-myeongjo block text-center">📅 {name} 님의 올해 4대 분기별 운세 흐름도</span>
                   
                   <div className="grid grid-cols-4 gap-2 text-center text-[9px] font-sans">
@@ -7336,7 +7339,7 @@ return val;
                 </div>
 
                 {/* 2열 종합 진단 */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className={`grid grid-cols-2 gap-4 ${blurClass}`}>
                   <div className="border border-emerald-100 bg-emerald-50/10 p-4 rounded-lg space-y-3">
                     <span className="text-xs font-bold text-emerald-800 block">🟢 활로가 열리는 시기</span>
                     <div className="space-y-2.5">
@@ -7363,14 +7366,14 @@ return val;
                 </div>
 
                 {/* 타이밍 핵심 가이드 */}
-                <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 text-[10.5px] text-gray-600 leading-relaxed font-sans font-light">
+                <div className={`bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 text-[10.5px] text-gray-600 leading-relaxed font-sans font-light ${blurClass}`}>
                   <span className="font-bold text-[#A3845B] block mb-1 font-myeongjo">💡 {name} 님을 위한 타이밍 가이드</span>
                   사주 기운은 차고 기울어지는 주기를 지닙니다. 좋은 시기에는 새로운 기획과 확장을 주저 없이 관철하되, 
                   조율기에 해당하는 시점에는 충동적인 거액 소비와 계약서 서명을 2~3일 미뤄두는 지혜를 발휘하여 리스크를 원천 소각하십시오.
                 </div>
 
                 {/* 올해 개운 루틴 및 운세 자가진단 패널 (하단 여백 제거용 통합 다크 패널) */}
-                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3 shadow-inner">
+                <div className={`bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3 shadow-inner ${blurClass}`}>
                   <span className="text-[10px] font-bold text-[#C2A378] tracking-wider block font-myeongjo text-center">• {name} 님만을 위한 올해 운세 수호 & 자가 조율 비법</span>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[10px] font-sans font-light text-left">
@@ -7446,29 +7449,35 @@ return val;
                   </div>
                   
                   <div className="divide-y divide-gray-100 text-[10px] font-sans">
-                    {monthlyGuide.map((item, idx) => (
-                      <div key={idx} className="grid grid-cols-12 p-2 items-center text-center">
-                        <div className="col-span-2 font-bold text-gray-800">{item.month}</div>
-                        <div className="col-span-2 flex justify-center">
-                          <span className={`px-2 py-0.5 rounded text-[8.5px] text-white font-bold text-center w-14 block ${
-                            item.grade === "매우 좋음" ? "bg-emerald-600" :
-                            item.grade === "좋음" ? "bg-teal-500" :
-                            item.grade === "보통" ? "bg-gray-400" :
-                            item.grade === "주의" ? "bg-red-500" : "bg-amber-500"
-                          }`}>
-                            {item.grade}
-                          </span>
+                    {monthlyGuide.map((item, idx) => {
+                      const itemMonthNum = parseInt(item.month.replace(/[^0-9]/g, ''));
+                      const orderMonth = mounted ? (new Date().getMonth() + 1) : 8;
+                      const shouldBlur = isFree && (itemMonthNum > orderMonth);
+                      const rowBlurClass = shouldBlur ? blurClass : "";
+                      return (
+                        <div key={idx} className={`grid grid-cols-12 p-2 items-center text-center ${rowBlurClass}`}>
+                          <div className="col-span-2 font-bold text-gray-800">{item.month}</div>
+                          <div className="col-span-2 flex justify-center">
+                            <span className={`px-2 py-0.5 rounded text-[8.5px] text-white font-bold text-center w-14 block ${
+                              item.grade === "매우 좋음" ? "bg-emerald-600" :
+                              item.grade === "좋음" ? "bg-teal-500" :
+                              item.grade === "보통" ? "bg-gray-400" :
+                              item.grade === "주의" ? "bg-red-500" : "bg-amber-500"
+                            }`}>
+                              {item.grade}
+                            </span>
+                          </div>
+                          <div className="col-span-8 text-left text-gray-600 pl-4 font-light leading-relaxed">
+                            {item.desc}
+                          </div>
                         </div>
-                        <div className="col-span-8 text-left text-gray-600 pl-4 font-light leading-relaxed">
-                          {item.desc}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
                 {/* 시각화: 월별 기류 수호 에너지 스펙트럼 */}
-                <div className="bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 space-y-3 shadow-inner">
+                <div className={`bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 space-y-3 shadow-inner ${blurClass}`}>
                   <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo block text-center">📊 {name} 님의 올해 3대 핵심 에너지 스펙트럼 수치</span>
                   
                   <div className="grid grid-cols-3 gap-4 text-[10px] font-sans">
@@ -7505,7 +7514,7 @@ return val;
                 </div>
 
                 {/* 올해 기류 수호 행동 강령 및 여백 제거용 다크 패널 */}
-                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3 shadow-inner">
+                <div className={`bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3 shadow-inner ${blurClass}`}>
                   <div className="border-b border-gray-700/50 pb-1.5 flex justify-between items-center text-[10px]">
                     <span className="font-bold text-[#C2A378] font-myeongjo">💡 {name} 님을 위한 운세 시너지 가이드라인</span>
                     <span className="text-gray-400">수호 오행: {lackElName}</span>
@@ -7558,7 +7567,7 @@ return val;
 
                 <div className="space-y-4">
                   <h4 className="text-xs font-bold text-[#A3845B]">• 혜안당 명리 지침 나침반 답변</h4>
-                  <p className="text-[11.5px] text-gray-700 leading-relaxed whitespace-pre-line font-sans font-light">
+                  <p className={`text-[11.5px] text-gray-700 leading-relaxed whitespace-pre-line font-sans font-light ${blurClass}`}>
                     {worryContent.answer}
                   </p>
                 </div>
@@ -7568,7 +7577,7 @@ return val;
                 </div>
 
                 {/* 하단 고민 해결 오행 처방 대시보드 (여백 제거 및 시각화 고도화) */}
-                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3.5 shadow-inner">
+                <div className={`bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3.5 shadow-inner ${blurClass}`}>
                   <div className="border-b border-gray-700/50 pb-1.5 flex justify-between items-center text-[10px]">
                     <span className="font-bold text-[#C2A378] font-myeongjo">🧘 {name} 님의 고민 극복을 위한 오행 에너지 솔루션</span>
                     <span className="text-gray-400">카테고리: {worryCategoryInput || "종합 운세"}</span>
