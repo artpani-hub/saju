@@ -6626,34 +6626,134 @@ return val;
         })()}
 
         {/* -------------------- Page 14. Chapter 2 처방 (관계별 분석) -------------------- */}
-        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
-          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
-          
-          <div className="space-y-6">
-            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
-              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
-              <span className="text-[9px] text-gray-400 font-light">Chapter 2 처방 (관계별 분석)</span>
+        {(() => {
+          const relationTypeData = {
+            "목": {
+              family: "가족 내에서 실질적인 기둥 역할을 자처하게 되거나 무거운 감정적 부담을 도맡기 쉽습니다. 가족의 짐을 본인의 인생 어깨에 무리하게 올리지 않는 건강한 거리두기가 필요합니다.",
+              love: "상대방에 대한 애정이 깊지만 이를 마음속으로만 묵히고 말로 작게삭삭 속삭이지 못하는 버릇이 있습니다. 섭섭할 때 침묵으로 상대를 벌하기보다 대화를 맑게 풀어내는 것이 이롭습니다.",
+              work: "자신의 독창성과 결정적 가치를 과도하게 통제하려는 윗사람과는 자연스럽게 마찰이 빚어집니다. 이를 사적인 미움으로 보지 말고, 프로페셔널한 기능적 거리를 둬 정신적 소모를 막으십시오.",
+              remedy: "마음의 평정을 위해 일주일에 하루는 혼자만의 산책이나 온전한 침묵(수(水) 기운 공급)을 취하며 생각의 무성한 가지를 다듬어 주십시오.",
+              familyScore: 75, loveScore: 80, workScore: 65
+            },
+            "화": {
+              family: "집안 내의 분위기 메이커를 자처하지만 그만큼 가족들의 한마디에 과하게 상처받고 욱하기 쉽습니다. 부모나 형제의 참견에 즉각 폭발하기보다 차분한 완충의 대화 룰을 세우는 것이 중요합니다.",
+              love: "사랑할 때는 불길처럼 타오르지만 작은 서운함에 찬바람을 일으켜 극단을 붑니다. 감정이 상했을 때 대화를 피하지 말고, 부드러운 언어로 감정을 흘려보내는 유연성이 있어야 장수합니다.",
+              work: "추진력은 탁월하지만 독선적인 동료나 피드백 없는 상사를 만나면 의욕이 급강하합니다. 직무 충돌을 공적으로 깔끔하게 정리하고, 감정적인 평정을 유지하는 법을 터득하십시오.",
+              remedy: "번아웃이 감지될 때 즉시 음악 감상이나 차분한 명상(수(水)의 통제력 강화)을 통해 과열된 화(火) 기운을 식히고 평정심을 조율하십시오.",
+              familyScore: 70, loveScore: 85, workScore: 75
+            },
+            "토": {
+              family: "가족 구성원 간의 불만과 마찰을 중간에서 조용히 흡수하는 스펀지 역할을 하게 되어 마음의 깊은 정체가 옵니다. 가족의 문제를 온전히 책임지려다 본인의 심적 마찰이 깊어지는 것을 주의하십시오.",
+              love: "연인에게 무한한 신뢰와 포용을 주지만, 섭섭함을 속에만 묵혀두어 나중에 보이지 않는 단단한 벽을 쌓아버립니다. 고이지 않도록 사소한 감정도 가볍게 대화로 표현해 주십시오.",
+              work: "조직 내의 든든한 신용의 보루가 되지만 거절을 못 해 온갖 허드렛일까지 떠맡는 부작용이 있습니다. 본인의 업무 경계선과 책임 한계를 냉철히 정의하는 요령이 필요합니다.",
+              remedy: "섭섭함이 마음 깊은 곳에서 단단히 굳기 전에 즉시 맑은 차를 마시며 솔직하게 털어놓는 대화의 싹(목(木)의 소통)을 틔우십시오.",
+              familyScore: 85, loveScore: 72, workScore: 80
+            },
+            "금": {
+              family: "집안의 공정한 해결사이자 든든한 현실적 가장 역할을 하게 되지만, 가족들에게도 지나치게 엄격한 도덕적 규율을 들이대어 서운함을 사기 쉽습니다. 잣대를 낮추고 온기를 얹어 대화하십시오.",
+              love: "정직하고 의리가 깊은 영원한 동반자이지만 사랑의 표현이 서툴러 연인에게 외로움을 주기 쉽습니다. 논리적인 분석과 조언보다는 상대방의 마음을 먼저 따스하게 보듬어주는 공감이 우선입니다.",
+              work: "공정하지 못하거나 불투명한 정산, 무능한 동료를 보면 극심한 내적 스트레스를 받습니다. 상사의 권위적 참견을 사적으로 미워하지 말고 규정과 공식 문서로 드라이하게 대응하십시오.",
+              remedy: "스스로 칼날이 날카로워져 자신을 해칠 때는, 따스한 취미 생활이나 여행(화(火)의 단련)을 통해 경직된 마음을 이완시켜 주는 개운법을 쓰십시오.",
+              familyScore: 65, loveScore: 78, workScore: 90
+            },
+            "수": {
+              family: "가족들의 대소사를 뒤에서 냉철하게 조율하고 해결하지만 본인의 내밀한 속내는 가족에게조차 쉽게 털어놓지 못합니다. 홀로 짐을 지려 하지 말고 때로는 가족에게 기대어 온기를 나누십시오.",
+              love: "상대방의 성격과 기분에 유연하게 맞춰주는 물 같은 조화로운 사랑을 하지만, 자칫 본인의 색깔과 자아 바운더리를 잃고 끌려다닐 수 있습니다. 연애 시에도 본인의 주체적 선을 분명히 밝히십시오.",
+              work: "직장에서 소통과 대인 정치는 뛰어난 편이나 정작 본인의 권익이나 정산 조건을 명확히 요구하지 못해 미수금을 남깁니다. 비즈니스에서는 차가운 결단력을 잊지 마십시오.",
+              remedy: "생각이 사방으로 번져 정처 없이 흐를 때는 단단한 흙 제방(토(土)의 기둥) 같은 든든한 전문가 멘토를 찾아 명확한 현실적 가이드를 구하십시오.",
+              familyScore: 80, loveScore: 68, workScore: 85
+            }
+          };
+
+          const dayStemEl = sajuInfo?.day?.stemEl || "목";
+          const currentRelType = relationTypeData[dayStemEl] || relationTypeData["목"];
+
+          return (
+            <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+              <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+              
+              <div className="space-y-6">
+                {/* 헤더 */}
+                <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+                  <span className="text-[9px] text-gray-400 font-light">Chapter 2 처방 (관계별 분석)</span>
+                </div>
+
+                {/* 타이틀 */}
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-gray-800 block font-myeongjo">• {name} 님의 주요 인간관계 영역별 에고 진단</span>
+                  <p className="text-[10px] text-gray-500 font-light font-sans">
+                    일간 오행의 특징이 삶을 구성하는 3대 인간관계(가족, 연인, 동료) 속에서 발현되는 패턴을 진단합니다.
+                  </p>
+                </div>
+
+                {/* 시각화: 관계 영역별 하모니 스코어 대시보드 */}
+                <div className="grid grid-cols-3 gap-4 bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 text-center shadow-inner">
+                  <div className="space-y-1">
+                    <span className="text-[9px] text-gray-400 block font-light">👨‍👩‍👧 가족 관계 조화도</span>
+                    <strong className="text-sm font-bold text-[#A3845B]">{currentRelType.familyScore}%</strong>
+                    <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden max-w-[70px] mx-auto">
+                      <div className="bg-[#A3845B] h-full rounded-full" style={{ width: `${currentRelType.familyScore}%` }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1 border-x border-gray-200">
+                    <span className="text-[9px] text-gray-400 block font-light">💖 연애·부부 친밀도</span>
+                    <strong className="text-sm font-bold text-pink-600">{currentRelType.loveScore}%</strong>
+                    <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden max-w-[70px] mx-auto">
+                      <div className="bg-pink-500 h-full rounded-full" style={{ width: `${currentRelType.loveScore}%` }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[9px] text-gray-400 block font-light">💼 직무·동료 시너지</span>
+                    <strong className="text-sm font-bold text-blue-600">{currentRelType.workScore}%</strong>
+                    <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden max-w-[70px] mx-auto">
+                      <div className="bg-blue-500 h-full rounded-full" style={{ width: `${currentRelType.workScore}%` }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 세부 분석 내용 */}
+                <div className="space-y-4 text-[11px] text-gray-600 leading-relaxed font-sans font-light">
+                  {/* 가족 */}
+                  <div className="bg-white p-3.5 rounded-lg border border-[#E2DDD5] shadow-sm space-y-1">
+                    <span className="font-bold text-gray-800 block flex items-center gap-1">👨‍👩‍👧 1. 가족 관계 분석</span>
+                    <p className="font-sans leading-relaxed text-gray-600">
+                      {currentRelType.family}
+                    </p>
+                  </div>
+
+                  {/* 연애 */}
+                  <div className="bg-white p-3.5 rounded-lg border border-[#E2DDD5] shadow-sm space-y-1">
+                    <span className="font-bold text-gray-800 block flex items-center gap-1">💖 2. 연애 · 부부 관계 분석</span>
+                    <p className="font-sans leading-relaxed text-gray-600">
+                      {currentRelType.love}
+                    </p>
+                  </div>
+
+                  {/* 비즈니스 */}
+                  <div className="bg-white p-3.5 rounded-lg border border-[#E2DDD5] shadow-sm space-y-1">
+                    <span className="font-bold text-gray-800 block flex items-center gap-1">💼 3. 직장 · 비즈니스 동료 관계 분석</span>
+                    <p className="font-sans leading-relaxed text-gray-600">
+                      {currentRelType.work}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 대인관계 개운 수호 비책 카드 */}
+                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-2 shadow-inner">
+                  <span className="text-[10px] font-bold text-[#C2A378] tracking-wider block font-myeongjo text-center">🧘 {name} 님의 대인관계 에고 개운 수호 비책</span>
+                  <p className="text-[10.5px] text-gray-300 font-light font-sans leading-relaxed text-center font-sans">
+                    귀하의 오행 성향상, 인간관계적 마찰이나 내적 피로가 누적될 때는 다음과 같이 행동하십시오.
+                    <br />
+                    <strong className="text-white block mt-1">"{currentRelType.remedy}"</strong>
+                  </p>
+                </div>
+
+              </div>
+              <div className="text-right text-[9px] text-gray-300 pt-2">Page 15 / 22</div>
             </div>
-
-            <div className="space-y-6 text-[11px] text-gray-600 leading-relaxed">
-              <div className="space-y-1.5">
-                <span className="font-bold text-gray-800 block">• 1. 가족 관계</span>
-                <p>집안 내에서 실질적인 기둥 역할을 자처하게 되거나 무거운 감정적 수신처가 되기 쉽습니다. 가족의 고민까지 본인의 인생 어깨에 무리하게 올리지 않는 심리적 독립선언이 가끔은 필요합니다.</p>
-              </div>
-
-              <div className="space-y-1.5">
-                <span className="font-bold text-gray-800 block">• 2. 연애 · 부부 관계</span>
-                <p>애정을 속으로 깊이 묵히기보다 겉으로 작게나마 속삭이고 나누는 빈도가 잦아야 불화가 차단됩니다. 감정이 상했을 때 침묵으로 상대를 벌하는 버릇을 버려야 관계가 영구 소통됩니다.</p>
-              </div>
-
-              <div className="space-y-1.5">
-                <span className="font-bold text-gray-800 block">• 3. 직장 · 비즈니스 동료 관계</span>
-                <p>자신의 결정과 가치를 과도하게 통제하려는 윗사람과는 자연스럽게 마찰이 빚어집니다. 이를 개인적인 미움으로 받지 말고, 직무적 한계선으로 드라이하게 규정하여 거리를 두는 것이 기운에 이롭습니다.</p>
-              </div>
-            </div>
-          </div>
-          <div className="text-right text-[9px] text-gray-300 pt-2">Page 15 / 22</div>
-        </div>
+          );
+        })()}
 
         {/* -------------------- Page 15. Chapter 2 처방 (행운 요소) -------------------- */}
         <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
