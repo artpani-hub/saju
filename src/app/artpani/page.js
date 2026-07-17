@@ -83,6 +83,12 @@ export default function AdminPage() {
   const [statsSearchType, setStatsSearchType] = useState("all"); // all, name, product
   const [statsSearchQuery, setStatsSearchQuery] = useState("");
   const [statsChartType, setStatsChartType] = useState("daily"); // daily (일별), monthly (월별), hourly (시간별)
+  const [productStatsType, setProductStatsType] = useState("amount"); // amount (금액), count (건수)
+  const [productStatsDateFilter, setProductStatsDateFilter] = useState("all");
+  const [productStatsStartDate, setProductStatsStartDate] = useState("");
+  const [productStatsEndDate, setProductStatsEndDate] = useState("");
+  const [productStatsSearchType, setProductStatsSearchType] = useState("all");
+  const [productStatsSearchQuery, setProductStatsSearchQuery] = useState("");
 
   // 문의 및 상담 정밀 통제 상태값들 (캡처 레이아웃 싱크)
   const [inquiryTypeFilter, setInquiryTypeFilter] = useState("all"); // all, send, etc
@@ -368,6 +374,13 @@ export default function AdminPage() {
       const targetStart = new Date(date.getFullYear(), date.getMonth(), date.getDate());
       return targetStart.getTime() === todayStart.getTime();
     }
+
+    if (filterType === "yesterday") {
+      const yesterdayStart = new Date(todayStart);
+      yesterdayStart.setDate(yesterdayStart.getDate() - 1);
+      const targetStart = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      return targetStart.getTime() === yesterdayStart.getTime();
+    }
     
     if (filterType === "7days") {
       const limit = new Date(todayStart);
@@ -379,6 +392,10 @@ export default function AdminPage() {
       const limit = new Date(todayStart);
       limit.setDate(limit.getDate() - 30);
       return date.getTime() >= limit.getTime();
+    }
+
+    if (filterType === "thisMonth") {
+      return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
     }
     
     if (filterType === "custom") {
@@ -833,8 +850,10 @@ export default function AdminPage() {
                 {[
                   { id: "all", label: "전체기간" },
                   { id: "today", label: "오늘" },
+                  { id: "yesterday", label: "어제" },
                   { id: "7days", label: "최근 7일" },
                   { id: "30days", label: "최근 30일" },
+                  { id: "thisMonth", label: "이번달" },
                   { id: "custom", label: "직접지정" }
                 ].map((btn) => (
                   <button
@@ -1050,8 +1069,10 @@ export default function AdminPage() {
               >
                 <option value="all">전체 기간</option>
                 <option value="today">오늘</option>
+                <option value="yesterday">어제</option>
                 <option value="7days">최근 7일</option>
                 <option value="30days">최근 30일</option>
+                <option value="thisMonth">이번달</option>
                 <option value="custom">직접지정</option>
               </select>
 
@@ -2164,8 +2185,10 @@ export default function AdminPage() {
                 {[
                   { id: "all", label: "전체기간" },
                   { id: "today", label: "오늘" },
+                  { id: "yesterday", label: "어제" },
                   { id: "7days", label: "최근 7일" },
                   { id: "30days", label: "최근 30일" },
+                  { id: "thisMonth", label: "이번달" },
                   { id: "custom", label: "직접지정" }
                 ].map((btn) => (
                   <button
@@ -2250,6 +2273,17 @@ export default function AdminPage() {
 
             {/* 매출 추이 조건별 그래프 (일별/월별/시간별 스위칭 및 조건색 연동) */}
             {(() => {
+              // KST 로컬 시간 파싱 헬퍼 (UTC 날짜 포맷 변환 및 시차 오프셋 완벽 방어)
+              const parseToLocalDate = (createdAtStr) => {
+                if (!createdAtStr) return new Date();
+                let dateStr = createdAtStr;
+                if (!dateStr.includes('Z') && !dateStr.includes('+')) {
+                  dateStr = dateStr.replace(' ', 'T') + 'Z';
+                }
+                const parsed = new Date(dateStr);
+                return isNaN(parsed.getTime()) ? new Date(createdAtStr) : parsed;
+              };
+
               // 1. Filter orders based on conditions
               let targetOrders = orders;
 
@@ -2263,33 +2297,10 @@ export default function AdminPage() {
                 });
               }
 
-              // Date range filter
-              if (statsDateFilter !== "all") {
-                const now = new Date();
-                targetOrders = targetOrders.filter(o => {
-                  if (!o.createdAt) return false;
-                  const oDate = new Date(o.createdAt);
-                  const diffTime = Math.abs(now - oDate);
-                  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                  if (statsDateFilter === "today") {
-                    return o.createdAt.startsWith(now.toISOString().split('T')[0]);
-                  }
-                  if (statsDateFilter === "7days") return diffDays <= 7;
-                  if (statsDateFilter === "30days") return diffDays <= 30;
-                  if (statsDateFilter === "custom") {
-                    if (statsStartDate) {
-                      const start = new Date(statsStartDate);
-                      if (oDate < start) return false;
-                    }
-                    if (statsEndDate) {
-                      const end = new Date(statsEndDate);
-                      end.setHours(23, 59, 59, 999);
-                      if (oDate > end) return false;
-                    }
-                  }
-                  return true;
-                });
-              }
+              // Date range filter (공통 evaluateDateFilter 사용으로 시차 오프셋 완벽 방어)
+              targetOrders = targetOrders.filter(o => {
+                return evaluateDateFilter(o.createdAt, statsDateFilter, statsStartDate, statsEndDate);
+              });
 
               // 2. Generate stats points based on statsChartType
               let chartData = [];
@@ -2304,21 +2315,32 @@ export default function AdminPage() {
                 gradientTo = "to-emerald-600";
                 chartTitle = "최근 7일 일별 매출 추이";
 
-                // Generate recent 7 days
+                // Generate recent 7 days (로컬 타임존 시차 오프셋 완벽 방어)
                 const now = new Date();
                 for (let i = 6; i >= 0; i--) {
                   const d = new Date(now);
                   d.setDate(now.getDate() - i);
-                  const dateStr = d.toISOString().split('T')[0];
+                  const year = d.getFullYear();
+                  const month = String(d.getMonth() + 1).padStart(2, '0');
+                  const dateVal = String(d.getDate()).padStart(2, '0');
+                  const dateStr = `${year}-${month}-${dateVal}`;
                   chartData.push({ label: dateStr.slice(5), key: dateStr, amount: 0 });
                 }
 
                 targetOrders.forEach(o => {
-                  if (o.status === "paid" && o.createdAt) {
-                    const datePart = o.createdAt.slice(0, 10);
-                    const slot = chartData.find(c => c.key === datePart);
-                    if (slot) slot.amount += (o.amount || 0);
-                  }
+                  if (!o.createdAt || !o.status) return;
+                  const statusLower = o.status.toLowerCase();
+                  if (statusLower !== "paid") return;
+                  if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return;
+                  
+                  const localDate = parseToLocalDate(o.createdAt);
+                  const year = localDate.getFullYear();
+                  const month = String(localDate.getMonth() + 1).padStart(2, '0');
+                  const dateVal = String(localDate.getDate()).padStart(2, '0');
+                  const dateStr = `${year}-${month}-${dateVal}`;
+                  
+                  const slot = chartData.find(c => c.key === dateStr);
+                  if (slot) slot.amount += (o.amount || 0);
                 });
 
               } else if (statsChartType === "monthly") {
@@ -2337,11 +2359,18 @@ export default function AdminPage() {
                 }
 
                 targetOrders.forEach(o => {
-                  if (o.status === "paid" && o.createdAt) {
-                    const monthPart = o.createdAt.slice(0, 7);
-                    const slot = chartData.find(c => c.key === monthPart);
-                    if (slot) slot.amount += (o.amount || 0);
-                  }
+                  if (!o.createdAt || !o.status) return;
+                  const statusLower = o.status.toLowerCase();
+                  if (statusLower !== "paid") return;
+                  if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return;
+                  
+                  const localDate = parseToLocalDate(o.createdAt);
+                  const yearPart = localDate.getFullYear();
+                  const monthPart = String(localDate.getMonth() + 1).padStart(2, '0');
+                  const monthStr = `${yearPart}-${monthPart}`;
+                  
+                  const slot = chartData.find(c => c.key === monthStr);
+                  if (slot) slot.amount += (o.amount || 0);
                 });
 
               } else if (statsChartType === "hourly") {
@@ -2354,13 +2383,30 @@ export default function AdminPage() {
                 const slots = [4, 8, 12, 16, 20, 24];
                 chartData = slots.map(h => ({ label: `${h}시`, key: h, amount: 0 }));
 
-                const todayStr = new Date().toISOString().split('T')[0];
+                const d = new Date();
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const dateVal = String(d.getDate()).padStart(2, '0');
+                const todayStr = `${year}-${month}-${dateVal}`;
+                
                 targetOrders.forEach(o => {
-                  if (o.status === "paid" && o.createdAt && o.createdAt.startsWith(todayStr)) {
-                    const hourVal = Number(o.createdAt.split(' ')[1]?.split(':')[0] || 0);
-                    const slot = chartData.find(c => hourVal >= (c.key - 4) && hourVal < c.key);
-                    if (slot) slot.amount += (o.amount || 0);
-                  }
+                  if (!o.createdAt || !o.status) return;
+                  
+                  const localDate = parseToLocalDate(o.createdAt);
+                  const oYear = localDate.getFullYear();
+                  const oMonth = String(localDate.getMonth() + 1).padStart(2, '0');
+                  const oDateVal = String(localDate.getDate()).padStart(2, '0');
+                  const oDateStr = `${oYear}-${oMonth}-${oDateVal}`;
+                  
+                  if (oDateStr !== todayStr) return;
+                  
+                  const statusLower = o.status.toLowerCase();
+                  if (statusLower !== "paid") return;
+                  if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return;
+                  
+                  const hourVal = localDate.getHours();
+                  const slot = chartData.find(c => hourVal >= (c.key - 4) && hourVal < c.key);
+                  if (slot) slot.amount += (o.amount || 0);
                 });
               }
 
@@ -2394,7 +2440,7 @@ export default function AdminPage() {
                       <div className="absolute left-0 right-0 top-3/4 border-t border-[#dee2e6]/20 border-dashed text-[10px] text-[#888] pt-1">25%</div>
 
                       {chartData.map((slot, idx) => (
-                        <div key={idx} className="flex-1 flex flex-col items-center group z-10">
+                        <div key={idx} className="flex-1 h-full flex flex-col justify-end items-center group z-10">
                           <span className="text-[10px] text-[#8e724b] font-bold opacity-0 group-hover:opacity-100 transition-opacity mb-2">
                             {slot.amount.toLocaleString()}원
                           </span>
@@ -2406,6 +2452,339 @@ export default function AdminPage() {
                         </div>
                       ))}
                     </div>
+                  </div>
+
+                  {/* 상품별 통계 그래프 카드 */}
+                  <div className="bg-white rounded-xl border border-[#dee2e6] p-6 shadow-sm space-y-4">
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                      <div>
+                        <h3 className="text-lg font-bold text-[#212529]">상품 카테고리별 통계 분석</h3>
+                        <p className="text-xs text-[#888] mt-1 font-semibold font-semibold">
+                          {productStatsType === "amount" ? "금액(매출액)" : "건수(신청수)"} 기준으로 상품별 비중을 분석합니다.
+                        </p>
+                      </div>
+                      
+                      {/* 금액/건수 스위치 버튼 */}
+                      <div className="flex gap-1 bg-[#f8f9fa] p-1 rounded border border-[#dee2e6] self-start md:self-auto">
+                        <button
+                          type="button"
+                          onClick={() => setProductStatsType("amount")}
+                          className={`px-3 py-1.2 rounded text-xs font-bold transition-all ${
+                            productStatsType === "amount"
+                              ? "bg-[#8e724b] text-white shadow-sm"
+                              : "text-[#495057] hover:text-[#212529]"
+                          }`}
+                        >
+                          금액 기준
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setProductStatsType("count")}
+                          className={`px-3 py-1.2 rounded text-xs font-bold transition-all ${
+                            productStatsType === "count"
+                              ? "bg-[#8e724b] text-white shadow-sm"
+                              : "text-[#495057] hover:text-[#212529]"
+                          }`}
+                        >
+                          건수 기준
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* 카드 내 고유 전용 필터바 */}
+                    <div className="bg-[#f8f9fa] p-3 rounded-lg border border-[#e9ecef] flex flex-wrap items-center gap-3 text-xs">
+                      <span className="font-bold text-[#495057] mr-1">조회 기간</span>
+                      <div className="flex gap-1">
+                        {[
+                          { id: "all", label: "전체기간" },
+                          { id: "today", label: "오늘" },
+                          { id: "yesterday", label: "어제" },
+                          { id: "7days", label: "최근 7일" },
+                          { id: "30days", label: "최근 30일" },
+                          { id: "thisMonth", label: "이번달" },
+                          { id: "custom", label: "직접지정" }
+                        ].map((btn) => (
+                          <button
+                            key={btn.id}
+                            type="button"
+                            onClick={() => setProductStatsDateFilter(btn.id)}
+                            className={`px-2.5 py-1 rounded border transition-all font-bold ${
+                              productStatsDateFilter === btn.id
+                                ? "bg-[#8e724b] border-[#8e724b] text-white shadow-sm"
+                                : "bg-white border-[#dee2e6] text-[#495057] hover:border-[#8e724b]"
+                            }`}
+                          >
+                            {btn.label}
+                          </button>
+                        ))}
+                      </div>
+
+                      {productStatsDateFilter === "custom" && (
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="date"
+                            value={productStatsStartDate}
+                            onChange={(e) => setProductStatsStartDate(e.target.value)}
+                            className="bg-white border border-[#dee2e6] rounded px-1.5 py-0.5 text-[11px] text-[#212529] focus:outline-none focus:border-[#A3845B]"
+                          />
+                          <span className="text-[#888] font-bold">~</span>
+                          <input
+                            type="date"
+                            value={productStatsEndDate}
+                            onChange={(e) => setProductStatsEndDate(e.target.value)}
+                            className="bg-white border border-[#dee2e6] rounded px-1.5 py-0.5 text-[11px] text-[#212529] focus:outline-none focus:border-[#A3845B]"
+                          />
+                        </div>
+                      )}
+
+                      <span className="font-bold text-[#495057] ml-2 mr-1">조건 검색</span>
+                      <select
+                        value={productStatsSearchType}
+                        onChange={(e) => setProductStatsSearchType(e.target.value)}
+                        className="bg-white border border-[#dee2e6] rounded px-2.5 py-1 text-xs text-[#212529] focus:outline-none focus:border-[#A3845B] font-bold"
+                      >
+                        <option value="all">통합검색</option>
+                        <option value="name">고객명</option>
+                        <option value="product">상품명</option>
+                      </select>
+
+                      <div className="relative w-36">
+                        <Search className="absolute left-2.5 top-1.5 w-3 h-3 text-[#888]" />
+                        <input 
+                          type="text" 
+                          placeholder="검색어..." 
+                          value={productStatsSearchQuery}
+                          onChange={(e) => setProductStatsSearchQuery(e.target.value)}
+                          className="w-full bg-white border border-[#dee2e6] rounded pl-7 pr-2 py-1 text-xs text-[#212529] focus:outline-none focus:border-[#A3845B] font-semibold"
+                        />
+                      </div>
+                    </div>
+
+                    {(() => {
+                      // 0. 상품별 통계 전용 데이터 필터링 적용
+                      let targetOrdersList = orders;
+
+                      if (productStatsSearchQuery) {
+                        const q = productStatsSearchQuery.toLowerCase();
+                        targetOrdersList = targetOrdersList.filter(o => {
+                          if (productStatsSearchType === "name") return o.name?.toLowerCase().includes(q);
+                          if (productStatsSearchType === "product") return o.productName?.toLowerCase().includes(q);
+                          return o.name?.toLowerCase().includes(q) || o.productName?.toLowerCase().includes(q);
+                        });
+                      }
+
+                      targetOrdersList = targetOrdersList.filter(o => {
+                        return evaluateDateFilter(o.createdAt, productStatsDateFilter, productStatsStartDate, productStatsEndDate);
+                      });
+
+                      // 1. 카테고리 매핑용 헬퍼
+                      const getProductCategoryLabel = (order) => {
+                        const pName = (order.productName || "").toLowerCase();
+                        const status = (order.status || "").toLowerCase();
+                        
+                        if (pName.includes("무료") || status === "free") return "무료사주";
+                        if (pName.includes("사주") || pName.includes("보감")) return "사주팔자";
+                        if (pName.includes("신년") || pName.includes("토정비결") || pName.includes("토종비결")) return "신년운세";
+                        if (pName.includes("재물") || pName.includes("비즈니스") || pName.includes("wealth")) return "재물/비즈니스";
+                        if (pName.includes("타로") || pName.includes("tarot")) return "타로";
+                        if (pName.includes("궁합") || pName.includes("gunghap")) return "연인궁합";
+                        if (pName.includes("꿈") || pName.includes("dream")) return "꿈해몽";
+                        if (pName.includes("오늘") || pName.includes("today")) return "오늘의 운세";
+                        return "기타";
+                      };
+
+                      // 2. 초기 집계 데이터 세팅
+                      const categoryData = {
+                        "사주팔자": { amount: 0, count: 0 },
+                        "신년운세": { amount: 0, count: 0 },
+                        "재물/비즈니스": { amount: 0, count: 0 },
+                        "타로": { amount: 0, count: 0 },
+                        "연인궁합": { amount: 0, count: 0 },
+                        "꿈해몽": { amount: 0, count: 0 },
+                        "오늘의 운세": { amount: 0, count: 0 },
+                        "무료사주": { amount: 0, count: 0 },
+                        "기타": { amount: 0, count: 0 }
+                      };
+
+                      // 3. targetOrdersList 순회하며 누적
+                      targetOrdersList.forEach(o => {
+                        if (!o.status) return;
+                        const statusLower = o.status.toLowerCase();
+                        if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return;
+                        
+                        const cat = getProductCategoryLabel(o);
+                        
+                        if (statusLower === "paid") {
+                          categoryData[cat].amount += (o.amount || 0);
+                          categoryData[cat].count += 1;
+                        } else if (statusLower === "free") {
+                          categoryData[cat].count += 1;
+                        }
+                      });
+
+                      // 4. 배열 변환
+                      const list = Object.keys(categoryData).map(key => ({
+                        label: key,
+                        amount: categoryData[key].amount,
+                        count: categoryData[key].count,
+                        value: productStatsType === "amount" ? categoryData[key].amount : categoryData[key].count
+                      }));
+
+                      // 내림차순 정렬 (높은 순서대로 꺾은선 배치)
+                      list.sort((a, b) => b.value - a.value);
+
+                      // 최대값 계산 (Y축 비율용)
+                      const maxValue = Math.max(...list.map(item => item.value), productStatsType === "amount" ? 50000 : 5);
+
+                      // SVG 설정
+                      const svgWidth = 800;
+                      const svgHeight = 220;
+                      const paddingLeft = 70;
+                      const paddingRight = 40;
+                      const paddingTop = 30;
+                      const paddingBottom = 40;
+
+                      const chartWidth = svgWidth - paddingLeft - paddingRight;
+                      const chartHeight = svgHeight - paddingTop - paddingBottom;
+
+                      // 좌표 계산
+                      const getX = (index) => paddingLeft + (index / (list.length - 1)) * chartWidth;
+                      const getY = (val) => {
+                        if (maxValue === 0) return paddingTop + chartHeight;
+                        return paddingTop + chartHeight - (val / maxValue) * chartHeight;
+                      };
+
+                      // 꺾은선 D 경로
+                      let pathD = "";
+                      list.forEach((item, idx) => {
+                        const x = getX(idx);
+                        const y = getY(item.value);
+                        if (idx === 0) {
+                          pathD = `M ${x} ${y}`;
+                        } else {
+                          pathD += ` L ${x} ${y}`;
+                        }
+                      });
+
+                      // 영역 그라데이션 D 경로
+                      let areaD = "";
+                      if (list.length > 0) {
+                        const startX = getX(0);
+                        const endX = getX(list.length - 1);
+                        const bottomY = paddingTop + chartHeight;
+                        areaD = `${pathD} L ${endX} ${bottomY} L ${startX} ${bottomY} Z`;
+                      }
+
+                      return (
+                        <div className="space-y-4">
+                          <div className="w-full overflow-x-auto pt-2">
+                            <div className="min-w-[700px] relative">
+                              <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="w-full h-auto overflow-visible">
+                                <defs>
+                                  {/* 선 그라데이션 */}
+                                  <linearGradient id="productLineGrad" x1="0" y1="0" x2="1" y2="0">
+                                    <stop offset="0%" stopColor="#A3845B" />
+                                    <stop offset="100%" stopColor="#8e724b" />
+                                  </linearGradient>
+                                  {/* 영역 그라데이션 */}
+                                  <linearGradient id="productAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor="#A3845B" stopOpacity="0.25" />
+                                    <stop offset="100%" stopColor="#A3845B" stopOpacity="0.00" />
+                                  </linearGradient>
+                                </defs>
+
+                                {/* Y축 격자 및 라벨 */}
+                                {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
+                                  const val = maxValue * ratio;
+                                  const y = paddingTop + chartHeight - ratio * chartHeight;
+                                  return (
+                                    <g key={i}>
+                                      <line 
+                                        x1={paddingLeft} 
+                                        y1={y} 
+                                        x2={svgWidth - paddingRight} 
+                                        y2={y} 
+                                        stroke="#dee2e6" 
+                                        strokeWidth="1" 
+                                        strokeDasharray="4,4" 
+                                      />
+                                      <text 
+                                        x={paddingLeft - 12} 
+                                        y={y + 3.5} 
+                                        textAnchor="end" 
+                                        className="text-[9px] fill-[#888] font-bold"
+                                      >
+                                        {productStatsType === "amount" 
+                                          ? `${Math.round(val).toLocaleString()}원`
+                                          : `${Math.round(val)}건`}
+                                      </text>
+                                    </g>
+                                  );
+                                })}
+
+                                {/* 영역 그라데이션 채우기 */}
+                                {areaD && (
+                                  <path d={areaD} fill="url(#productAreaGrad)" />
+                                )}
+
+                                {/* 선 그리기 (Line) */}
+                                {pathD && (
+                                  <path 
+                                    d={pathD} 
+                                    fill="none" 
+                                    stroke="url(#productLineGrad)" 
+                                    strokeWidth="3.5" 
+                                    strokeLinecap="round" 
+                                    strokeLinejoin="round" 
+                                  />
+                                )}
+
+                                {/* 데이터 포인트 닷 & 값 & X축 라벨 */}
+                                {list.map((item, idx) => {
+                                  const x = getX(idx);
+                                  const y = getY(item.value);
+                                  return (
+                                    <g key={idx} className="group cursor-pointer">
+                                      <circle 
+                                        cx={x} 
+                                        cy={y} 
+                                        r="5" 
+                                        fill="#fff" 
+                                        stroke="#8e724b" 
+                                        strokeWidth="3" 
+                                        className="hover:r-7 transition-all duration-200"
+                                      />
+                                      
+                                      {/* 포인트 위에 값 텍스트 상시 표시 */}
+                                      <text
+                                        x={x}
+                                        y={y - 12}
+                                        textAnchor="middle"
+                                        className="text-[9.5px] font-extrabold fill-[#8e724b]"
+                                      >
+                                        {productStatsType === "amount"
+                                          ? `${(item.amount / 10000).toFixed(1)}만`
+                                          : `${item.count}건`}
+                                      </text>
+
+                                      {/* X축 카테고리 라벨 */}
+                                      <text
+                                        x={x}
+                                        y={paddingTop + chartHeight + 22}
+                                        textAnchor="middle"
+                                        className="text-[10px] font-bold fill-[#495057]"
+                                      >
+                                        {item.label}
+                                      </text>
+                                    </g>
+                                  );
+                                })}
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   {/* 유입 경로 통계 */}
