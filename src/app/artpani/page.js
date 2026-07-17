@@ -347,46 +347,59 @@ export default function AdminPage() {
     }
   };
 
-  // Helper: Date parsing and filter check
-  const checkDateFilter = (createdAtStr) => {
+  // Helper: Date parsing and filter check (Generic)
+  const evaluateDateFilter = (createdAtStr, filterType, startD, endD) => {
     if (!createdAtStr) return false;
-    const date = new Date(createdAtStr.replace(' ', 'T'));
+    
+    // DB의 UTC 날짜가 문자열 포맷("YYYY-MM-DD HH:MM:SS")으로 바로 올 경우,
+    // UTC 타임존 Z를 수동으로 입혀 자바스크립트 Date가 KST 로컬 시간으로 오프셋 역보정(+9시간)을 수행하게 합니다.
+    let dateStr = createdAtStr;
+    if (!dateStr.includes('Z') && !dateStr.includes('+')) {
+      dateStr = dateStr.replace(' ', 'T') + 'Z';
+    }
+    
+    const date = new Date(dateStr);
     if (isNaN(date.getTime())) return true; 
 
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     
-    if (dateFilter === "today") {
+    if (filterType === "today") {
       const targetStart = new Date(date.getFullYear(), date.getMonth(), date.getDate());
       return targetStart.getTime() === todayStart.getTime();
     }
     
-    if (dateFilter === "7days") {
+    if (filterType === "7days") {
       const limit = new Date(todayStart);
       limit.setDate(limit.getDate() - 7);
       return date.getTime() >= limit.getTime();
     }
     
-    if (dateFilter === "30days") {
+    if (filterType === "30days") {
       const limit = new Date(todayStart);
       limit.setDate(limit.getDate() - 30);
       return date.getTime() >= limit.getTime();
     }
     
-    if (dateFilter === "custom") {
-      if (startDate) {
-        const start = new Date(startDate);
+    if (filterType === "custom") {
+      if (startD) {
+        const start = new Date(startD);
         start.setHours(0, 0, 0, 0);
         if (date.getTime() < start.getTime()) return false;
       }
-      if (endDate) {
-        const end = new Date(endDate);
+      if (endD) {
+        const end = new Date(endD);
         end.setHours(23, 59, 59, 999);
         if (date.getTime() > end.getTime()) return false;
       }
     }
     
     return true;
+  };
+
+  // Helper: Date parsing and filter check for Orders
+  const checkDateFilter = (createdAtStr) => {
+    return evaluateDateFilter(createdAtStr, dateFilter, startDate, endDate);
   };
 
   // Filter orders by search type, search query, date filter, and status filter
@@ -1051,29 +1064,7 @@ export default function AdminPage() {
                   }
 
                   if (customerDateFilter !== "all") {
-                    const now = new Date();
-                    list = list.filter(c => {
-                      const cDate = new Date(c.createdAt);
-                      const diffTime = Math.abs(now - cDate);
-                      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                      if (customerDateFilter === "today") {
-                        return c.createdAt.startsWith(now.toISOString().split('T')[0]);
-                      }
-                      if (customerDateFilter === "7days") return diffDays <= 7;
-                      if (customerDateFilter === "30days") return diffDays <= 30;
-                      if (customerDateFilter === "custom") {
-                        if (customerStartDate) {
-                          const start = new Date(customerStartDate);
-                          if (cDate < start) return false;
-                        }
-                        if (customerEndDate) {
-                          const end = new Date(customerEndDate);
-                          end.setHours(23, 59, 59, 999);
-                          if (cDate > end) return false;
-                        }
-                      }
-                      return true;
-                    });
+                    list = list.filter(c => evaluateDateFilter(c.createdAt, customerDateFilter, customerStartDate, customerEndDate));
                   }
 
                   if (customerSortOrder === "name") {
