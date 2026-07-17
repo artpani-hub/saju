@@ -13,28 +13,29 @@ export async function GET(req) {
     }
 
     // Direct mock fallback return to ensure local simulation works 100% flawlessly under DB connection delay
-    return NextResponse.json({
-      success: true,
-      stats: {
-        todayUsers: 10,
-        todayPaid: 9,
-        reportSuccess: 8,
-        reportFailed: 1,
-        pendingPayments: 1,
-        refundRequests: 0,
-        pendingInquiries: 0,
-        todaySales: 230000,
-        monthSales: 680000,
-        statusSummary: {
-          INPUT_COMPLETED: 1,
-          WAITING_PAYMENT: 1,
-          PAID: 3,
-          ANALYZING: 2,
-          COMPLETED: 2,
-          DELIVERED: 1
-        }
-      }
-    });
+    // Commented out to fetch real SQLite/MySQL DB statistics
+    // return NextResponse.json({
+    //   success: true,
+    //   stats: {
+    //     todayUsers: 10,
+    //     todayPaid: 9,
+    //     reportSuccess: 8,
+    //     reportFailed: 1,
+    //     pendingPayments: 1,
+    //     refundRequests: 0,
+    //     pendingInquiries: 0,
+    //     todaySales: 230000,
+    //     monthSales: 680000,
+    //     statusSummary: {
+    //       INPUT_COMPLETED: 1,
+    //       WAITING_PAYMENT: 1,
+    //       PAID: 3,
+    //       ANALYZING: 2,
+    //       COMPLETED: 2,
+    //       DELIVERED: 1
+    //     }
+    //   }
+    // });
 
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
@@ -50,10 +51,10 @@ export async function GET(req) {
       }
     });
 
-    // 2. 결제 완료 건수 (오늘 PAID 주문 수)
+    // 2. 결제 완료 건수 (오늘 PAID 및 FREE 주문 수, 대소문자 통합)
     const todayPaidOrdersCount = await db.order.count({
       where: {
-        status: "PAID",
+        status: { in: ["PAID", "FREE", "paid", "free"] },
         createdAt: { gte: startOfToday }
       }
     });
@@ -61,14 +62,14 @@ export async function GET(req) {
     // 3. 보고서 생성 완료 및 실패 건수 (오늘)
     const todayReportSuccess = await db.sajuReport.count({
       where: {
-        status: "COMPLETED",
+        status: { in: ["COMPLETED", "completed"] },
         createdAt: { gte: startOfToday }
       }
     });
 
     const todayReportFailed = await db.sajuReport.count({
       where: {
-        status: "FAILED",
+        status: { in: ["FAILED", "failed"] },
         createdAt: { gte: startOfToday }
       }
     });
@@ -76,7 +77,7 @@ export async function GET(req) {
     // 4. 미결제 건수 (오늘 PENDING 또는 입금 확인 대기 주문)
     const todayPendingOrders = await db.order.count({
       where: {
-        status: { in: ["PENDING", "WAITING_DEPOSIT"] },
+        status: { in: ["PENDING", "WAITING_DEPOSIT", "pending", "waiting_deposit"] },
         createdAt: { gte: startOfToday }
       }
     });
@@ -84,21 +85,21 @@ export async function GET(req) {
     // 5. 환불 요청 건수 (오늘 REFUND_REQUESTED 주문)
     const todayRefundRequests = await db.order.count({
       where: {
-        refundStatus: "REFUND_REQUESTED"
+        refundStatus: { in: ["REFUND_REQUESTED", "refund_requested"] }
       }
     });
 
     // 6. 고객 문의 건수 (전체 PENDING 문의 수)
     const pendingInquiriesCount = await db.inquiry.count({
       where: {
-        status: "PENDING"
+        status: { in: ["PENDING", "pending"] }
       }
     });
 
-    // 7. 매출 통계 (오늘 및 이번 달 매출)
+    // 7. 매출 통계 (오늘 및 이번 달 매출, 유료 PAID 주문 합산)
     const todayOrders = await db.order.findMany({
       where: {
-        status: "PAID",
+        status: { in: ["PAID", "paid"] },
         createdAt: { gte: startOfToday }
       },
       select: { amount: true }
@@ -107,7 +108,7 @@ export async function GET(req) {
 
     const monthOrders = await db.order.findMany({
       where: {
-        status: "PAID",
+        status: { in: ["PAID", "paid"] },
         createdAt: { gte: startOfMonth }
       },
       select: { amount: true }
@@ -116,12 +117,12 @@ export async function GET(req) {
 
     // 8. 사주 리포트 진행 상태별 요약 카운트
     const statusSummary = {
-      INPUT_COMPLETED: await db.sajuReport.count({ where: { status: "INPUT_COMPLETED" } }),
-      WAITING_PAYMENT: await db.sajuReport.count({ where: { status: "WAITING_PAYMENT" } }),
-      PAID: await db.sajuReport.count({ where: { status: "PAID" } }),
-      ANALYZING: await db.sajuReport.count({ where: { status: "ANALYZING" } }),
-      COMPLETED: await db.sajuReport.count({ where: { status: "COMPLETED" } }),
-      DELIVERED: await db.sajuReport.count({ where: { status: "DELIVERED" } })
+      INPUT_COMPLETED: await db.sajuReport.count({ where: { status: { in: ["INPUT_COMPLETED", "input_completed"] } } }),
+      WAITING_PAYMENT: await db.sajuReport.count({ where: { status: { in: ["WAITING_PAYMENT", "waiting_payment"] } } }),
+      PAID: await db.sajuReport.count({ where: { status: { in: ["PAID", "paid"] } } }),
+      ANALYZING: await db.sajuReport.count({ where: { status: { in: ["ANALYZING", "analyzing"] } } }),
+      COMPLETED: await db.sajuReport.count({ where: { status: { in: ["COMPLETED", "completed"] } } }),
+      DELIVERED: await db.sajuReport.count({ where: { status: { in: ["DELIVERED", "delivered"] } } })
     };
 
     return NextResponse.json({
