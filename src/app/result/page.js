@@ -3787,7 +3787,7 @@ return val;
 
         // 서버 API PUT 업데이트 추가
         try {
-          await fetch("/api/orders", {
+          const putRes = await fetch("/api/orders", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -3799,6 +3799,15 @@ return val;
               paymentId: paymentId || orders[matchedIdx].paymentId
             })
           });
+          if (!putRes.ok) {
+            console.warn("주문 업데이트(PUT) 실패. 서버 DB에 주문이 없어 신규 등록(POST)을 시도합니다.");
+            const orderToPost = { ...orders[matchedIdx], status: "paid", paymentId: paymentId || orders[matchedIdx].paymentId };
+            await fetch("/api/orders", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(orderToPost)
+            });
+          }
         } catch (e) {
           console.error("주문 paid API 업데이트 실패:", e);
         }
@@ -4345,7 +4354,7 @@ return val;
           o.reportGrade === currentGrade
         );
         if (matchedIdx === -1) {
-          orders.push({
+          const newOrderPending = {
             id: Math.floor(Math.random() * 9000) + 1000,
             name: name,
             email: emailParam || "today_sms@hyeandang.com",
@@ -4362,8 +4371,20 @@ return val;
             hour: hour,
             worryText: worryText || "오늘의 운세",
             reportGrade: currentGrade
-          });
+          };
+          orders.push(newOrderPending);
           localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+
+          // 서버 API POST 생성 (결제창 띄우기 전 DB에도 pending 상태로 선등록)
+          try {
+            await fetch("/api/orders", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(newOrderPending)
+            });
+          } catch (apiErr) {
+            console.error("결제 전 서버 pending 주문 등록 실패:", apiErr);
+          }
         }
       } catch (tempErr) {
         console.error("임시 정보 백업 실패:", tempErr);
