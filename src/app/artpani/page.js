@@ -973,6 +973,16 @@ export default function AdminPage() {
                       </td>
                     </tr>
                   ))}
+                  {/* 검색 소계 행 추가 */}
+                  {filteredOrders.length > 0 && (
+                    <tr className="bg-[#f8f9fa] border-t-2 border-[#dee2e6] font-bold text-[#212529]">
+                      <td colSpan="4" className="p-4 text-right text-xs uppercase text-[#495057] font-extrabold">검색 합계 소계</td>
+                      <td className="p-4 text-base text-[#8e724b] font-extrabold">
+                        {filteredOrders.reduce((sum, o) => sum + (o.amount || 0), 0).toLocaleString()} 원
+                      </td>
+                      <td colSpan="2" className="p-4"></td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
