@@ -281,7 +281,9 @@ export async function GET(req) {
       const user = order.user;
       const latestReport = user?.reports?.[0] || null;
 
-      const formattedDate = order.createdAt.toISOString().slice(0, 19).replace('T', ' ');
+      // 서버 UTC 날짜를 한국 표준시(KST, UTC+9)로 변환
+      const kstDate = new Date(order.createdAt.getTime() + (9 * 60 * 60 * 1000));
+      const formattedDate = kstDate.toISOString().slice(0, 19).replace('T', ' ');
 
       return {
         id: order.id,
@@ -291,7 +293,7 @@ export async function GET(req) {
         productName: "평생 종합 사주팔자 보감",
         amount: order.amount,
         status: order.status.toLowerCase(), // paid, pending 등
-        sajuGanji: latestReport ? `${latestReport.birthYear}년 ${latestReport.birthMonth}월 ${latestReport.birthDay}일 (${latestReport.birthHour || "미정"})` : "기록 없음",
+        sajuGanji: user ? `${user.birthYear}년 ${user.birthMonth}월 ${user.birthDay}일 (${user.birthHour || "미정"})` : "기록 없음",
         emailStatus: "sent",
         createdAt: formattedDate,
         gender: user?.gender || "female",
@@ -306,7 +308,13 @@ export async function GET(req) {
       };
     });
 
-    return NextResponse.json(formattedOrders);
+    return NextResponse.json(formattedOrders, {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+      }
+    });
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
@@ -326,23 +334,37 @@ export async function POST(req) {
     const result = await db.$transaction(async (tx) => {
       const user = await tx.user.upsert({
         where: { phone },
-        update: { name, email },
-        create: { name, email, phone }
+        update: { 
+          name, 
+          email,
+          birthYear: Number(year) || 1995,
+          birthMonth: Number(month) || 1,
+          birthDay: Number(day) || 1,
+          calendarType: calendar || "solar",
+          gender: gender || "female",
+          birthHour: hour || null,
+          worryText: worryText || ""
+        },
+        create: { 
+          name, 
+          email, 
+          phone,
+          birthYear: Number(year) || 1995,
+          birthMonth: Number(month) || 1,
+          birthDay: Number(day) || 1,
+          calendarType: calendar || "solar",
+          gender: gender || "female",
+          birthHour: hour || null,
+          worryText: worryText || ""
+        }
       });
 
       const unlockedState = status === "paid" || status === "PAID";
       const report = await tx.sajuReport.create({
         data: {
           userId: user.id,
-          gender: gender || "female",
-          calendarType: calendar || "solar",
-          birthYear: Number(year) || 1995,
-          birthMonth: Number(month) || 1,
-          birthDay: Number(day) || 1,
-          birthHour: hour || null,
-          worryCategory: "진로",
-          worryText: worryText || "",
-          unlocked: unlockedState
+          unlocked: unlockedState,
+          status: unlockedState ? "결제 완료" : "INPUT_COMPLETED"
         }
       });
 
@@ -376,13 +398,13 @@ export async function POST(req) {
         amount: result.order.amount,
         status: result.order.status.toLowerCase(),
         referer: result.order.referer || "direct",
-        gender: result.report.gender,
-        calendar: result.report.calendarType,
-        year: String(result.report.birthYear),
-        month: String(result.report.birthMonth),
-        day: String(result.report.birthDay),
-        hour: result.report.birthHour,
-        worryText: result.report.worryText
+        gender: result.user.gender,
+        calendar: result.user.calendarType,
+        year: String(result.user.birthYear),
+        month: String(result.user.birthMonth),
+        day: String(result.user.birthDay),
+        hour: result.user.birthHour,
+        worryText: result.user.worryText
       } 
     });
   } catch (error) {

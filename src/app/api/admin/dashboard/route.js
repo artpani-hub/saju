@@ -37,15 +37,17 @@ export async function GET(req) {
     //   }
     // });
 
-    const startOfToday = new Date();
-    startOfToday.setHours(0, 0, 0, 0);
+    // KST(한국 표준시) 기준으로 오늘 시작 및 이번 달 시작 시각을 계산하여 UTC DB 쿼리에 최적화
+    const nowKst = new Date(new Date().getTime() + (9 * 60 * 60 * 1000));
+    
+    const startOfTodayKst = new Date(nowKst.getFullYear(), nowKst.getMonth(), nowKst.getDate());
+    const startOfToday = new Date(startOfTodayKst.getTime() - (9 * 60 * 60 * 1000));
 
-    const startOfMonth = new Date();
-    startOfMonth.setDate(1);
-    startOfMonth.setHours(0, 0, 0, 0);
+    const startOfMonthKst = new Date(nowKst.getFullYear(), nowKst.getMonth(), 1);
+    const startOfMonth = new Date(startOfMonthKst.getTime() - (9 * 60 * 60 * 1000));
 
-    // 1. 오늘 신청 건수 (전체 User 수)
-    const todayUsersCount = await db.user.count({
+    // 1. 오늘 신청 건수 (전체 Order 주문 수로 변경하여 주문관리 탭의 오늘 검색 수량과 일치시킴)
+    const todayUsersCount = await db.order.count({
       where: {
         createdAt: { gte: startOfToday }
       }
@@ -54,7 +56,7 @@ export async function GET(req) {
     // 2. 결제 완료 건수 (오늘 PAID 유료 주문 수, 무료 FREE 제외, 취소/환불 완료 건 제외)
     const todayPaidOrdersCount = await db.order.count({
       where: {
-        status: { in: ["PAID", "paid"] },
+        status: { in: ["PAID", "paid", "결제 완료", "결제완료"] },
         OR: [
           { refundStatus: null },
           { refundStatus: { notIn: ["REFUNDED", "REFUND_COMPLETED", "refunded", "refund_completed"] } }
@@ -103,7 +105,7 @@ export async function GET(req) {
     // 7. 매출 통계 (오늘 및 이번 달 매출, 유료 PAID 주문 합산)
     const todayOrders = await db.order.findMany({
       where: {
-        status: { in: ["PAID", "paid"] },
+        status: { in: ["PAID", "paid", "결제 완료", "결제완료"] },
         createdAt: { gte: startOfToday }
       },
       select: { amount: true }
@@ -112,7 +114,7 @@ export async function GET(req) {
 
     const monthOrders = await db.order.findMany({
       where: {
-        status: { in: ["PAID", "paid"] },
+        status: { in: ["PAID", "paid", "결제 완료", "결제완료"] },
         createdAt: { gte: startOfMonth }
       },
       select: { amount: true }

@@ -143,19 +143,21 @@ conn.on('ready', () => {
               dbStream.on('close', (dbCode) => {
                 console.log(`Remote database sync, build & import finished with code: ${dbCode}`);
                 
-                // PM2 재기동 실행 (기존 삭제 후 정확한 cwd 지정 하드 리부트)
-                console.log('Hard restarting saju-app via PM2...');
-                const pm2Cmd = `
-                  pm2 delete saju-app 2>/dev/null || true
-                  cd ${remoteRoot}
-                  mkdir -p .next/standalone/.next
-                  cp -r public .next/standalone/ 2>/dev/null || true
-                  cp -r .next/static .next/standalone/.next/ 2>/dev/null || true
-                  mkdir -p .next/standalone/node_modules
-                  cp -r node_modules/.prisma .next/standalone/node_modules/ 2>/dev/null || true
-                  cp -r node_modules/@prisma .next/standalone/node_modules/ 2>/dev/null || true
-                  PORT=3012 pm2 start server.js --name saju-app --cwd ${remoteRoot}/.next/standalone
-                `;
+              // PM2 재기동 실행 (기존 삭제 후 정확한 cwd 지정 하드 리부트)
+              console.log('Hard restarting saju-app via PM2...');
+              const pm2Cmd = `
+                pm2 delete saju-app 2>/dev/null || true
+                cd ${remoteRoot}
+                rm -rf .next/standalone/public
+                rm -rf .next/standalone/.next/static
+                cp -r public .next/standalone/ 2>/dev/null || true
+                mkdir -p .next/standalone/.next
+                cp -r .next/static .next/standalone/.next/ 2>/dev/null || true
+                mkdir -p .next/standalone/node_modules
+                cp -r node_modules/.prisma .next/standalone/node_modules/ 2>/dev/null || true
+                cp -r node_modules/@prisma .next/standalone/node_modules/ 2>/dev/null || true
+                PORT=3012 pm2 start server.js --name saju-app --cwd ${remoteRoot}/.next/standalone
+              `;
                 conn.exec(pm2Cmd, (execErr, stream) => {
                   if (execErr) {
                     console.error('PM2 restart error:', execErr);

@@ -1,8 +1,17 @@
-# 작업일지: 토정비결 고급리포트 25~31페이지 보강 및 UI 개선
+# 작업일지: 토정비결 고급리포트 25~31페이지 보강 및 UI 개선 & 무료 보고서 DB 누락 핫픽스
 
-오늘 진행한 토정비결(isTojeong) 리포트 25페이지부터 31페이지까지의 콘텐츠 보강, 프리미엄 시각화, 월별 운세 요약 가로 정렬(UI 개선) 및 신년운세 문자서비스(SMS) 하단 고정 결제 바 도입 작업 내역입니다.
+오늘 진행한 토정비결(isTojeong) 리포트 25페이지부터 31페이지까지의 콘텐츠 보강, 프리미엄 시각화, 월별 운세 요약 가로 정렬(UI 개선), 신년운세 문자서비스(SMS) 하단 고정 결제 바 도입 및 **무료 보고서 조회 시 관리자 주문관리 데이터 미반영 오류(Prisma 트랜잭션 롤백 버그)** 해결 작업 내역입니다.
 
 ## 작업 상세 내용
+
+### [HOTFIX] 무료 보고서 조회 시 관리자 주문관리 데이터 누락 오류 수정
+- **원인 분석**: 무료 사주를 신청하거나 보고서를 조회할 때 클라이언트에서 `/api/orders` (POST)를 호출합니다. 그러나 서버 API 내의 `tx.sajuReport.create` 쿼리에서 `SajuReport` 모델 스키마에 정의되지 않은 필드(`gender`, `calendarType`, `birthYear`, `birthMonth`, `birthDay`, `birthHour`, `worryCategory`, `worryText`)를 함께 전송하려 시도했습니다. 이로 인해 Prisma 런타임 오류가 발생했고, `db.$transaction`이 롤백되어 DB에 주문 및 유저 정보가 반영되지 못했습니다.
+- **해결 방안**:
+  1. [route.js](file:///d:/%EC%9D%B8%ED%84%B0%EA%B7%B8%EB%A6%AC%EB%B9%84%ED%8B%B0/saju/src/app/api/orders/route.js) 내 `sajuReport.create` 쿼리에서 스키마에 없는 필드들을 완전히 제거했습니다.
+  2. POST API 결과 반환(JSON) 및 GET API의 `formattedOrders` 매핑 시, `result.report` 대신 인적사항과 사주 데이터를 들고 있는 `result.user`/`user` 객체를 올바르게 참조하도록 수정하여 `sajuGanji` 등의 텍스트가 깨지거나 에러를 발생시키는 문제를 방지했습니다.
+- **검증**: 로컬 환경에서 Next.js Turbopack 프로덕션 빌드(`npm run build`)를 성공적으로 마쳐 문법 및 컴파일 오류가 없음을 완벽히 확인했습니다.
+
+---
 
 ### 1. 25페이지 (`tj_lucky_items`) - 수호 소품 리스트
 - **오행 수호 컬러 칩**: 의뢰인의 일간 오행(`sajuInfo.day.stemEl`)에 부합하는 수호 럭키 컬러 4가지를 Glassmorphism 스타일 칩 디자인으로 동적 시각화했습니다.

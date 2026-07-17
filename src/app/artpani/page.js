@@ -205,23 +205,24 @@ export default function AdminPage() {
   // Load Data function
   const loadAllData = async () => {
     try {
+      const timestamp = new Date().getTime();
       // 1. Load dashboard stats
-      const statsRes = await fetch(`/api/admin/dashboard?adminPassword=${adminPassword}`);
+      const statsRes = await fetch(`/api/admin/dashboard?adminPassword=${adminPassword}&_=${timestamp}`);
       const statsData = await statsRes.json();
       if (statsData.success) setStats(statsData.stats);
 
       // 2. Load orders list
-      const ordersRes = await fetch(`/api/orders?adminPassword=${adminPassword}`);
+      const ordersRes = await fetch(`/api/orders?adminPassword=${adminPassword}&_=${timestamp}`);
       const ordersData = await ordersRes.json();
       if (Array.isArray(ordersData)) setOrders(ordersData);
 
       // 3. Load inquiries list
-      const inquiriesRes = await fetch(`/api/admin/inquiries?adminPassword=${adminPassword}`);
+      const inquiriesRes = await fetch(`/api/admin/inquiries?adminPassword=${adminPassword}&_=${timestamp}`);
       const inquiriesData = await inquiriesRes.json();
       if (Array.isArray(inquiriesData)) setInquiries(inquiriesData);
 
       // 4. Load promotion list
-      const promoRes = await fetch(`/api/admin/promotions?adminPassword=${adminPassword}`);
+      const promoRes = await fetch(`/api/admin/promotions?adminPassword=${adminPassword}&_=${timestamp}`);
       const promoData = await promoRes.json();
       if (Array.isArray(promoData)) setPromotions(promoData);
 
@@ -357,14 +358,20 @@ export default function AdminPage() {
   const evaluateDateFilter = (createdAtStr, filterType, startD, endD) => {
     if (!createdAtStr) return false;
     
-    // DB의 UTC 날짜가 문자열 포맷("YYYY-MM-DD HH:MM:SS")으로 바로 올 경우,
-    // UTC 타임존 Z를 수동으로 입혀 자바스크립트 Date가 KST 로컬 시간으로 오프셋 역보정(+9시간)을 수행하게 합니다.
-    let dateStr = createdAtStr;
-    if (!dateStr.includes('Z') && !dateStr.includes('+')) {
-      dateStr = dateStr.replace(' ', 'T') + 'Z';
+    let date;
+    const parts = createdAtStr.split(/[^0-9]/).filter(Boolean);
+    if (parts.length >= 3 && !createdAtStr.includes('Z') && !createdAtStr.includes('+')) {
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10) - 1;
+      const d = parseInt(parts[2], 10);
+      const h = parts[3] ? parseInt(parts[3], 10) : 0;
+      const min = parts[4] ? parseInt(parts[4], 10) : 0;
+      const s = parts[5] ? parseInt(parts[5], 10) : 0;
+      date = new Date(y, m, d, h, min, s);
+    } else {
+      date = new Date(createdAtStr);
     }
     
-    const date = new Date(dateStr);
     if (isNaN(date.getTime())) return true; 
 
     const now = new Date();
@@ -426,14 +433,26 @@ export default function AdminPage() {
 
     // 2. Status Filter
     if (paymentStatusFilter !== "all") {
-      const statusLower = o.status.toLowerCase();
+      const statusLower = (o.status || "").toLowerCase();
       const filterLower = paymentStatusFilter.toLowerCase();
       
+      const isPaidStatus = statusLower === "paid" || o.status === "결제 완료" || o.status === "결제완료";
+      const isFreeStatus = statusLower === "free" || o.status === "무료";
+      const isRefundedStatus = statusLower === "refunded" || o.status === "환불완료" || o.status === "환불 완료";
+      const isCancelledStatus = statusLower === "cancelled" || o.status === "취소";
+      const isPendingStatus = statusLower === "pending" || statusLower === "ready" || o.status === "결제 대기" || o.status === "대기";
+
       if (filterLower === "paid") {
-        // 결제완료 필터일 경우 순수 유료 결제완료(paid)만 포함 (무료 free 제외)
-        // 그리고 환불 상태가 완료 또는 요청된 경우 제외
-        if (statusLower !== "paid") return false;
+        if (!isPaidStatus) return false;
         if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return false;
+      } else if (filterLower === "free") {
+        if (!isFreeStatus) return false;
+      } else if (filterLower === "pending") {
+        if (!isPendingStatus) return false;
+      } else if (filterLower === "refunded") {
+        if (!isRefundedStatus) return false;
+      } else if (filterLower === "cancelled") {
+        if (!isCancelledStatus) return false;
       } else {
         if (statusLower !== filterLower) return false;
       }
@@ -552,7 +571,7 @@ export default function AdminPage() {
             {/* Scoreboard Cards (Interactive navigation to search lists) */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {[
-                { title: "오늘 신청 건수", val: `${stats.todayUsers} 건`, color: "border-l-4 border-blue-500", action: () => { setActiveTab("orders"); setDateFilter("today"); setPaymentStatusFilter("all"); } },
+                { title: "오늘 신청 건수", val: `${orders.filter(o => evaluateDateFilter(o.createdAt, "today")).length} 건`, color: "border-l-4 border-blue-500", action: () => { setActiveTab("orders"); setDateFilter("today"); setPaymentStatusFilter("all"); } },
                 { title: "결제 완료 건수", val: `${stats.todayPaid} 건`, color: "border-l-4 border-[#A3845B]", action: () => { setActiveTab("orders"); setDateFilter("today"); setPaymentStatusFilter("paid"); } },
                 { title: "보고서 생성 완료", val: `${stats.reportSuccess} 건`, color: "border-l-4 border-green-500", action: () => { setActiveTab("orders"); setDateFilter("today"); setPaymentStatusFilter("all"); } },
                 { title: "보고서 생성 실패", val: `${stats.reportFailed} 건`, color: "border-l-4 border-red-500", action: () => { setActiveTab("orders"); setDateFilter("today"); setPaymentStatusFilter("all"); } },
@@ -966,27 +985,25 @@ export default function AdminPage() {
                       <td className="p-4 text-[#8e724b] font-semibold">{order.productName}</td>
                       <td className="p-4 font-bold text-[#212529]">{order.amount?.toLocaleString()} 원</td>
                       <td className="p-4">
-                        <span className={`px-2 py-1 rounded text-xs font-bold ${
-                          order.status === "paid" 
-                            ? "bg-green-100 text-green-800" 
-                            : order.status === "free"
-                              ? "bg-blue-100 text-blue-800"
-                              : order.status === "refunded"
-                                ? "bg-purple-100 text-purple-800"
-                                : order.status === "cancelled"
-                                  ? "bg-red-100 text-red-800"
-                                  : "bg-yellow-100 text-yellow-800"
-                        }`}>
-                          {order.status === "paid" 
-                            ? "결제완료" 
-                            : order.status === "free"
-                              ? "무료"
-                              : order.status === "refunded"
-                                ? "환불완료"
-                                : order.status === "cancelled" 
-                                  ? "취소" 
-                                  : "대기"}
-                        </span>
+                        {(() => {
+                          const statusLower = (order.status || "").toLowerCase();
+                          const isPaid = statusLower === "paid" || order.status === "결제 완료" || order.status === "결제완료";
+                          const isFree = statusLower === "free" || order.status === "무료";
+                          const isRefunded = statusLower === "refunded" || order.status === "환불완료" || order.status === "환불 완료";
+                          const isCancelled = statusLower === "cancelled" || order.status === "취소";
+
+                          if (isPaid) {
+                            return <span className="px-2 py-1 rounded text-xs font-bold bg-green-100 text-green-800">결제완료</span>;
+                          } else if (isFree) {
+                            return <span className="px-2 py-1 rounded text-xs font-bold bg-blue-100 text-blue-800">무료</span>;
+                          } else if (isRefunded) {
+                            return <span className="px-2 py-1 rounded text-xs font-bold bg-purple-100 text-purple-800">환불완료</span>;
+                          } else if (isCancelled) {
+                            return <span className="px-2 py-1 rounded text-xs font-bold bg-red-100 text-red-800">취소</span>;
+                          } else {
+                            return <span className="px-2 py-1 rounded text-xs font-bold bg-yellow-100 text-yellow-800">대기</span>;
+                          }
+                        })()}
                       </td>
                       <td className="p-4">
                         <div className="flex gap-2 justify-center">
