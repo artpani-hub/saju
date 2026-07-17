@@ -4913,33 +4913,102 @@ return val;
               <span className="text-[9px] text-gray-400 font-light">전체 보고서 목차</span>
             </div>
 
-            <div className="pt-8 space-y-6">
-              <h3 className="font-myeongjo text-lg font-bold text-[#A3845B] text-center">📋 전체 보고서 목차</h3>
-              <p className="text-xs text-gray-500 text-center font-light">본 보고서는 총 22페이지로 구성된 귀하만을 위한 맞춤 사주 보감입니다.</p>
+            <div className="pt-2 space-y-4">
+              <h3 className="font-myeongjo text-base font-bold text-[#A3845B] text-center">📋 전체 보고서 목차</h3>
+              <p className="text-[10px] text-gray-500 text-center font-light">본 보고서는 총 22페이지로 구성된 귀하만을 위한 맞춤 사주 보감입니다.</p>
               
-              <div className="grid grid-cols-2 gap-x-12 gap-y-3.5 text-[11px] text-gray-600 pt-8 border-t border-[#E2DDD5]/60">
-                <p><strong>Page 1.</strong> 표지</p>
-                <p><strong>Page 2.</strong> 전체 보고서 목차</p>
-                <p><strong>Page 3.</strong> 내 사주 핵심 결론 (한 줄 요약 & 종합진단)</p>
-                <p><strong>Page 4.</strong> 나의 오행 지도 (목·화·토·금·수)</p>
-                <p><strong>Page 5.</strong> 본질 캐릭터 카드 및 기질 해설</p>
-                <p><strong>Page 6.</strong> 나도 몰랐던 내 모습 (겉 vs 속)</p>
-                <p><strong>Page 7.</strong> Chapter 1. 성향 진단 (강점/약점)</p>
-                <p><strong>Page 8.</strong> Chapter 1. 상황별 반응 (스트레스/분노 등)</p>
-                <p><strong>Page 9.</strong> Chapter 1 처방 (멘탈 가이드라인)</p>
-                <p><strong>Page 10.</strong> Chapter 2. 재물운 비책</p>
-                <p><strong>Page 11.</strong> Chapter 2. 강점과 돈의 연결 비법</p>
-                <p><strong>Page 12.</strong> Chapter 2. 맞는 업무 방식 분석</p>
-                <p><strong>Page 13.</strong> Chapter 2 처방 (대인관계 가이드)</p>
-                <p><strong>Page 14.</strong> Chapter 2 처방 (대인관계 솔루션)</p>
-                <p><strong>Page 15.</strong> Chapter 2 처방 (관계별 세부 분석)</p>
-                <p><strong>Page 16.</strong> Chapter 2 처방 (행운의 요소)</p>
-                <p><strong>Page 17.</strong> Chapter 3. 인생의 계절 (대운)</p>
-                <p><strong>Page 18.</strong> Chapter 3. 올해 좋은 달 & 조심할 달</p>
-                <p><strong>Page 19.</strong> Chapter 3. 12개월 운의 타이밍 그래프</p>
-                <p><strong>Page 20.</strong> Chapter 3 처방 (고민 맞춤형 답변)</p>
-                <p><strong>Page 21.</strong> Chapter 3 처방 (30일 실천 나침반)</p>
-                <p><strong>Page 22.</strong> 마무리 및 최종 혜안당 보감 한 줄</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-[#E2DDD5]/60 text-[10.5px]">
+                {/* 프롤로그 */}
+                <div className="bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/60 space-y-1.5 shadow-sm">
+                  <span className="font-bold text-[#A3845B] font-myeongjo block border-b border-[#E2DDD5]/50 pb-1">• 프롤로그｜나를 이해하는 첫걸음</span>
+                  <div className="space-y-1 text-gray-600 font-sans font-light">
+                    <p><strong>Page 1.</strong> 표지</p>
+                    <p><strong>Page 2.</strong> 목차</p>
+                    <p><strong>Page 3.</strong> 내 사주 핵심</p>
+                    <p><strong>Page 4.</strong> 나의 오행</p>
+                    <p><strong>Page 5.</strong> 나의 본질 기질 해설</p>
+                    <p><strong>Page 6.</strong> 나도 몰랐던 내 모습 (겉 vs 속)</p>
+                  </div>
+                </div>
+
+                {/* Chapter 1 */}
+                <div className="bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/60 space-y-1.5 shadow-sm">
+                  <span className="font-bold text-[#A3845B] font-myeongjo block border-b border-[#E2DDD5]/50 pb-1">• Chapter 1｜나의 성향과 감정 사용법</span>
+                  <div className="space-y-1 text-gray-600 font-sans font-light">
+                    <p><strong>Page 7.</strong> 성향 진단 (타고난 강점과 약점)</p>
+                    <p><strong>Page 8.</strong> 상황별 오행 심리 리포트</p>
+                    <p><strong>Page 9.</strong> 맞춤 처방 (멘탈 관리 가이드라인)</p>
+                  </div>
+                </div>
+
+                {/* Chapter 2 */}
+                <div className="bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/60 space-y-1.5 shadow-sm md:col-span-2">
+                  <span className="font-bold text-[#A3845B] font-myeongjo block border-b border-[#E2DDD5]/50 pb-1">• Chapter 2｜재물·직업·인간관계 사용설명서</span>
+                  <div className="grid grid-cols-2 gap-2 text-gray-600 font-sans font-light">
+                    <div className="space-y-1">
+                      <p><strong>Page 10.</strong> 재물운 사용설명서</p>
+                      <p><strong>Page 11.</strong> 강점과 돈을 연결하는 방법</p>
+                      <p><strong>Page 12.</strong> 나에게 맞는 업무 환경 분석</p>
+                      <p><strong>Page 13.</strong> 나에 맞는 대인관계</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p><strong>Page 14.</strong> 인연 매칭 메커니즘</p>
+                      <p><strong>Page 15.</strong> 인간관계 진단</p>
+                      <p><strong>Page 16.</strong> 나의 행운 요소와 활용법</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Chapter 3 */}
+                <div className="bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/60 space-y-1.5 shadow-sm">
+                  <span className="font-bold text-[#A3845B] font-myeongjo block border-b border-[#E2DDD5]/50 pb-1">• Chapter 3｜인생의 흐름과 운의 타이밍</span>
+                  <div className="space-y-1 text-gray-600 font-sans font-light">
+                    <p><strong>Page 17.</strong> 대운의 흐름</p>
+                    <p><strong>Page 18.</strong> 올해 사주의 흐름</p>
+                    <p><strong>Page 19.</strong> 12개 월별 운의 상세 설명</p>
+                    <p><strong>Page 20.</strong> 고민별 맞춤 해답과 실천 조언</p>
+                    <p><strong>Page 21.</strong> 운을 바꾸는 30일 실천 나침반</p>
+                  </div>
+                </div>
+
+                {/* 에필로그 */}
+                <div className="bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/60 space-y-1.5 shadow-sm flex flex-col justify-between">
+                  <div>
+                    <span className="font-bold text-[#A3845B] font-myeongjo block border-b border-[#E2DDD5]/50 pb-1">• 에필로그｜나만의 인생 해답</span>
+                    <div className="space-y-1 text-gray-600 font-sans font-light mt-1.5">
+                      <p><strong>Page 22.</strong> 마무리 및 최종 해답 한 줄 요약</p>
+                    </div>
+                  </div>
+                  <div className="text-[9.5px] text-gray-400 font-light font-sans pt-2 border-t border-gray-200 mt-2">
+                    * 위 목차 순서에 맞춰 나에게 꼭 필요한 오행 처방 가이드를 차례로 탐독하십시오.
+                  </div>
+                </div>
+              </div>
+
+              {/* 하단 여백 채우기용 안내 가이드 패널 */}
+              <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3.5 shadow-inner mt-4">
+                <div className="border-b border-gray-700/50 pb-1.5 flex justify-between items-center text-[10px]">
+                  <span className="font-bold text-[#C2A378] font-myeongjo">💡 혜안당 보감 리포트 200% 활용하는 비법</span>
+                  <span className="text-gray-400">혜안당 명리연구소</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[10px] font-sans font-light">
+                  <div className="space-y-1 border-b md:border-b-0 md:border-r border-gray-700/50 pb-3 md:pb-0 pr-0 md:pr-4">
+                    <span className="text-[#C2A378] font-bold block">• 1단계: 프롤로그 & 성향 이해</span>
+                    <p className="text-gray-300 leading-relaxed font-sans font-light">
+                      표지부터 9페이지까지 이어지는 성향 리포트를 통해 내 본질 오행과 성격을 객관적으로 정렬하십시오. 스스로 인지하지 못했던 무의식의 강점과 취약점이 고스란히 담겨 있습니다.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1 flex flex-col justify-between">
+                    <div>
+                      <span className="text-[#C2A378] font-bold block">• 2단계: 실생활 대입 & 처방전 실천</span>
+                      <p className="text-gray-300 leading-relaxed font-sans font-light">
+                        10페이지 이후의 재물, 인간관계, 세운 타이밍을 확인하고, 마지막 21페이지에 수록된 30일 루틴 체크리스트를 인쇄하거나 기록하여 일상의 한 부분으로 체화하십시오.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
