@@ -5391,26 +5391,55 @@ return val;
               return (
                 <div className="space-y-4">
                   <h3 className="font-myeongjo text-xs font-bold text-[#1A1A1A] flex items-center gap-1">• [개인화] 5대 상황에 직면한 오행 심리 리포트</h3>
-                  <div className="grid grid-cols-5 gap-2.5">
-                    <div className="bg-[#F9F8F6] p-3.5 rounded-xl border border-gray-100 flex flex-col justify-between min-h-[140px] shadow-sm">
-                      <span className="text-[10px] font-bold text-gray-800 border-b border-[#E2DDD5]/80 pb-1.5 mb-2 block">평소의 나</span>
-                      <p className="text-[9px] text-gray-500 leading-relaxed text-left font-light">{userReaction.normal}</p>
+                  <div className="flex flex-col space-y-3">
+                    {/* 평소의 나 */}
+                    <div className="bg-white border border-[#E2DDD5] rounded-xl p-4 flex items-center shadow-sm min-h-[70px]">
+                      <div className="w-28 flex-shrink-0 text-center font-bold font-myeongjo text-xs text-gray-800 border-r border-[#E2DDD5] pr-4 mr-4">
+                        평소의 나
+                      </div>
+                      <div className="text-[11px] text-gray-600 leading-relaxed font-light flex-1">
+                        {userReaction.normal}
+                      </div>
                     </div>
-                    <div className="bg-[#F9F8F6] p-3.5 rounded-xl border border-gray-100 flex flex-col justify-between min-h-[140px] shadow-sm">
-                      <span className="text-[10px] font-bold text-[#A3845B] border-b border-[#E2DDD5]/80 pb-1.5 mb-2 block">스트레스 시</span>
-                      <p className="text-[9px] text-gray-500 leading-relaxed text-left font-light">{userReaction.stress}</p>
+
+                    {/* 스트레스 시 */}
+                    <div className="bg-white border border-[#E2DDD5] rounded-xl p-4 flex items-center shadow-sm min-h-[70px]">
+                      <div className="w-28 flex-shrink-0 text-center font-bold font-myeongjo text-xs text-[#A3845B] border-r border-[#E2DDD5] pr-4 mr-4">
+                        스트레스 시
+                      </div>
+                      <div className="text-[11px] text-gray-600 leading-relaxed font-light flex-1">
+                        {userReaction.stress}
+                      </div>
                     </div>
-                    <div className="bg-[#F9F8F6] p-3.5 rounded-xl border border-gray-100 flex flex-col justify-between min-h-[140px] shadow-sm">
-                      <span className="text-[10px] font-bold text-red-600 border-b border-[#E2DDD5]/80 pb-1.5 mb-2 block">분노 상황 시</span>
-                      <p className="text-[9px] text-gray-500 leading-relaxed text-left font-light">{userReaction.anger}</p>
+
+                    {/* 분노 상황 시 */}
+                    <div className="bg-white border border-[#E2DDD5] rounded-xl p-4 flex items-center shadow-sm min-h-[70px]">
+                      <div className="w-28 flex-shrink-0 text-center font-bold font-myeongjo text-xs text-red-600 border-r border-[#E2DDD5] pr-4 mr-4">
+                        분노 상황 시
+                      </div>
+                      <div className="text-[11px] text-gray-600 leading-relaxed font-light flex-1">
+                        {userReaction.anger}
+                      </div>
                     </div>
-                    <div className="bg-[#F9F8F6] p-3.5 rounded-xl border border-gray-100 flex flex-col justify-between min-h-[140px] shadow-sm">
-                      <span className="text-[10px] font-bold text-emerald-700 border-b border-[#E2DDD5]/80 pb-1.5 mb-2 block">의사 결정 시</span>
-                      <p className="text-[9px] text-gray-500 leading-relaxed text-left font-light">{userReaction.decision}</p>
+
+                    {/* 의사 결정 시 */}
+                    <div className="bg-white border border-[#E2DDD5] rounded-xl p-4 flex items-center shadow-sm min-h-[70px]">
+                      <div className="w-28 flex-shrink-0 text-center font-bold font-myeongjo text-xs text-emerald-700 border-r border-[#E2DDD5] pr-4 mr-4">
+                        의사 결정 시
+                      </div>
+                      <div className="text-[11px] text-gray-600 leading-relaxed font-light flex-1">
+                        {userReaction.decision}
+                      </div>
                     </div>
-                    <div className="bg-[#F9F8F6] p-3.5 rounded-xl border border-gray-100 flex flex-col justify-between min-h-[140px] shadow-sm">
-                      <span className="text-[10px] font-bold text-blue-700 border-b border-[#E2DDD5]/80 pb-1.5 mb-2 block">운세 진폭 시</span>
-                      <p className="text-[9px] text-gray-500 leading-relaxed text-left font-light">{userReaction.luck}</p>
+
+                    {/* 운세 진폭 시 */}
+                    <div className="bg-white border border-[#E2DDD5] rounded-xl p-4 flex items-center shadow-sm min-h-[70px]">
+                      <div className="w-28 flex-shrink-0 text-center font-bold font-myeongjo text-xs text-blue-700 border-r border-[#E2DDD5] pr-4 mr-4">
+                        운세 진폭 시
+                      </div>
+                      <div className="text-[11px] text-gray-600 leading-relaxed font-light flex-1">
+                        {userReaction.luck}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -5449,22 +5478,118 @@ return val;
               <span className="text-[9px] text-gray-400 font-light">Chapter 1 처방 (멘탈 가이드)</span>
             </div>
 
-            <div className="space-y-4">
-              <span className="text-xs font-semibold text-[#A3845B] block">⚠️ 평생 반복하기 쉬운 멘탈적 실수</span>
-              <ul className="text-[11px] text-gray-600 list-disc pl-4 space-y-2 leading-relaxed">
-                <li>혼자서 모든 책임을 감당하다 급방전되어 포기하는 룰렛 현상</li>
-                <li>완벽주의 강박에 짓눌려 스타트를 보류하는 유예증</li>
-                <li>사람의 동기만 신뢰하여 안전장치 검증을 흘려 넘기는 부주의</li>
-              </ul>
-            </div>
+            {(() => {
+              // 1. 일간별 맞춤형 평생 반복하기 쉬운 멘탈 실수
+              const stemMistakes = {
+                "甲": [
+                  "혼자 모든 총대를 메고 리드하다 에너지가 고갈되면 일순간 모든 것을 손놓아 버리는 극단적 방전",
+                  "자기 신념이 지나쳐 남의 충고를 배척하고 오직 나의 1차 생각대로 밀어붙이다 겪는 좌절",
+                  "시작은 화려하고 창대하나 마무리를 차분하게 마칠 인내심이 부족해 용두사미가 되는 경향"
+                ],
+                "乙": [
+                  "인간관계에 너무 연연하여 타인의 거절을 마주했을 때 불필요하게 내면을 깎아 먹는 자책",
+                  "안전 지향성에 갇혀 과감한 결단을 뒤로 미루며 기회를 흘려보내는 우유부단",
+                  "주변에 맞춰주고 조율하려다 정작 내 본심은 한쪽 구석에 묵혀 속병을 앓는 습성"
+                ],
+                "丙": [
+                  "감정이 즉각 겉으로 분출되어 사소한 자극에 흥분하거나 적을 만들기 쉬운 불같은 충동",
+                  "인정받고 싶은 마음이 지나쳐 과도하게 오버 페이스로 나서다가 겪는 정신적 번아웃",
+                  "지루한 일상 관리나 루틴적인 반복 실무를 견디지 못하고 새로운 자극만 탐하는 성정"
+                ],
+                "丁": [
+                  "속마음을 겉으로 내색하지 않고 혼자 삭히다 내면의 촛불이 녹아내리듯 겪는 신경성 방전",
+                  "사소한 부정적 피드백이나 지적을 머릿속으로 수백 번 곱씹으며 스스로를 괴롭히는 번민",
+                  "확실한 안전이나 완벽한 퀄리티가 보장되지 않으면 첫 발을 내딛지 못하는 극단적 유예증"
+                ],
+                "戊": [
+                  "모든 책임을 본인의 무게라 착각하고 남에게 의지하거나 도움을 요청하지 못하는 고립감",
+                  "스스로의 신념이나 고집이 너무 무거워 급변하는 외부 상황이나 시대적 조류를 거부하는 아집",
+                  "한번 정체기에 돌입하면 깊은 늪에 빠진 듯 만사를 회피하고 묵언 수행 상태로 들어가는 침잠"
+                ],
+                "己": [
+                  "주변의 부탁이나 이타적 배려를 거절하지 못하고 나를 소모하는 감정 낭비적 헌신",
+                  "너무 세부적인 디테일에 몰두한 나머지 전체 큰 판의 흐름을 놓치는 시야의 고립",
+                  "걱정거리가 없으면 스스로 걱정을 만들어서라도 안도감을 느끼려는 잠재의식적 강박"
+                ],
+                "庚": [
+                  "흑백 논리가 뚜렷하여 맞지 않는 대상을 단칼에 쳐내다 스스로의 발판을 잃어버리는 매정함",
+                  "타인의 나약함을 비이성적이라 간주하고 공격적인 팩트 폭격을 날려 원한을 사는 독설 성향",
+                  "단기 승부에 지나치게 집착하여 길게 끌고 가야 할 장기 전술에서 쉽게 조급해하는 습성"
+                ],
+                "辛": [
+                  "본인과 타인을 향한 완벽주의 칼날이 너무 날카로워 스스로의 영혼을 찌르고 방전시키는 피로",
+                  "한 번 상처를 준 대상은 내 인생에서 영원히 차단하는 냉혹함으로 인해 협조자를 잃는 경향",
+                  "남에게 내 허점이나 흐트러진 모습을 결코 보여주지 않으려 에너지를 과하게 소모하는 방어기제"
+                ],
+                "壬": [
+                  "스케일이 크고 전체 판을 짜려다 정작 중요한 디테일한 계약 조건이나 실무 검증을 놓치는 부주의",
+                  "자신의 직관적인 꾀와 지혜를 과신하여 돌발 상황에서 잔머리를 굴리다 겪는 손재수",
+                  "속을 알 수 없는 물처럼 모든 생각을 비밀에 부쳐 주변 사람의 신뢰와 공조를 막는 불통 경향"
+                ],
+                "癸": [
+                  "타인의 미세한 감정적 변화나 부정적 아우라를 지나치게 흡수하여 겪는 정신적 오염",
+                  "생각이 꼬리에 꼬리를 물고 이어져 밤잠을 설치거나 만성적인 건강 쇠약을 유발하는 걱정병",
+                  "현실적 기반 없이 감정적 공감대에만 휩쓸려 무모한 결정에 자산을 투자하는 귀가 얇은 기류"
+                ]
+              };
 
-            <div className="bg-[#F9F8F6] p-5 rounded-lg border border-[#E2DDD5] space-y-4">
-              <h3 className="font-myeongjo text-sm font-bold text-[#A3845B] text-center">🧠 일상을 조율하는 멘탈 케어 처방</h3>
-              <p className="text-[11.5px] text-gray-700 leading-relaxed">
-                귀하의 성향을 치유하기 위한 핵심은 &lsquo;완벽주의 강박 내려놓기&rsquo;입니다. 
-                모든 것을 한 번에 해결하려고 조급해하기보다 하루에 딱 한 가지 중요한 일만 끝마친다는 마음으로 호흡을 조절하십시오. 
-                생각이 꼬리를 물고 방전될 때에는 머리를 비우고 몸을 움직여 부족한 &lsquo;{lackEl.name}&rsquo;의 안정적인 순환 기운을 현실에서 강제로 확보하십시오.
-              </p>
+              // 2. 결핍 오행별 맞춤형 정신 오행 처방
+              const lackTreatments = {
+                "목": "귀하에게 부족한 목(木) 기운을 깨우는 비결은 '과거의 후회'와 '미래의 강박'을 끄고 오직 '현재의 행동'에 집중하는 것입니다. 완벽을 기하기보다 50%의 완성도라도 일단 스타트를 끊고 실행하는 용기를 낼 때, 막혀 있던 기류가 순환하기 시작합니다.",
+                "화": "메마른 화(火) 기운을 살리기 위해서는 차가운 머리 식히기에서 벗어나 뜨겁고 능동적인 취미 활동이나 외부 소통을 통해 의도적으로 활력을 얻어야 합니다. 감정을 내면에 오래 가두지 말고 신뢰하는 이에게 거침없이 털어놓는 배출구를 확보하십시오.",
+                "토": "불안정한 토(土) 기운을 보강하기 위해서는 명확한 일상적 규칙과 물리적 환경 조율이 필수적입니다. 감정에 휘둘릴 때마다 숲을 걷거나 맨발로 흙을 밟는 등 자연의 묵직한 지탱 기운을 온몸으로 수혈하고, 일일 계획을 시각화해 뇌를 안심시키십시오.",
+                "금": "결핍된 금(金) 기운을 세우기 위해 가장 중요한 것은 '단호한 거절'과 '관계 정리'입니다. 무의미하게 나를 소모하는 주변 환경에 냉정하게 선을 긋고, 하루에 오직 나 자신만을 위한 고립된 집중 시간(디지털 디톡스 포함)을 1시간 이상 사수하십시오.",
+                "수": "메마른 수(수) 기운을 보강하는 핵심 처방은 '뇌의 브레이크 작동'입니다. 생각이 꼬리를 물고 멈추지 않을 때에는 억지로 답을 찾으려 하지 말고 따뜻한 물로 샤워를 하거나 가만히 명상을 행하며 뇌의 연산을 완전히 중지시키는 비움을 실행하십시오."
+              };
+
+              const userMistakes = stemMistakes[dayStem] || stemMistakes["戊"];
+              const userTreatment = lackTreatments[lackEl.name] || lackTreatments["토"];
+
+              return (
+                <div className="space-y-6">
+                  {/* 시각화: 멘탈적 실수 예방 카드 */}
+                  <div className="bg-red-50/20 p-5 rounded-xl border border-red-100/80 space-y-3.5 shadow-sm">
+                    <span className="text-xs font-bold text-red-800 flex items-center gap-1.5">
+                      <span>⚠️</span> [개인화] 귀하가 평생 반복하기 쉬운 멘탈 실수
+                    </span>
+                    <ul className="text-[11px] text-gray-700 space-y-2 list-disc pl-5 leading-relaxed font-light">
+                      {userMistakes.map((mis, idx) => (
+                        <li key={idx}>{mis}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* 시각화: 멘탈 케어 처방 카드 */}
+                  <div className="bg-emerald-50/20 p-5 rounded-xl border border-emerald-100/80 space-y-3 shadow-sm">
+                    <span className="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
+                      <span>🧠</span> [개인화] 오행 치유를 위한 멘탈 케어 처방
+                    </span>
+                    <p className="text-[11px] text-gray-700 leading-relaxed font-light">
+                      {userTreatment} 
+                      넘치는 에너지를 고집으로 밀어붙이는 속도를 한 단계 늦추고, 빈 곳을 의식적으로 채워줄 때 비로소 심신의 평화가 깃듭니다.
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
+
+            <div className="bg-[#A3845B]/5 p-6 rounded-xl border border-[#A3845B]/20 space-y-4">
+              <div className="flex justify-between items-center border-b border-[#A3845B]/20 pb-2">
+                <span className="text-xs font-bold text-[#A3845B] flex items-center gap-1.5">
+                  <span>💡</span> 명리 분석가의 맞춤 정신 오행(精神五行) 조율 비책
+                </span>
+                <span className="text-[9px] text-[#A3845B]/60 tracking-widest font-myeongjo">慧眼堂 寶鑑 秘法</span>
+              </div>
+              <div className="text-[11px] text-gray-700 leading-relaxed font-light space-y-2.5">
+                <p>
+                  동양의 황제내경과 전통 명리학에 따르면, 마음의 변동과 고뇌는 육체의 오행 불균형과 완벽하게 공명합니다. 
+                  귀하의 사주는 일간 <strong>&lsquo;{dayStem}&rsquo;</strong>을 지탱하는 에너지가 강력한 과열 오행 <strong>&lsquo;{excessEl.name}&rsquo;</strong>에 의해 쉽게 뜨거워지고 조급해지는 특징을 지닙니다. 이로 인해 심리적으로 스스로를 가두거나, 반대로 폭주하는 등 마음에 큰 파도를 일으키게 됩니다.
+                </p>
+                <p>
+                  이를 다스리기 위해서는 사주 원국에서 결여된 <strong>&lsquo;{lackEl.name}&rsquo; 기운</strong>의 지혜로운 절제가 반드시 뒷받침되어야 합니다. 
+                  행동의 마무리가 흐려지거나 마음의 갈피를 잃고 흔들릴 때에는, 처방된 멘탈 케어 리포트에 의거하여 현실의 행동, 생활습관, 색상 등을 매개체로 결핍된 오행의 에너지를 억지로 강제 주입해 보십시오. 마음에 제동 장치가 달리는 순간, 운세의 기틀이 근본적으로 상생으로 흐르기 시작합니다.
+                </p>
+              </div>
             </div>
           </div>
           <div className="text-right text-[9px] text-gray-300 pt-2">Page 9 / 22</div>
