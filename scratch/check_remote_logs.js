@@ -17,5 +17,5 @@ conn.on('ready', () => {
   host: '121.125.61.114',
   port: 22,
   username: 'saju-artpani',
-  password: 'saju_artpani_ssh_2026!'
+  privateKey: require('fs').readFileSync(require('path').join(require('os').homedir(), '.ssh', 'id_ed25519_121_125_61_114'))
 });

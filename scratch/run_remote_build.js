@@ -3,22 +3,12 @@ const path = require('path');
 const fs = require('fs');
 
 const conn = new Client();
-const remoteRoot = '/home/www/saju-artpani/frontend';
-
 conn.on('ready', () => {
-  console.log('SSH Client Connected for Diagnosis');
-  
-  // 1. 디렉토리 구조 및 .env 확인
-  const cmd = `
-    echo "=== RELOADING NGINX ==="
-    sudo systemctl reload nginx || sudo nginx -s reload || echo "Nginx reload skipped due to permission"
-  `;
-  
-  conn.exec(cmd, (err, stream) => {
+  console.log('SSH Connected. Running build on remote server...');
+  conn.exec('cd /home/www/saju-artpani/frontend && npx next build', (err, stream) => {
     if (err) throw err;
-    
     stream.on('close', (code) => {
-      console.log(`Diagnosis finished with code: ${code}`);
+      console.log(`SSH Command finished with code: ${code}`);
       conn.end();
     }).on('data', (data) => {
       process.stdout.write(data.toString());

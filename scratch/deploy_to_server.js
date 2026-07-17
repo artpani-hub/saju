@@ -17,9 +17,9 @@ function walkDir(localPath, remoteSubPath) {
     const fullRemotePath = path.posix.join(remoteSubPath, file);
     const stat = fs.statSync(fullLocalPath);
     
-    // 경로상에 'data', '.git', 'node_modules' 가 포함되어 있는 것은 업로드 큐에서 완전히 제외
+    // 경로상에 'data', '.git', 'node_modules', 'dev.db' 가 포함되어 있는 것은 업로드 큐에서 완전히 제외
     const pathParts = fullLocalPath.split(/[\\/]/);
-    if (file === '.git' || file === 'node_modules' || pathParts.includes('data')) {
+    if (file === '.git' || file === 'node_modules' || file === 'dev.db' || pathParts.includes('data')) {
       continue;
     }
     if (stat.isDirectory()) {
@@ -30,48 +30,44 @@ function walkDir(localPath, remoteSubPath) {
   }
 }
 
-// 1. standalone 빌드 결과물 추가
-console.log('Preparing standalone build files...');
-const standalonePath = path.join(localProjectRoot, '.next/standalone');
-if (fs.existsSync(standalonePath)) {
-  walkDir(standalonePath, remoteRoot);
+// 1. 소스 디렉토리 추가
+console.log('Preparing src files...');
+const srcPath = path.join(localProjectRoot, 'src');
+if (fs.existsSync(srcPath)) {
+  walkDir(srcPath, path.posix.join(remoteRoot, 'src'));
 }
 
-// 2. static 파일들 추가 (standalone 내의 .next/static 위치로 이동해야 함)
-console.log('Preparing static files...');
-const staticPath = path.join(localProjectRoot, '.next/static');
-const remoteStaticPath = path.posix.join(remoteRoot, '.next/static');
-if (fs.existsSync(staticPath)) {
-  walkDir(staticPath, remoteStaticPath);
-}
-
-// 3. public 파일들 추가 (standalone 내의 public 위치로 이동해야 함)
+// 2. public 디렉토리 추가
 console.log('Preparing public files...');
 const publicPath = path.join(localProjectRoot, 'public');
-const remotePublicPath = path.posix.join(remoteRoot, 'public');
 if (fs.existsSync(publicPath)) {
-  walkDir(publicPath, remotePublicPath);
+  walkDir(publicPath, path.posix.join(remoteRoot, 'public'));
 }
 
-// 4. .env 파일 추가 (서버의 런타임 환경변수 주입 목적)
-console.log('Preparing .env file...');
-const envPath = path.join(localProjectRoot, '.env');
-if (fs.existsSync(envPath)) {
-  uploadQueue.push({ local: envPath, remote: path.posix.join(remoteRoot, '.env') });
+// 3. prisma 디렉토리 추가
+console.log('Preparing prisma files...');
+const prismaPath = path.join(localProjectRoot, 'prisma');
+if (fs.existsSync(prismaPath)) {
+  walkDir(prismaPath, path.posix.join(remoteRoot, 'prisma'));
 }
 
-// 5. prisma/schema.prisma 파일 추가 (원격 DB 마이그레이션 및 Prisma Client 생성 목적)
-console.log('Preparing prisma schema files...');
-const prismaSchemaPath = path.join(localProjectRoot, 'prisma/schema.prisma');
-if (fs.existsSync(prismaSchemaPath)) {
-  uploadQueue.push({ local: prismaSchemaPath, remote: path.posix.join(remoteRoot, 'prisma/schema.prisma') });
-}
+// 4. 설정 파일들 및 스크립트 추가
+console.log('Preparing config files and scripts...');
+const filesToUpload = [
+  '.env',
+  'package.json',
+  'package-lock.json',
+  'next.config.mjs',
+  'postcss.config.js',
+  'tailwind.config.js',
+  'scratch/import_json_to_sqlite.js'
+];
 
-// 6. JSON to SQLite 마이그레이션 스크립트 추가 (실서버 레거시 데이터 복구 목적)
-console.log('Preparing JSON migration script...');
-const migrationScriptPath = path.join(localProjectRoot, 'scratch/import_json_to_sqlite.js');
-if (fs.existsSync(migrationScriptPath)) {
-  uploadQueue.push({ local: migrationScriptPath, remote: path.posix.join(remoteRoot, 'scratch/import_json_to_sqlite.js') });
+for (const file of filesToUpload) {
+  const localFile = path.join(localProjectRoot, file);
+  if (fs.existsSync(localFile)) {
+    uploadQueue.push({ local: localFile, remote: path.posix.join(remoteRoot, file) });
+  }
 }
 
 console.log(`Total files to upload: ${uploadQueue.length}`);
@@ -127,14 +123,15 @@ conn.on('ready', () => {
           if (index >= uploadQueue.length) {
             console.log('All files uploaded successfully!');
             
-            // 원격 서버 DB 스키마 동기화 및 Prisma Client 빌드
-            console.log('Syncing database schema and importing legacy data on remote server...');
+            // 원격 서버 DB 스키마 동기화 및 Prisma Client 빌드, 그리고 Next.js 리눅스 컴파일 빌드
+            console.log('Syncing database schema, building app, and importing legacy data on remote server...');
             const setupCmd = `
               sed -i 's|DATABASE_URL=.*|DATABASE_URL="file:/home/www/saju-artpani/frontend/prisma/dev.db"|' ${remoteRoot}/.env
               cd ${remoteRoot}
-              npx prisma generate
-              npx prisma db push
+              npx prisma@6.2.1 generate
+              npx prisma@6.2.1 db push
               node scratch/import_json_to_sqlite.js
+              npx next build
             `;
             conn.exec(setupCmd, (dbErr, dbStream) => {
               if (dbErr) {
@@ -143,11 +140,19 @@ conn.on('ready', () => {
               
               dbStream.resume();
               dbStream.on('close', (dbCode) => {
-                console.log(`Remote database sync, generate & import finished with code: ${dbCode}`);
+                console.log(`Remote database sync, build & import finished with code: ${dbCode}`);
                 
-                // PM2 재기동 실행
-                console.log('Restarting saju-app via PM2...');
-                conn.exec('pm2 restart saju-app', (execErr, stream) => {
+                // PM2 재기동 실행 (기존 삭제 후 정확한 cwd 지정 하드 리부트)
+                console.log('Hard restarting saju-app via PM2...');
+                const pm2Cmd = `
+                  pm2 delete saju-app 2>/dev/null || true
+                  cd ${remoteRoot}
+                  mkdir -p .next/standalone/.next
+                  cp -r public .next/standalone/ 2>/dev/null || true
+                  cp -r .next/static .next/standalone/.next/ 2>/dev/null || true
+                  PORT=3012 pm2 start server.js --name saju-app --cwd ${remoteRoot}/.next/standalone
+                `;
+                conn.exec(pm2Cmd, (execErr, stream) => {
                   if (execErr) {
                     console.error('PM2 restart error:', execErr);
                     conn.end();

@@ -2,23 +2,18 @@ const { Client } = require('ssh2');
 const path = require('path');
 const fs = require('fs');
 
-const conn = new Client();
-const remoteRoot = '/home/www/saju-artpani/frontend';
+const cmd = process.argv.slice(2).join(' ');
+if (!cmd) {
+  console.error('Please provide a command to run.');
+  process.exit(1);
+}
 
+const conn = new Client();
 conn.on('ready', () => {
-  console.log('SSH Client Connected for Diagnosis');
-  
-  // 1. 디렉토리 구조 및 .env 확인
-  const cmd = `
-    echo "=== RELOADING NGINX ==="
-    sudo systemctl reload nginx || sudo nginx -s reload || echo "Nginx reload skipped due to permission"
-  `;
-  
+  console.log(`SSH Connected. Running: "${cmd}"`);
   conn.exec(cmd, (err, stream) => {
     if (err) throw err;
-    
     stream.on('close', (code) => {
-      console.log(`Diagnosis finished with code: ${code}`);
       conn.end();
     }).on('data', (data) => {
       process.stdout.write(data.toString());

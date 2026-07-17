@@ -6,25 +6,24 @@ const conn = new Client();
 conn.on('ready', () => {
   console.log('SSH Connected.');
 
-  // reportGrade=free 가 있는 URL로 진단 수행
   const nodeScript = `
 const http = require('http');
 
 const req = http.request({
   hostname: '127.0.0.1',
   port: 3012,
-  path: '/result?name=%EA%B9%80%EB%AF%BC%ED%9D%AC&gender=female&year=1995&month=8&day=25&hour=10%3A00&reportGrade=free',
+  path: '/result?name=%EA%B9%80%EB%AF%BC%ED%9D%AC&gender=female&year=1995&month=8&day=25&hour=10%3A00',
   method: 'GET',
   headers: {
     'Accept': 'text/html'
   }
 }, (res) => {
   let data = '';
-  res.on('data', (chunk) => { data += chunk.toString(); });
+  res.on('data', (chunk) => { data += chunk.substring(0, 100); }); // 헤드만 살짝 수집
   res.on('end', () => {
-    console.log('HTTP Status Code:', res.statusCode);
-    console.log('Response HTML Length:', data.length);
-    console.log('Sample Content:', data.substring(0, 300));
+    console.log('HTTP Status:', res.statusCode);
+    console.log('Response Length:', data.length);
+    console.log('Response Sample:', data.substring(0, 300));
   });
 });
 
@@ -36,17 +35,17 @@ req.end();
 `;
 
   // 원격지에 쓰기
-  conn.exec(`cat << 'EOF' > /home/www/saju-artpani/frontend/test_result_free_get.js\n${nodeScript}\nEOF`, (err, stream) => {
+  conn.exec(`cat << 'EOF' > /home/www/saju-artpani/frontend/test_get_result.js\n${nodeScript}\nEOF`, (err, stream) => {
     if (err) throw err;
     stream.on('close', () => {
-      console.log('test_result_free_get.js created on server. Executing it...');
+      console.log('test_get_result.js created on server. Executing it...');
       
       // 실행
-      conn.exec('node /home/www/saju-artpani/frontend/test_result_free_get.js', (execErr, execStream) => {
+      conn.exec('node /home/www/saju-artpani/frontend/test_get_result.js', (execErr, execStream) => {
         if (execErr) throw execErr;
         let execOutput = '';
         execStream.on('close', () => {
-          console.log('Node GET (reportGrade=free) Test Output:\n', execOutput);
+          console.log('Node GET Test Output:\n', execOutput);
           conn.end();
         }).on('data', (data) => {
           execOutput += data.toString();

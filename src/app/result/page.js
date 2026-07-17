@@ -5219,12 +5219,14 @@ return val;
 
             <div className="space-y-4">
               <h4 className="text-xs font-bold text-gray-800">• 태어난 일간(Day Stem) 분석</h4>
-              <p className="text-[11px] text-gray-600 leading-relaxed">
-                {currentCard.desc}
-              </p>
-              <p className="text-[11px] text-gray-600 leading-relaxed">
-                이것은 일생의 성격, 타고난 성정의 핵심 뼈대를 형성합니다. 이 기운이 어떤 대운을 만났느냐에 따라 때로는 부드러워지고 때로는 단단해지며 삶의 스토리를 만들어내게 됩니다.
-              </p>
+              <div className={blurClass}>
+                <p className="text-[11px] text-gray-600 leading-relaxed">
+                  {currentCard.desc}
+                </p>
+                <p className="text-[11px] text-gray-600 leading-relaxed">
+                  이것은 일생의 성격, 타고난 성정의 핵심 뼈대를 형성합니다. 이 기운이 어떤 대운을 만났느냐에 따라 때로는 부드러워지고 때로는 단단해지며 삶의 스토리를 만들어내게 됩니다.
+                </p>
+              </div>
             </div>
 
             <div className="bg-[#A3845B]/5 p-5 rounded-xl border border-[#A3845B]/15 space-y-3">
@@ -5302,7 +5304,7 @@ return val;
 
             <div className="bg-[#A3845B]/5 p-6 rounded-xl border border-[#A3845B]/20 space-y-4">
               <span className="text-xs font-bold text-[#A3845B] block border-b border-[#A3845B]/20 pb-2">💡 왜 그런가요? 천간(天干)과 지지(地支)의 이중 텐션 구조</span>
-              <div className="text-[11px] text-gray-700 leading-relaxed font-light space-y-2.5">
+              <div className={`text-[11px] text-gray-700 leading-relaxed font-light space-y-2.5 ${blurClass}`}>
                 <p>
                   귀하의 사주는 대외적인 활동 에너지와 외향적 면모를 주관하는 하늘의 기운인 **천간(天干)**과, 내밀한 심리와 실제 현실의 삶을 좌우하는 땅의 기운인 **지지(地支)**의 십신(十神)적 속성이 서로 상반되는 구성을 이루고 있어 발생하는 아름다운 이중적 조화를 내포하고 있습니다. 
                 </p>
@@ -5360,7 +5362,7 @@ return val;
                     <span className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
                       <span>📊</span> 실시간 사주 에너지 밸런스 현황
                     </span>
-                    <div className="grid grid-cols-2 gap-6 text-xs">
+                    <div className={`grid grid-cols-2 gap-6 text-xs ${blurClass}`}>
                       {/* 강점 오행 */}
                       <div className="space-y-2">
                         <div className="flex justify-between items-center font-bold">
@@ -5395,7 +5397,7 @@ return val;
                     <span className="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
                       <span>🎯</span> [개인화] 귀하의 타고난 무기 (사주 강점)
                     </span>
-                    <p className="text-[11.5px] text-gray-700 leading-relaxed font-light">
+                    <p className={`text-[11.5px] text-gray-700 leading-relaxed font-light ${blurClass}`}>
                       귀하의 타고난 본질 좌표인 일간 <strong>&lsquo;{dayStem}&rsquo;</strong>을 바탕으로 분석한 핵심 무기는 다음과 같습니다. 
                       {userStrength} 이 에너지가 사주 속 강점 오행인 <strong>&lsquo;{excessEl.name}&rsquo;</strong>의 발현과 톱니바퀴처럼 맞물릴 때, 어떠한 인생 풍파도 유연하고 강인하게 헤쳐 나가는 추진력을 행사할 수 있습니다.
                     </p>
