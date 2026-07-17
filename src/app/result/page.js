@@ -4297,6 +4297,78 @@ return val;
 
       const amount = currentGrade === "deep" ? 49900 : (currentGrade === "premium" ? 34900 : 14900);
 
+      // 결제요청 직전에 사용자 정보를 임시 저장 (모바일 리다이렉트 유실 대비)
+      try {
+        const tempUpgradeInfo = {
+          name,
+          genderVal,
+          typeParam,
+          calendar,
+          year,
+          month,
+          day,
+          hour,
+          worryCategory,
+          worryText,
+          partnerName,
+          partnerGender,
+          partnerCalendar,
+          partnerYear,
+          partnerMonth,
+          partnerDay,
+          partnerHour,
+          gunghapType,
+          email: emailParam || "today_sms@hyeandang.com",
+          phone: phoneParam || "010-0000-0000",
+          targetGrade: currentGrade,
+          amount: amount
+        };
+        localStorage.setItem("hyeandang_temp_upgrade_info", JSON.stringify(tempUpgradeInfo));
+
+        // 결제 검증을 위한 로컬스토리지 orders 정보도 pending 상태로 선등록
+        const existingStr = localStorage.getItem("hyeandang_orders");
+        let orders = [];
+        if (existingStr) {
+          try {
+            orders = JSON.parse(existingStr);
+            if (!Array.isArray(orders)) orders = [];
+          } catch (e) {
+            orders = [];
+          }
+        }
+        const matchedIdx = orders.findIndex(o => 
+          o &&
+          o.name === name && 
+          parseInt(o.year) === year &&
+          parseInt(o.month) === month &&
+          parseInt(o.day) === day &&
+          o.reportGrade === currentGrade
+        );
+        if (matchedIdx === -1) {
+          orders.push({
+            id: Math.floor(Math.random() * 9000) + 1000,
+            name: name,
+            email: emailParam || "today_sms@hyeandang.com",
+            phone: phoneParam || "010-0000-0000",
+            productName: typeParam === "tojeong" ? "정통 토정비결" : (type === "newyear" ? "신년운세" : "평생 종합 사주팔자"),
+            amount: amount,
+            status: "pending",
+            createdAt: getLocalDateString(),
+            gender: genderVal || "female",
+            calendar: calendar,
+            year: String(year),
+            month: String(month),
+            day: String(day),
+            hour: hour,
+            worryText: worryText || "오늘의 운세",
+            reportGrade: currentGrade
+          });
+          localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+        }
+      } catch (tempErr) {
+        console.error("임시 정보 백업 실패:", tempErr);
+      }
+
       PortOne.requestPayment({
         storeId,
         channelKey,
@@ -4328,6 +4400,11 @@ return val;
                 setIsProcessing(false);
                 setIsPaid(true);
                 await updateLocalStorageOrderToPaid(currentGrade, rsp.paymentId);
+
+                // URL을 업데이트하여 reportGrade가 결제 등급(sms 등)으로 적용되도록 리다이렉트
+                const url = new URL(window.location.href);
+                url.searchParams.set("reportGrade", currentGrade);
+                window.location.href = url.toString();
 
                 // 이메일 자동 발송 트리거 연동 (결제 정보에서 입력한 이메일 주소 사용)
                 const targetEmail = emailParam || (rsp && rsp.buyer_email);
