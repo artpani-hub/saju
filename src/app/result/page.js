@@ -6921,6 +6921,7 @@ return val;
         {(() => {
           // birthYear를 기준으로 연령대 계산
           const birthYear = parseInt(year) || 1995;
+          const daeunNum = (birthYear % 9) + 1;
           const currentYear = 2026;
           const userAge = currentYear - birthYear + 1;
           
@@ -7032,14 +7033,44 @@ return val;
                   </p>
                 </div>
 
-                {/* 대운 개운법 카드 (하단 여백 제거용) */}
-                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-2 shadow-inner">
-                  <span className="text-[10px] font-bold text-[#C2A378] tracking-wider block font-myeongjo text-center">🧘 대운을 내 편으로 만드는 최고의 마인드셋</span>
-                  <p className="text-[10.5px] text-gray-300 font-light font-sans leading-relaxed text-center font-sans">
-                    대운의 바람이 불어올 때 돛을 올려 항해하는 자만이 성공을 거머쥡니다.
-                    <br />
-                    조급하게 타인과 비교하기보다 <strong>나의 계절 속도에 맞추어 씨앗을 여물게 하는 실리주의</strong>를 평생 기억하십시오.
-                  </p>
+                {/* 대운 변곡점(정체기) 및 마인드셋 (하단 여백 제거용 통합 패널) */}
+                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3 shadow-inner">
+                  <div className="border-b border-gray-700/50 pb-1.5 flex justify-between items-center text-[10px]">
+                    <span className="font-bold text-[#C2A378] font-myeongjo">🧘 {name} 님의 대운 변곡점(교운기) & 정체기 극복 처방</span>
+                    <span className="text-gray-400">대운수(大運數): {daeunNum}</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[10.5px] font-sans font-light">
+                    {/* 왼쪽 컬럼: 시기별 정체기 분석 */}
+                    <div className="space-y-1.5 border-b md:border-b-0 md:border-r border-gray-700/50 pb-3 md:pb-0 pr-0 md:pr-4">
+                      <span className="text-[#C2A378] font-bold text-[10px] block">• 10년 주기 정체기 도래 나이 (만 나이 기준)</span>
+                      <p className="text-gray-300 leading-relaxed">
+                        귀하의 대운 교체 주기는 <strong>만 {daeunNum}세 단위</strong>로 순환합니다. 
+                        특히 변곡점이 되는 나이대인 <strong className="text-white">만 {daeunNum}세, {daeunNum + 10}세, {daeunNum + 20}세, {daeunNum + 30}세, {daeunNum + 40}세, {daeunNum + 50}세</strong>의 전후 1~2년(교운기)이 기운이 정체되고 혼란이 빚어지는 주요 정체기 타이밍입니다.
+                      </p>
+                      <p className="text-[10px] text-gray-400 mt-1">
+                        * {dayStemEl === "목" && "오행 상 금(金) 기운이 강하게 억누르는 대운/세운에 진입할 때 일시적 정신 정체와 피로가 유발됩니다."}
+                        {dayStemEl === "화" && "오행 상 수(水) 기운이 세차게 밀어칠 때 내면의 빛이 흐려지며 주변의 압박으로 인한 정체가 도래합니다."}
+                        {dayStemEl === "토" && "오행 상 목(木) 기운이 땅을 헤집어 놓을 때 포용력이 한계에 달하며 자존감 손상 및 소진이 나타납니다."}
+                        {dayStemEl === "금" && "오행 상 화(火) 기운이 과도하게 녹여버릴 때 냉철함을 잃어버리고 공사의 경계가 훼손되어 침체됩니다."}
+                        {dayStemEl === "수" && "오행 상 토(土) 기운이 물길을 과하게 가로막을 때 생각의 정체와 현실적 답답함이 배가될 수 있습니다."}
+                      </p>
+                    </div>
+
+                    {/* 오른쪽 컬럼: 극복 처방 및 마인드셋 */}
+                    <div className="flex flex-col justify-between space-y-2">
+                      <div className="space-y-1">
+                        <span className="text-[#C2A378] font-bold text-[10px] block">• 정체기 극복을 위한 처방 및 마인드셋</span>
+                        <p className="text-gray-300 leading-relaxed font-sans font-light">
+                          기운이 막히는 대운 정체기에는 억지로 일을 추진하거나 확장하지 않는 것이 정법입니다. 
+                          물의 흐름처럼 저항하지 마시고, 나에게 부족한 <strong className="text-[#C2A378] font-semibold">{lackEl.name} 기운</strong>을 보충하는 환경 요소를 일상에 두며 자신을 재정비하는 고요한 내적 공부에 전념하십시오.
+                        </p>
+                      </div>
+                      <p className="text-[10px] text-gray-400 italic font-sans font-light">
+                        "계절의 밤이 깊을 때는 억지로 태양을 부르려 하지 말고, 고요히 등불을 밝히고 아침을 기약하십시오."
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
               </div>
