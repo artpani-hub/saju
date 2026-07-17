@@ -7539,36 +7539,149 @@ return val;
         })()}
 
         {/* -------------------- Page 20. Chapter 3 연계 처방 (실천 나침반) -------------------- */}
-        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
-          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+        {(() => {
+          const lackElName = lackEl?.name || "토";
+          const lackElColor = curPresc.color;
+          const lackElSpace = curPresc.space;
+          const lackElItem = curPresc.item;
           
-          <div className="space-y-6">
-            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
-              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
-              <span className="text-[9px] text-gray-400 font-light">Chapter 3 연계 처방 (실천 나침반)</span>
-            </div>
+          // 결핍 오행에 따른 30일 실천 강령
+          const getActionGuidelines = (lackName) => {
+            const list = {
+              "목": [
+                { title: "생기(生氣) 촉진", desc: "매일 아침 10분 동안 창문을 열고 화초나 초록 식물을 응시하며 동쪽의 생동하는 에너지를 체내에 공급하십시오." },
+                { title: "자산 울타리 구축", desc: "충동적인 기분파 지출을 방어하기 위해 매월 자동 이체되는 적금이나 문서형 자산을 생성하고 봉인하십시오." },
+                { title: "공간 동쪽 개운", desc: "집안이나 업무 공간의 동쪽 방위를 깨끗하게 청소하고, 싱그러운 미니 화분이나 원목 소품을 배치하십시오." },
+                { title: "귀인의 멘토링", desc: "혼자 판단하고 독단적으로 벌이기보다, 평소 나와 성향이 다르고 이성적인 조언자를 찾아 현실적 피드백을 구하십시오." },
+                { title: "행동 개시 루틴", desc: "머릿속으로 생각만 하던 계획을 오늘 당장 노트에 쓰고, 아주 사소한 것 1가지부터 즉각 행동으로 옮기십시오." }
+              ],
+              "화": [
+                { title: "에너지 증폭", desc: "일주일에 3회 이상 낮에 야외로 나가 햇볕을 충분히 쬐고, 붉은빛 조명이나 액세서리를 몸에 가까이 두십시오." },
+                { title: "소통과 정화", desc: "내면의 서운함이나 화를 혼자 꾹 참지 마시고, 믿을 수 있는 상대에게 내 속마음을 솔직하게 표현하십시오." },
+                { title: "공간 남쪽 개운", desc: "집안의 남쪽 창가 주변을 정돈하고, 향초나 조명 스탠드를 설치하여 따스한 기류를 활성화하십시오." },
+                { title: "감정 조율", desc: "조급증이 밀려와 속사포처럼 말이 나올 때는 숨을 세 번 크게 들이쉬고 상대방의 이야기를 끝까지 들으십시오." },
+                { title: "열정 리츄얼", desc: "기운이 다운되거나 무기력할 때는 활기찬 도심지나 미술관을 찾아 역동적인 에너지를 충전하십시오." }
+              ],
+              "토": [
+                { title: "안정감 확보", desc: "마음이 들뜨고 흔들릴 때마다 맨발로 흙길이나 잔디밭을 가볍게 산책하며 대지의 든든한 안정감을 흡수하십시오." },
+                { title: "자산 통제력 배가", desc: "소비 흐름을 명확하게 제어할 수 있도록 신용카드를 제한하고 현금 또는 체크카드 중심의 예산 룰을 적용하십시오." },
+                { title: "공간 중앙 개운", desc: "생활 공간의 중심부에 황토 머그컵이나 도자기 소품을 비치하여 흐트러진 집안의 무게중심을 단단히 잡으십시오." },
+                { title: "중심 지키기", desc: "남의 부탁을 거절하지 못해 끌려다니지 마시고, 내 현실적인 여건을 고려하여 정중하되 명확하게 거절하십시오." },
+                { title: "생각 비우기 루틴", desc: "불안감이 꼬리를 물 때는 즉시 스마트폰을 멀리하고 따뜻한 차를 마시며 생각을 강제로 멈추십시오." }
+              ],
+              "금": [
+                { title: "단호한 결단", desc: "나를 방해하거나 불필요하게 감정을 갉아먹는 소모적인 관계나 미련을 칼로 베듯 단호히 정리하십시오." },
+                { title: "규칙적 시스템", desc: "매일 아침 일정한 시간에 일어나는 정교한 기상 루틴을 설계하여 나만의 확실한 자기 통제 궤도를 만드십시오." },
+                { title: "공간 서쪽 개운", desc: "공간의 서쪽 영역에 은반지나 철제 소품, 미니멀한 화이트톤 액자를 두어 정갈함을 배가하십시오." },
+                { title: "감정 매듭", desc: "해결되지 않는 해묵은 고민에 사로잡히기보다 하루 일과의 끝에 일기를 쓰며 깔끔하게 생각의 매듭을 지으십시오." },
+                { title: "정밀한 분석", desc: "추상적인 계획은 실패하기 쉽습니다. 일의 순서와 리스크를 엑셀이나 메모에 정량화하여 기록해두세요." }
+              ],
+              "수": [
+                { title: "유연한 방조", desc: "조급하게 결론을 도출하려 애쓰기보다 물 흐르듯 자연스레 상황을 놔두고 한 걸음 물러나 관조하십시오." },
+                { title: "수분 보충 리추얼", desc: "하루 1.5리터 이상의 물을 수시로 음용하고, 저녁에는 가벼운 반신욕이나 족욕으로 몸의 순환을 도우십시오." },
+                { title: "공간 북쪽 개운", desc: "공간의 북쪽 방위에 가습기나 검은색 소품을 배치하고, 항상 어둡고 조용한 휴식 분위기를 연출해두십시오." },
+                { title: "깊은 침묵", desc: "갈등이 일어나는 순간에는 감정을 즉시 쏟아내지 말고 하루 정도 침묵을 유지하며 내면에서 삭이십시오." },
+                { title: "마인드 피싱", desc: "밤에 불면증이 오거나 생각이 많아질 때는 잔잔한 물소리 ASMR을 들으며 뇌파를 안정 상태로 가라앉히십시오." }
+              ]
+            };
+            return list[lackName] || list["토"];
+          };
 
-            <div className="space-y-5">
-              <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• 앞으로 30일 동안 강하게 실천할 5가지 지침</h3>
+          const curGuidelines = getActionGuidelines(lackElName);
+          
+          return (
+            <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+              <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
               
-              <div className="space-y-3.5 text-[11px] text-gray-700 leading-relaxed">
-                <p><strong>1. 미뤄 둔 결정 정리:</strong> 사주 속 기획 과열(목 과다)로 미뤄온 이직서 제출이나 포트폴리오 마감 결정 한 가지를 30일 내에 매듭지으십시오.</p>
-                <p><strong>2. 불필요 지출 구멍 점검:</strong> 재물운이 새는 조건을 방어하기 위해 automatic 결제나 불필요한 인간관계성 지출 1개를 확실히 점검하고 삭제하십시오.</p>
-                <p><strong>3. 공간 정돈 실행:</strong> 방안 동쪽에 싱그러운 원목이나 초록빛 포인트를 배치하여 일상의 부족한 오행 기운을 강제로 개운하십시오.</p>
-                <p><strong>4. 귀인 조언 수렴:</strong> 혼자서 머리를 싸매기보다, 평소 나와 결이 다르고 침착한 조언자 1인을 만나 진로의 현실적 피드백을 구하십시오.</p>
-                <p><strong>5. 멘탈 리프레시 루틴 구축:</strong> 조급함이 솟구칠 때마다 생각을 지우고 20분간 산책하거나 잠드는 행동 룰을 적용해 마음에 닻을 내리십시오.</p>
-              </div>
-            </div>
+              <div className="space-y-4">
+                {/* 헤더 */}
+                <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+                  <span className="text-[9px] text-gray-400 font-light">Chapter 3 연계 처방 (실천 나침반)</span>
+                </div>
 
-            <div className="bg-[#A3845B]/5 p-5 rounded-lg border border-[#A3845B]/15 space-y-2 mt-6">
-              <span className="text-xs font-bold text-[#A3845B] block">🎯 올해의 핵심 지침 목표</span>
-              <p className="text-[11px] text-gray-600 leading-relaxed">
-                "올해는 날개를 크게 펼치고 무리하게 도약하려 하기보다, 내 실속과 내부 내실을 다져 수확을 튼튼히 챙기는 한 해로 타겟팅하십시오."
-              </p>
+                <div className="space-y-4">
+                  <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• 앞으로 30일 동안 강하게 실천할 5가지 지침</h3>
+                  
+                  {/* 오행 기반 동적 5대 실천 가이드 */}
+                  <div className="space-y-3">
+                    {curGuidelines.map((item, idx) => (
+                      <div key={idx} className="flex gap-3 text-[10.5px] items-start border-b border-gray-100 pb-2">
+                        <span className="bg-[#A3845B]/10 text-[#A3845B] font-bold px-2 py-0.5 rounded text-[9.5px] w-24 text-center shrink-0">
+                          {idx + 1}. {item.title}
+                        </span>
+                        <p className="text-gray-600 leading-relaxed font-sans font-light">
+                          {item.desc}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 시각화: 오행 30일 상생 밸런스 예측 지표 */}
+                <div className="bg-[#F9F8F6] p-4 rounded border border-[#E2DDD5]/60 space-y-3 shadow-inner">
+                  <span className="text-[10.5px] font-bold text-[#A3845B] block font-myeongjo text-center">📊 {name} 님의 향후 30일 오행 상생 흐름 지표</span>
+                  
+                  <div className="grid grid-cols-2 gap-4 text-[10px] font-sans">
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-gray-700 font-bold">
+                        <span>오행 충전 강도 (부족 오행 {lackElName} 보완)</span>
+                        <span className="text-[#A3845B]">85%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+                        <div className="bg-[#A3845B] h-full" style={{ width: "85%" }} />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-gray-700 font-bold">
+                        <span>스트레스 방어 복원성</span>
+                        <span className="text-emerald-600">75%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+                        <div className="bg-emerald-500 h-full" style={{ width: "75%" }} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 올해의 핵심 지침 목표 */}
+                <div className="bg-[#A3845B]/5 p-4 rounded-lg border border-[#A3845B]/15 space-y-1.5">
+                  <span className="text-[10px] font-bold text-[#A3845B] block font-myeongjo">🎯 {name} 님의 올해의 핵심 지침 최종 목표</span>
+                  <p className="text-[10.5px] text-gray-600 leading-relaxed font-sans font-light">
+                    "올해는 날개를 크게 펼치고 무리하게 도약하려 하기보다, 내 실속과 내부 내실을 다져 수확을 튼튼히 챙기는 한 해로 삼으십시오. 특히 결핍 오행인 <strong className="text-[#A3845B] font-bold">{lackElName} 기운</strong>을 충전하기 위한 소박한 일상의 의식들이 미래의 큰 결실을 안전하게 안착시킬 열쇠가 될 것입니다."
+                  </p>
+                </div>
+
+                {/* 최하단 30일 루틴 체크리스트 다크 패널 (여백 소거용) */}
+                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3 shadow-inner">
+                  <div className="border-b border-gray-700/50 pb-1.5 flex justify-between items-center text-[10px]">
+                    <span className="font-bold text-[#C2A378] font-myeongjo">🗓️ 30일간 매일 실천하는 {lackElName} 개운 체크리스트</span>
+                    <span className="text-gray-400">행동 수칙</span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 text-[9.5px] font-sans font-light">
+                    <div className="space-y-1">
+                      <span className="text-[#C2A378] font-bold block">• 아침/낮 리추얼</span>
+                      <p className="text-gray-300 leading-relaxed font-sans font-light">
+                        매일 낮 {lackElSpace}에서 보내는 시간을 최소 15분 이상 확보하고, 눈 앞에 수호 오행 컬러인 <strong className="text-white">{lackElColor}</strong> 소품이나 {lackElItem}을 가까이 시각적으로 배치하십시오.
+                      </p>
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="text-[#C2A378] font-bold block">• 밤/명상 리추얼</span>
+                      <p className="text-gray-300 leading-relaxed font-sans font-light">
+                        잠들기 전, 타인과의 연락을 일체 끊고 조용히 눈을 감아 오행의 불균형으로 인해 비대해진 내면의 조급증을 평온하게 흘려보내는 심호흡을 실행하십시오.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div className="text-right text-[9px] text-gray-300 pt-2">Page 21 / 22</div>
             </div>
-          </div>
-          <div className="text-right text-[9px] text-gray-300 pt-2">Page 21 / 22</div>
-        </div>
+          );
+        })()}
 
         {/* -------------------- Page 21. 마무리 및 최종 보감 -------------------- */}
         <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
