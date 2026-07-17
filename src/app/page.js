@@ -140,6 +140,58 @@ export default function Home() {
   const [isRefundPolicyOpen, setIsRefundPolicyOpen] = useState(false);
 
   useEffect(() => {
+    // 유입 경로(Referer 및 UTM 파라미터) 감지 및 저장
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const utmSource = urlParams.get("utm_source");
+      const refCode = urlParams.get("ref");
+      
+      let refererKey = "";
+      
+      // 1. URL 파라미터에 utm_source 또는 ref 가 있으면 최우선 적용
+      if (utmSource) {
+        refererKey = utmSource.toLowerCase();
+      } else if (refCode) {
+        refererKey = refCode.toLowerCase();
+      } else {
+        // 2. document.referrer 분석
+        const referrer = document.referrer ? document.referrer.toLowerCase() : "";
+        if (referrer) {
+          if (referrer.includes("naver.com")) refererKey = "naver";
+          else if (referrer.includes("google.com")) refererKey = "google";
+          else if (referrer.includes("facebook.com") || referrer.includes("fb.me")) refererKey = "meta";
+          else if (referrer.includes("instagram.com")) refererKey = "insta";
+          else if (referrer.includes("youtube.com") || referrer.includes("youtu.be")) refererKey = "youtube";
+          else if (referrer.includes("kakao.com") || referrer.includes("kakaocorp.com")) refererKey = "kakao";
+          else {
+            refererKey = "direct";
+          }
+        } else {
+          refererKey = "direct";
+        }
+      }
+      
+      // 표준 채널명으로 매핑 보정
+      const validChannels = ["naver", "google", "meta", "insta", "youtube", "kakao", "direct"];
+      if (!validChannels.includes(refererKey)) {
+        if (refererKey.includes("naver")) refererKey = "naver";
+        else if (refererKey.includes("google")) refererKey = "google";
+        else if (refererKey.includes("facebook")) refererKey = "meta";
+        else if (refererKey.includes("instagram")) refererKey = "insta";
+        else if (refererKey.includes("youtube")) refererKey = "youtube";
+        else if (refererKey.includes("kakao")) refererKey = "kakao";
+        else refererKey = "direct";
+      }
+
+      // 기존 유입 정보가 이미 세팅되어 있다면 세션 연속성을 위해 유지하고, 없을 때만 새로 적재합니다.
+      const existing = localStorage.getItem("hyeandang_referer");
+      if (!existing) {
+        localStorage.setItem("hyeandang_referer", refererKey);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     setCumulativeCount(getCumulativeCount());
     setTodayCount(getTodayCount());
     setActiveUsers(getActiveUsers());

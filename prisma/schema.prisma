@@ -93,6 +93,7 @@ model Order {
   cashReceiptInfo String? // 현금영수증 정보
   isDuplicate    Boolean  @default(false) // 중복 결제 여부
   paymentDate    DateTime? // 결제일
+  referer        String?  // 유입 경로 (naver, google, meta, insta, youtube, kakao, direct, etc)
   createdAt      DateTime @default(now())
 }
 

@@ -2791,80 +2791,75 @@ export default function AdminPage() {
                   <div className="bg-white rounded-xl border border-[#dee2e6] p-6 space-y-6 shadow-sm">
                     <h3 className="text-lg font-bold text-[#212529]">유입 채널 통계 (Referer Traffic)</h3>
                     <p className="text-xs text-[#888] -mt-4 font-semibold">각 채널 카드를 클릭하면 하단에 상세 방문 유입 로그와 키워드가 렌더링됩니다.</p>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                      {[
-                        { id: "naver", label: "네이버 검색", count: "3,480 건", active: selectedReferer === "naver" },
-                        { id: "google", label: "구글 오가닉", count: "1,200 건", active: selectedReferer === "google" },
-                        { id: "meta", label: "메타/페이스북", count: "2,410 건", active: selectedReferer === "meta" },
-                        { id: "insta", label: "인스타그램", count: "4,190 건", active: selectedReferer === "insta" },
-                        { id: "youtube", label: "유튜브 링크", count: "1,050 건", active: selectedReferer === "youtube" },
-                        { id: "kakao", label: "카카오톡 채널", count: "890 건", active: selectedReferer === "kakao" },
-                        { id: "direct", label: "직접 접속", count: "420 건", active: selectedReferer === "direct" },
-                      ].map((item, i) => (
-                        <div 
-                          key={i} 
-                          onClick={() => setSelectedReferer(item.id)}
-                          className={`p-4 rounded border cursor-pointer transition-all duration-200 ${
-                            item.active 
-                              ? "bg-[#f4f1ea] border-[#A3845B] scale-[1.03] shadow-md" 
-                              : "bg-[#f8f9fa] border-[#e9ecef] hover:border-[#A3845B]/40 hover:scale-[1.01]"
-                          }`}
-                        >
-                          <div className="text-xs text-[#666] font-semibold">{item.label}</div>
-                          <div className="text-xl font-bold text-[#8e724b] mt-2">{item.count}</div>
+                    
+                    {(() => {
+                      const getRefererCount = (refKey) => {
+                        return orders.filter(o => {
+                          if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return false;
+                          const ref = o.referer || "direct";
+                          return ref.toLowerCase() === refKey;
+                        }).length;
+                      };
+
+                      const refererItems = [
+                        { id: "naver", label: "네이버 검색", count: `${getRefererCount("naver")} 건`, active: selectedReferer === "naver" },
+                        { id: "google", label: "구글 오가닉", count: `${getRefererCount("google")} 건`, active: selectedReferer === "google" },
+                        { id: "meta", label: "메타/페이스북", count: `${getRefererCount("meta")} 건`, active: selectedReferer === "meta" },
+                        { id: "insta", label: "인스타그램", count: `${getRefererCount("insta")} 건`, active: selectedReferer === "insta" },
+                        { id: "youtube", label: "유튜브 링크", count: `${getRefererCount("youtube")} 건`, active: selectedReferer === "youtube" },
+                        { id: "kakao", label: "카카오톡 채널", count: `${getRefererCount("kakao")} 건`, active: selectedReferer === "kakao" },
+                        { id: "direct", label: "직접 접속", count: `${getRefererCount("direct")} 건`, active: selectedReferer === "direct" },
+                      ];
+
+                      return (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                          {refererItems.map((item, i) => (
+                            <div 
+                              key={i} 
+                              onClick={() => setSelectedReferer(selectedReferer === item.id ? null : item.id)}
+                              className={`p-4 rounded border cursor-pointer transition-all duration-200 ${
+                                item.active 
+                                  ? "bg-[#f4f1ea] border-[#A3845B] scale-[1.03] shadow-md" 
+                                  : "bg-[#f8f9fa] border-[#e9ecef] hover:border-[#A3845B]/40 hover:scale-[1.01]"
+                              }`}
+                            >
+                              <div className="text-xs text-[#666] font-semibold">{item.label}</div>
+                              <div className="text-xl font-bold text-[#8e724b] mt-2">{item.count}</div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      );
+                    })()}
                   </div>
                 </div>
               );
             })()}
 
-            {/* Referer drilldown log timeline */}
-            {selectedReferer === "naver" && (
+            {/* Referer drilldown log timeline (실시간 실제 유입 목록 매핑) */}
+            {selectedReferer !== null && (
               <div className="bg-white rounded-xl border border-[#dee2e6] p-6 shadow-sm space-y-4">
                 <div className="flex justify-between items-center border-b border-[#f1f3f5] pb-3">
-                  <h4 className="text-lg font-bold text-[#8e724b]">네이버 검색 유입 상세 내역</h4>
+                  <h4 className="text-lg font-bold text-[#8e724b]">
+                    {(() => {
+                      const labels = {
+                        naver: "네이버 검색",
+                        google: "구글 오가닉",
+                        meta: "메타/페이스북",
+                        insta: "인스타그램",
+                        youtube: "유튜브 링크",
+                        kakao: "카카오톡 채널",
+                        direct: "직접 접속"
+                      };
+                      return labels[selectedReferer] || selectedReferer;
+                    })()} 유입 상세 내역
+                  </h4>
                   <button onClick={() => setSelectedReferer(null)} className="text-xs text-[#888] hover:text-[#212529] font-bold">닫기</button>
                 </div>
-                <div className="overflow-hidden rounded-lg border border-[#dee2e6]">
-                  <table className="w-full text-left border-collapse text-sm">
-                    <thead>
-                      <tr className="bg-[#f1f3f5] border-b border-[#dee2e6] text-xs text-[#495057] font-bold">
-                        <th className="p-3">방문 시각</th>
-                        <th className="p-3">방문자명</th>
-                        <th className="p-3">검색 유입 키워드</th>
-                        <th className="p-3">상세 Referer 주소 (URL)</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#dee2e6] text-[#495057]">
-                      {[
-                        { name: "김지민", keyword: "평생사주 잘보는곳", url: "m.search.naver.com/search.naver?query=평생사주", time: "2026-07-16 11:24" },
-                        { name: "이수현", keyword: "혜안당 신년운세", url: "search.naver.com/search.naver?query=혜안당", time: "2026-07-16 10:15" },
-                        { name: "박태양", keyword: "오늘의 일진 개운법", url: "search.naver.com/search.naver?query=개운법", time: "2026-07-16 09:42" },
-                        { name: "정다은", keyword: "속궁합 재회운 분석", url: "m.search.naver.com/search.naver?query=재회운", time: "2026-07-16 08:05" },
-                        { name: "최성우", keyword: "토정비결 2026 무료", url: "search.naver.com/search.naver?query=토정비결", time: "2026-07-16 07:12" }
-                      ].map((log, idx) => (
-                        <tr key={idx} className="hover:bg-[#f8f9fa] transition-all">
-                          <td className="p-3 font-semibold">{log.time}</td>
-                          <td className="p-3">{log.name}</td>
-                          <td className="p-3">
-                            <span className="bg-[#A3845B]/10 text-[#8e724b] px-2 py-0.5 rounded font-bold text-xs">
-                              {log.keyword}
-                            </span>
-                          </td>
-                          <td className="p-3 text-xs text-[#888] truncate max-w-xs">{log.url}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
 
-                {/* 네이버 검색 유입 연계 실시간 주문내역 테이블 추가 */}
-                <div className="pt-4 border-t border-[#dee2e6] mt-6 text-left">
+                <div className="pt-2 border-t border-[#dee2e6] text-left">
                   <div className="flex justify-between items-center mb-3">
-                    <h5 className="text-sm font-extrabold text-[#8e724b]">🛍️ 네이버 검색 유입 고객 결제/주문 내역</h5>
-                    <span className="text-[10px] text-[#666] font-bold">네이버 유입 고객 목록 자동 매핑</span>
+                    <h5 className="text-sm font-extrabold text-[#8e724b]">🛍️ 실제 결제/주문 현황 연동 목록</h5>
+                    <span className="text-[10px] text-[#666] font-bold">선택 채널 유입 주문 건 목록 자동 매핑</span>
                   </div>
                   <div className="overflow-hidden rounded-lg border border-[#dee2e6]">
                     <table className="w-full text-left border-collapse text-xs">
@@ -2872,6 +2867,7 @@ export default function AdminPage() {
                         <tr className="bg-[#f8f9fa] border-b border-[#dee2e6] text-[#495057] font-extrabold">
                           <th className="p-3">주문번호</th>
                           <th className="p-3">고객명</th>
+                          <th className="p-3">연락처</th>
                           <th className="p-3">상품명</th>
                           <th className="p-3">결제금액</th>
                           <th className="p-3">결제상태</th>
@@ -2880,22 +2876,21 @@ export default function AdminPage() {
                       </thead>
                       <tbody className="divide-y divide-[#dee2e6] text-[#495057]">
                         {(() => {
-                          // Match simulated user names to display actual active orders
-                          const naverNames = ["홍길동", "송혜교", "이영희"];
-                          const naverOrders = orders.filter(o => naverNames.includes(o.name));
+                          const matchedOrders = orders.filter(o => (o.referer || "direct").toLowerCase() === selectedReferer);
                           
-                          if (naverOrders.length === 0) {
+                          if (matchedOrders.length === 0) {
                             return (
                               <tr>
-                                <td colSpan="6" className="p-3 text-center text-[#888] italic">조회 조건에 부합하는 네이버 유입 주문 데이터가 존재하지 않습니다.</td>
+                                <td colSpan="7" className="p-3 text-center text-[#888] italic">조회 조건에 부합하는 유입 주문 데이터가 존재하지 않습니다.</td>
                               </tr>
                             );
                           }
                           
-                          return naverOrders.map((order, idx) => (
+                          return matchedOrders.map((order, idx) => (
                             <tr key={idx} className="hover:bg-[#f8f9fa] transition-all">
                               <td className="p-3 font-semibold text-[#212529]">{order.id}</td>
                               <td className="p-3 font-extrabold text-[#8e724b]">{order.name}</td>
+                              <td className="p-3 font-medium">{order.phone}</td>
                               <td className="p-3 font-medium">{order.productName}</td>
                               <td className="p-3 font-bold text-[#212529]">{order.amount?.toLocaleString()} 원</td>
                               <td className="p-3">

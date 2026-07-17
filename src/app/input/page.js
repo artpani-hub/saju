@@ -777,7 +777,8 @@ function InputFormContent() {
         day: formData.birthDay,
         hour: formData.birthHour,
         worryText: formData.worryText || "오늘의 운세",
-        reportGrade: reportGrade
+        reportGrade: reportGrade,
+        referer: (typeof window !== "undefined" ? localStorage.getItem("hyeandang_referer") : null) || "direct"
       };
 
         const existingStr = localStorage.getItem("hyeandang_orders");
@@ -1126,7 +1127,8 @@ function InputFormContent() {
         day: String(formData.birthDay),
         hour: formData.birthHour,
         worryText: formData.worryText || "오늘의 운세",
-        reportGrade: reportGrade
+        reportGrade: reportGrade,
+        referer: (typeof window !== "undefined" ? localStorage.getItem("hyeandang_referer") : null) || "direct"
       };
 
       const existingStr = localStorage.getItem("hyeandang_orders");

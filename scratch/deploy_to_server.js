@@ -73,6 +73,7 @@ conn.on('ready', () => {
   conn.exec(backupCmd, (backupErr, stream) => {
     if (backupErr) console.warn('Database backup command error:', backupErr);
     
+    stream.resume(); // close 이벤트가 무한 대기하지 않고 즉시 발생하도록 보장
     stream.on('close', () => {
       console.log('Remote backup completed.');
       
@@ -111,21 +112,35 @@ conn.on('ready', () => {
         function uploadNext() {
           if (index >= uploadQueue.length) {
             console.log('All files uploaded successfully!');
-            // PM2 재기동 실행
-            console.log('Restarting saju-app via PM2...');
-            conn.exec('pm2 restart saju-app', (execErr, stream) => {
-              if (execErr) {
-                console.error('PM2 restart error:', execErr);
-                conn.end();
-                return;
+            
+            // 원격 서버 DB 스키마 동기화 (Prisma db push)
+            console.log('Syncing database schema on remote server...');
+            conn.exec(`cd ${remoteRoot} && npx prisma db push`, (dbErr, dbStream) => {
+              if (dbErr) {
+                console.error('Remote DB push error:', dbErr);
               }
-              stream.on('close', (code) => {
-                console.log(`PM2 restart finished with code: ${code}`);
-                conn.end();
-              }).on('data', (data) => {
-                console.log('PM2 STDOUT: ' + data);
-              }).stderr.on('data', (data) => {
-                console.log('PM2 STDERR: ' + data);
+              
+              dbStream.resume();
+              dbStream.on('close', (dbCode) => {
+                console.log(`Remote database sync finished with code: ${dbCode}`);
+                
+                // PM2 재기동 실행
+                console.log('Restarting saju-app via PM2...');
+                conn.exec('pm2 restart saju-app', (execErr, stream) => {
+                  if (execErr) {
+                    console.error('PM2 restart error:', execErr);
+                    conn.end();
+                    return;
+                  }
+                  stream.on('close', (code) => {
+                    console.log(`PM2 restart finished with code: ${code}`);
+                    conn.end();
+                  }).on('data', (data) => {
+                    console.log('PM2 STDOUT: ' + data);
+                  }).stderr.on('data', (data) => {
+                    console.log('PM2 STDERR: ' + data);
+                  });
+                });
               });
             });
             return;

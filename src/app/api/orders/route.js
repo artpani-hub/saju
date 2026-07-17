@@ -301,6 +301,7 @@ export async function GET(req) {
         day: String(user?.birthDay || ""),
         hour: user?.birthHour || "",
         worryText: user?.worryText || "",
+        referer: order.referer || "direct",
         histories: latestReport?.histories || []
       };
     });
@@ -315,7 +316,7 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     const newOrderData = await req.json();
-    const { name, email, phone, amount, status, gender, calendar, year, month, day, hour, worryText } = newOrderData;
+    const { name, email, phone, amount, status, gender, calendar, year, month, day, hour, worryText, referer } = newOrderData;
 
     if (!phone || !name) {
       return NextResponse.json({ success: false, error: "이름과 연락처는 필수 입력입니다." }, { status: 400 });
@@ -349,7 +350,8 @@ export async function POST(req) {
         data: {
           userId: user.id,
           amount: Number(amount) || 0,
-          status: status ? status.toUpperCase() : "PENDING"
+          status: status ? status.toUpperCase() : "PENDING",
+          referer: referer || "direct"
         }
       });
 
@@ -365,6 +367,7 @@ export async function POST(req) {
         phone: result.user.phone,
         amount: result.order.amount,
         status: result.order.status.toLowerCase(),
+        referer: result.order.referer || "direct",
         gender: result.report.gender,
         calendar: result.report.calendarType,
         year: String(result.report.birthYear),
