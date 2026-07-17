@@ -6793,44 +6793,129 @@ return val;
         })()}
 
         {/* -------------------- Page 15. Chapter 2 처방 (행운 요소) -------------------- */}
-        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
-          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+        {(() => {
+          const lackElName = lackEl?.name || "토";
+          const lackElCode = { "목": "木", "화": "火", "토": "土", "금": "金", "수": "水" }[lackElName] || "土";
           
-          <div className="space-y-6">
-            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
-              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
-              <span className="text-[9px] text-gray-400 font-light">Chapter 2 처방 (행운 요소)</span>
-            </div>
+          const elementsCount = sajuInfo?.elements || { 목: 0, 화: 0, 토: 0, 금: 0, 수: 0 };
+          const totalCount = elementsCount.목 + elementsCount.화 + elementsCount.토 + elementsCount.금 + elementsCount.수 || 6;
 
-            <div className="space-y-6">
-              <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A] text-center">🍀 나를 채워줄 일상의 행운 원소</h3>
-              <p className="text-xs text-gray-500 text-center">사주의 깨진 균형을 맞춰주는 색상, 장소, 소품 가이드</p>
+          const getElementBarWidth = (val) => {
+            return `${Math.max(8, Math.round((val / totalCount) * 100))}%`;
+          };
 
-              <div className="grid grid-cols-3 gap-4 text-center mt-6">
-                <div className="border border-gray-100 p-4 rounded bg-[#F9F8F6]">
-                  <span className="text-[10px] text-[#A3845B] font-bold block mb-1">행운의 퍼스널 컬러</span>
-                  <span className="text-xs font-bold text-gray-800">{curPresc.color}</span>
+          return (
+            <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+              <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+              
+              <div className="space-y-5">
+                {/* 헤더 */}
+                <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+                  <span className="text-[9px] text-gray-400 font-light">Chapter 2 처방 (행운 요소)</span>
                 </div>
-                <div className="border border-gray-100 p-4 rounded bg-[#F9F8F6]">
-                  <span className="text-[10px] text-[#A3845B] font-bold block mb-1">추천 개운 장소</span>
-                  <span className="text-[10px] font-bold text-gray-800 leading-tight block">{curPresc.space}</span>
+
+                {/* 타이틀 */}
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-gray-800 block font-myeongjo">• {name} 님의 에너지 보완 가이드 (개운 행운 원소)</span>
+                  <p className="text-[10px] text-gray-500 font-light font-sans">
+                    사주 원국의 오행 과불화 및 결핍 상태를 일상의 행운 파동을 활용해 조화롭게 처방합니다.
+                  </p>
                 </div>
-                <div className="border border-gray-100 p-4 rounded bg-[#F9F8F6]">
-                  <span className="text-[10px] text-[#A3845B] font-bold block mb-1">개운 추천 소품</span>
-                  <span className="text-[10px] font-bold text-gray-800 leading-tight block">{curPresc.item}</span>
+
+                {/* 시각화: 사주 오행 비율 인디케이터 바 */}
+                <div className="bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 space-y-3.5 shadow-inner">
+                  <span className="text-[10.5px] font-bold text-[#A3845B] font-myeongjo block text-center">📊 {name} 님의 타고난 사주 오행 밸런스 비율</span>
+                  
+                  <div className="space-y-2">
+                    {/* 목 */}
+                    <div className="flex items-center text-[9px] gap-2">
+                      <span className="w-10 text-right font-bold text-emerald-800 font-sans">목 (木)</span>
+                      <div className="flex-1 bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                        <div className="bg-emerald-600 h-full rounded-full transition-all duration-500" style={{ width: getElementBarWidth(elementsCount.목) }} />
+                      </div>
+                      <span className="w-6 text-gray-500 text-left font-light">{elementsCount.목}개</span>
+                    </div>
+
+                    {/* 화 */}
+                    <div className="flex items-center text-[9px] gap-2">
+                      <span className="w-10 text-right font-bold text-red-700 font-sans">화 (火)</span>
+                      <div className="flex-1 bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                        <div className="bg-red-500 h-full rounded-full transition-all duration-500" style={{ width: getElementBarWidth(elementsCount.화) }} />
+                      </div>
+                      <span className="w-6 text-gray-500 text-left font-light">{elementsCount.화}개</span>
+                    </div>
+
+                    {/* 토 */}
+                    <div className="flex items-center text-[9px] gap-2">
+                      <span className="w-10 text-right font-bold text-amber-600 font-sans">토 (土)</span>
+                      <div className="flex-1 bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                        <div className="bg-amber-500 h-full rounded-full transition-all duration-500" style={{ width: getElementBarWidth(elementsCount.토) }} />
+                      </div>
+                      <span className="w-6 text-gray-500 text-left font-light">{elementsCount.토}개</span>
+                    </div>
+
+                    {/* 금 */}
+                    <div className="flex items-center text-[9px] gap-2">
+                      <span className="w-10 text-right font-bold text-gray-700 font-sans">금 (金)</span>
+                      <div className="flex-1 bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                        <div className="bg-gray-400 h-full rounded-full transition-all duration-500" style={{ width: getElementBarWidth(elementsCount.금) }} />
+                      </div>
+                      <span className="w-6 text-gray-500 text-left font-light">{elementsCount.금}개</span>
+                    </div>
+
+                    {/* 수 */}
+                    <div className="flex items-center text-[9px] gap-2">
+                      <span className="w-10 text-right font-bold text-blue-700 font-sans">수 (水)</span>
+                      <div className="flex-1 bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                        <div className="bg-blue-500 h-full rounded-full transition-all duration-500" style={{ width: getElementBarWidth(elementsCount.수) }} />
+                      </div>
+                      <span className="w-6 text-gray-500 text-left font-light">{elementsCount.수}개</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 명리학적 처방 근거 */}
+                <div className="text-[10.5px] text-gray-600 leading-relaxed font-sans font-light bg-emerald-50/10 p-3.5 rounded-lg border border-emerald-100/30">
+                  귀하의 사주는 <strong>{lackElName}({lackElCode})의 기운</strong>이 {elementsCount[lackElName] === 0 ? "원국 내에 존재하지 않는 무(無)존재 상태" : `${elementsCount[lackElName]}개로 극히 취약한 상태`}입니다. 
+                  명리학에서 일상 환경 처방은 사주 내에 결여된 고유 주파수를 외부로부터 수혈하여 기류의 막힘을 풀어내고 삶의 에너지를 균형 있게 순환시키는 개운(開運)의 촉매제 역할을 수행합니다.
+                </div>
+
+                {/* 🍀 나를 채워줄 일상의 행운 원소 */}
+                <div className="space-y-2">
+                  <span className="font-myeongjo text-xs font-bold text-[#A3845B] block">• 나를 채워줄 일상의 행운 원소 ({lackElName}의 보완)</span>
+                  <div className="grid grid-cols-3 gap-3.5 text-center">
+                    <div className="border border-gray-100 p-3.5 rounded bg-[#F9F8F6] space-y-1">
+                      <span className="text-[10px] text-[#A3845B] font-bold block mb-1">행운의 퍼스널 컬러</span>
+                      <span className="text-xs font-bold text-gray-800 font-sans">{curPresc.color}</span>
+                    </div>
+                    <div className="border border-gray-100 p-3.5 rounded bg-[#F9F8F6] space-y-1">
+                      <span className="text-[10px] text-[#A3845B] font-bold block mb-1">추천 개운 장소</span>
+                      <span className="text-[10px] font-bold text-gray-800 leading-tight block font-sans">{curPresc.space}</span>
+                    </div>
+                    <div className="border border-gray-100 p-3.5 rounded bg-[#F9F8F6] space-y-1">
+                      <span className="text-[10px] text-[#A3845B] font-bold block mb-1">개운 추천 소품</span>
+                      <span className="text-[10px] font-bold text-gray-800 leading-tight block font-sans">{curPresc.item}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 행동 개운 처방 지침 */}
+                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-2.5 shadow-inner">
+                  <span className="text-[10px] font-bold text-[#C2A378] tracking-wider block font-myeongjo text-center">🧘 {name} 님을 위한 부족 오행({lackElName}) 기반 생활 행동 강령</span>
+                  <p className="text-[10.5px] text-gray-300 font-light font-sans leading-relaxed text-center font-sans">
+                    의복이나 소품(Color & Item)보다 강력한 개운은 나의 평소 행동적 무의식을 조율하는 것입니다. 
+                    <br />
+                    아래의 행동 지침을 마찰이 생기는 매 순간마다 의식적으로 상기해 보십시오.
+                    <br />
+                    <strong className="text-white block mt-1.5 font-sans">"{curPresc.action}"</strong>
+                  </p>
                 </div>
               </div>
-
-              <div className="border border-dashed border-[#A3845B]/30 p-5 rounded-lg bg-[#A3845B]/5 space-y-2 mt-6">
-                <span className="text-xs font-bold text-[#A3845B] block">• 행동 개운 처방 지침</span>
-                <p className="text-[11px] text-gray-700 leading-relaxed">
-                  {curPresc.action}
-                </p>
-              </div>
+              <div className="text-right text-[9px] text-gray-300 pt-2">Page 16 / 22</div>
             </div>
-          </div>
-          <div className="text-right text-[9px] text-gray-300 pt-2">Page 16 / 22</div>
-        </div>
+          );
+        })()}
 
         {/* -------------------- Page 16. Chapter 3. 인생의 계절 (대운) -------------------- */}
         <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
