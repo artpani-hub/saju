@@ -5092,11 +5092,35 @@ return val;
               </p>
             </div>
 
-            <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
-              <span className="text-[10px] font-bold text-[#A3845B] block">💡 왜 그런가요? 명리 근거</span>
-              <p className="text-[10px] text-gray-500 leading-relaxed font-light">
-                {getAstroBasis("character")}
+            <div className="bg-[#A3845B]/5 p-5 rounded-xl border border-[#A3845B]/15 space-y-3">
+              <span className="text-xs font-bold text-[#A3845B] block">💡 왜 그런가요? 명리학적 해석 근거</span>
+              <p className="text-[11px] text-gray-700 leading-relaxed font-light">
+                {getAstroBasis("character")} 
+                명리학에서 태어난 날의 천간인 일간(日干)은 사주 원국의 8글자 중 나 자신의 정신과 본질적 정체성을 대표하는 가장 결정적인 좌표입니다. 
+                주변 오행들의 영향에 따라 행동 양식은 변할 수 있으나, 일간이 가진 본원적 성정과 삶을 대하는 근본적인 태도는 평생 변하지 않는 그릇의 뼈대가 됩니다.
               </p>
+            </div>
+
+            <div className="border border-dashed border-[#A3845B]/30 p-6 rounded-xl bg-[#F9F8F6] space-y-5">
+              <h4 className="text-xs font-bold text-gray-800 border-b border-[#E2DDD5]/80 pb-2.5 flex items-center gap-1.5">
+                <span>📚</span> 일간(日干)의 음양오행적 심층 분석
+              </h4>
+              <div className="space-y-4 text-xs leading-relaxed text-gray-600">
+                <div className="bg-white p-4.5 rounded-lg border border-gray-100 space-y-1.5 shadow-sm">
+                  <span className="font-bold text-[#A3845B] block text-[12px]">① 음양(陰陽)의 성향적 발현과 기류</span>
+                  <p className="font-light text-gray-600 text-[11px] leading-relaxed">
+                    귀하의 일간 기질은 음양 분류상 활발히 위로 팽창하고 솟구치려 하는 성향을 지니고 있습니다. 
+                    외부의 불필요한 간섭과 통제를 극도로 경계하며, 본인이 주체적으로 목표를 설정하고 전진할 때 삶의 행복감과 업무 몰입도가 기하급수적으로 극대화되는 명리학적 기류를 갖추고 있습니다.
+                  </p>
+                </div>
+                <div className="bg-white p-4.5 rounded-lg border border-gray-100 space-y-1.5 shadow-sm">
+                  <span className="font-bold text-[#A3845B] block text-[12px]">② 지지(일지)와의 오행 순환과 개운 구조</span>
+                  <p className="font-light text-gray-600 text-[11px] leading-relaxed">
+                    일간 아래에서 나를 든든하게 받치는 일지(日支)의 성정은 나의 내면 심리와 배우자궁, 혹은 일상에서의 잠재적 무의식을 나타냅니다. 
+                    일간과 일지가 빚어내는 오행의 순환 구조를 올바르게 통찰하고, 본인의 고집을 조절하며 유연성을 보충할 때 진정한 개운(開運)의 큰길이 비로소 열립니다.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           <div className="text-right text-[9px] text-gray-300 pt-2">Page 5 / 22</div>
@@ -5112,46 +5136,51 @@ return val;
               <span className="text-[9px] text-gray-400 font-light">나도 몰랐던 내 모습</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="border border-[#E2DDD5] p-5 rounded-lg space-y-3 bg-[#F9F8F6]/30">
-                <span className="text-[11px] bg-gray-200 text-gray-700 px-2 py-0.5 rounded font-bold">겉으로 보이는 나</span>
-                <ul className="text-[10.5px] text-gray-600 space-y-2 list-disc pl-4 leading-relaxed">
-                  <li>어려운 난관 앞에서도 늘 침착하고 이성적인 모습을 보입니다.</li>
-                  <li>책임감이 강하여 맡은 일은 어떻게든 해내려 노력합니다.</li>
-                  <li>감정을 가볍게 드러내지 않아 듬직하고 과묵하다는 평을 듣습니다.</li>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="border border-[#E2DDD5] p-6 rounded-xl space-y-4 bg-[#F9F8F6]/30 shadow-sm min-h-[220px]">
+                <span className="text-[12px] bg-gray-200 text-gray-700 px-3 py-1 rounded-full font-bold inline-block">겉으로 보이는 나의 기류</span>
+                <ul className="text-[11.5px] text-gray-600 space-y-3.5 list-disc pl-5 leading-relaxed font-light">
+                  <li>어려운 난관과 위기 상황 앞에서도 감정을 숨기고 침착하며 이성적인 면모를 보입니다.</li>
+                  <li>책임감이 대단히 강하여 자신이 직접 입 밖으로 내뱉거나 맡은 일은 반드시 매듭지으려 노력합니다.</li>
+                  <li>자신만의 명확한 도덕적 선이나 원칙이 있어, 듬직하고 흔들림이 없는 사람이라는 평가를 자주 듣습니다.</li>
                 </ul>
               </div>
 
-              <div className="border border-[#A3845B]/30 p-5 rounded-lg space-y-3 bg-[#A3845B]/5">
-                <span className="text-[11px] bg-[#A3845B] text-white px-2 py-0.5 rounded font-bold">실제 내면의 나</span>
-                <ul className="text-[10.5px] text-gray-600 space-y-2 list-disc pl-4 leading-relaxed">
-                  <li>인정받고 싶은 욕구가 타인에 비해 극도로 강한 편입니다.</li>
-                  <li>상처가 되는 말을 한 번 들으면 오랫동안 곱씹고 기억합니다.</li>
-                  <li>중요한 결정을 내리기 전, 혼자 끙끙 앓으며 고민하는 시간이 매우 깁니다.</li>
-                  <li>사람에게 큰 실망을 하면 소리 없이 완벽하게 거리를 두어 버립니다.</li>
+              <div className="border border-[#A3845B]/35 p-6 rounded-xl space-y-4 bg-[#A3845B]/5 shadow-sm min-h-[220px]">
+                <span className="text-[12px] bg-[#A3845B] text-white px-3 py-1 rounded-full font-bold inline-block">실제 내면의 나의 진짜 속마음</span>
+                <ul className="text-[11.5px] text-gray-600 space-y-3.5 list-disc pl-5 leading-relaxed font-light">
+                  <li>인정받고 스스로의 존재 가치를 증명해내고자 하는 지향성이 타인에 비해 대단히 강합니다.</li>
+                  <li>타인의 사소한 비판이나 지나가는 부정적 피드백에도 크게 상처를 받으며 오랫동안 곱씹습니다.</li>
+                  <li>중요한 최종 결정이나 선택을 내리기 전, 겉으로 내색하지 않고 혼자 깊은 번민에 잠깁니다.</li>
+                  <li>인간관계에서 깊은 실망을 겪을 경우, 분쟁을 피하기 위해 소리 없이 완벽하게 관계의 인연을 차단합니다.</li>
                 </ul>
               </div>
             </div>
 
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold text-gray-800">• 주변 사람들이 나를 자주 오해하는 부분</h4>
-              <p className="text-[11px] text-gray-600 leading-relaxed">
-                "무관심하거나 냉정한 것이 결코 아닙니다. 단지 내 감정과 진심을 표현하는 서투른 서술 방식을 취하고 있을 뿐입니다." 
-                겉으로 비치는 산만하거나 덤덤한 분위기와 달리, 마음속에서는 끊임없이 사람과 상황을 관조하며 깊이 있게 번민하고 있음을 주위에서는 잘 알지 못합니다.
+            <div className="space-y-3.5 bg-[#F9F8F6]/50 p-5 rounded-xl border border-gray-100">
+              <h4 className="text-xs font-bold text-gray-800 flex items-center gap-1">• 주변 사람들이 나를 자주 오해하는 대표적 상황</h4>
+              <p className="text-[11.5px] text-gray-600 leading-relaxed font-light">
+                &ldquo;결코 냉정하거나 다른 이들에게 무관심한 성향이 아닙니다. 단지 내 속마음과 진짜 감정을 겉으로 유연하게 꺼내는 표현 방식이 서툴 뿐입니다.&rdquo; 
+                겉으로 비치는 산만하거나 덤덤한 분위기와 달리, 마음속에서는 끊임없이 사람과 상황을 관조하며 깊이 있게 번민하고 있음을 주위에서는 잘 알지 못하므로 깊이 있는 소통의 창구를 조금씩 열어두는 지혜가 필요합니다.
               </p>
             </div>
 
-            <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
-              <span className="text-[10px] font-bold text-[#A3845B] block">💡 왜 그런가요? 명리 근거</span>
-              <p className="text-[10px] text-gray-500 leading-relaxed font-light">
-                귀하의 사주는 겉을 담당하는 천간과 속을 지배하는 지지의 십신 성질이 대조를 이루며 일어나는 복합적인 이중적 텐션에 기반합니다.
-              </p>
+            <div className="bg-[#A3845B]/5 p-6 rounded-xl border border-[#A3845B]/20 space-y-4">
+              <span className="text-xs font-bold text-[#A3845B] block border-b border-[#A3845B]/20 pb-2">💡 왜 그런가요? 천간(天干)과 지지(地支)의 이중 텐션 구조</span>
+              <div className="text-[11px] text-gray-700 leading-relaxed font-light space-y-2.5">
+                <p>
+                  귀하의 사주는 대외적인 활동 에너지와 외향적 면모를 주관하는 하늘의 기운인 **천간(天干)**과, 내밀한 심리와 실제 현실의 삶을 좌우하는 땅의 기운인 **지지(地支)**의 십신(十神)적 속성이 서로 상반되는 구성을 이루고 있어 발생하는 아름다운 이중적 조화를 내포하고 있습니다. 
+                </p>
+                <p>
+                  천간에 흐르는 강점 오행인 <strong>&lsquo;{excessEl.name}&rsquo;</strong>의 기류는 주변인들에게 강직하고 실수가 없는 모범적인 겉모습으로 투영되지만, 지지 속에서 나를 감싸는 잠재의식과 결핍 오행인 <strong>&lsquo;{lackEl.name}&rsquo;</strong>의 상호작용은 마음 한구석의 연약함과 고독감을 유발합니다. 이 두 기운의 긴장(Tension) 상태를 깊이 이해하고 스스로를 다독여줄 때, 겉과 속의 에너지가 비로소 하나로 상생하며 정신적인 평온과 진정한 발복을 이끌어내게 됩니다.
+                </p>
+              </div>
             </div>
           </div>
           <div className="text-right text-[9px] text-gray-300 pt-2">Page 6 / 22</div>
         </div>
 
-        {/* -------------------- Page 6. 성향 진단 (강점/약점) -------------------- */}
+        {/* -------------------- Page 7. 성향 진단 (강점/약점) -------------------- */}
         <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
           <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
           
@@ -5161,27 +5190,111 @@ return val;
               <span className="text-[9px] text-gray-400 font-light">성향 진단 (강점과 약점)</span>
             </div>
 
-            <div className="space-y-4">
-              <span className="text-xs font-bold text-emerald-700 block">■ 나의 타고난 무기 (강점)</span>
-              <p className="text-[11px] text-gray-600 leading-relaxed">
-                귀하의 사주 원국에서 가장 활성화된 강점은 독립적인 결단력과 기획력입니다. 남들이 불가능하다고 생각할 때 새로운 방향을 제시하며, 
-                한번 납득한 일에 대해서는 끈기 있게 돌파해 나가는 추진 에너지를 보유하고 있습니다.
-              </p>
-            </div>
+            {/* 동적 오행 강점 및 약점 해석 엔진 */}
+            {(() => {
+              // 1. 일간별 맞춤형 강점
+              const stemStrengths = {
+                "甲": "하늘로 솟구치는 거목(소나무)처럼 어떠한 난관 앞에서도 꺾이지 않고 본인 주도하에 새로운 아이디어를 창조하고 개척해 나가는 돌파 능력이 탁월합니다.",
+                "乙": "바람에 흔들려도 살아남는 들꽃(넝쿨)처럼 현실적인 생명력과 친화력이 돋보이며, 주변인들과의 원활한 네트워킹과 기막힌 융통성으로 생존을 확보합니다.",
+                "丙": "하늘의 태양처럼 만물에 긍정적인 에너지를 전파하며, 솔직담백하고 화사한 표현력으로 무리를 이끌거나 나를 어필하는 대외적 설득력이 일품입니다.",
+                "丁": "밤하늘을 비추는 촛불(등대)처럼 은근하고 오래가는 내면의 열정이 가득하며, 사물을 매우 정밀하고 정성스럽게 다듬고 설계하는 정교한 디테일이 강점입니다.",
+                "戊": "거대한 바위산처럼 묵직한 신용과 책임감을 보유하고 있으며, 사소한 흔들림에 연연하지 않고 판 전체를 지탱하며 약한 자를 안아주는 실속 리더의 그릇입니다.",
+                "己": "새싹을 기르는 정원의 흙처럼 꼼꼼한 실무력과 자상한 이타심이 돋보입니다. 한 번 맡은 역할에 대해서는 내실을 깊숙이 다지고 기초를 완벽하게 유지합니다.",
+                "庚": "강력한 원석의 기상처럼 뛰어난 의리와 과감한 돌파력이 핵심입니다. 흐지부지 끄는 상황을 과감히 종결짓고 추진력을 확보하는 과감함이 발군입니다.",
+                "辛": "빛나는 다이아몬드(칼날)처럼 고결한 품위와 천재적인 미적 직관을 지닙니다. 본인의 전문 영역에서 완벽한 퀄리티와 날카로운 통찰력으로 타의 추종을 불허합니다.",
+                "壬": "넓은 바다처럼 지혜가 깊고 판세를 관조하는 시야가 넓습니다. 겉으로는 유연하고 유순해 보이지만 머릿속으로는 거대한 청사진을 그리고 움직이는 리더형 기류입니다.",
+                "癸": "대지를 적시는 단비처럼 기발하고 창의적인 아이디어와 침투력이 뛰어납니다. 주변의 분위기와 타인의 마음을 누구보다 빠르고 예민하게 캐치하여 기획에 담아냅니다."
+              };
 
-            <div className="space-y-4">
-              <span className="text-xs font-bold text-red-600 block">■ 나도 모르게 방전되는 이유 (그늘과 약점)</span>
-              <p className="text-[11px] text-gray-600 leading-relaxed">
-                오행 중 부족한 &lsquo;{lackEl.name}&rsquo; 기운과 과열된 &lsquo;{excessEl.name}&rsquo; 기운의 충돌로 인해, 과도하게 긴장하거나 에너지를 일시에 소모하여 
-                번아웃에 직면하기 쉽습니다. 일의 마무리가 흐려지거나, 조급한 마음에 쉽게 끈기가 소진되는 것이 취약 구간입니다.
-              </p>
-            </div>
+              // 2. 결핍 오행별 맞춤형 약점 (방전의 원인)
+              const lackWeaknesses = {
+                "목": "사주 원국 내에 새로운 시작을 밀어붙이는 목(木) 기운이 부족하여, 결단을 주저하고 시작 단계에서 기가 쉽게 꺾이거나 조급한 마음에 에너지가 순식간에 소진되어 번아웃에 노출되기 쉽습니다.",
+                "화": "열정을 발산하는 화(火) 기운의 결핍으로 인해, 속마음을 제대로 분출하지 못하고 감정을 묵히다 마음의 피로감을 느낍니다. 한번 의욕을 상실하면 만사 귀찮아지는 무기력 상태에 주의해야 합니다.",
+                "토": "중심을 조율하는 토(土) 기운이 고립되어 있어, 감정의 흔들림이 잦고 현실적 안정 장치를 제대로 수성하지 못해 불안해합니다. 쓸데없이 에너지를 흩뿌리고 방전되는 취약성이 있습니다.",
+                "금": "맺고 끊는 결단의 금(金) 기운이 부족하여, 나를 갉아먹는 관계나 이미 효율이 떨어진 일에 단호히 거절을 행사하지 못합니다. 과한 고민과 관계성 스트레스로 인해 멘탈이 방전되기 십상입니다.",
+                "수": "유연성과 쉼을 뜻하는 수(水) 기운이 메말라 있어, 생각의 브레이크가 걸리지 않고 한 가지 생각에 꽂히면 밤새 끙끙 앓는 등 뇌의 정체 현상이 심해져 쉽게 만성 피로를 느낍니다."
+              };
 
-            <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
-              <span className="text-[10px] font-bold text-[#A3845B] block">💡 왜 그런가요? 명리 근거</span>
-              <p className="text-[10px] text-gray-500 leading-relaxed font-light">
-                {getAstroBasis("strength")} 그리고 {getAstroBasis("lacks")}
-              </p>
+              const userStrength = stemStrengths[dayStem] || stemStrengths["戊"];
+              const userWeakness = lackWeaknesses[lackEl.name] || lackWeaknesses["토"];
+
+              return (
+                <div className="space-y-6">
+                  {/* 시각화: 오행 에너지 대비 밸런스 패널 */}
+                  <div className="bg-[#F9F8F6] p-5 rounded-xl border border-gray-200 space-y-4 shadow-sm">
+                    <span className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                      <span>📊</span> 실시간 사주 에너지 밸런스 현황
+                    </span>
+                    <div className="grid grid-cols-2 gap-6 text-xs">
+                      {/* 강점 오행 */}
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center font-bold">
+                          <span className="text-red-700">과부하 오행: {excessEl.name} ({excessEl.val}개)</span>
+                          <span className="bg-red-100 text-red-700 text-[9px] px-2 py-0.5 rounded-full font-bold">과열 경보</span>
+                        </div>
+                        <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden border border-gray-200">
+                          <div className="bg-red-500 h-full rounded-full transition-all duration-500" style={{ width: "92%" }} />
+                        </div>
+                        <p className="text-[9.5px] text-gray-500 leading-normal font-light">
+                          본래 지닌 에너지가 가득 찬 포화 상태로, 성급하고 조급한 감정 과열을 유발하기 쉽습니다.
+                        </p>
+                      </div>
+
+                      {/* 결핍 오행 */}
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center font-bold">
+                          <span className="text-blue-700">결핍 오행: {lackEl.name} ({lackEl.val}개)</span>
+                          <span className="bg-blue-100 text-blue-700 text-[9px] px-2 py-0.5 rounded-full font-bold">방전 취약</span>
+                        </div>
+                        <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden border border-gray-200">
+                          <div className="bg-blue-400 h-full rounded-full transition-all duration-500" style={{ width: "15%" }} />
+                        </div>
+                        <p className="text-[9.5px] text-gray-500 leading-normal font-light">
+                          원국에 극도로 결여된 기운으로, 육체와 멘탈의 자기 브레이크 제어력이 약화되는 구간입니다.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-emerald-50/20 p-5 rounded-xl border border-emerald-100/80 space-y-2.5 shadow-sm">
+                    <span className="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
+                      <span>🎯</span> [개인화] 귀하의 타고난 무기 (사주 강점)
+                    </span>
+                    <p className="text-[11.5px] text-gray-700 leading-relaxed font-light">
+                      귀하의 타고난 본질 좌표인 일간 <strong>&lsquo;{dayStem}&rsquo;</strong>을 바탕으로 분석한 핵심 무기는 다음과 같습니다. 
+                      {userStrength} 이 에너지가 사주 속 강점 오행인 <strong>&lsquo;{excessEl.name}&rsquo;</strong>의 발현과 톱니바퀴처럼 맞물릴 때, 어떠한 인생 풍파도 유연하고 강인하게 헤쳐 나가는 추진력을 행사할 수 있습니다.
+                    </p>
+                  </div>
+
+                  <div className="bg-red-50/20 p-5 rounded-xl border border-red-100/80 space-y-2.5 shadow-sm">
+                    <span className="text-xs font-bold text-red-800 flex items-center gap-1.5">
+                      <span>⚠️</span> [개인화] 나도 모르게 방전되는 이유 (그늘과 약점)
+                    </span>
+                    <p className="text-[11.5px] text-gray-700 leading-relaxed font-light">
+                      귀하의 사주 밸런스 중 가장 취약한 지점은 결핍 오행인 <strong>&lsquo;{lackEl.name}&rsquo; 기운</strong>의 지연 작용에서 비롯됩니다. 
+                      {userWeakness} 나도 모르는 사이에 주변의 기대를 모두 어깨에 짊어지고 한 번에 에너지를 발산하려 하는 성향을 제어하는 훈련이 절실합니다.
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
+
+            <div className="bg-[#A3845B]/5 p-6 rounded-xl border border-[#A3845B]/20 space-y-4">
+              <div className="flex justify-between items-center border-b border-[#A3845B]/20 pb-2">
+                <span className="text-xs font-bold text-[#A3845B] flex items-center gap-1.5">
+                  <span>💡</span> 명리학적 오행 구조 진단 소견서
+                </span>
+                <span className="text-[9px] text-[#A3845B]/60 tracking-widest font-myeongjo">慧眼堂 寶鑑 秘策</span>
+              </div>
+              <div className="text-[11px] text-gray-700 leading-relaxed font-light space-y-2.5">
+                <p>
+                  본 성향 진단 결과는 귀하의 태어난 년, 월, 일, 시의 8글자가 갖는 오행 분포 극단성과 일간의 조합을 크로스 분석한 명리학적 팩트입니다. 
+                  사주 원국 내에 <strong>&lsquo;{excessEl.name}&rsquo;</strong> 오행이 가득 분포({excessEl.val}개)하여 넘치는 열정과 추진력을 주지만, 이를 지탱해줄 <strong>&lsquo;{lackEl.name}&rsquo;</strong> 기운이 {lackEl.val}개로 지나치게 결핍됨에 따라 행동의 제동이나 브레이크가 늦게 작동하게 됩니다. 
+                </p>
+                <p>
+                  강점의 과열이 곧 약점의 방전으로 이어지는 전형적인 **'과부하 사주 밸런스'**를 띠고 있으므로, 부족한 기운인 {lackEl.name}의 요소를 적극적·의도적으로 수혈하여 마음에 제동 장치를 달아줄 때, 비로소 타고난 거대한 무기들이 무너지지 않고 삶의 정상 궤도에서 온전히 활성화될 수 있습니다.
+                </p>
+              </div>
             </div>
           </div>
           <div className="text-right text-[9px] text-gray-300 pt-2">Page 7 / 22</div>
