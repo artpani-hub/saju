@@ -4248,8 +4248,8 @@ return val;
   const handlePortonePayment = async () => {
     if (typeof window === "undefined") return;
 
-    const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "store-312155f8-f523-4067-a568-285c7bbec6e0";
-    const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "";
+    const impCode = process.env.NEXT_PUBLIC_PORTONE_IMP_CODE || "imp00000000";
+    const pgCode = process.env.NEXT_PUBLIC_PORTONE_PG || "html5_inicis";
 
     // 결제 성공 및 리다이렉트 복귀용 이메일, 전화번호 복원
     let resolvedEmail = emailParam;
@@ -4276,21 +4276,21 @@ return val;
 
     const currentGrade = reportGrade === "free" ? "sms" : (reportGrade || "premium");
 
-    // 로컬 환경 혹은 개발 테스트를 위해 채널 키가 없으면 바로 잠금 해제
-    if (!channelKey) {
-      alert("[개발자 테스트 안내] V2 결제 채널 키가 지정되지 않아 모의 결제를 즉시 완료합니다.\n\n확인을 누르시면 결제완료 처리되고 상세 보고서 잠금이 풀립니다.");
+    // 로컬 환경 혹은 개발 테스트를 위해 가맹점 코드가 없으면 바로 잠금 해제
+    if (impCode === "imp00000000") {
+      alert("[개발자 테스트 안내] 테스트 가맹점 코드(imp00000000)가 감지되어 모의 결제를 즉시 완료합니다.\n\n확인을 누르시면 결제완료 처리되고 상세 보고서 잠금이 풀립니다.");
       setIsPaid(true);
       await updateLocalStorageOrderToPaid(currentGrade, `payment_mock_${new Date().getTime()}`);
       return;
     }
 
-    if (typeof window === "undefined" || !window.PortOne) {
+    if (typeof window === "undefined" || !window.IMP) {
       alert("결제 모듈이 아직 로드되지 않았습니다. 인터넷 연결을 확인하시거나, 브라우저의 광고 차단 확장 프로그램(AdBlock 등)이 활성화되어 있다면 해제한 후 새로고침(F5)을 해주세요.");
       return;
     }
 
     try {
-      const PortOne = window.PortOne;
+      const IMP = window.IMP;
 
       const queryParams = new URLSearchParams(window.location.search);
       if (resolvedEmail) queryParams.set("email", resolvedEmail);
@@ -4390,24 +4390,20 @@ return val;
         console.error("임시 정보 백업 실패:", tempErr);
       }
 
-      PortOne.requestPayment({
-        storeId,
-        channelKey,
-        paymentId: `payment_${new Date().getTime()}`,
-        orderName: paymentTitle,
-        totalAmount: amount,
-        currency: "KRW",
-        payMethod: "CARD",
-        redirectUrl: redirectUrl,
-        redirectUrlType: "PAGELINK",
-        appScheme: "artpanisaju",
-        customer: {
-          fullName: name,
-          phoneNumber: resolvedPhone || "010-0000-0000",
-          email: resolvedEmail || "today_sms@hyeandang.com",
-        },
-      }).then(function (rsp) {
-        if (rsp.code === undefined) {
+      IMP.init(impCode);
+
+      IMP.request_pay({
+        pg: pgCode,
+        pay_method: "card",
+        merchant_uid: `payment_${new Date().getTime()}`,
+        name: paymentTitle,
+        amount: amount,
+        buyer_name: name,
+        buyer_tel: resolvedPhone || "010-0000-0000",
+        buyer_email: resolvedEmail || "today_sms@hyeandang.com",
+        m_redirect_url: redirectUrl
+      }, function (rsp) {
+        if (rsp.success) {
           // 결제 성공 시 1.8초 동안 만세력 정밀 보조 빌드 애니메이션 시작
           setIsProcessing(true);
           setProgress(0);
@@ -4420,7 +4416,7 @@ return val;
               setTimeout(async () => {
                 setIsProcessing(false);
                 setIsPaid(true);
-                await updateLocalStorageOrderToPaid(currentGrade, rsp.paymentId);
+                await updateLocalStorageOrderToPaid(currentGrade, rsp.imp_uid);
 
                 // URL을 업데이트하여 reportGrade가 결제 등급(sms 등)으로 적용되도록 리다이렉트
                 const url = new URL(window.location.href);
@@ -4502,7 +4498,7 @@ return val;
                       }),
                     });
                   } catch (mailErr) {
-                    console.error("결제 후 이메일 전송 실패:", mailErr);
+                    console.error("주문 생성 후 이메일 전송 실패:", mailErr);
                   }
                 }
 
@@ -4528,14 +4524,15 @@ return val;
                       partnerDay: String(partnerDay),
                       partnerHour: partnerHour,
                       gunghapType: gunghapType,
-                      email: targetEmail,
+                      email: targetEmail || "today_sms@hyeandang.com",
                       phone: targetPhone
                     });
 
                     const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
-                    const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=${reportGrade}&unlock=true`;
-                    const smsContent = `[혜안당 명리연구소] ${name} 님, 주문하신 정통 사주 분석이 완료되었습니다.\n\n적어주신 이메일(${targetEmail || "지정 이메일"})로 상세 보감 PDF가 전송되었으며, 아래 온라인 보감 링크로도 즉시 열람이 가능합니다.\n\n▶ 결과 보기: ${mobileResultUrl}\n\n감사합니다.`;
-
+                    const resultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=${reportGrade}&unlock=true`;
+                    
+                    const smsText = `[혜안당 명리연구소] ${name} 님, 주문하신 [정통 사주 풀이 보고서] 분석이 무사히 완료되었습니다.\n\n아래의 온라인 결과 보감 링크를 통해 즉시 확인해 보실 수 있습니다.\n\n▶ 모바일 결과 보기: ${resultUrl}\n\n귀하의 앞날에 늘 지혜의 빛이 함께하기를 기원합니다. 감사합니다.`;
+                    
                     await fetch("/api/sms", {
                       method: "POST",
                       headers: {
@@ -4543,27 +4540,28 @@ return val;
                       },
                       body: JSON.stringify({
                         receiver: targetPhone,
-                        msg: smsContent,
+                        msg: smsText,
                         title: "[혜안당 사주분석]"
                       }),
                     });
                   } catch (smsErr) {
-                    console.error("결제 후 SMS 문자 전송 실패:", smsErr);
+                    console.error("주문 완료 SMS 발송 실패:", smsErr);
                   }
                 }
-              }, 300);
+              }, 1800);
             } else {
               setProgress(currentProgress);
             }
-          }, 150);
+          }, 180);
         } else {
-          alert(`결제에 실패하였습니다. 에러 내용: ${rsp.message}`);
+          alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
         }
       });
     } catch (err) {
       alert(`결제 모듈 실행 중 오류가 발생했습니다: ${err.message}`);
     }
   };
+
 
   const handleUpgradePayment = () => {
     handleUpgradeFromSms("deep", 15000);
@@ -11327,7 +11325,7 @@ return val;
   return (
     <div className="min-h-screen hyeandang-traditional-bg text-[#2C2C2C] py-10 px-4 md:py-16 print:bg-white print:py-0 print:px-0">
       <Script 
-        src="https://cdn.portone.io/v2/browser-sdk.js" 
+        src="https://cdn.iamport.kr/v1/iamport.js" 
         strategy="afterInteractive"
       />
 
