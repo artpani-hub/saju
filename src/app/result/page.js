@@ -6358,49 +6358,69 @@ return val;
                 </div>
 
                 {/* 1. 나에게 약이 되고 힘이 되는 사람 (상생의 에너지) */}
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <span className="text-xs font-bold text-emerald-800 block flex items-center gap-1.5 font-myeongjo">🟢 1. 나에게 약이 되고 힘이 되는 사람 (상생과 조화의 파트너)</span>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div className="bg-emerald-50/30 p-3.5 rounded-lg border border-emerald-100/80 space-y-1.5">
-                      <div className="flex justify-between items-center border-b border-emerald-100 pb-1">
-                        <strong className="text-[11px] text-emerald-900 font-semibold">{currentRel.good1.title}</strong>
-                        <span className="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full font-light font-sans">{currentRel.good1.element}</span>
+                  <div className="space-y-2.5">
+                    {/* Good Item 1 */}
+                    <div className="bg-emerald-50/30 p-4 rounded-lg border border-emerald-100/80 flex flex-col md:flex-row md:items-center gap-4">
+                      <div className="md:w-1/4 flex flex-col justify-center border-b md:border-b-0 md:border-r border-emerald-200/80 pb-2 md:pb-0 md:pr-4 min-w-[200px] shrink-0">
+                        <div className="flex justify-between items-center">
+                          <strong className="text-[11px] text-emerald-900 font-semibold">{currentRel.good1.title}</strong>
+                          <span className="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full font-light font-sans">{currentRel.good1.element}</span>
+                        </div>
                       </div>
-                      <p className="text-[10px] text-emerald-800 font-bold font-sans">{currentRel.good1.meaning}</p>
-                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentRel.good1.effect}</p>
+                      <div className="md:w-3/4 space-y-1">
+                        <p className="text-[10px] text-emerald-800 font-bold font-sans">{currentRel.good1.meaning}</p>
+                        <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentRel.good1.effect}</p>
+                      </div>
                     </div>
 
-                    <div className="bg-emerald-50/30 p-3.5 rounded-lg border border-emerald-100/80 space-y-1.5">
-                      <div className="flex justify-between items-center border-b border-emerald-100 pb-1">
-                        <strong className="text-[11px] text-emerald-900 font-semibold">{currentRel.good2.title}</strong>
-                        <span className="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full font-light font-sans">{currentRel.good2.element}</span>
+                    {/* Good Item 2 */}
+                    <div className="bg-emerald-50/30 p-4 rounded-lg border border-emerald-100/80 flex flex-col md:flex-row md:items-center gap-4">
+                      <div className="md:w-1/4 flex flex-col justify-center border-b md:border-b-0 md:border-r border-emerald-200/80 pb-2 md:pb-0 md:pr-4 min-w-[200px] shrink-0">
+                        <div className="flex justify-between items-center">
+                          <strong className="text-[11px] text-emerald-900 font-semibold">{currentRel.good2.title}</strong>
+                          <span className="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full font-light font-sans">{currentRel.good2.element}</span>
+                        </div>
                       </div>
-                      <p className="text-[10px] text-emerald-800 font-bold font-sans">{currentRel.good2.meaning}</p>
-                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentRel.good2.effect}</p>
+                      <div className="md:w-3/4 space-y-1">
+                        <p className="text-[10px] text-emerald-800 font-bold font-sans">{currentRel.good2.meaning}</p>
+                        <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentRel.good2.effect}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 {/* 2. 나를 지치게 하고 독이 되는 사람 (상극의 에너지) */}
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <span className="text-xs font-bold text-red-700 block flex items-center gap-1.5 font-myeongjo">🔴 2. 나를 지치게 하고 독이 되는 사람 (상극과 소진의 관계)</span>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div className="bg-red-50/20 p-3.5 rounded-lg border border-red-100/50 space-y-1.5">
-                      <div className="flex justify-between items-center border-b border-red-100 pb-1">
-                        <strong className="text-[11px] text-red-900 font-semibold">{currentRel.bad1.title}</strong>
-                        <span className="text-[9px] bg-red-100 text-red-800 px-1.5 py-0.5 rounded-full font-light font-sans">{currentRel.bad1.element}</span>
+                  <div className="space-y-2.5">
+                    {/* Bad Item 1 */}
+                    <div className="bg-red-50/20 p-4 rounded-lg border border-red-100/50 flex flex-col md:flex-row md:items-center gap-4">
+                      <div className="md:w-1/4 flex flex-col justify-center border-b md:border-b-0 md:border-r border-red-200/30 pb-2 md:pb-0 md:pr-4 min-w-[200px] shrink-0">
+                        <div className="flex justify-between items-center">
+                          <strong className="text-[11px] text-red-900 font-semibold">{currentRel.bad1.title}</strong>
+                          <span className="text-[9px] bg-red-100 text-red-800 px-1.5 py-0.5 rounded-full font-light font-sans">{currentRel.bad1.element}</span>
+                        </div>
                       </div>
-                      <p className="text-[10px] text-red-800 font-bold font-sans">{currentRel.bad1.meaning}</p>
-                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentRel.bad1.effect}</p>
+                      <div className="md:w-3/4 space-y-1">
+                        <p className="text-[10px] text-red-800 font-bold font-sans">{currentRel.bad1.meaning}</p>
+                        <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentRel.bad1.effect}</p>
+                      </div>
                     </div>
 
-                    <div className="bg-red-50/20 p-3.5 rounded-lg border border-red-100/50 space-y-1.5">
-                      <div className="flex justify-between items-center border-b border-red-100 pb-1">
-                        <strong className="text-[11px] text-red-900 font-semibold">{currentRel.bad2.title}</strong>
-                        <span className="text-[9px] bg-red-100 text-red-800 px-1.5 py-0.5 rounded-full font-light font-sans">{currentRel.bad2.element}</span>
+                    {/* Bad Item 2 */}
+                    <div className="bg-red-50/20 p-4 rounded-lg border border-red-100/50 flex flex-col md:flex-row md:items-center gap-4">
+                      <div className="md:w-1/4 flex flex-col justify-center border-b md:border-b-0 md:border-r border-red-200/30 pb-2 md:pb-0 md:pr-4 min-w-[200px] shrink-0">
+                        <div className="flex justify-between items-center">
+                          <strong className="text-[11px] text-red-900 font-semibold">{currentRel.bad2.title}</strong>
+                          <span className="text-[9px] bg-red-100 text-red-800 px-1.5 py-0.5 rounded-full font-light font-sans">{currentRel.bad2.element}</span>
+                        </div>
                       </div>
-                      <p className="text-[10px] text-red-800 font-bold font-sans">{currentRel.bad2.meaning}</p>
-                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentRel.bad2.effect}</p>
+                      <div className="md:w-3/4 space-y-1">
+                        <p className="text-[10px] text-red-800 font-bold font-sans">{currentRel.bad2.meaning}</p>
+                        <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentRel.bad2.effect}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
