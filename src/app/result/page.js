@@ -3375,12 +3375,13 @@ function ResultContent() {
       // 이미 디코딩되어 있는 값은 한 번 더 디코딩 시 예외가 발생하므로 디코딩 복제 안정화
       return val.includes("%") ? decodeURIComponent(val) : val;
     } catch (e) {
-      return val;
+return val;
     }
   };
 
   const name = getDecodedParam("name", "이지혜");
   const genderVal = searchParams.get("gender");
+  
   const gender = (genderVal === "male" || genderVal === "남" || genderVal === "남성") ? "남성" : "여성";
   const typeParam = searchParams.get("type") || "saju"; // saju, newyear, tojeong, wealth, tarot, gunghap
   const type = typeParam === "tojeong" ? "newyear" : typeParam;
@@ -5014,7 +5015,7 @@ function ResultContent() {
 
             <div className="bg-[#F9F8F6] p-5 rounded-lg border border-[#E2DDD5] space-y-4">
               <h4 className="text-xs font-bold text-gray-800">• 기운의 불균형 진단</h4>
-              <div className="text-[11px] text-gray-600 space-y-2 leading-relaxed">
+              <div className="text-[11.5px] text-gray-600 space-y-2 leading-relaxed font-light">
                 <p>
                   귀하의 사주 원국에서 가장 세력이 강한 기운은 <strong>&lsquo;{excessEl.name}&rsquo; 기운</strong>({excessEl.val}개)이며, 
                   반대로 가장 취약하거나 결핍된 기운은 <strong>&lsquo;{lackEl.name}&rsquo; 기운</strong>({lackEl.val}개)입니다.
@@ -5023,6 +5024,38 @@ function ResultContent() {
                   오행은 한쪽으로 흘러넘치기보다 5가지 요소가 골고루 순환하는 상태가 가장 복이 많습니다. 
                   귀하의 인생 전반에서 발생하는 정체나 마찰은 과다한 &lsquo;{excessEl.name}&rsquo; 기운의 고집과, 결핍된 &lsquo;{lackEl.name}&rsquo; 기운의 제어 불능에서 기인합니다. 
                   본 보감의 다음 장부터 전개되는 개운법은 이 불균형을 해소하는 데 중점을 둡니다.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-[#A3845B]/5 p-5 rounded-lg border border-[#A3845B]/15 space-y-3">
+              <h4 className="text-xs font-bold text-[#A3845B]">• 오행(五行)의 상생상극 원리</h4>
+              <p className="text-[10.5px] text-gray-600 leading-relaxed font-light">
+                오행은 우주를 구성하는 5가지 원소이자 에너지의 순환을 의미합니다. 
+                목(木)은 자라나는 시작의 힘, 화(火)는 발산하고 팽창하는 열정, 토(土)는 중심을 잡고 중재하는 조율, 금(金)은 맺고 끊는 결단과 결실, 수(水)는 흐르고 수축하는 지혜를 상징합니다. 
+                이들이 서로 생하고 돕는 **상생(相生)**과 통제하고 억제하는 **상극(相剋)**의 밸런스가 조화를 이룰 때 비로소 평안과 발복이 시작됩니다.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="border border-emerald-100 bg-emerald-50/20 p-4.5 rounded-xl space-y-2.5 shadow-sm">
+                <span className="text-[11px] font-bold text-emerald-800 flex items-center gap-1">
+                  <span>🤝</span> 나와 시너지를 내는 잘 맞는 성향
+                </span>
+                <p className="text-[10px] text-gray-600 leading-relaxed font-light">
+                  귀하에게 가장 필요한 부족 오행인 <strong>&lsquo;{lackEl.name}&rsquo; 기운</strong>을 사주에 풍부하게 가졌거나, 이를 실질적인 능력으로 활용하는 정적이고 차분하며 현실성 있는 사람과 최고의 합을 이룹니다. 
+                  귀하가 아이디어를 펼쳐 길을 열면, 상대가 그 결실을 수성하고 지출 구멍을 단단히 보강해 주어 안정적인 재정적·정신적 성장을 이뤄냅니다.
+                </p>
+              </div>
+
+              <div className="border border-red-100 bg-red-50/20 p-4.5 rounded-xl space-y-2.5 shadow-sm">
+                <span className="text-[11px] font-bold text-red-800 flex items-center gap-1">
+                  <span>⚠️</span> 조심하거나 거리를 두어야 할 성향
+                </span>
+                <p className="text-[10px] text-gray-600 leading-relaxed font-light">
+                  이미 귀하의 사주 원국에 과다하게 분포하는 <strong>&lsquo;{excessEl.name}&rsquo; 기운</strong>의 기질을 극단적으로 가지고 있는 사람입니다. 
+                  서로에 대한 주도권 경쟁의식이나 특유의 고집을 불필요하게 증폭시켜 조급증과 번아웃을 가속합니다. 
+                  감정적 트러블이 잦아져 중요한 결정을 그르칠 수 있으니 비즈니스나 대화 시 명확한 경계 조율이 필수적입니다.
                 </p>
               </div>
             </div>
