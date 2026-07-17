@@ -4734,12 +4734,12 @@ return val;
       } else if (worryCategoryInput === "돈" || worryCategoryInput === "재물") {
         return {
           question: "앞으로 돈을 더 많이 벌 수 있을까요? 내 재물운의 흐름은 어떨까요?",
-          answer: `귀하의 사주는 돈을 버는 능력 자체는 준수하나, '${lackEl.name}' 기운의 결핍으로 인해 돈이 모이지 않고 한순간에 빠져나가는 리스크가 존재합니다. 귀하가 선택한 돈 고민에 대한 최종 답은 '재물운 사용설명서'에 명시된 대로 지출 구멍을 차단하고 잘하는 1가지에 집중할 때 비로소 성장합니다. 10년 대운 상 수확의 계절이 도래하는 시기에 도달하면 자산 축적 속도가 기하급수적으로 빨라질 것입니다.`
+          answer: `귀하의 사주는 돈을 버는 능력 자체는 준수하나, '${lackEl.name}' 기운의 결핍으로 인해 돈이 모이지 않고 한순간에 빠져나가는 리스크가 존재합니다. 귀하가 선택한 돈 고민에 대한 최종 답은 '재물운 비책'에 명시된 대로 지출 구멍을 차단하고 잘하는 1가지에 집중할 때 비로소 성장합니다. 10년 대운 상 수확의 계절이 도래하는 시기에 도달하면 자산 축적 속도가 기하급수적으로 빨라질 것입니다.`
         };
       } else if (worryCategoryInput === "연애" || worryCategoryInput === "궁합") {
         return {
           question: "언제쯤 나에게 좋은 귀인이나 사랑하는 인연이 들어올까요?",
-          answer: `귀하의 사주는 본인과 완전히 다른 성향인 '${lackEl.name}' 기운이 풍부한 상대를 만났을 때 비로소 인생의 방향이 긍정적으로 뚫리고 정화되는 운명을 가집니다. 관계 사용설명서의 지침대로 본인에게 부족한 오행을 채워줄 파트너와의 상성을 눈여겨보시고, 다가오는 해에 인연 기운이 강해지는 계절적 타임을 적극 노려 관계의 닻을 올리십시오.`
+          answer: `귀하의 사주는 본인과 완전히 다른 성향인 '${lackEl.name}' 기운이 풍부한 상대를 만났을 때 비로소 인생의 방향이 긍정적으로 뚫리고 정화되는 운명을 가집니다. 관계 가이드의 지침대로 본인에게 부족한 오행을 채워줄 파트너와의 상성을 눈여겨보시고, 다가오는 해에 인연 기운이 강해지는 계절적 타임을 적극 노려 관계의 닻을 올리십시오.`
         };
       } else {
         return {
@@ -4864,10 +4864,10 @@ return val;
                 <p><strong>Page 7.</strong> Chapter 1. 성향 진단 (강점/약점)</p>
                 <p><strong>Page 8.</strong> Chapter 1. 상황별 반응 (스트레스/분노 등)</p>
                 <p><strong>Page 9.</strong> Chapter 1 처방 (멘탈 가이드라인)</p>
-                <p><strong>Page 10.</strong> Chapter 2. 재물운 사용설명서</p>
+                <p><strong>Page 10.</strong> Chapter 2. 재물운 비책</p>
                 <p><strong>Page 11.</strong> Chapter 2. 강점과 돈의 연결 비법</p>
                 <p><strong>Page 12.</strong> Chapter 2. 맞는 업무 방식 분석</p>
-                <p><strong>Page 13.</strong> Chapter 2 처방 (대인관계 설명서)</p>
+                <p><strong>Page 13.</strong> Chapter 2 처방 (대인관계 가이드)</p>
                 <p><strong>Page 14.</strong> Chapter 2 처방 (대인관계 솔루션)</p>
                 <p><strong>Page 15.</strong> Chapter 2 처방 (관계별 세부 분석)</p>
                 <p><strong>Page 16.</strong> Chapter 2 처방 (행운의 요소)</p>
@@ -5595,7 +5595,7 @@ return val;
           <div className="text-right text-[9px] text-gray-300 pt-2">Page 9 / 22</div>
         </div>
 
-        {/* -------------------- Page 10. Chapter 2. 재물운 사용설명서 -------------------- */}
+        {/* -------------------- Page 10. Chapter 2. 재물운 비책 -------------------- */}
         {(() => {
           const wData = {
             "목": {
@@ -5683,11 +5683,11 @@ return val;
               <div className="space-y-6">
                 <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
                   <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
-                  <span className="text-[9px] text-gray-400 font-light">Chapter 2. 재물운 사용설명서</span>
+                  <span className="text-[9px] text-gray-400 font-light">Chapter 2. 재물운 비책</span>
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• {name} 님 맞춤형 재물 운용 사용설명서</h3>
+                  <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• {name} 님 맞춤형 재물 운용 비책</h3>
                   <p className="text-[10.5px] text-gray-500 leading-relaxed font-light font-sans">
                     귀하의 타고난 일간 오행인 <strong>{dayStemEl} ({sajuInfo?.day?.stem})</strong> 기질과 재물운을 관장하는 우주적 상관성에 근거하여 도출한 개인화 재정 가이드라인입니다.
                   </p>
@@ -5742,7 +5742,7 @@ return val;
                   </div>
                 </div>
 
-                {/* 사용설명서 세부 카드 분석 */}
+                {/* 재물운 비책 세부 카드 분석 */}
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="bg-white p-4 rounded-lg border border-[#E2DDD5] shadow-sm space-y-2">
@@ -7232,7 +7232,7 @@ return val;
 
                 {/* 타이밍 핵심 가이드 */}
                 <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 text-[10.5px] text-gray-600 leading-relaxed font-sans font-light">
-                  <span className="font-bold text-[#A3845B] block mb-1 font-myeongjo">💡 {name} 님을 위한 타이밍 사용설명서</span>
+                  <span className="font-bold text-[#A3845B] block mb-1 font-myeongjo">💡 {name} 님을 위한 타이밍 가이드</span>
                   사주 기운은 차고 기울어지는 주기를 지닙니다. 좋은 시기에는 새로운 기획과 확장을 주저 없이 관철하되, 
                   조율기에 해당하는 시점에는 충동적인 거액 소비와 계약서 서명을 2~3일 미뤄두는 지혜를 발휘하여 리스크를 원천 소각하십시오.
                 </div>
