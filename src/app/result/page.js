@@ -4751,21 +4751,84 @@ return val;
 
     const worryContent = getWorryDetail();
 
-    // 월별 5단계 평가 등급 및 개인화 한 줄 행동 지침 매칭 딕셔너리
-    const monthlyGuide = [
-      { month: "1월", grade: "보통", desc: "시작하는 마음은 좋으나 외부의 마찰이 예상되니 신중을 기하십시오." },
-      { month: "2월", grade: "좋음", desc: "귀인의 도움이 있는 달입니다. 평소 미뤄왔던 대화나 제안을 해보세요." },
-      { month: "3월", grade: "재정비", desc: "새로운 일을 시작하기보다 기존의 계획을 한 번 더 검토하고 내실을 다지십시오." },
-      { month: "4월", grade: "좋음", desc: "인간관계가 확장되는 달입니다. 모임이나 네트워킹에 적극적으로 응하세요." },
-      { month: "5월", grade: "매우 좋음", desc: "계약이나 협상에 대단히 유리합니다. 내 주장을 당당하게 설득할 타이밍입니다." },
-      { month: "6월", grade: "주의", desc: "감정적인 갈등이 일어나기 쉬운 달입니다. 욱하는 순간의 화를 억눌러야 이롭습니다." },
-      { month: "7월", grade: "보통", desc: "에너지가 정체되는 흐름입니다. 무리하지 말고 체력을 비축하는 데 힘쓰세요." },
-      { month: "8월", grade: "좋음", desc: "돈의 흐름이 활성화되는 시점입니다. 투자나 수익 창출 아이디어를 가동하십시오." },
-      { month: "9월", grade: "매우 좋음", desc: "운의 흐름이 최고조에 달합니다. 결단을 미루지 말고 오늘부터 행동을 개시하세요." },
-      { month: "10월", grade: "주의", desc: "지출 관리가 뼈아프게 요구되는 시기입니다. 겉치레를 버려야 내 돈이 새지 않습니다." },
-      { month: "11월", grade: "재정비", desc: "건강과 휴식이 깊게 필요한 시기입니다. 충분한 수면과 가벼운 명상으로 채우세요." },
-      { month: "12월", grade: "보통", desc: "한 해를 마무리하고 다가올 대운을 조용히 맞이하기에 최고의 달입니다." }
-    ];
+    // 일간 오행에 따른 12개월 개인화 분석 자동 생성
+    const getMonthlyGuide = (stemEl) => {
+      const guides = {
+        "목": [
+          { month: "1월 (丑)", grade: "보통", desc: "겨울의 땅이 얼어붙는 격이니 서두르지 말고 기존 업무를 마무리하십시오." },
+          { month: "2월 (寅)", grade: "좋음", desc: "뿌리가 내리기 시작하는 봄입니다. 귀인의 도움으로 새 프로젝트 발판을 닦으세요." },
+          { month: "3월 (卯)", grade: "매우 좋음", desc: "자신의 주체성이 확립되고 뜻을 펼쳐 주변을 이끌어갈 최적의 시기입니다." },
+          { month: "4월 (辰)", grade: "좋음", desc: "재물 기류가 땅을 뚫고 피어납니다. 현실적인 문서 계약이나 거래가 성사될 수 있습니다." },
+          { month: "5월 (巳)", grade: "보통", desc: "내 힘이 소진되기 쉬운 활동기입니다. 체력을 고르게 안배하고 성급함을 조율하십시오." },
+          { month: "6월 (午)", grade: "재정비", desc: "열기가 강해 내면이 건조해지니 무리한 동업 제안이나 확장을 보류하는 것이 길합니다." },
+          { month: "7월 (未)", grade: "보통", desc: "토양이 단단해져 결실을 준비하는 달로, 차분하게 장기 투자 계획을 재조율하기 좋습니다." },
+          { month: "8월 (申)", grade: "주의", desc: "날카로운 가을 기류가 침입하여 신경이 날카로워지고 대인 갈등이 빚어질 수 있으니 침묵을 지키세요." },
+          { month: "9월 (酉)", grade: "주의", desc: "지나친 스트레스와 압박이 들어오는 시기입니다. 겉치레를 버리고 수비 지향적인 태도로 돌아가야 합니다." },
+          { month: "10월 (戌)", grade: "좋음", desc: "학문적 성취나 계약에 큰 행운이 따릅니다. 문서 정리에 힘쓰면 이권이 생깁니다." },
+          { month: "11월 (亥)", grade: "매우 좋음", desc: "풍부한 영양분을 채우는 시기로, 지혜로운 해답을 발견하고 협조자를 만나게 됩니다." },
+          { month: "12월 (子)", grade: "보통", desc: "수분을 가득 머금고 내면의 등불을 밝혀 내년의 새로운 계획을 구상하는 적기입니다." }
+        ],
+        "화": [
+          { month: "1월 (丑)", grade: "재정비", desc: "흙이 불을 가리는 기류이므로 나서지 말고 건강 관리와 내부 점검에 전념하십시오." },
+          { month: "2월 (寅)", grade: "매우 좋음", desc: "강력한 땔감이 공급되는 시기입니다. 내 뜻을 널리 알리고 추진력을 극대화하기 좋습니다." },
+          { month: "3월 (卯)", grade: "좋음", desc: "인정운และ 문서운이 동시에 들어오는 달이니 면접이나 시험, 인허가 요청에 유리합니다." },
+          { month: "4월 (辰)", grade: "보통", desc: "표현력은 빛나나 말실수로 인한 구설이 따를 수 있으니 공적인 대화에서 조심성을 기르십시오." },
+          { month: "5월 (巳)", grade: "좋음", desc: "자신감과 활동성이 배가되어 막혔던 비즈니스 돌파구가 열리고 기회를 쟁취합니다." },
+          { month: "6월 (오)", grade: "주의", desc: "동료나 경쟁자와의 지분 싸움, 성급한 대립으로 인해 손해를 볼 우려가 크니 양보하십시오." },
+          { month: "7월 (未)", grade: "보통", desc: "활동은 활발하나 실속이 부족할 수 있으니 계약서 도장을 찍기 전 조항을 복기하십시오." },
+          { month: "8월 (申)", grade: "매우 좋음", desc: "금전적 소유권 확보가 대단히 원활한 달입니다. 그동안 애써온 성과가 재물로 들어옵니다." },
+          { month: "9월 (酉)", grade: "좋음", desc: "안정된 재정 계획 하에 저축이나 투자를 늘리기 좋으며, 실속 있는 쇼핑에 최적입니다." },
+          { month: "10월 (戌)", grade: "주의", desc: "일복은 터지나 체력 방전이 동반됩니다. 욕심을 덜고 휴식 시간을 반드시 배정해야 이롭습니다." },
+          { month: "11월 (亥)", grade: "보통", desc: "조직에서의 책임과 명예가 올라가는 시기이나, 과도한 시기 질투를 피하도록 행동을 겸손히 하십시오." },
+          { month: "12월 (子)", grade: "보통", desc: "차가운 물이 덮치는 달이니 충동적 결정이나 거액 거래를 피하고 겨울잠 자듯 수비하십시오." }
+        ],
+        "토": [
+          { month: "1월 (丑)", grade: "보통", desc: "땅이 단단해져 기류가 고이는 달입니다. 고집을 부리기보다 협조자의 조언에 융화되십시오." },
+          { month: "2월 (寅)", grade: "주의", desc: "새로운 나무가 흙을 가르고 들어오니 신변 변화가 많고 업무 스트레스가 고조되는 시점입니다." },
+          { month: "3월 (卯)", grade: "주의", desc: "직장 상사나 관공서와의 갈등을 경계해야 합니다. 섣부른 반발은 이직 실패를 초래합니다." },
+          { month: "4월 (辰)", grade: "보통", desc: "주변 대인관계의 범위가 지나치게 넓어져 쓸데없는 소모적 만남으로 돈이 나갈 수 있습니다." },
+          { month: "5월 (巳)", grade: "좋음", desc: "부모나 윗사람의 조력으로 정체된 문서 문제를 해결하고 공부에 깊이를 더하는 달입니다." },
+          { month: "6월 (午)", grade: "매우 좋음", desc: "나를 지지해주는 강력한 열기가 들어와 마음의 평정을 찾고 계약을 주도합니다." },
+          { month: "7월 (未)", grade: "보통", desc: "말과 행동의 설득력이 강해지는 시기이나 과장된 약속은 화를 부르니 절제를 도모하십시오." },
+          { month: "8월 (申)", grade: "좋음", desc: "기발한 창작 아이디어나 기획이 채택되는 시기입니다. 망설이지 말고 시안을 발송하세요." },
+          { month: "9월 (酉)", grade: "좋음", desc: "전문적인 재능을 드러내기에 최고의 달입니다. 새로운 채널 개설이나 발표에 길합니다." },
+          { month: "10월 (戌)", grade: "재정비", desc: "기운이 비대해져 과욕을 품기 쉬우니 나에게 꼭 필요한 '토'의 휴식을 선사하십시오." },
+          { month: "11월 (亥)", grade: "매우 좋음", desc: "재물운의 활로가 활짝 열립니다. 유통, 중개, 판매 등에서 실질적인 소득이 창출됩니다." },
+          { month: "12월 (子)", grade: "좋음", desc: "투자금 회수나 예상치 못한 보너스 등 자산 유동성이 유연하게 확장되는 흐름을 탑니다." }
+        ],
+        "금": [
+          { month: "1월 (丑)", grade: "좋음", desc: "나를 후원하는 기류가 들어오니 차분하게 자격증 취득이나 전문 기술 습득에 몰두하십시오." },
+          { month: "2월 (寅)", grade: "매우 좋음", desc: "나무가 단단한 쇠칼을 만나는 격으로, 공격적으로 재정 영토를 확장하고 실속을 잡습니다." },
+          { month: "3월 (卯)", grade: "좋음", desc: "이득이 되는 거래와 계약을 선점하기 좋습니다. 단, 구두 합의보다 서면 문서를 확실히 하십시오." },
+          { month: "4월 (辰)", grade: "보통", desc: "자신을 되돌아보는 인고의 시기로 큰 변화를 꾀하기보다 기본 루틴을 차분히 밟아나갈 타이밍입니다." },
+          { month: "5월 (巳)", grade: "주의", desc: "불이 금을 단련하는 달입니다. 주변 사람과의 구설수나 자존심 싸움을 유연하게 흘려보내십시오." },
+          { month: "6월 (午)", grade: "주의", desc: "갑작스러운 업무 지시나 책임 압박으로 멘탈이 흔들리기 쉬우니 명상과 힐링을 활용하십시오." },
+          { month: "7월 (未)", grade: "보통", desc: "열기가 서서히 식고 기운이 무거워지는 시점입니다. 불필요한 약속을 줄이고 체력을 다지십시오." },
+          { month: "8월 (申)", grade: "보통", desc: "동료와의 관계성이 돈독해지나, 충동적으로 모임을 쏘거나 과소비하지 않도록 통제하십시오." },
+          { month: "9월 (酉)", grade: "재정비", desc: "나와 같은 주체성이 너무 팽창하여 고집이 세지니, 한걸음 물러서서 타협을 모색하십시오." },
+          { month: "10월 (戌)", grade: "좋음", desc: "답답하던 흐름이 해소되고 귀중한 문서를 취득하거나 합의에 성공하는 기쁨이 따릅니다." },
+          { month: "11월 (亥)", grade: "매우 좋음", desc: "나의 능력을 만천하에 드러내는 식상의 시기입니다. 마케팅이나 영업 성과가 정점에 달합니다." },
+          { month: "12월 (子)", grade: "좋음", desc: "머리가 맑아지고 아이디어가 술술 나오는 달입니다. 기획서를 구체화하여 상부에 보고하십시오." }
+        ],
+        "수": [
+          { month: "1월 (丑)", grade: "보통", desc: "물길이 잠시 얼어붙는 형국이니 무모한 사업 확장이나 투자를 뒤로 미루십시오." },
+          { month: "2월 (寅)", grade: "좋음", desc: "물이 흘러 나무를 생조하듯, 지적 성과물이나 작업물이 드디어 세상 밖으로 활발히 유통됩니다." },
+          { month: "3월 (卯)", grade: "매우 좋음", desc: "창의적인 예술, 기획력이 최고조로 뿜어져 나옵니다. 내 역량을 널리 과시하기에 최적입니다." },
+          { month: "4월 (辰)", grade: "주의", desc: "흙이 물을 탁하게 하니 구직이나 이직 시 조건을 상세히 조율하고 불합리한 약속은 거절하십시오." },
+          { month: "5월 (巳)", grade: "좋음", desc: "재물의 불꽃이 타오르기 시작합니다. 새로운 거래선이 뚫리거나 성과급 계약이 성사됩니다." },
+          { month: "6월 (午)", grade: "매우 좋음", desc: "금전 자산 회전력이 연중 가장 활발해지는 재수(財數) 충만기입니다. 투자 성과를 회수하십시오." },
+          { month: "7월 (未)", grade: "주의", desc: "흙의 둑이 물길을 억압하니 억지스러운 의사 결정을 피하고 법적 서류 검토를 꼼꼼히 하십시오." },
+          { month: "8월 (申)", grade: "좋음", desc: "귀인의 원조와 자금 수혈이 뒤따라 숨통이 트이고, 문서상의 이권 합의가 성공리에 마쳐집니다." },
+          { month: "9월 (酉)", grade: "좋음", desc: "인정받는 즐거움이 크고, 상사나 협력체로부터 유리한 파트너십 제안이 먼저 들어오는 달입니다." },
+          { month: "10월 (戌)", grade: "재정비", desc: "체력이 고갈되고 생각이 많아지니 주변 소음을 차단하고 오롯이 수(水)의 침묵 시간을 확보하세요." },
+          { month: "11월 (亥)", grade: "보통", desc: "자신감과 고집이 강해지니 독단적인 결정으로 동업을 파기하거나 연인과 대립하지 않도록 경계하십시오." },
+          { month: "12월 (子)", grade: "주의", desc: "지나친 욕심으로 주변과 파이를 나누지 않으려다 오히려 큰 지출을 겪을 수 있으니 상생을 도모하십시오." }
+        ]
+      };
+      return guides[stemEl] || guides["목"];
+    };
+
+    const monthlyGuide = getMonthlyGuide(sajuInfo?.day?.stemEl || "목");
 
     // 오행 분포별 맞춤형 개운 추천 텍스트
     const elementPrescription = {
@@ -7272,36 +7335,139 @@ return val;
         })()}
 
         {/* -------------------- Page 18. Chapter 3. 올해 운의 타이밍 (세운 - 2) -------------------- */}
-        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
-          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+        {(() => {
+          const dayStemEl = sajuInfo?.day?.stemEl || "목";
+          const lackElName = lackEl?.name || "토";
+          const excessElName = excessEl?.name || "화";
           
-          <div className="space-y-4">
-            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
-              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
-              <span className="text-[9px] text-gray-400 font-light">Chapter 3. 올해 운의 타이밍 (세운 - 2)</span>
-            </div>
+          // 일간별 3대 에너지 스펙트럼 수치
+          const energyData = {
+            "목": { act: 60, fin: 70, rec: 50 },
+            "화": { act: 80, fin: 60, rec: 40 },
+            "토": { act: 50, fin: 70, rec: 80 },
+            "금": { act: 70, fin: 60, rec: 70 },
+            "수": { act: 80, fin: 50, rec: 60 }
+          };
+          const curEnergy = energyData[dayStemEl] || energyData["목"];
 
-            <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A] mb-2">• 12개월 월별 운의 상세 지침</h3>
-
-            <div className="space-y-2 max-h-[850px] overflow-hidden">
-              {monthlyGuide.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-3 border-b border-gray-100 pb-2 text-[10.5px]">
-                  <span className="font-bold text-gray-800 w-10">{item.month}</span>
-                  <span className={`px-2 py-0.5 rounded text-[9px] text-white font-bold text-center w-14 ${
-                    item.grade === "매우 좋음" ? "bg-emerald-600" :
-                    item.grade === "좋음" ? "bg-teal-500" :
-                    item.grade === "보통" ? "bg-gray-400" :
-                    item.grade === "주의" ? "bg-red-500" : "bg-amber-500"
-                  }`}>
-                    {item.grade}
-                  </span>
-                  <span className="text-gray-600 flex-1 leading-normal font-light">"${item.desc}"</span>
+          return (
+            <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+              <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+              
+              <div className="space-y-4">
+                {/* 헤더 */}
+                <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+                  <span className="text-[9px] text-gray-400 font-light">Chapter 3. 올해 운의 타이밍 (세운 - 2)</span>
                 </div>
-              ))}
+
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-gray-800 block font-myeongjo">• 12개 월별 운의 상세 지침 및 월간 조율법</span>
+                  <p className="text-[10px] text-gray-500 font-light font-sans">
+                    매월 도래하는 지지의 기류와 일간의 상호 작용을 5단계 등급과 행동 전술로 구체화했습니다.
+                  </p>
+                </div>
+
+                {/* 12개월 테이블 레이아웃 */}
+                <div className="border border-[#E2DDD5]/60 rounded-lg overflow-hidden bg-white shadow-sm">
+                  <div className="grid grid-cols-12 bg-[#F9F8F6] border-b border-[#E2DDD5]/60 text-[10px] font-bold text-[#A3845B] p-2 text-center font-myeongjo">
+                    <div className="col-span-2">월분(지)</div>
+                    <div className="col-span-2">운세 등급</div>
+                    <div className="col-span-8">실천 전술 및 조율 방향</div>
+                  </div>
+                  
+                  <div className="divide-y divide-gray-100 text-[10px] font-sans">
+                    {monthlyGuide.map((item, idx) => (
+                      <div key={idx} className="grid grid-cols-12 p-2 items-center text-center">
+                        <div className="col-span-2 font-bold text-gray-800">{item.month}</div>
+                        <div className="col-span-2 flex justify-center">
+                          <span className={`px-2 py-0.5 rounded text-[8.5px] text-white font-bold text-center w-14 block ${
+                            item.grade === "매우 좋음" ? "bg-emerald-600" :
+                            item.grade === "좋음" ? "bg-teal-500" :
+                            item.grade === "보통" ? "bg-gray-400" :
+                            item.grade === "주의" ? "bg-red-500" : "bg-amber-500"
+                          }`}>
+                            {item.grade}
+                          </span>
+                        </div>
+                        <div className="col-span-8 text-left text-gray-600 pl-4 font-light leading-relaxed">
+                          {item.desc}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 시각화: 월별 기류 수호 에너지 스펙트럼 */}
+                <div className="bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 space-y-3 shadow-inner">
+                  <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo block text-center">📊 {name} 님의 올해 3대 핵심 에너지 스펙트럼 수치</span>
+                  
+                  <div className="grid grid-cols-3 gap-4 text-[10px] font-sans">
+                    <div className="space-y-1">
+                      <div className="flex justify-between font-bold text-gray-700">
+                        <span>🚀 활동 추진력</span>
+                        <span>{curEnergy.act}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+                        <div className="bg-emerald-500 h-full" style={{ width: `${curEnergy.act}%` }} />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <div className="flex justify-between font-bold text-gray-700">
+                        <span>💰 자산 수렴력</span>
+                        <span>{curEnergy.fin}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+                        <div className="bg-[#A3845B] h-full" style={{ width: `${curEnergy.fin}%` }} />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex justify-between font-bold text-gray-700">
+                        <span>🧘 멘탈 복원력</span>
+                        <span>{curEnergy.rec}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+                        <div className="bg-blue-500 h-full" style={{ width: `${curEnergy.rec}%` }} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 올해 기류 수호 행동 강령 및 여백 제거용 다크 패널 */}
+                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3 shadow-inner">
+                  <div className="border-b border-gray-700/50 pb-1.5 flex justify-between items-center text-[10px]">
+                    <span className="font-bold text-[#C2A378] font-myeongjo">💡 {name} 님을 위한 운세 시너지 가이드라인</span>
+                    <span className="text-gray-400">수호 오행: {lackElName}</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[10px] font-sans font-light">
+                    {/* 왼쪽: 지출 제어 및 대인 밸런스 */}
+                    <div className="space-y-1.5 border-b md:border-b-0 md:border-r border-gray-700/50 pb-3 md:pb-0 pr-0 md:pr-4">
+                      <span className="text-[#C2A378] font-bold text-[9.5px] block">• 길운 극대화 실천법</span>
+                      <p className="text-gray-300 leading-relaxed font-sans font-light">
+                        운의 흐름이 &lsquo;매우 좋음&rsquo; 혹은 &lsquo;좋음&rsquo;으로 평가된 달에는 나에게 다소 불리했던 거래 조건이나 의견 대립을 마침내 나의 주도로 매듭짓기 좋은 타이밍입니다. 결단을 뒤로 미루지 마시고 강하고 분명하게 서명 및 도장을 확보하십시오.
+                      </p>
+                    </div>
+
+                    {/* 오른쪽: 리스크 최소화 방안 */}
+                    <div className="space-y-1.5 flex flex-col justify-between">
+                      <div>
+                        <span className="text-[#C2A378] font-bold text-[9.5px] block">• 주의/재정비 월 리스크 소각 지침</span>
+                        <p className="text-gray-300 leading-relaxed font-sans font-light">
+                          &lsquo;주의&rsquo;나 &lsquo;재정비&rsquo;에 배정된 달에는 과다 오행인 <strong className="text-white">&lsquo;{excessElName}&rsquo; 기운</strong>의 성급한 발산(욱하는 감정적 판단, 타인 권유에 의한 대출이나 목돈 투자)이 해가 됩니다. 해당 월에는 오직 <strong className="text-white">{lackElName} 기운</strong>을 충전하는 고요한 내적 공부에 전념하십시오.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div className="text-right text-[9px] text-gray-300 pt-2">Page 19 / 22</div>
             </div>
-          </div>
-          <div className="text-right text-[9px] text-gray-300 pt-2">Page 19 / 22</div>
-        </div>
+          );
+        })()}
 
         {/* -------------------- Page 19. Chapter 3 연계 처방 (고민 답변) -------------------- */}
         <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
