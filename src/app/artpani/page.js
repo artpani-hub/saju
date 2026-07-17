@@ -857,10 +857,11 @@ export default function AdminPage() {
                 className="bg-white border border-[#dee2e6] rounded px-2.5 py-1.5 text-xs text-[#212529] focus:outline-none focus:border-[#A3845B] font-bold shadow-sm"
               >
                 <option value="all">전체 결제상태</option>
-                <option value="paid">결제 완료</option>
-                <option value="free">무료상담</option>
-                <option value="pending">결제 대기</option>
-                <option value="cancelled">결제 취소</option>
+                <option value="paid">결제완료</option>
+                <option value="free">무료</option>
+                <option value="pending">대기</option>
+                <option value="cancelled">취소</option>
+                <option value="refunded">환불완료</option>
               </select>
 
               <select
@@ -921,17 +922,21 @@ export default function AdminPage() {
                             ? "bg-green-100 text-green-800" 
                             : order.status === "free"
                               ? "bg-blue-100 text-blue-800"
-                              : order.status === "cancelled"
-                                ? "bg-red-100 text-red-800"
-                                : "bg-yellow-100 text-yellow-800"
+                              : order.status === "refunded"
+                                ? "bg-purple-100 text-purple-800"
+                                : order.status === "cancelled"
+                                  ? "bg-red-100 text-red-800"
+                                  : "bg-yellow-100 text-yellow-800"
                         }`}>
                           {order.status === "paid" 
                             ? "결제완료" 
                             : order.status === "free"
                               ? "무료"
-                              : order.status === "cancelled" 
-                                ? "결제취소" 
-                                : "결제대기"}
+                              : order.status === "refunded"
+                                ? "환불완료"
+                                : order.status === "cancelled" 
+                                  ? "취소" 
+                                  : "대기"}
                         </span>
                       </td>
                       <td className="p-4">
