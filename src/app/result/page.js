@@ -5595,135 +5595,550 @@ return val;
           <div className="text-right text-[9px] text-gray-300 pt-2">Page 9 / 22</div>
         </div>
 
-        {/* -------------------- Page 9. Chapter 2. 재물운 사용설명서 -------------------- */}
-        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
-          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
-          
-          <div className="space-y-6">
-            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
-              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
-              <span className="text-[9px] text-gray-400 font-light">Chapter 2. 재물운 사용설명서</span>
-            </div>
+        {/* -------------------- Page 10. Chapter 2. 재물운 사용설명서 -------------------- */}
+        {(() => {
+          const wData = {
+            "목": {
+              income: "안정적인 고정 자산이나 문서(특허, 지식재산권, 부동산) 중심의 계약 기반 수익 창출력이 매우 우수합니다. 본인의 아이디어나 창작물을 기반으로 한 구조화된 지적재산 모델이 가장 잘 맞습니다.",
+              loss: "새로운 트렌드나 주변 지인의 무리한 투자 권유에 솔깃하여 성급하게 확장하거나 투자하여 목돈이 묶이거나 손실을 보기 쉽습니다. 기분파 지출이 주된 유출 요인입니다.",
+              condition: "확장주의를 경계하고 계약서의 독소 조항을 매번 꼼꼼히 살피며, 매월 일정한 예금을 기계적으로 선저축 후지출하는 구조적 강제성이 필수적입니다.",
+              prescription: "재물의 성장이 큰 나무가 뿌리를 내리듯 순차적으로 이루어지도록 장기적인 연금이나 주택 청약 등 해약이 불가능한 단단한 문서 자산의 장벽을 쌓아 올리십시오.",
+              flow: 75, stability: 80, control: 65,
+              keyword: "문서 기반 자산화"
+            },
+            "화": {
+              income: "네트워크, 커뮤니티, 홍보, 마케팅 또는 트렌디한 정보 유통을 통한 역동적이고 폭발적인 다변화 수익 창출력이 매우 탁월합니다. 사람을 모으고 연결하는 능력 자체가 곧 돈이 됩니다.",
+              loss: "순간적인 감정적 호기나 남에게 돋보이려는 과시욕, 혹은 타인의 딱한 사정을 거절하지 못해 유발되는 불필요한 대인관계 비용이나 보증성 자금 대여로 유실되기 쉽습니다.",
+              condition: "수입의 일정 비율을 즉시 비유동성 실물 자산(골드바, 안전 부동산 등)으로 묶어 눈에 보이지 않게 처리하는 '강제 동결 시스템' 구축이 유일한 재배분 대안입니다.",
+              prescription: "불꽃 같은 화려함 뒤에 남는 재물의 증발을 원천 차단하기 위해, 번 돈을 즉각적으로 무겁고 단단한 대지나 금속 자산으로 교환하여 보관하십시오.",
+              flow: 90, stability: 55, control: 70,
+              keyword: "자산 강제 동결"
+            },
+            "토": {
+              income: "토지, 실물 부동산, 중개 거래, 혹은 신용과 오랜 기간의 신뢰에 기반한 중장기적 임대 및 보증적 성격의 안정적인 이자·배당 수익 구조가 유효합니다. 지키고 굴리는 보수적 운용에 강점이 있습니다.",
+              loss: "본인이 모든 책임을 떠안으려는 우유부단함이나, 자산을 지나치게 오랫동안 방치하고 새로운 재테크 흐름에 편승시키지 않아 인플레이션 대비 자산 가치가 정체되는 손실을 입기 쉽습니다.",
+              condition: "자산의 순환을 위해 적절한 포트폴리오 재배치가 필요하며, 시스템적인 금융 자산 분산 관리 도구(자동 리밸런싱 등)를 도입해 기계적으로 자산을 회전시켜야 합니다.",
+              prescription: "대지와 같은 굳건한 신뢰가 귀하의 가장 큰 금융 무기이므로, 무리한 고수익 요행보다 대를 이어 가치를 유지할 수 있는 안전한 실물 담보 중심의 투자에 집중하십시오.",
+              flow: 60, stability: 90, control: 85,
+              keyword: "복리 순환형 자산 관리"
+            },
+            "금": {
+              income: "금융, 회계 분석, 정교한 하이테크 도구 활용 및 수치 계산에 기반한 결단력 있는 계약 투자나 하이엔드 기술 라이선스형 고단가 비즈니스가 매우 적합합니다.",
+              loss: "지나친 완벽주의로 인해 최적의 투자 기회를 눈앞에서 놓치거나(실기 요인), 반대로 극도의 일상적 스트레스를 해소하기 위해 홧김에 지르는 충동성 보상 비용 지출이 큽니다.",
+              condition: "결정의 원칙을 사전에 정형화하고, 감정이 개입할 틈이 없도록 자동 적립 매수 시스템이나 원자재/안전 국채 위주의 분배 공식을 엄격히 준수해야 합니다.",
+              prescription: "칼날 같은 냉정함을 투자 공식에 이식하고, 지인 간의 모호한 거래를 완전히 차단하여 정당한 수수료와 서류 계약에만 서명하는 철저한 절차 주의로 무장하십시오.",
+              flow: 70, stability: 85, control: 75,
+              keyword: "계산된 원칙 투자"
+            },
+            "수": {
+              income: "유통, 무역, 흐르는 지식 콘텐츠, 자문 수수료 및 불특정 다수를 상대로 한 유연하고 유입량이 큰 온라인 기반 디지털 플랫폼 비즈니스가 최적의 금전 순환 구조를 만들어냅니다.",
+              loss: "자금 관리의 경계가 모호해져 정산이 불명확해지거나 빌려준 돈을 청구하지 못하는 일, 혹은 끊임없는 관심사 이동으로 인한 잦은 창업 초기 비용 유실이 반복되기 쉽습니다.",
+              condition: "개인 간 금전 거래나 동업 투자를 일절 배제하고, 자금의 출처와 흐름을 엄격한 장부로 기록 관리하며, 신탁사나 자산운용사를 통한 간접 상품에 자본을 의탁하십시오.",
+              prescription: "물이 바다로 흐르듯 역동적인 순환 자산을 다루되, 댐을 건설하듯 매수 원금을 엄격히 묶어두는 락업(Lock-up) 장치를 걸어두어야 재물이 거대하게 쌓입니다.",
+              flow: 85, stability: 65, control: 80,
+              keyword: "락업 및 간접 투자"
+            }
+          };
 
-            <div className="space-y-5">
-              <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• 재물 운용 사용설명서</h3>
+          const dayStemEl = sajuInfo?.day?.stemEl || "목";
+          const currentWealth = wData[dayStemEl] || wData["목"];
+
+          const lackElName = lackEl?.name || "토";
+          const lackElRemedy = {
+            "목": {
+              color: "청색, 초록색 계열의 소품 사용",
+              action: "아침 일찍 30분 산책 및 숲속 식물 가꾸기",
+              env: "침실이나 서재의 동쪽 방향에 목재 가구 배치"
+            },
+            "화": {
+              color: "적색, 주황색 계열의 소품 사용",
+              action: "반신욕, 따뜻한 차 음용 및 조명 스탠드 활용",
+              env: "집안에서 햇볕이 가장 잘 드는 남쪽에 붉은 화분 배치"
+            },
+            "토": {
+              color: "황색, 베이지, 브라운 계열의 지갑 사용",
+              action: "정기적인 흙 밟기 및 황토 찜질, 규칙적인 도보 운동",
+              env: "거실 중앙이나 주방 주변에 도자기 소품 및 둥근 돌 배치"
+            },
+            "금": {
+              color: "백색, 골드, 실버 액세서리 활용",
+              action: "단호한 거절 훈련 및 주변 정리정돈(미니멀리즘)",
+              env: "책상 위나 현관 근처에 금속 재질의 시계나 장식품 배치"
+            },
+            "수": {
+              color: "흑색, 어두운 남색 계열의 지갑 및 소품 사용",
+              action: "충분한 수분 섭취 및 명상, 반신욕이나 족욕",
+              env: "공부방이나 업무 데스크 북쪽에 소형 가습기나 유리컵 물 배치"
+            }
+          }[lackElName] || {
+            color: "황색 지갑 사용",
+            action: "안전 자산 선저축",
+            env: "거실 중앙 정돈"
+          };
+
+          return (
+            <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+              <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
               
-              <div className="space-y-3 text-[11px] text-gray-600 leading-relaxed">
-                <p><strong>1. 돈이 들어오는 방식:</strong> 전문 기술·콘텐츠형 수익 모델이 가장 잘 어울립니다.</p>
-                <p><strong>2. 돈이 새는 원인:</strong> 충동적인 지출이나 인간관계 유지 비용, 혹은 준비되지 않은 귀가 얇은 투자 결정으로 인해 순간적으로 목돈이 유실되기 쉽습니다.</p>
-                <p><strong>3. 돈이 모이는 조건:</strong> 수입 계좌와 생활비 지출 계좌의 철저한 기계적 분리, 타인의 감정에 휩쓸려 계약을 결정하지 않는 냉정함, 잘하는 한 가지 파이프라인 집중이 필수적입니다.</p>
-              </div>
-            </div>
-
-            <div className="bg-[#A3845B]/5 p-5 rounded-lg border border-[#A3845B]/20 text-center">
-              <span className="text-[10px] text-gray-500 font-bold block mb-1">재물운 핵심 처방</span>
-              <p className="font-myeongjo text-xs font-bold text-[#A3845B] leading-relaxed">
-                "돈을 버는 확장 능력보다, 번 돈이 새 나가지 않도록 튼튼한 안전망을 짜서 지켜내는 구조를 만드는 것이 훨씬 더 중요합니다."
-              </p>
-            </div>
-
-            <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
-              <span className="text-[10px] font-bold text-[#A3845B] block">💡 왜 그런가요? 명리 근거</span>
-              <p className="text-[10px] text-gray-500 leading-relaxed font-light">
-                {getAstroBasis("wealth")}
-              </p>
-            </div>
-          </div>
-          <div className="text-right text-[9px] text-gray-300 pt-2">Page 10 / 22</div>
-        </div>
-
-        {/* -------------------- Page 10. Chapter 2. 강점과 돈의 연결 -------------------- */}
-        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
-          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
-          
-          <div className="space-y-6">
-            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
-              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
-              <span className="text-[9px] text-gray-400 font-light">Chapter 2. 강점과 돈의 연결</span>
-            </div>
-
-            <div className="space-y-4">
-              <span className="text-xs font-bold text-gray-800 block">• 강점을 돈으로 연결하는 구체적 방법</span>
-              <div className="text-[11px] text-gray-600 leading-relaxed space-y-2">
-                <p>
-                  타고난 <strong>기획력</strong>과 <strong>지적인 분석 에너지</strong>는 단순 노동보다 지식 비즈니스로 갈 때 극대화됩니다. 
-                  고객 문제 해결형 컨설팅, 1인 미디어 지식 창업, 또는 전문 정보를 가공하여 지속적 상품을 유통시키는 구조가 유효합니다.
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <span className="text-xs font-bold text-red-600 block">❌ 반드시 피해야 할 수익 방식</span>
-              <ul className="text-[11px] text-gray-600 list-disc pl-4 space-y-1.5 leading-relaxed">
-                <li>단기간의 요행을 바라는 투기성 투자 (사주 상 수 기운 결핍 시 매우 위험)</li>
-                <li>본인의 판단과 결정 권한이 아예 없는 극단적인 수동적 기계 업무</li>
-                <li>감정 소모가 지나쳐 자아 정체성이 훼손되기 쉬운 단순 접객 노동 환경</li>
-                <li>계약 및 동업 정산 조건이 문서로 불분명한 지인과의 공동 사업</li>
-              </ul>
-            </div>
-
-            <div className="bg-[#F9F8F6] p-4 rounded border border-gray-200 text-[10.5px] text-gray-600 space-y-1">
-              <span className="font-bold text-gray-700 block">⚠️ 올해 피해야 할 금전적 선택</span>
-              <p>충동적인 동업 참여나 계약서 날인은 금물입니다. 특히 문서 계약에 대한 철저한 2차 검증을 마치지 않았다면 결정을 보류해야 손실을 차단합니다.</p>
-            </div>
-          </div>
-          <div className="text-right text-[9px] text-gray-300 pt-2">Page 11 / 22</div>
-        </div>
-
-        {/* -------------------- Page 11. Chapter 2. 나에게 맞는 업무 방식 -------------------- */}
-        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
-          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
-          
-          <div className="space-y-6">
-            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
-              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
-              <span className="text-[9px] text-gray-400 font-light">Chapter 2. 맞는 업무 방식</span>
-            </div>
-
-            <div className="space-y-5">
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-emerald-700 block">👍 능력이 극대화되는 잘 맞는 일터</span>
-                <p className="text-[11px] text-gray-600 leading-relaxed">
-                  본인의 독창성과 판단을 전적으로 지지하고 위임해 주는 조직 구조, 연차가 쌓일수록 포트폴리오의 몸값이 급성장하는 전문성 강한 비즈니스 환경이 최적입니다.
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-red-600 block">👎 스트레스와 피로가 솟구치는 일터</span>
-                <p className="text-[11px] text-gray-600 leading-relaxed">
-                  책임은 무겁게 주어지나 결정적 권한은 완전히 막혀 있는 기형적인 수직적 관료 구조, 성과와 노력이 숫자로 투명하게 연결되지 않아 의욕을 꺾는 일터는 가급적 피해야 합니다.
-                </p>
-              </div>
-            </div>
-
-            {/* 직무 적합도 비교 (시각화 모사) */}
-            <div className="space-y-3">
-              <span className="text-xs font-bold text-gray-800 block">• 커리어 포지션 적합도 진단</span>
-              <div className="space-y-2 text-[10.5px] text-gray-600">
-                <div>
-                  <div className="flex justify-between font-semibold mb-0.5"><span>전문직 / 프리랜서 적성</span><span>88%</span></div>
-                  <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden"><div className="bg-[#A3845B] h-full" style={{width: "88%"}} /></div>
+              <div className="space-y-6">
+                <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+                  <span className="text-[9px] text-gray-400 font-light">Chapter 2. 재물운 사용설명서</span>
                 </div>
-                <div>
-                  <div className="flex justify-between font-semibold mb-0.5"><span>1인 창업 / 사업 적성</span><span>75%</span></div>
-                  <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden"><div className="bg-[#A3845B] h-full" style={{width: "75%"}} /></div>
-                </div>
-                <div>
-                  <div className="flex justify-between font-semibold mb-0.5"><span>일반 기업 조직원 적성</span><span>42%</span></div>
-                  <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden"><div className="bg-gray-400 h-full" style={{width: "42%"}} /></div>
-                </div>
-              </div>
-            </div>
 
-            <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
-              <span className="text-[10px] font-bold text-[#A3845B] block">💡 왜 그런가요? 명리 근거</span>
-              <p className="text-[10px] text-gray-500 leading-relaxed font-light">
-                {getAstroBasis("job")}
-              </p>
+                <div className="space-y-2">
+                  <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• {name} 님 맞춤형 재물 운용 사용설명서</h3>
+                  <p className="text-[10.5px] text-gray-500 leading-relaxed font-light font-sans">
+                    귀하의 타고난 일간 오행인 <strong>{dayStemEl} ({sajuInfo?.day?.stem})</strong> 기질과 재물운을 관장하는 우주적 상관성에 근거하여 도출한 개인화 재정 가이드라인입니다.
+                  </p>
+                </div>
+
+                {/* 시각화: 재물 흐름 3대 밸런스 인덱스 */}
+                <div className="bg-[#F9F8F6] p-5 rounded-lg border border-[#E2DDD5]/60 space-y-4 shadow-sm">
+                  <span className="text-[11px] font-bold text-[#A3845B] block font-myeongjo text-center">📊 {name} 님의 재물 흐름 3대 밸런스 인덱스</span>
+                  
+                  <div className="space-y-3">
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[10px] font-bold text-gray-700">
+                        <span>💰 재물 유입력 (Income Flow)</span>
+                        <span className="text-[#A3845B]">{currentWealth.flow}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200/70 h-2 rounded-full overflow-hidden">
+                        <div 
+                          className="bg-gradient-to-r from-[#C2A378] to-[#A3845B] h-full rounded-full transition-all duration-500" 
+                          style={{ width: `${currentWealth.flow}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[10px] font-bold text-gray-700">
+                        <span>🛡️ 자산 안정성 (Asset Stability)</span>
+                        <span className="text-[#A3845B]">{currentWealth.stability}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200/70 h-2 rounded-full overflow-hidden">
+                        <div 
+                          className="bg-gradient-to-r from-[#C2A378] to-[#A3845B] h-full rounded-full transition-all duration-500" 
+                          style={{ width: `${currentWealth.stability}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[10px] font-bold text-gray-700">
+                        <span>⚖️ 자산 통제력 (Financial Control)</span>
+                        <span className="text-[#A3845B]">{currentWealth.control}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200/70 h-2 rounded-full overflow-hidden">
+                        <div 
+                          className="bg-gradient-to-r from-[#C2A378] to-[#A3845B] h-full rounded-full transition-all duration-500" 
+                          style={{ width: `${currentWealth.control}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-center text-[9.5px] text-gray-400 font-light pt-1">
+                    권장 지향 자산 목표: <strong>{currentWealth.keyword}</strong>
+                  </div>
+                </div>
+
+                {/* 사용설명서 세부 카드 분석 */}
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="bg-white p-4 rounded-lg border border-[#E2DDD5] shadow-sm space-y-2">
+                      <span className="text-[10px] font-bold text-[#A3845B] flex items-center gap-1">🟢 1. 돈이 들어오는 방식</span>
+                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentWealth.income}</p>
+                    </div>
+
+                    <div className="bg-white p-4 rounded-lg border border-[#E2DDD5] shadow-sm space-y-2">
+                      <span className="text-[10px] font-bold text-red-600 flex items-center gap-1">🔴 2. 돈이 새는 원인</span>
+                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentWealth.loss}</p>
+                    </div>
+
+                    <div className="bg-white p-4 rounded-lg border border-[#E2DDD5] shadow-sm space-y-2">
+                      <span className="text-[10px] font-bold text-blue-600 flex items-center gap-1">🔵 3. 돈이 모이는 조건</span>
+                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentWealth.condition}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 핵심 처방 */}
+                <div className="bg-[#A3845B]/5 p-5 rounded-lg border border-[#A3845B]/20 text-center space-y-1">
+                  <span className="text-[9px] text-[#A3845B] font-bold tracking-wider block">재물운 핵심 개운 처방</span>
+                  <p className="font-myeongjo text-xs font-bold text-[#A3845B] leading-relaxed">
+                    "{currentWealth.prescription}"
+                  </p>
+                </div>
+
+                {/* 명리 근거 */}
+                <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-1">
+                  <span className="text-[10px] font-bold text-[#A3845B] block">💡 명리학적 배경 및 근거</span>
+                  <p className="text-[10.5px] text-gray-500 leading-relaxed font-light font-sans">
+                    {getAstroBasis("wealth")}
+                  </p>
+                </div>
+
+                {/* 결핍 오행 기반 개운 비책 카드 */}
+                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3 shadow-inner">
+                  <span className="text-[10px] font-bold text-[#C2A378] tracking-wider block font-myeongjo text-center">⭐ {name} 님만을 위한 결핍 오행 ({lackElName}) 기반 재물 개운 비책</span>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[10px] text-gray-300">
+                    <div className="border-r border-gray-700/50 pr-2">
+                      <span className="text-gray-400 block mb-0.5">🎨 추천 수호 컬러</span>
+                      <strong className="text-white">{lackElRemedy.color}</strong>
+                    </div>
+                    <div className="border-r border-gray-700/50 pr-2">
+                      <span className="text-gray-400 block mb-0.5">🏃 생활 액티베이션</span>
+                      <strong className="text-white">{lackElRemedy.action}</strong>
+                    </div>
+                    <div>
+                      <span className="text-gray-400 block mb-0.5">🧭 최적 환경 공간</span>
+                      <strong className="text-white">{lackElRemedy.env}</strong>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div className="text-right text-[9px] text-gray-300 pt-2">Page 10 / 22</div>
             </div>
-          </div>
-          <div className="text-right text-[9px] text-gray-300 pt-2">Page 12 / 22</div>
-        </div>
+          );
+        })()}
+
+        {/* -------------------- Page 11. Chapter 2. 강점과 돈의 연결 -------------------- */}
+        {(() => {
+          const flData = {
+            "목": {
+              connection: "새로운 성장 가치 창출과 유연한 적응력을 활용하는 기획, 인재 육성, 브랜딩, 디자인 분야로 강점을 연결해야 합니다. 자라나는 생명력처럼 지속 가능한 교육·창작 시스템을 구축할 때 재물이 따라옵니다.",
+              avoid: [
+                "단기 변동성이 극도로 높은 초고위험 투기성 금융 상품 투자",
+                "변화가 전혀 없고 규율에 묶여 수동적으로 반복하는 기계적 노동 환경",
+                "장기적인 성장 전망 없이 소모품처럼 쓰이는 단순 하청 구조의 거래",
+                "상대방의 성장 비전 없이 오직 자본 관계만 엮여 있는 성급한 동업"
+              ],
+              avoidReason: "주변 환경과 타인의 정에 쉽게 동화되는 목 기운 특성상, 가까운 지인의 사정이나 부정한 기류에 휩쓸려 거절하지 못하고 독소 조항에 서명하기 쉽습니다.",
+              yearlyWarning: "올해는 무리한 신규 프로젝트의 확장이나 실체가 없는 가상 자산 투자를 절대 피하십시오. 현상 유지와 안정을 꾐하며 씨앗을 지켜야 하는 시기입니다.",
+              successScore: 85, riskScore: 40, synergyScore: 90,
+              bestPartner: "수(水) 기운 (스승, 조력자)",
+              worstPartner: "금(金) 기운 (규제자, 압박자)"
+            },
+            "화": {
+              connection: "본인의 직관적 열정과 표현력, 대중 앞에서의 전파력을 활용하는 마케팅, 미디어, 강연, 퍼포먼스 기획 분야로 강점을 연결하십시오. 빛처럼 널리 퍼지는 파급력을 가질 때 재물이 극대화됩니다.",
+              avoid: [
+                "외부 노출 없이 독방에서 오직 데이터 수치만 정적으로 검증하는 업무",
+                "결과 회수 기간이 수년 이상 걸려 인내심을 한계까지 요구하는 장기 사업",
+                "정확한 계약서나 약정 없이 감정으로만 맺어진 구두 위주의 투자 동업",
+                "유행이 완전히 지난 진부하고 고정된 방식의 오프라인 유통 및 매장 운영"
+              ],
+              avoidReason: "쉽게 달아오르는 열정이 순간적인 눈앞의 이익에 판단 미스를 불러일으켜, 화려한 홍보 문구 뒤의 사기나 투기성 함정에 노출될 확률이 높습니다.",
+              yearlyWarning: "올해는 과시성 투자나 타인에게 보여주기 위한 대형 계약서 날인을 철저히 피하십시오. 실익이 실속보다 겉만 화려하여 나가는 돈이 더 많을 수 있습니다.",
+              successScore: 90, riskScore: 65, synergyScore: 85,
+              bestPartner: "목(木) 기운 (기획자, 공급원)",
+              worstPartner: "수(水) 기운 (통제자, 제동장치)"
+            },
+            "토": {
+              connection: "모든 것을 중개하고 포용하는 신뢰와 완충력을 활용하는 부동산 자산 운용, 플랫폼 중개, 유통 허브, 컨설팅 분야로 강점을 연결하십시오. 사람과 물자가 귀하를 거쳐 가도록 판을 짤 때 재물이 쌓입니다.",
+              avoid: [
+                "단기간에 트렌드가 수시로 변해 유연하고 즉각적인 순발력만 요구하는 단타 매매",
+                "물리적 실체나 담보가 전혀 없이 오직 개념적 가치만으로 소통하는 하이 리스크 투자",
+                "한 장소에 정착하지 못하고 계속해서 장거리 이동 및 해외 파견만 도는 유목적 업무",
+                "상대의 신용도가 철저히 검증되지 않은 상태에서 대가 없이 선지출하는 거래"
+              ],
+              avoidReason: "타인의 재정적 곤경을 차마 외면하지 못하고 본인의 핵심 담보 자산을 제공하거나 연대 책임을 지는 등 우유부단한 온정이 화근이 되기 쉽습니다.",
+              yearlyWarning: "올해는 지인과의 동업, 보증성 채무 보증, 혹은 담보 가치 평가가 불분명한 투자를 단호히 거절해야 자산을 온전히 보존합니다. 명확한 거절이 최고의 방어입니다.",
+              successScore: 75, riskScore: 35, synergyScore: 95,
+              bestPartner: "화(火) 기운 (동력원, 에너지)",
+              worstPartner: "목(木) 기운 (개척자, 뿌리내림)"
+            },
+            "금": {
+              connection: "단호한 결단력과 날카로운 분석력을 활용하는 가치 평가, 감사, 정밀 제조, 고부가가치 라이선스, 금융 설계 분야로 강점을 연결하십시오. 가치의 옥석을 가릴 때 막대한 수익이 연계됩니다.",
+              avoid: [
+                "정형화된 가이드나 규칙 없이 모든 것을 매 순간 감정적으로 처리해야 하는 감정 노동",
+                "장부 정리가 투명하지 않고 현금 흐름 추적이 불분명한 동업 비즈니스",
+                "본인의 독립적 판단 권한을 박탈하고 무조건 상명하복을 강요하는 수직적 집단",
+                "정당한 라이선스 계약 없이 노동의 대가를 추후 지분으로만 퉁치려는 비합리적 환경"
+              ],
+              avoidReason: "관계 속에서 발생하는 불공정함과 비합리성이 극심한 정신적 스트레스를 초래하며, 이는 곧 판단력 저하와 홧김에 지르는 금전적 악수로 이어집니다.",
+              yearlyWarning: "올해는 확실하지 않은 정산 조건이 걸린 공동 지분 투자나 정으로 얽힌 계약을 완전히 차단하십시오. 계약서 조항의 2차 전문 검토가 필수입니다.",
+              successScore: 80, riskScore: 50, synergyScore: 70,
+              bestPartner: "토(土) 기운 (지원군, 기반재)",
+              worstPartner: "화(火) 기운 (제련가, 경쟁자)"
+            },
+            "수": {
+              connection: "물 흐르듯 끊임없이 순환하는 정보 가공과 기획력, 글로벌 유통, 지식 서비스 및 디지털 플랫폼 기반 무형 자산 유통 분야로 강점을 연결하십시오. 유연성과 통찰이 돈이 되는 비즈니스에 강합니다.",
+              avoid: [
+                "자금이 장기간 묶여 유동성을 확보할 수 없는 실물 자산으로의 올인 투자",
+                "경쟁 장벽이 낮아 단가 후려치기가 횡행하는 단순 저임금 노동 시장",
+                "정산의 기한이 명확히 정해지지 않고 상호간의 의무가 불분명한 동업 약정",
+                "물리적인 변수(날씨, 기후, 노조 등)에 따라 생산량이 널뛰는 불안정 제조 현장"
+              ],
+              avoidReason: "모든 흐름을 수용하려는 태도가 경계를 모호하게 만들어, 받을 돈을 정당하게 청구하지 못하거나 거래처 미수금이 쌓이는 정산 실패를 유발합니다.",
+              yearlyWarning: "올해는 자산의 무리한 대출을 통한 레버리지 투자나 자금 융통을 절대 금하십시오. 현금 유동성을 단단히 보존하는 것이 최고의 금융 개운입니다.",
+              successScore: 85, riskScore: 60, synergyScore: 80,
+              bestPartner: "금(金) 기운 (근원지, 보호자)",
+              worstPartner: "토(土) 기운 (댐, 흐름방해자)"
+            }
+          };
+
+          const dayStemEl = sajuInfo?.day?.stemEl || "목";
+          const currentFL = flData[dayStemEl] || flData["목"];
+
+          return (
+            <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+              <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+              
+              <div className="space-y-6">
+                {/* 헤더 */}
+                <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+                  <span className="text-[9px] text-gray-400 font-light">Chapter 2. 강점과 돈의 연결</span>
+                </div>
+
+                {/* 타이틀 */}
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-gray-800 block font-myeongjo">• {name} 님의 강점과 돈을 연결하는 비결</span>
+                  <p className="text-[10px] text-gray-500 font-light font-sans">
+                    사주 원국의 타고난 에너지를 억압하지 않고, 생산적인 수익 모델로 정교하게 변환하는 포트폴리오 전략입니다.
+                  </p>
+                </div>
+
+                {/* 시각화: 금융 시너지 & 리스크 포트폴리오 */}
+                <div className="grid grid-cols-3 gap-4 bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 text-center shadow-inner">
+                  <div className="space-y-1">
+                    <span className="text-[9px] text-gray-400 block font-light">🎯 비즈니스 부합도</span>
+                    <strong className="text-sm font-bold text-[#A3845B]">{currentFL.successScore}%</strong>
+                    <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden max-w-[70px] mx-auto">
+                      <div className="bg-[#A3845B] h-full rounded-full" style={{ width: `${currentFL.successScore}%` }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1 border-x border-gray-200">
+                    <span className="text-[9px] text-gray-400 block font-light">⚡ 리스크 민감도</span>
+                    <strong className="text-sm font-bold text-red-600">{currentFL.riskScore}%</strong>
+                    <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden max-w-[70px] mx-auto">
+                      <div className="bg-red-500 h-full rounded-full" style={{ width: `${currentFL.riskScore}%` }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[9px] text-gray-400 block font-light">🤝 대인 시너지 지수</span>
+                    <strong className="text-sm font-bold text-blue-600">{currentFL.synergyScore}%</strong>
+                    <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden max-w-[70px] mx-auto">
+                      <div className="bg-blue-500 h-full rounded-full" style={{ width: `${currentFL.synergyScore}%` }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 강점을 돈으로 연결하는 구체적 방법 */}
+                <div className="space-y-3">
+                  <div className="bg-[#A3845B]/5 p-4 rounded-lg border border-[#A3845B]/20 space-y-1">
+                    <span className="text-[10px] font-bold text-[#A3845B] block font-myeongjo">💡 {name} 님을 위한 금전적 강점 치환 전략</span>
+                    <p className="text-[11px] text-gray-600 leading-relaxed font-light font-sans">
+                      {currentFL.connection}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 피해야 할 수익 방식 */}
+                <div className="space-y-3">
+                  <span className="text-[10px] font-bold text-red-600 block flex items-center gap-1">❌ 반드시 피해야 할 수익 방식 및 환경</span>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {currentFL.avoid.map((item, idx) => (
+                      <div key={idx} className="bg-white p-3 rounded border border-red-100 shadow-sm flex items-start gap-2">
+                        <span className="text-red-500 font-bold text-[10px] mt-0.5">[{idx + 1}]</span>
+                        <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{item}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="text-[10px] text-gray-400 italic font-light pt-1">
+                    * 회피 사유: {currentFL.avoidReason}
+                  </div>
+                </div>
+
+                {/* 올해 피해야 할 금전적 선택 */}
+                <div className="bg-[#F9F8F6] p-4 rounded border border-gray-200 space-y-2">
+                  <span className="text-[10px] font-bold text-red-600 flex items-center gap-1">⚠️ 올해 피해야 할 금전적 선택 경고</span>
+                  <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">
+                    {currentFL.yearlyWarning}
+                  </p>
+                </div>
+
+                {/* 오행 파트너십 시너지 매칭 패널 */}
+                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3 shadow-inner">
+                  <span className="text-[10px] font-bold text-[#C2A378] tracking-wider block font-myeongjo text-center">🤝 {name} 님의 비즈니스 & 재정적 오행 파트너 매칭</span>
+                  <div className="grid grid-cols-2 gap-4 text-[10px] text-gray-300">
+                    <div className="border-r border-gray-700/50 pr-4 flex flex-col justify-center">
+                      <span className="text-green-400 block mb-0.5 font-bold">🟢 최상의 시너지 오행 파트너</span>
+                      <p className="text-white font-sans leading-relaxed">
+                        귀하에게 생산성과 자산 축적 안정성을 제공하는 인연은 <strong>{currentFL.bestPartner}</strong>을 품은 사람입니다.
+                      </p>
+                    </div>
+                    <div className="flex flex-col justify-center">
+                      <span className="text-red-400 block mb-0.5 font-bold">🔴 조율과 주의가 필요한 오행 파트너</span>
+                      <p className="text-white font-sans leading-relaxed">
+                        계약 마찰 및 불공정한 정산 리스크를 유발하기 쉬운 인연은 <strong>{currentFL.worstPartner}</strong>을 과다하게 품은 사람입니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div className="text-right text-[9px] text-gray-300 pt-2">Page 11 / 22</div>
+            </div>
+          );
+        })()}
+
+        {/* -------------------- Page 12. Chapter 2. 나에게 맞는 업무 방식 -------------------- */}
+        {(() => {
+          const jobStyleData = {
+            "목": {
+              goodPlace: "창의적인 브레인스토밍이 자유롭고, 프로젝트의 시작과 기획 단계에서 본인의 기여도가 높게 반영되는 유연한 조직이 잘 맞습니다. 스스로 씨앗을 틔울 수 있게 독립적인 전권을 위임해 주는 전문 비즈니스 부서가 최적입니다.",
+              badPlace: "정해진 구형 매뉴얼만 고수하고 1cm의 오차도 허용하지 않으며, 상급자의 의견에 어떤 이견도 제시할 수 없는 경직되고 수직적인 기계형 근무 구조에서는 극심한 정신적 억압과 우울을 느끼기 쉽습니다.",
+              specialist: 85, founder: 70, member: 55,
+              remedy: "매일 한 번씩 새로운 아이디어 스케치를 하거나, 업무 외 시간에 책 집필/디자인 등 독창적 부업 파이프라인을 유지하여 '생장(生長)'의 욕구를 충족하십시오."
+            },
+            "화": {
+              goodPlace: "본인의 프레젠테이션이나 제안이 즉각적으로 피드백되고, 트렌드를 빠르게 쫓으며, 활발한 외부 미팅과 커뮤니케이션이 활성화되어 있는 동적인 영업·홍보·엔터테인먼트형 공간이 최적입니다.",
+              badPlace: "종일 말 한마디 하지 않고 밀폐된 공간에서 정밀 검증이나 정적인 기계 데이터를 반복 수정하는 근무지, 혹은 변화가 전혀 없어서 장래성이 가려져 있는 어두운 부서에서는 기운이 고갈됩니다.",
+              specialist: 80, founder: 90, member: 45,
+              remedy: "팀 내에서 소통의 윤활유 역할을 자처하거나, 주기적으로 외부 대외 네트워킹 및 취미 세미나에 참여하여 자신의 내재된 열정을 불꽃처럼 발산해야 정신이 건강해집니다."
+            },
+            "토": {
+              goodPlace: "부서 간 갈등을 조정하거나, 자산 및 계약 정보를 정밀하게 정돈 관리하고, 오랜 기간의 신뢰에 기반하여 시스템을 단단하게 다지는 안정적인 플랫폼 관리국이나 기획실이 체질입니다.",
+              badPlace: "오늘 정해진 방향이 내일 갑자기 뒤집히는 불안정한 신생 스타트업의 격변 현장, 혹은 팀원 간의 소통 없이 극도의 무한 경쟁을 조장하여 감정을 소모하게 만드는 전투형 부서입니다.",
+              specialist: 75, founder: 80, member: 70,
+              remedy: "업무 시 항상 대안(Plan B)을 마련해 심리적 안전지대를 형성하고, 본인의 중립적 중재 강점을 살려 부서 내 '신뢰의 보루'로서 포지셔닝하는 전략을 취하십시오."
+            },
+            "금": {
+              goodPlace: "정확한 룰과 가이드라인이 명시되어 있고, 본인의 전문적인 분석과 결단력이 존중되며, 일의 매듭이 수치로 명확히 끊어지는 평가·품질관리·금융 및 전문 엔지니어링 직무가 최적입니다.",
+              badPlace: "주먹구구식으로 계약 조건을 퉁치거나, 사적으로 공금을 섞어 쓰고, 상급자의 감정에 따라 규칙이 수시로 바뀌는 체계 없는 가족형 중소기업이나 비합리적 환경에서는 분노 지수가 폭발합니다.",
+              specialist: 90, founder: 75, member: 50,
+              remedy: "모호한 지시는 반드시 텍스트와 이메일로 문서화하여 보존하고, 개인 업무 평가가 계량적으로 정산되는 환경을 선택하여 관계적 오해를 원천 차단하십시오."
+            },
+            "수": {
+              goodPlace: "글로벌 트렌드를 다루거나, 정보 유통량이 많은 인터넷/디지털 콘텐츠 분야, 유연한 재택근무가 융통성 있게 허용되며 지적 통찰과 전략적 자문을 수행하는 컨설턴트 및 유통 기획 환경이 잘 맞습니다.",
+              badPlace: "정해진 장소에서 교대 근무 형태로 공장의 컨베이어 벨트나 정적인 자리를 1초도 이탈할 수 없는 하드 기계형 근무지, 혹은 고정관념이 지배하는 보수적인 공직 조직입니다.",
+              specialist: 88, founder: 85, member: 40,
+              remedy: "흐르는 물과 같은 통찰력을 활용할 수 있는 온라인 정보 수집 채널을 독점하고, 시공간 제약이 덜한 하이브리드 근무 방식이나 정기적인 단기 여행을 통해 내면의 정체를 해소하십시오."
+            }
+          };
+
+          const dayStemEl = sajuInfo?.day?.stemEl || "목";
+          const currentJS = jobStyleData[dayStemEl] || jobStyleData["목"];
+
+          return (
+            <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+              <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+              
+              <div className="space-y-6">
+                {/* 헤더 */}
+                <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+                  <span className="text-[9px] text-gray-400 font-light">Chapter 2. 맞는 업무 방식</span>
+                </div>
+
+                {/* 타이틀 */}
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-gray-800 block font-myeongjo">• {name} 님에게 최적화된 업무 환경 분석</span>
+                  <p className="text-[10px] text-gray-500 font-light font-sans">
+                    일간 오행의 에너지 특성이 업무 만족도 및 직무 성과와 직결되는 환경적 매커니즘을 밝혀냅니다.
+                  </p>
+                </div>
+
+                {/* 잘 맞는 일터 vs 피할 일터 가로 배열 레이아웃 */}
+                <div className="space-y-3">
+                  <div className="bg-emerald-50/40 p-4 rounded-lg border border-emerald-100/80 flex flex-col md:flex-row md:items-center gap-4">
+                    <div className="md:w-1/4 flex items-center gap-2 border-b md:border-b-0 md:border-r border-emerald-200/80 pb-2 md:pb-0 md:pr-4 min-w-[200px] shrink-0">
+                      <span className="text-sm">👍</span>
+                      <span className="text-[11px] font-bold text-emerald-800">능력이 극대화되는 잘 맞는 일터</span>
+                    </div>
+                    <div className="md:w-3/4">
+                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">
+                        {currentJS.goodPlace}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="bg-red-50/30 p-4 rounded-lg border border-red-100/60 flex flex-col md:flex-row md:items-center gap-4">
+                    <div className="md:w-1/4 flex items-center gap-2 border-b md:border-b-0 md:border-r border-red-200/50 pb-2 md:pb-0 md:pr-4 min-w-[200px] shrink-0">
+                      <span className="text-sm">👎</span>
+                      <span className="text-[11px] font-bold text-red-700">스트레스와 피로가 솟구치는 일터</span>
+                    </div>
+                    <div className="md:w-3/4">
+                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">
+                        {currentJS.badPlace}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 직무 적합도 비교 시각화 */}
+                <div className="space-y-4">
+                  <span className="text-xs font-bold text-gray-800 block font-myeongjo">• 커리어 포지션 적합도 정밀 진단</span>
+                  <div className="bg-[#F9F8F6] p-5 rounded-lg border border-[#E2DDD5]/60 space-y-3 shadow-sm">
+                    {/* Position 1 */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[10px] font-bold text-gray-700">
+                        <span>👩‍💻 전문직 / 프리랜서 적성</span>
+                        <span className="text-[#A3845B]">{currentJS.specialist}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200/70 h-2.5 rounded-full overflow-hidden">
+                        <div 
+                          className="bg-gradient-to-r from-[#C2A378] to-[#A3845B] h-full rounded-full" 
+                          style={{ width: `${currentJS.specialist}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Position 2 */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[10px] font-bold text-gray-700">
+                        <span>🚀 1인 창업 / 사업 적성</span>
+                        <span className="text-[#A3845B]">{currentJS.founder}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200/70 h-2.5 rounded-full overflow-hidden">
+                        <div 
+                          className="bg-gradient-to-r from-[#C2A378] to-[#A3845B] h-full rounded-full" 
+                          style={{ width: `${currentJS.founder}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Position 3 */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[10px] font-bold text-gray-700">
+                        <span>🏢 일반 기업 조직원 적성</span>
+                        <span className="text-[#A3845B]">{currentJS.member}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200/70 h-2.5 rounded-full overflow-hidden">
+                        <div 
+                          className="bg-gray-400/60 h-full rounded-full" 
+                          style={{ width: `${currentJS.member}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 명리 근거 */}
+                <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-1">
+                  <span className="text-[10px] font-bold text-[#A3845B] block">💡 명리학적 배경 및 근거</span>
+                  <p className="text-[10.5px] text-gray-500 leading-relaxed font-light font-sans">
+                    {getAstroBasis("job")}
+                  </p>
+                </div>
+
+                {/* 피로 개운 비책 카드 */}
+                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-2.5 shadow-inner">
+                  <span className="text-[10px] font-bold text-[#C2A378] tracking-wider block font-myeongjo text-center">🧘 {name} 님의 업무 피로 & 번아웃 극복 비책</span>
+                  <p className="text-[10.5px] text-gray-300 font-light font-sans leading-relaxed text-center font-sans">
+                    귀하의 일간 오행 성향상, 업무 과부하 시 다음과 같이 개운 비책을 취하십시오.
+                    <br />
+                    <strong className="text-white block mt-1">"{currentJS.remedy}"</strong>
+                  </p>
+                </div>
+
+              </div>
+              <div className="text-right text-[9px] text-gray-300 pt-2">Page 12 / 22</div>
+            </div>
+          );
+        })()}
 
         {/* -------------------- Page 12. Chapter 2 처방 (대인관계 설명서) -------------------- */}
         <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
