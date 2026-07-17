@@ -128,6 +128,7 @@ conn.on('ready', () => {
             const setupCmd = `
               sed -i 's|DATABASE_URL=.*|DATABASE_URL="file:/home/www/saju-artpani/frontend/prisma/dev.db"|' ${remoteRoot}/.env
               cd ${remoteRoot}
+              rm -rf .next
               npx prisma@6.2.1 generate
               npx prisma@6.2.1 db push
               node scratch/import_json_to_sqlite.js
@@ -150,6 +151,9 @@ conn.on('ready', () => {
                   mkdir -p .next/standalone/.next
                   cp -r public .next/standalone/ 2>/dev/null || true
                   cp -r .next/static .next/standalone/.next/ 2>/dev/null || true
+                  mkdir -p .next/standalone/node_modules
+                  cp -r node_modules/.prisma .next/standalone/node_modules/ 2>/dev/null || true
+                  cp -r node_modules/@prisma .next/standalone/node_modules/ 2>/dev/null || true
                   PORT=3012 pm2 start server.js --name saju-app --cwd ${remoteRoot}/.next/standalone
                 `;
                 conn.exec(pm2Cmd, (execErr, stream) => {
