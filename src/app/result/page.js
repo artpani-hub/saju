@@ -5834,7 +5834,7 @@ return val;
                 <div className="bg-[#F9F8F6] p-5 rounded-lg border border-[#E2DDD5]/60 space-y-4 shadow-sm">
                   <span className="text-[11px] font-bold text-[#A3845B] block font-myeongjo text-center">📊 {name} 님의 재물 흐름 3대 밸런스 인덱스</span>
                   
-                  <div className="space-y-3">
+                  <div className={`space-y-3 ${blurClass}`}>
                     <div className="space-y-1">
                       <div className="flex justify-between text-[10px] font-bold text-gray-700">
                         <span>💰 재물 유입력 (Income Flow)</span>
@@ -5874,7 +5874,7 @@ return val;
                       </div>
                     </div>
                   </div>
-                  <div className="text-center text-[9.5px] text-gray-400 font-light pt-1">
+                  <div className={`text-center text-[9.5px] text-gray-400 font-light pt-1 ${blurClass}`}>
                     권장 지향 자산 목표: <strong>{currentWealth.keyword}</strong>
                   </div>
                 </div>
@@ -5884,17 +5884,17 @@ return val;
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="bg-white p-4 rounded-lg border border-[#E2DDD5] shadow-sm space-y-2">
                       <span className="text-[10px] font-bold text-[#A3845B] flex items-center gap-1">🟢 1. 돈이 들어오는 방식</span>
-                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentWealth.income}</p>
+                      <p className={`text-[10.5px] text-gray-600 leading-relaxed font-light font-sans ${blurClass}`}>{currentWealth.income}</p>
                     </div>
 
                     <div className="bg-white p-4 rounded-lg border border-[#E2DDD5] shadow-sm space-y-2">
                       <span className="text-[10px] font-bold text-red-600 flex items-center gap-1">🔴 2. 돈이 새는 원인</span>
-                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentWealth.loss}</p>
+                      <p className={`text-[10.5px] text-gray-600 leading-relaxed font-light font-sans ${blurClass}`}>{currentWealth.loss}</p>
                     </div>
 
                     <div className="bg-white p-4 rounded-lg border border-[#E2DDD5] shadow-sm space-y-2">
                       <span className="text-[10px] font-bold text-blue-600 flex items-center gap-1">🔵 3. 돈이 모이는 조건</span>
-                      <p className="text-[10.5px] text-gray-600 leading-relaxed font-light font-sans">{currentWealth.condition}</p>
+                      <p className={`text-[10.5px] text-gray-600 leading-relaxed font-light font-sans ${blurClass}`}>{currentWealth.condition}</p>
                     </div>
                   </div>
                 </div>
@@ -5921,15 +5921,15 @@ return val;
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[10px] text-gray-300">
                     <div className="border-r border-gray-700/50 pr-2">
                       <span className="text-gray-400 block mb-0.5">🎨 추천 수호 컬러</span>
-                      <strong className="text-white">{lackElRemedy.color}</strong>
+                      <strong className={`text-white block ${blurClass}`}>{lackElRemedy.color}</strong>
                     </div>
                     <div className="border-r border-gray-700/50 pr-2">
                       <span className="text-gray-400 block mb-0.5">🏃 생활 액티베이션</span>
-                      <strong className="text-white">{lackElRemedy.action}</strong>
+                      <strong className={`text-white block ${blurClass}`}>{lackElRemedy.action}</strong>
                     </div>
                     <div>
                       <span className="text-gray-400 block mb-0.5">🧭 최적 환경 공간</span>
-                      <strong className="text-white">{lackElRemedy.env}</strong>
+                      <strong className={`text-white block ${blurClass}`}>{lackElRemedy.env}</strong>
                     </div>
                   </div>
                 </div>
