@@ -6508,53 +6508,55 @@ return val;
                   </div>
 
                   {/* 6칸 만세력 미니 배치 */}
-                  <div className="grid grid-cols-3 gap-1.5 max-w-[320px] mx-auto text-center text-[9px] font-bold text-gray-700">
-                    <div className="bg-gray-100 py-1 rounded-t">일주(日)</div>
-                    <div className="bg-gray-100 py-1 rounded-t">월주(月)</div>
-                    <div className="bg-gray-100 py-1 rounded-t">연주(年)</div>
+                  <div className={blurClass}>
+                    <div className="grid grid-cols-3 gap-1.5 max-w-[320px] mx-auto text-center text-[9px] font-bold text-gray-700">
+                      <div className="bg-gray-100 py-1 rounded-t">일주(日)</div>
+                      <div className="bg-gray-100 py-1 rounded-t">월주(月)</div>
+                      <div className="bg-gray-100 py-1 rounded-t">연주(年)</div>
 
-                    {/* 천간 */}
-                    <div className={`py-2.5 rounded shadow-sm ${getElementColor(sajuInfo?.day?.stemEl)}`}>
-                      <span className="block text-sm font-myeongjo">{sajuInfo?.day?.stem}</span>
-                      <span className="text-[8px] opacity-80">{sajuInfo?.day?.stemEl} [★본질]</span>
-                    </div>
-                    <div className={`py-2.5 rounded shadow-sm ${getElementColor(sajuInfo?.month?.stemEl)}`}>
-                      <span className="block text-sm font-myeongjo">{sajuInfo?.month?.stem}</span>
-                      <span className="text-[8px] opacity-80">{sajuInfo?.month?.stemEl}</span>
-                    </div>
-                    <div className={`py-2.5 rounded shadow-sm ${getElementColor(sajuInfo?.year?.stemEl)}`}>
-                      <span className="block text-sm font-myeongjo">{sajuInfo?.year?.stem}</span>
-                      <span className="text-[8px] opacity-80">{sajuInfo?.year?.stemEl}</span>
+                      {/* 천간 */}
+                      <div className={`py-2.5 rounded shadow-sm ${getElementColor(sajuInfo?.day?.stemEl)}`}>
+                        <span className="block text-sm font-myeongjo">{sajuInfo?.day?.stem}</span>
+                        <span className="text-[8px] opacity-80">{sajuInfo?.day?.stemEl} [★본질]</span>
+                      </div>
+                      <div className={`py-2.5 rounded shadow-sm ${getElementColor(sajuInfo?.month?.stemEl)}`}>
+                        <span className="block text-sm font-myeongjo">{sajuInfo?.month?.stem}</span>
+                        <span className="text-[8px] opacity-80">{sajuInfo?.month?.stemEl}</span>
+                      </div>
+                      <div className={`py-2.5 rounded shadow-sm ${getElementColor(sajuInfo?.year?.stemEl)}`}>
+                        <span className="block text-sm font-myeongjo">{sajuInfo?.year?.stem}</span>
+                        <span className="text-[8px] opacity-80">{sajuInfo?.year?.stemEl}</span>
+                      </div>
+
+                      {/* 지지 */}
+                      <div className={`py-2.5 rounded shadow-sm ${getElementColor(sajuInfo?.day?.branchEl)}`}>
+                        <span className="block text-sm font-myeongjo">{sajuInfo?.day?.branch}</span>
+                        <span className="text-[8px] opacity-80">{sajuInfo?.day?.branchEl}</span>
+                      </div>
+                      <div className={`py-2.5 rounded shadow-sm ${getElementColor(sajuInfo?.month?.branchEl)}`}>
+                        <span className="block text-sm font-myeongjo">{sajuInfo?.month?.branch}</span>
+                        <span className="text-[8px] opacity-80">{sajuInfo?.month?.branchEl}</span>
+                      </div>
+                      <div className={`py-2.5 rounded shadow-sm ${getElementColor(sajuInfo?.year?.branchEl)}`}>
+                        <span className="block text-sm font-myeongjo">{sajuInfo?.year?.branch}</span>
+                        <span className="text-[8px] opacity-80">{sajuInfo?.year?.branchEl}</span>
+                      </div>
                     </div>
 
-                    {/* 지지 */}
-                    <div className={`py-2.5 rounded shadow-sm ${getElementColor(sajuInfo?.day?.branchEl)}`}>
-                      <span className="block text-sm font-myeongjo">{sajuInfo?.day?.branch}</span>
-                      <span className="text-[8px] opacity-80">{sajuInfo?.day?.branchEl}</span>
+                    {/* 오행 기질 설명 */}
+                    <div className="text-[10.5px] text-gray-600 leading-relaxed font-sans font-light border-t border-gray-200/80 pt-2 space-y-1">
+                      <p>
+                        귀하는 타고난 본질이 <strong>{sajuInfo?.day?.stemEl}의 기운({sajuInfo?.day?.stem} 일간)</strong>에 해당합니다. 
+                        {sajuInfo?.day?.stemEl === "목" && "생장하는 푸른 나무처럼 위로 뻗어나가는 기획력과 진취적이고 따뜻한 본성을 가지고 있습니다."}
+                        {sajuInfo?.day?.stemEl === "화" && "뜨겁게 밝히는 불꽃처럼 직관적인 열정과 풍부한 표현력, 솔직 담백한 매력을 가지고 있습니다."}
+                        {sajuInfo?.day?.stemEl === "토" && "모든 오행을 품어주는 두터운 대지처럼 신용과 중용을 중시하며 타인을 포용하는 넉넉한 본성을 가집니다."}
+                        {sajuInfo?.day?.stemEl === "금" && "옥석을 가려내는 단단한 쇳날처럼 시시비비가 명확하고 강직한 의리와 날카로운 결단력을 지녔습니다."}
+                        {sajuInfo?.day?.stemEl === "수" && "물 흐르듯 유연하고 깊은 강물처럼 통찰력과 지혜가 뛰어나며, 주변 환경에 따라 처세하는 능력이 탁월합니다."}
+                      </p>
+                      <p className="text-[10px] text-gray-500 font-light">
+                        대인관계 포지션 분석에 따르면, 나의 강한 기질을 조율해주는 상생 인연을 곁에 두고, 에너지를 고갈시키는 상극 인연을 영리하게 우회하는 것이 관계의 핵심 전략입니다.
+                      </p>
                     </div>
-                    <div className={`py-2.5 rounded shadow-sm ${getElementColor(sajuInfo?.month?.branchEl)}`}>
-                      <span className="block text-sm font-myeongjo">{sajuInfo?.month?.branch}</span>
-                      <span className="text-[8px] opacity-80">{sajuInfo?.month?.branchEl}</span>
-                    </div>
-                    <div className={`py-2.5 rounded shadow-sm ${getElementColor(sajuInfo?.year?.branchEl)}`}>
-                      <span className="block text-sm font-myeongjo">{sajuInfo?.year?.branch}</span>
-                      <span className="text-[8px] opacity-80">{sajuInfo?.year?.branchEl}</span>
-                    </div>
-                  </div>
-
-                  {/* 오행 기질 설명 */}
-                  <div className="text-[10.5px] text-gray-600 leading-relaxed font-sans font-light border-t border-gray-200/80 pt-2 space-y-1">
-                    <p>
-                      귀하는 타고난 본질이 <strong>{sajuInfo?.day?.stemEl}의 기운({sajuInfo?.day?.stem} 일간)</strong>에 해당합니다. 
-                      {sajuInfo?.day?.stemEl === "목" && "생장하는 푸른 나무처럼 위로 뻗어나가는 기획력과 진취적이고 따뜻한 본성을 가지고 있습니다."}
-                      {sajuInfo?.day?.stemEl === "화" && "뜨겁게 밝히는 불꽃처럼 직관적인 열정과 풍부한 표현력, 솔직 담백한 매력을 가지고 있습니다."}
-                      {sajuInfo?.day?.stemEl === "토" && "모든 오행을 품어주는 두터운 대지처럼 신용과 중용을 중시하며 타인을 포용하는 넉넉한 본성을 가집니다."}
-                      {sajuInfo?.day?.stemEl === "금" && "옥석을 가려내는 단단한 쇳날처럼 시시비비가 명확하고 강직한 의리와 날카로운 결단력을 지녔습니다."}
-                      {sajuInfo?.day?.stemEl === "수" && "물 흐르듯 유연하고 깊은 강물처럼 통찰력과 지혜가 뛰어나며, 주변 환경에 따라 처세하는 능력이 탁월합니다."}
-                    </p>
-                    <p className="text-[10px] text-gray-500 font-light">
-                      대인관계 포지션 분석에 따르면, 나의 강한 기질을 조율해주는 상생 인연을 곁에 두고, 에너지를 고갈시키는 상극 인연을 영리하게 우회하는 것이 관계의 핵심 전략입니다.
-                    </p>
                   </div>
                 </div>
 
