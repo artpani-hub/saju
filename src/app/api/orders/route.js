@@ -428,7 +428,7 @@ export async function PUT(req) {
 
     await db.$transaction(async (tx) => {
       const order = await tx.order.update({
-        where: { id },
+        where: { id: String(id) },
         data: {
           status: status ? status.toUpperCase() : undefined
         }
