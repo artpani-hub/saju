@@ -7470,33 +7470,73 @@ return val;
         })()}
 
         {/* -------------------- Page 19. Chapter 3 연계 처방 (고민 답변) -------------------- */}
-        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
-          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
-          
-          <div className="space-y-6">
-            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
-              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
-              <span className="text-[9px] text-gray-400 font-light">Chapter 3 연계 처방 (고민 답변)</span>
-            </div>
+        {(() => {
+          const lackElName = lackEl?.name || "토";
+          return (
+            <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+              <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+              
+              <div className="space-y-6">
+                <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+                  <span className="text-[9px] text-gray-400 font-light">Chapter 3 연계 처방 (고민 답변)</span>
+                </div>
 
-            <div className="bg-[#A3845B]/5 p-5 rounded-lg border border-[#A3845B]/20 space-y-3">
-              <span className="text-[9px] bg-[#A3845B] text-white px-2.5 py-0.5 rounded font-bold">고객 신청 고민</span>
-              <h4 className="font-myeongjo text-xs font-bold text-gray-800 mt-1">Q. "${worryContent.question}"</h4>
-            </div>
+                <div className="bg-[#A3845B]/5 p-5 rounded-lg border border-[#A3845B]/20 space-y-3">
+                  <span className="text-[9px] bg-[#A3845B] text-white px-2.5 py-0.5 rounded font-bold">고객 신청 고민</span>
+                  <h4 className="font-myeongjo text-xs font-bold text-gray-800 mt-1">Q. &ldquo;{worryContent.question}&rdquo;</h4>
+                </div>
 
-            <div className="space-y-4">
-              <h4 className="text-xs font-bold text-[#A3845B]">• 혜안당 명리 지침 나침반 답변</h4>
-              <p className="text-[11.5px] text-gray-700 leading-relaxed whitespace-pre-line">
-                {worryContent.answer}
-              </p>
-            </div>
+                <div className="space-y-4">
+                  <h4 className="text-xs font-bold text-[#A3845B]">• 혜안당 명리 지침 나침반 답변</h4>
+                  <p className="text-[11.5px] text-gray-700 leading-relaxed whitespace-pre-line font-sans font-light">
+                    {worryContent.answer}
+                  </p>
+                </div>
 
-            <div className="bg-[#F9F8F6] p-4 rounded border border-gray-200 text-[10px] text-gray-500 leading-relaxed font-light">
-              * 본 답변은 신청 고객님의 사주 8자 데이터와 신청서에 직접 기록한 고민 카테고리를 크로스 체크하여 만세력 원리대로 추출한 결과입니다.
+                <div className="bg-[#F9F8F6] p-4 rounded border border-gray-200 text-[9.5px] text-gray-500 leading-relaxed font-light">
+                  * 본 답변은 신청 고객님의 사주 8자 데이터와 신청서에 직접 기록한 고민 카테고리를 크로스 체크하여 만세력 원리대로 추출한 결과입니다.
+                </div>
+
+                {/* 하단 고민 해결 오행 처방 대시보드 (여백 제거 및 시각화 고도화) */}
+                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3.5 shadow-inner">
+                  <div className="border-b border-gray-700/50 pb-1.5 flex justify-between items-center text-[10px]">
+                    <span className="font-bold text-[#C2A378] font-myeongjo">🧘 {name} 님의 고민 극복을 위한 오행 에너지 솔루션</span>
+                    <span className="text-gray-400">카테고리: {worryCategoryInput || "종합 운세"}</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[10px] font-sans font-light">
+                    {/* 좌측: 마인드셋 게이지 */}
+                    <div className="space-y-2 border-b md:border-b-0 md:border-r border-gray-700/50 pb-3 md:pb-0 pr-0 md:pr-4">
+                      <span className="text-[#C2A378] font-bold text-[9.5px] block">• 고민 극대화를 위한 심리 처방</span>
+                      <p className="text-gray-300 leading-relaxed font-sans font-light">
+                        {worryCategoryInput === "돈" || worryCategoryInput === "재물" ? (
+                          "재물 고민을 극복하기 위해서는 일차적으로 나의 자산 안정성을 뜻하는 '토(土)'의 기운을 다져야 합니다. 가계부를 앱이나 수기로 꼼꼼히 기록하여 눈에 보이지 않는 돈의 누수를 차단하십시오."
+                        ) : worryCategoryInput === "연애" || worryCategoryInput === "궁합" ? (
+                          "관계상의 마찰이나 갈등을 조율하기 위해선 감정의 물길인 '수(Water)'의 흐름을 평온하게 유지해야 합니다. 섣부른 조급증이나 서운함을 단호히 내려두는 연습이 최고의 개운법입니다."
+                        ) : (
+                          "진로나 인생의 과도기에서는 나를 잡아주는 주체성인 '금(金)'의 결단력과 중심이 절실합니다. 타인의 눈치를 보거나 흐려지지 마시고 본인의 판단을 명확히 기록해 두십시오."
+                        )}
+                      </p>
+                    </div>
+
+                    {/* 우측: 핵심 행동 꿀팁 */}
+                    <div className="space-y-2 flex flex-col justify-between">
+                      <div>
+                        <span className="text-[#C2A378] font-bold text-[9.5px] block">• 일상 속 개운 행동 수칙</span>
+                        <p className="text-gray-300 leading-relaxed font-sans font-light">
+                          매일 밤 잠들기 전 5분 동안 <strong className="text-white">부족한 {lackElName} 기운</strong>을 상징하는 물건이나 이미지를 응시하며 내면의 복원력을 높이십시오. 사주 상 기류의 정체는 결국 나에게 없는 오행의 인위적인 수혈을 통해 완전히 해소될 것입니다.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div className="text-right text-[9px] text-gray-300 pt-2">Page 20 / 22</div>
             </div>
-          </div>
-          <div className="text-right text-[9px] text-gray-300 pt-2">Page 20 / 22</div>
-        </div>
+          );
+        })()}
 
         {/* -------------------- Page 20. Chapter 3 연계 처방 (실천 나침반) -------------------- */}
         <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
