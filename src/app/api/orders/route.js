@@ -316,7 +316,7 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     const newOrderData = await req.json();
-    const { name, email, phone, amount, status, gender, calendar, year, month, day, hour, worryText, referer } = newOrderData;
+    const { id, name, email, phone, amount, status, gender, calendar, year, month, day, hour, worryText, referer } = newOrderData;
 
     if (!phone || !name) {
       return NextResponse.json({ success: false, error: "이름과 연락처는 필수 입력입니다." }, { status: 400 });
@@ -346,11 +346,19 @@ export async function POST(req) {
         }
       });
 
+      const orderId = id ? String(id) : `ORD_${new Date().getTime()}_${Math.floor(Math.random() * 1000)}`;
+      const appNum = `APP_${orderId}`;
+
       const order = await tx.order.create({
         data: {
+          id: orderId,
+          applicationNum: appNum,
           userId: user.id,
+          productName: newOrderData.productName || "평생 종합 사주팔자 보감",
           amount: Number(amount) || 0,
+          paymentMethod: newOrderData.paymentMethod || (status === "free" ? "free" : "CARD"),
           status: status ? status.toUpperCase() : "PENDING",
+          reportStatus: unlockedState ? "COMPLETED" : "PENDING",
           referer: referer || "direct"
         }
       });
