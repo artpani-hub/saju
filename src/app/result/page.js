@@ -11477,7 +11477,7 @@ return val;
               onClick={handlePortonePayment}
               className="w-full bg-[#8B221E] hover:bg-[#6D1B18] text-white py-4 px-6 rounded-xl font-myeongjo font-bold text-xs sm:text-sm flex items-center justify-between shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#8B221E]/20"
             >
-              <span>내 사주 블러처리 확인하로 가기 14900원</span>
+              <span>내사주 가림 해제 바로 가기 +14900원</span>
               <span className="text-lg">➔</span>
             </button>
           </div>
