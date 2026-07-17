@@ -525,12 +525,12 @@ export default function AdminPage() {
             {/* Scoreboard Cards (Interactive navigation to search lists) */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {[
-                { title: "오늘 신청 건수", val: `${stats.todayUsers} 건`, color: "border-l-4 border-blue-500", action: () => { setActiveTab("orders"); } },
-                { title: "결제 완료 건수", val: `${stats.todayPaid} 건`, color: "border-l-4 border-[#A3845B]", action: () => { setActiveTab("orders"); setPaymentStatusFilter("paid"); } },
-                { title: "보고서 생성 완료", val: `${stats.reportSuccess} 건`, color: "border-l-4 border-green-500", action: () => { setActiveTab("orders"); } },
-                { title: "보고서 생성 실패", val: `${stats.reportFailed} 건`, color: "border-l-4 border-red-500", action: () => { setActiveTab("orders"); } },
-                { title: "미결제 건수", val: `${stats.pendingPayments} 건`, color: "border-l-4 border-yellow-500", action: () => { setActiveTab("orders"); setPaymentStatusFilter("pending"); } },
-                { title: "환불 요청 건수", val: `${stats.refundRequests} 건`, color: "border-l-4 border-purple-500", action: () => { setActiveTab("orders"); } },
+                { title: "오늘 신청 건수", val: `${stats.todayUsers} 건`, color: "border-l-4 border-blue-500", action: () => { setActiveTab("orders"); setDateFilter("today"); setPaymentStatusFilter("all"); } },
+                { title: "결제 완료 건수", val: `${stats.todayPaid} 건`, color: "border-l-4 border-[#A3845B]", action: () => { setActiveTab("orders"); setDateFilter("today"); setPaymentStatusFilter("paid"); } },
+                { title: "보고서 생성 완료", val: `${stats.reportSuccess} 건`, color: "border-l-4 border-green-500", action: () => { setActiveTab("orders"); setDateFilter("today"); setPaymentStatusFilter("all"); } },
+                { title: "보고서 생성 실패", val: `${stats.reportFailed} 건`, color: "border-l-4 border-red-500", action: () => { setActiveTab("orders"); setDateFilter("today"); setPaymentStatusFilter("all"); } },
+                { title: "미결제 건수", val: `${stats.pendingPayments} 건`, color: "border-l-4 border-yellow-500", action: () => { setActiveTab("orders"); setDateFilter("today"); setPaymentStatusFilter("pending"); } },
+                { title: "환불 요청 건수", val: `${stats.refundRequests} 건`, color: "border-l-4 border-purple-500", action: () => { setActiveTab("orders"); setDateFilter("all"); setPaymentStatusFilter("all"); } },
                 { title: "고객 문의 대기", val: `${stats.pendingInquiries} 건`, color: "border-l-4 border-indigo-500", action: () => { setActiveTab("inquiries"); } },
                 { title: "오늘 매출", val: `${stats.todaySales.toLocaleString()} 원`, color: "border-l-4 border-emerald-500", action: () => { setActiveTab("stats"); } }
               ].map((card, i) => (
