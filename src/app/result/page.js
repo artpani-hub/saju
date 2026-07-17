@@ -5123,7 +5123,7 @@ return val;
             </div>
 
             {/* 오행 게이지 인포그래픽 */}
-            <div className="space-y-4 my-8">
+            <div className={`space-y-4 my-8 ${blurClass}`}>
               {elementsList.map((el) => {
                 const pct = getPercent(el.val);
                 return (
