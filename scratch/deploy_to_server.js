@@ -60,6 +60,20 @@ if (fs.existsSync(envPath)) {
   uploadQueue.push({ local: envPath, remote: path.posix.join(remoteRoot, '.env') });
 }
 
+// 5. prisma/schema.prisma 파일 추가 (원격 DB 마이그레이션 및 Prisma Client 생성 목적)
+console.log('Preparing prisma schema files...');
+const prismaSchemaPath = path.join(localProjectRoot, 'prisma/schema.prisma');
+if (fs.existsSync(prismaSchemaPath)) {
+  uploadQueue.push({ local: prismaSchemaPath, remote: path.posix.join(remoteRoot, 'prisma/schema.prisma') });
+}
+
+// 6. JSON to SQLite 마이그레이션 스크립트 추가 (실서버 레거시 데이터 복구 목적)
+console.log('Preparing JSON migration script...');
+const migrationScriptPath = path.join(localProjectRoot, 'scratch/import_json_to_sqlite.js');
+if (fs.existsSync(migrationScriptPath)) {
+  uploadQueue.push({ local: migrationScriptPath, remote: path.posix.join(remoteRoot, 'scratch/import_json_to_sqlite.js') });
+}
+
 console.log(`Total files to upload: ${uploadQueue.length}`);
 
 conn.on('ready', () => {
@@ -113,16 +127,23 @@ conn.on('ready', () => {
           if (index >= uploadQueue.length) {
             console.log('All files uploaded successfully!');
             
-            // 원격 서버 DB 스키마 동기화 (Prisma db push)
-            console.log('Syncing database schema on remote server...');
-            conn.exec(`cd ${remoteRoot} && npx prisma db push`, (dbErr, dbStream) => {
+            // 원격 서버 DB 스키마 동기화 및 Prisma Client 빌드
+            console.log('Syncing database schema and importing legacy data on remote server...');
+            const setupCmd = `
+              sed -i 's|DATABASE_URL=.*|DATABASE_URL="file:/home/www/saju-artpani/frontend/prisma/dev.db"|' ${remoteRoot}/.env
+              cd ${remoteRoot}
+              npx prisma generate
+              npx prisma db push
+              node scratch/import_json_to_sqlite.js
+            `;
+            conn.exec(setupCmd, (dbErr, dbStream) => {
               if (dbErr) {
-                console.error('Remote DB push error:', dbErr);
+                console.error('Remote DB setup error:', dbErr);
               }
               
               dbStream.resume();
               dbStream.on('close', (dbCode) => {
-                console.log(`Remote database sync finished with code: ${dbCode}`);
+                console.log(`Remote database sync, generate & import finished with code: ${dbCode}`);
                 
                 // PM2 재기동 실행
                 console.log('Restarting saju-app via PM2...');
