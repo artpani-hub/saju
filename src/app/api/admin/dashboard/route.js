@@ -51,22 +51,17 @@ export async function GET(req) {
       }
     });
 
-    // 2. 결제 완료 건수 (오늘 PAID 및 FREE 주문 수에서 취소/환불 건수를 마이너스 차감)
-    const rawPaidCount = await db.order.count({
+    // 2. 결제 완료 건수 (오늘 PAID 유료 주문 수, 무료 FREE 제외, 취소/환불 완료 건 제외)
+    const todayPaidOrdersCount = await db.order.count({
       where: {
-        status: { in: ["PAID", "FREE", "paid", "free"] },
+        status: { in: ["PAID", "paid"] },
+        OR: [
+          { refundStatus: null },
+          { refundStatus: { notIn: ["REFUNDED", "REFUND_COMPLETED", "refunded", "refund_completed"] } }
+        ],
         createdAt: { gte: startOfToday }
       }
     });
-
-    const rawCancelledCount = await db.order.count({
-      where: {
-        status: { in: ["CANCELLED", "cancelled", "REFUNDED", "refunded"] },
-        createdAt: { gte: startOfToday }
-      }
-    });
-
-    const todayPaidOrdersCount = Math.max(0, rawPaidCount - rawCancelledCount);
 
     // 3. 보고서 생성 완료 및 실패 건수 (오늘)
     const todayReportSuccess = await db.sajuReport.count({

@@ -413,8 +413,10 @@ export default function AdminPage() {
       const filterLower = paymentStatusFilter.toLowerCase();
       
       if (filterLower === "paid") {
-        // 결제 완료 필터일 경우 유료 결제완료(paid)와 무료 결제완료(free) 모두 포함
-        if (statusLower !== "paid" && statusLower !== "free") return false;
+        // 결제완료 필터일 경우 순수 유료 결제완료(paid)만 포함 (무료 free 제외)
+        // 그리고 환불 상태가 완료 또는 요청된 경우 제외
+        if (statusLower !== "paid") return false;
+        if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return false;
       } else {
         if (statusLower !== filterLower) return false;
       }
