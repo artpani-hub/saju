@@ -22,6 +22,7 @@ async function main() {
       const orderId = String(item.id);
       const appNum = item.applicationNum || `APP_${orderId}`;
       const phoneClean = item.phone || "01000000000";
+      const dateVal = item.createdAt ? new Date(item.createdAt) : new Date();
 
       // 1-1. Upsert User
       const user = await prisma.user.upsert({
@@ -36,6 +37,7 @@ async function main() {
           gender: item.gender || "female",
           birthHour: item.hour || null,
           worryText: item.worryText || "",
+          createdAt: dateVal
         },
         create: {
           name: item.name || "알수없음",
@@ -48,6 +50,7 @@ async function main() {
           gender: item.gender || "female",
           birthHour: item.hour || null,
           worryText: item.worryText || "",
+          createdAt: dateVal
         }
       });
 
@@ -60,7 +63,8 @@ async function main() {
           data: {
             userId: user.id,
             unlocked: item.status === "paid" || item.status === "PAID" || item.status === "free",
-            status: "REPORT_COMPLETED"
+            status: "REPORT_COMPLETED",
+            createdAt: dateVal
           }
         });
       } else {
@@ -73,7 +77,6 @@ async function main() {
       }
 
       // 1-3. Upsert Order
-      const dateVal = item.createdAt ? new Date(item.createdAt) : new Date();
       await prisma.order.upsert({
         where: { id: orderId },
         update: {
