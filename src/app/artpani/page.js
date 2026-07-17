@@ -540,7 +540,7 @@ export default function AdminPage() {
                 { title: "미결제 건수", val: `${stats.pendingPayments} 건`, color: "border-l-4 border-yellow-500", action: () => { setActiveTab("orders"); setDateFilter("today"); setPaymentStatusFilter("pending"); } },
                 { title: "환불 요청 건수", val: `${stats.refundRequests} 건`, color: "border-l-4 border-purple-500", action: () => { setActiveTab("orders"); setDateFilter("all"); setPaymentStatusFilter("all"); } },
                 { title: "고객 문의 대기", val: `${stats.pendingInquiries} 건`, color: "border-l-4 border-indigo-500", action: () => { setActiveTab("inquiries"); } },
-                { title: "오늘 매출", val: `${stats.todaySales.toLocaleString()} 원`, color: "border-l-4 border-emerald-500", action: () => { setActiveTab("stats"); } }
+                { title: "오늘 매출", val: `${stats.todaySales.toLocaleString()} 원`, color: "border-l-4 border-emerald-500", action: () => { setActiveTab("orders"); setDateFilter("today"); setPaymentStatusFilter("paid"); } }
               ].map((card, i) => (
                 <div 
                   key={i} 
