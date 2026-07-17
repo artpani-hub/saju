@@ -6712,6 +6712,43 @@ return val;
                   </div>
                 </div>
 
+                {/* 📊 에고 진단 수치 도출의 명리학적 배경 */}
+                <div className="bg-[#F9F8F6] p-3 rounded-lg border border-[#E2DDD5]/40 space-y-2 text-[10px] text-gray-500 leading-relaxed font-sans font-light">
+                  <span className="font-bold text-[#A3845B] block font-myeongjo">📊 관계 지수 도출의 명리학적 분석 근거</span>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 border-t border-gray-200/60 pt-2 text-[9.5px]">
+                    <div className="space-y-0.5 text-left">
+                      <strong className="text-[#A3845B] font-semibold block">👨‍👩‍👧 가족 관계 ({currentRelType.familyScore}%) 근거</strong>
+                      <p className="text-gray-500 leading-relaxed font-sans font-light">
+                        {dayStemEl === "목" && "나의 독자적인 성장의 성향(비겁)과 년/월주의 보수적인 규칙(인성) 간의 조율도에 따른 수치입니다."}
+                        {dayStemEl === "화" && "나의 활달한 에너지 발산(식상)과 년/월주의 엄격한 규율(관성) 사이의 중재력에 근거합니다."}
+                        {dayStemEl === "토" && "태산 같은 중재적 성향(토)이 집안의 대소사 갈등을 흡수하고 완충하는 에너지 조율력에 기인합니다."}
+                        {dayStemEl === "금" && "공사 구분이 명확한 날카로운 성정(금)이 친인척간의 유대 관계에서 빚는 약간의 경직성에 기인합니다."}
+                        {dayStemEl === "수" && "물처럼 유연한 수(水) 기운이 가족의 상황에 따라 조화롭게 처세하며 안정을 유도하는 성질에 기인합니다."}
+                      </p>
+                    </div>
+                    <div className="space-y-0.5 text-left border-t md:border-t-0 md:border-x border-gray-200/80 px-0 md:px-3">
+                      <strong className="text-pink-600 font-semibold block">💖 연애·부부 ({currentRelType.loveScore}%) 근거</strong>
+                      <p className="text-gray-500 leading-relaxed font-sans font-light">
+                        {dayStemEl === "목" && "배우자 궁(일지)에 내 감정을 꽃피우는 식상(화) 및 아늑한 토지가 유입되어 형성하는 궁합지수입니다."}
+                        {dayStemEl === "화" && "정열적으로 에너지를 발산하는 본능과 배우자 궁의 다정한 인성적 지지가 결합한 결과입니다."}
+                        {dayStemEl === "토" && "일지의 식상(금)으로 다정함을 전하려 하나 본인의 다소 과묵한 포용력이 갖는 소통 마찰 상태입니다."}
+                        {dayStemEl === "금" && "냉철한 이성 속에서도 배우자 궁에 유입되는 식상(수)이 마음을 부드럽게 세척해주는 친밀도입니다."}
+                        {dayStemEl === "수" && "배우자 궁에 찬 기운(비겁/관성)이 작용하여 상대방을 배려하면서도 내면의 외로움이 생기기 쉬운 구조입니다."}
+                      </p>
+                    </div>
+                    <div className="space-y-0.5 text-left border-t md:border-t-0 pt-2 md:pt-0">
+                      <strong className="text-blue-600 font-semibold block">💼 직무·동료 ({currentRelType.workScore}%) 근거</strong>
+                      <p className="text-gray-500 leading-relaxed font-sans font-light">
+                        {dayStemEl === "목" && "경쟁적 돌파력은 탁월하나 조직의 위계질서(관성)를 거부하려는 성정이 만들어내는 마찰도입니다."}
+                        {dayStemEl === "화" && "창의적인 추진력이 동료들의 윤활유가 되지만 세부 조율 단계에서 빚어지는 기질 충돌 현상입니다."}
+                        {dayStemEl === "토" && "신용을 목숨처럼 지켜 동료들의 절대적 안정을 얻고 목표(재성)를 향해 함께 흐르는 협업지수입니다."}
+                        {dayStemEl === "금" && "공과 사를 정확히 쪼개는 결단과 이성적 계약 체계(금)가 발현되어 협업에서 최고의 실행력을 냅니다."}
+                        {dayStemEl === "수" && "어떤 그릇에도 유연하게 스며드는 소통 감각으로 팀원 간의 조화를 이끌어내는 윤활유 점수입니다."}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 {/* 세부 분석 내용 */}
                 <div className="space-y-4 text-[11px] text-gray-600 leading-relaxed font-sans font-light">
                   {/* 가족 */}
