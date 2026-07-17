@@ -5310,23 +5310,130 @@ return val;
               <span className="text-[9px] text-gray-400 font-light">상황별 구체적 반응</span>
             </div>
 
-            <div className="space-y-5">
-              <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• 내 기질이 현실 상황을 만날 때</h3>
-              
-              <div className="space-y-3 text-[11px] text-gray-600 leading-relaxed">
-                <p><strong>1. 평소의 나:</strong> 안정적이고 현실적인 판단을 내리며, 주변 상황을 관찰하고 통제하려 노력합니다.</p>
-                <p><strong>2. 스트레스를 받을 때:</strong> 말수가 극단적으로 줄어들며, 외부 소통을 차단한 채 혼자서 모든 문제를 해결하려 고집합니다.</p>
-                <p><strong>3. 화가 났을 때:</strong> 즉시 겉으로 화를 내기보다 참았다가 임계치가 넘는 순간 예기치 않게 한 번에 폭발할 수 있습니다.</p>
-                <p><strong>4. 중요한 결정을 할 때:</strong> 감정보다 손익을 계산하지만, 마지막 막다른 골목에서는 본능적 직감을 신뢰하고 밀어붙입니다.</p>
-                <p><strong>5. 운이 좋을 때 & 약할 때:</strong> 상승기에는 추진력과 자존감이 높아져 리드하지만, 정체기에는 걱정으로 결정을 미루는 회피가 나타납니다.</p>
-              </div>
-            </div>
+            {/* 동적 상황별 오행 반사 반응 엔진 */}
+            {(() => {
+              // 일간별 5대 상황 정밀 해설 템플릿
+              const stemReactions = {
+                "甲": {
+                  normal: "앞장서서 판을 주도하고 추진하려 하며, 타인의 의존보다는 신속한 결정을 내리려 노력합니다.",
+                  stress: "누군가 나를 과하게 통제하거나 억누르려 할 때 숨이 막히며, 통제권을 잃을 경우 극도로 예민해집니다.",
+                  anger: "겉으로 즉각적인 반발을 드러내며 거칠게 항의하거나, 자존심이 손상되는 경우 단호한 목소리로 받아칩니다.",
+                  decision: "감정적인 계산보다는 장기적인 성장성과 미래 확장 가능성을 보고 다소 모험적인 베팅을 실행합니다.",
+                  luck: "기운이 오를 때는 거침없는 돌파력을 보이지만, 정체기에는 시작을 자꾸 미루며 무기력감에 빠지기 쉽습니다."
+                },
+                "乙": {
+                  normal: "주변 상황을 면밀히 관찰하고 사람들과 어울리며 유연하게 적응하고 흐름을 타려 노력합니다.",
+                  stress: "환경이 급변하거나 주변 지인들과의 마찰이 길어질 때 극도의 소외감과 내적 피로감을 호소합니다.",
+                  anger: "즉각 화를 폭발시키기보다는 상대의 반응을 조용히 지켜보고 우회적인 독설이나 차분한 경고를 날립니다.",
+                  decision: "이득과 실리를 꼼꼼히 조율하고 주변 귀인들의 평판이나 대중적 의견을 종합하여 안전하게 결정합니다.",
+                  luck: "기운이 상승할 때는 최고의 사교성과 융통성을 보이나, 쇠퇴기에는 결정 장애에 빠져 남의 눈치를 심하게 봅니다."
+                },
+                "丙": {
+                  normal: "자신감 넘치고 밝은 에너지를 드러내며, 나를 솔직하게 피력하고 무리를 즐겁게 이끕니다.",
+                  stress: "내 능력이나 진심이 남들에게 무시당하고 가려지거나, 어둡고 답답한 환경에 갇힐 때 극심한 화를 느낍니다.",
+                  anger: "순식간에 얼굴에 감정이 가감 없이 드러나며 불같이 화를 내지만, 일단 다 쏟아내고 나면 뒤끝이 없이 맑아집니다.",
+                  decision: "상대방의 진정성과 내 열정의 크기, 그리고 직관적 첫인상을 강하게 신뢰하며 빠르게 결단을 내립니다.",
+                  luck: "상승세일 때는 뛰어난 스타성으로 판을 이끄나, 하락세일 때는 겉만 화려하고 실속을 못 챙겨 우울해하기 쉽습니다."
+                },
+                "丁": {
+                  normal: "조용히 경청하며 디테일을 챙기고, 주변의 상처받은 이들을 따뜻하게 위로하고 조력하려 합니다.",
+                  stress: "조용하고 정돈된 내 영역이 무례한 침범을 당하거나, 감정 기복이 심한 사람을 오래 마주할 때 극도로 방전됩니다.",
+                  anger: "차오르는 서운함을 속으로 차곡차곡 누르며 내색하지 않다가, 임계점을 넘어서면 날카로운 독설로 한 번에 폭발합니다.",
+                  decision: "눈에 보이는 지표와 구체적인 팩트(Fact)를 세밀하게 분석하고 분석된 결과에 근거하여 돌질합니다.",
+                  luck: "상승 흐름에는 남모를 섬세한 집중력으로 빛을 발하지만, 침체기에는 혼자 끙끙 앓으며 자책을 거듭합니다."
+                },
+                "戊": {
+                  normal: "바위처럼 든든하고 우직한 중재자 역할을 수행하며, 말수보다는 실질적인 책임과 약속을 이행합니다.",
+                  stress: "주변에 믿을 놈이 하나도 없다고 느껴질 때와, 오랜 신용 관계가 단숨에 깨질 때 거대한 내적 번민에 휩싸입니다.",
+                  anger: "화를 내기까지 아주 오랜 시간이 걸리나, 한 번 선을 넘은 대상에게는 거대한 바위산이 무너지듯 매섭게 포효합니다.",
+                  decision: "감정이나 요행을 철저히 배제하고, 눈앞에 있는 묵직한 실속과 안전성을 고수하는 실리적 결정을 우선합니다.",
+                  luck: "대운이 좋을 때는 흔들림 없는 중심추 역할을 수행하나, 기운이 약할 때는 고집과 아집이 심해져 남의 말을 거부합니다."
+                },
+                "己": {
+                  normal: "섬세하고 꼼꼼하게 기초 작업을 수행하며, 타인의 감정과 필요를 소리 없이 챙기는 조용한 헌신가입니다.",
+                  stress: "약속된 매뉴얼이나 질서가 엉망으로 꼬일 때와, 과다한 업무 책임이 한 번에 나에게 쏟아질 때 방전됩니다.",
+                  anger: "화를 내며 덤비기보다 상대방의 비이성적 실수를 조용히 일일이 지적하거나 스스로 조용히 외면해 버립니다.",
+                  decision: "꼼꼼한 리스크 검증과 2차 시뮬레이션을 완료한 후에야 돌을 두듯 조심스럽게 한 단계씩 밟아나갑니다.",
+                  luck: "상승기에는 보이지 않는 곳의 철저한 내실로 성공을 일구지만, 정체기에는 매너리즘에 빠져 한숨이 늘어납니다."
+                },
+                "庚": {
+                  normal: "강단 있고 확실한 흑백 결정을 고수하며, 맺고 끊음이 강해 거추장스러운 프로세스를 생략합니다.",
+                  stress: "상황이 명확한 결론 없이 흐리멍덩하게 시간만 끌거나, 비효율적인 동업 구조가 이어질 때 극도로 분노합니다.",
+                  anger: "목소리 톤이 즉시 가라앉고 눈빛이 매서워지며, 칼로 자르듯 팩트와 상처를 상대방 가슴에 곧바로 꽂아버립니다.",
+                  decision: "오래 고민하지 않고 내가 맞다고 확신한 단 한 가지 목적지를 향해 승부사처럼 단도직입적으로 베팅합니다.",
+                  luck: "상승 흐름에서는 일사천리의 돌파 능력을 보이나, 침체기에는 과격한 강단으로 인해 적을 만들기 짚습니다."
+                },
+                "辛": {
+                  normal: "완벽을 기하며 예리한 시선으로 핵심을 짚어내고, 기품 있고 정갈하게 본인의 역할을 소화합니다.",
+                  stress: "타인의 수준 낮은 실수나 게으름이 내 깔끔한 작업물에 오점을 남기거나 억울하게 프레임 씌워질 때 극노합니다.",
+                  anger: "화를 내며 목소리를 높이기보다 예리한 칼날 같은 통찰과 차가운 침묵으로 상대의 자존심을 완전히 묵사발 냅니다.",
+                  decision: "타협 없는 기품을 유지할 수 있는 선택지인지 검증한 뒤, 남다른 감각적인 직관을 무기로 과감히 결정합니다.",
+                  luck: "좋은 시기에는 눈부신 천재성으로 대중을 사로잡지만, 쇠퇴기에는 지나치게 예민해져 매사 방어 태세를 취합니다."
+                },
+                "壬": {
+                  normal: "유연하고 호쾌하게 판을 이끌며, 기류의 변화에 기민하게 대처하여 큰 판을 짜고 사람들을 설득합니다.",
+                  stress: "내 넓은 바다 같은 그릇을 좁은 틀이나 매뉴얼 안에 가두려 하거나, 창의성을 통제당할 때 답답해합니다.",
+                  anger: "속내를 겉으로 쉽게 드러내지 않고 물처럼 흐르며 삼키다가, 상대방을 완전히 매장할 수 있을 때 한 번에 쏟아냅니다.",
+                  decision: "단순한 계산을 초월하여 거시적인 트렌드와 흐름의 추이를 전반적으로 조망한 뒤 큰 폭의 베팅을 감행합니다.",
+                  luck: "기운이 왕성할 때는 탁월한 스케일의 지혜를 뽐내나, 기운이 꺾일 때는 생각이 꼬여 우유부단함에 갇힙니다."
+                },
+                "癸": {
+                  normal: "기민하고 영리하게 상황 변화를 리딩하며, 사람들의 마음 깊은 곳을 캐치하는 촉과 카운셀러 역할을 합니다.",
+                  stress: "주변의 탁한 감정 에너지나 부정적인 언어들이 여과 없이 내 맑은 마음에 지속적으로 오염을 끼칠 때 방전됩니다.",
+                  anger: "즉각 덤벼들지 않고 머릿속으로 상대의 모순점을 정밀 계산한 뒤, 가장 결정적인 팩트로 찌르고 돌아섭니다.",
+                  decision: "다양한 보조 데이터를 분석하고 직관적인 느낌을 조합하여 가장 영리하고 마진이 높은 기획을 택합니다.",
+                  luck: "상승 흐름에는 유연한 전술로 기회를 독식하지만, 정체기에는 신경 쇠약이나 불안감으로 밤을 지새우기 쉽습니다."
+                }
+              };
 
-            <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 space-y-2">
-              <span className="text-[10px] font-bold text-[#A3845B] block">💡 왜 그런가요? 명리 근거</span>
-              <p className="text-[10px] text-gray-500 leading-relaxed font-light">
-                일주 천간 고유의 기질이 스트레스 자극 신호를 맞닥뜨릴 때 반응하는 오행 반사 메커니즘에 의거합니다.
-              </p>
+              const userReaction = stemReactions[dayStem] || stemReactions["戊"];
+
+              return (
+                <div className="space-y-4">
+                  <h3 className="font-myeongjo text-xs font-bold text-[#1A1A1A] flex items-center gap-1">• [개인화] 5대 상황에 직면한 오행 심리 리포트</h3>
+                  <div className="grid grid-cols-5 gap-2.5">
+                    <div className="bg-[#F9F8F6] p-3.5 rounded-xl border border-gray-100 flex flex-col justify-between min-h-[140px] shadow-sm">
+                      <span className="text-[10px] font-bold text-gray-800 border-b border-[#E2DDD5]/80 pb-1.5 mb-2 block">평소의 나</span>
+                      <p className="text-[9px] text-gray-500 leading-relaxed text-left font-light">{userReaction.normal}</p>
+                    </div>
+                    <div className="bg-[#F9F8F6] p-3.5 rounded-xl border border-gray-100 flex flex-col justify-between min-h-[140px] shadow-sm">
+                      <span className="text-[10px] font-bold text-[#A3845B] border-b border-[#E2DDD5]/80 pb-1.5 mb-2 block">스트레스 시</span>
+                      <p className="text-[9px] text-gray-500 leading-relaxed text-left font-light">{userReaction.stress}</p>
+                    </div>
+                    <div className="bg-[#F9F8F6] p-3.5 rounded-xl border border-gray-100 flex flex-col justify-between min-h-[140px] shadow-sm">
+                      <span className="text-[10px] font-bold text-red-600 border-b border-[#E2DDD5]/80 pb-1.5 mb-2 block">분노 상황 시</span>
+                      <p className="text-[9px] text-gray-500 leading-relaxed text-left font-light">{userReaction.anger}</p>
+                    </div>
+                    <div className="bg-[#F9F8F6] p-3.5 rounded-xl border border-gray-100 flex flex-col justify-between min-h-[140px] shadow-sm">
+                      <span className="text-[10px] font-bold text-emerald-700 border-b border-[#E2DDD5]/80 pb-1.5 mb-2 block">의사 결정 시</span>
+                      <p className="text-[9px] text-gray-500 leading-relaxed text-left font-light">{userReaction.decision}</p>
+                    </div>
+                    <div className="bg-[#F9F8F6] p-3.5 rounded-xl border border-gray-100 flex flex-col justify-between min-h-[140px] shadow-sm">
+                      <span className="text-[10px] font-bold text-blue-700 border-b border-[#E2DDD5]/80 pb-1.5 mb-2 block">운세 진폭 시</span>
+                      <p className="text-[9px] text-gray-500 leading-relaxed text-left font-light">{userReaction.luck}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
+            <div className="bg-[#A3845B]/5 p-6 rounded-xl border border-[#A3845B]/20 space-y-4">
+              <div className="flex justify-between items-center border-b border-[#A3845B]/20 pb-2">
+                <span className="text-xs font-bold text-[#A3845B] flex items-center gap-1.5">
+                  <span>💡</span> 오행적 스트레스 반사 메커니즘 심층 해설
+                </span>
+                <span className="text-[9px] text-[#A3845B]/60 tracking-widest font-myeongjo">慧眼堂 寶鑑 專用</span>
+              </div>
+              <div className="text-[11px] text-gray-700 leading-relaxed font-light space-y-2.5">
+                <p>
+                  인간이 스트레스나 화를 마주할 때 튀어나오는 반응은 가공되지 않은 고유한 **오행 본질의 충동 반응(Astrological Reflex)**입니다. 
+                  귀하의 일간 <strong>&lsquo;{dayStem}&rsquo;</strong> 기질과 사주 내부의 과다 오행 <strong>&lsquo;{excessEl.name}&rsquo;</strong>의 장력은 외부의 압박이 극대화되는 순간, 일시적으로 에너지를 밖으로 날카롭게 쏟아내거나(화/금 오행 반응) 반대로 내면의 동굴 속으로 깊이 숨어 소통을 단절하는(수/토 오행 반응) 경향을 보입니다.
+                </p>
+                <p>
+                  이는 귀하의 잘못이 아니라 사주 오행 분포가 주는 본능적인 신경 반사 반응에 가깝습니다. 
+                  따라서 화나 스트레스가 치밀어 오르는 순간에는 즉각 결론을 내리며 칼을 뽑기보다, 본인에게 부족한 <strong>&lsquo;{lackEl.name}&rsquo; 기운</strong>의 처방 지침(침묵, 환기, 물리적 거리 두기 등)을 가동하여 3분만 생각을 유예하는 훈련을 통해 충동적인 운세 왜곡을 완벽하게 방지할 수 있습니다.
+                </p>
+              </div>
             </div>
           </div>
           <div className="text-right text-[9px] text-gray-300 pt-2">Page 8 / 22</div>
