@@ -7080,49 +7080,178 @@ return val;
         })()}
 
         {/* -------------------- Page 17. Chapter 3. 올해 운의 타이밍 (세운 - 1) -------------------- */}
-        <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
-          <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
+        {(() => {
+          const dayStemEl = sajuInfo?.day?.stemEl || "목";
+          const lackElName = lackEl?.name || "토";
           
-          <div className="space-y-6">
-            <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
-              <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
-              <span className="text-[9px] text-gray-400 font-light">Chapter 3. 올해 운의 타이밍 (세운 - 1)</span>
-            </div>
+          // 일간별 동적 세운 타이밍 데이터 베이스
+          const timingData = {
+            "목": {
+              goodMonths: [
+                { label: "생기 촉진기", val: "2월, 6월", desc: "새로운 프로젝트를 기획하거나 대외 활동을 늘려 나갈 때 막힘 없이 치고 나가기 수월한 시기입니다." },
+                { label: "재물 상승기", val: "8월, 10월", desc: "금전적 소유권 확보와 단기 실속을 쥐는 성과가 두드러지게 뚜렷해지는 달입니다." }
+              ],
+              badMonths: [
+                { label: "스트레스 조율기", val: "9월", desc: "나를 억누르는 기류가 강해 집중도가 흩어지고 결단 장애가 발생하기 쉽습니다." },
+                { label: "체력 안식기", val: "11월, 12월", desc: "무리한 사교와 동업 제안을 거절하고 고요히 건강 면역을 돌봐야 하는 기간입니다." }
+              ],
+              q1: "목(木)의 의욕이 자라나는 파종기로, 학업 및 기술 확장에 용이함",
+              q2: "화(火)의 열기로 가류가 뿜어 나오며 활동성과 표현력이 대폭 강화됨",
+              q3: "금(金)의 제어가 들어와 섣부른 확장을 정리하고 실질 성과를 정돈함",
+              q4: "수(水)의 영양분을 뿌리로 수렴하며 내실과 깊은 학문에 집중함"
+            },
+            "화": {
+              goodMonths: [
+                { label: "열정 충전기", val: "3월, 5월", desc: "생동하는 생기를 공급받아 자신감이 극대화되며 주도적으로 무리를 이끄는 달입니다." },
+                { label: "결실 취득기", val: "7월, 8월", desc: "투자나 기획의 결실이 자산 형태로 고착화되는 재물 회전의 정점 타이밍입니다." }
+              ],
+              badMonths: [
+                { label: "조급증 경계기", val: "6월", desc: "감정 과부하로 인해 홧김에 지르는 선택이나 성급한 폭발을 반드시 통제해야 합니다." },
+                { label: "기력 보온기", val: "11월, 12월", desc: "주변의 강압적인 요구나 예상 밖의 책임 압박이 가중되므로 숨을 고르는 힐링이 필요합니다." }
+              ],
+              q1: "목(木)의 지원으로 무뎌진 추진 동력을 뜨겁게 예비하는 충전 단계",
+              q2: "화(火)의 열정이 만개하여 지위 상승 및 타인 앞에서의 주도권 선점",
+              q3: "금(金)의 정량 평가가 도입되며 자산의 흐름을 꼼꼼하게 실물화함",
+              q4: "수(水)의 압박이 들어와 불필요한 사치를 끄고 가벼운 생존 모드로 진입"
+            },
+            "토": {
+              goodMonths: [
+                { label: "귀인 조력기", val: "4월, 9월", desc: "내 묵묵한 노력이 윗사람이나 대중에게 공인받아 명예가 확장되는 시기입니다." },
+                { label: "안정 재무기", val: "5월, 12월", desc: "가장 차분한 계산력으로 부가적인 재원 유입의 끈을 단단히 묶어두는 달입니다." }
+              ],
+              badMonths: [
+                { label: "내적 갈등기", val: "3월", desc: "고집과 현실의 격차로 내면에 정체가 발생하고 소모적인 생각의 꼬리를 무는 시기입니다." },
+                { label: "누수 방어기", val: "10월, 1월", desc: "친척이나 동료로 인해 예기치 못한 지출 또는 투자 사기를 엄격히 경계하십시오." }
+              ],
+              q1: "목(木)이 땅을 두드려 현실 안주를 타파하고 혁신의 발판을 마련함",
+              q2: "화(火)의 기운을 흡수하여 생각의 깊이를 다지고 명예 가치를 굳힘",
+              q3: "금(金)의 실천력으로 묵혀둔 숙제를 빠르게 완료하고 결과물을 송출함",
+              q4: "수(水)의 촉촉한 기류가 유입되어 금전적 물류가 원활하게 순환함"
+            },
+            "금": {
+              goodMonths: [
+                { label: "자유 식상기", val: "2월, 3월", desc: "창의적인 사업 구상이 용이하며 아이디어가 가시적이고 시원하게 뽑히는 시기입니다." },
+                { label: "명예 안착기", val: "7월, 11월", desc: "공부의 수확을 굳히고 문서상의 합의나 라이선스를 획득하기 유리합니다." }
+              ],
+              badMonths: [
+                { label: "마찰 통제기", val: "6월", desc: "주변 관계에서 구설이나 지나치게 예리한 마찰이 발생하기 쉬우니 유연함이 필요합니다." },
+                { label: "피로 누적기", val: "8월, 12월", desc: "과도한 활동으로 체력적인 면역력이 쉽게 무너지니 뼈와 관절 건강을 챙겨야 합니다." }
+              ],
+              q1: "목(木)의 활기로 추진하는 행동 반경이 넓어지며 외연 성장을 도모",
+              q2: "화(火)의 단련을 받아 내 조직의 단점을 도려내고 완성도를 제련함",
+              q3: "금(金)의 동질 기운이 뭉치며 뜻이 맞는 협력자를 만나 동력을 마련",
+              q4: "수(水)의 슬기로운 처세로 감정의 날을 씻어내어 대중적 조화를 획득"
+            },
+            "수": {
+              goodMonths: [
+                { label: "학문 수혜기", val: "8월, 9월", desc: "나를 지지해주는 강력한 지혜의 귀인이 들어와 어려운 문서를 해결해주는 시기입니다." },
+                { label: "결실 성취기", val: "3월, 6월", desc: "아이디어가 시장에서 인정받고 실질적인 캐시플로우 창출로 연결됩니다." }
+              ],
+              badMonths: [
+                { label: "고립 조율기", val: "7월", desc: "물길이 막히는 답답한 형국으로 의욕이 꺾이고 침체되므로 억지 전진을 미뤄야 합니다." },
+                { label: "자산 사수기", val: "12월, 1월", desc: "동업 제안이나 보증 요구에 단호하게 거절 도장을 찍어야 내 몫을 보전합니다." }
+              ],
+              q1: "목(木)의 새 기류를 만나 머릿속 구상을 말과 글로 표출하여 성취함",
+              q2: "화(火)의 팽창력을 타고 내 재물의 영토를 해외나 타 영역으로 대폭 넓힘",
+              q3: "금(金)의 마르지 않는 수혈을 받아 바닥나던 학업적 지식과 자존감을 충전",
+              q4: "수(Water)의 바다로 환원되는 시기로, 넘치는 주관을 통제할 둑이 절실함"
+            }
+          };
 
-            <div className="space-y-5">
-              <h3 className="font-myeongjo text-sm font-bold text-[#1A1A1A]">• 올해 좋은 시기와 조심할 시기 종합 요약</h3>
+          const curTiming = timingData[dayStemEl] || timingData["목"];
+
+          return (
+            <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
+              <div className="absolute inset-4 border border-[#A3845B]/30 rounded-lg pointer-events-none print:inset-0" />
               
-              <div className="grid grid-cols-2 gap-4">
-                <div className="border border-emerald-100 bg-emerald-50/20 p-4 rounded space-y-2">
-                  <span className="text-xs font-bold text-emerald-800 block">🟢 올해 가장 좋은 달</span>
-                  <ul className="text-[10px] text-gray-600 list-disc pl-4 space-y-1">
-                    <li><strong>시작하기 좋은 달:</strong> 2월</li>
-                    <li><strong>계약 · 협상에 유리한 달:</strong> 5월</li>
-                    <li><strong>돈의 흐름이 좋아지는 달:</strong> 8월, 12월</li>
-                    <li><strong>인간관계 확장되는 달:</strong> 4월</li>
-                  </ul>
+              <div className="space-y-5">
+                {/* 헤더 */}
+                <div className="border-b border-[#E2DDD5]/50 pb-2 flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-[#A3845B] font-myeongjo">慧眼堂 寶鑑</span>
+                  <span className="text-[9px] text-gray-400 font-light">Chapter 3. 올해 운의 타이밍 (세운 - 1)</span>
                 </div>
 
-                <div className="border border-red-100 bg-red-50/20 p-4 rounded space-y-2">
-                  <span className="text-xs font-bold text-red-800 block">🔴 올해 조심해야 할 달</span>
-                  <ul className="text-[10px] text-gray-600 list-disc pl-4 space-y-1">
-                    <li><strong>충동 결정을 피해야 할 달:</strong> 3월</li>
-                    <li><strong>지출 관리가 필요한 달:</strong> 10월</li>
-                    <li><strong>감정 갈등을 주의할 달:</strong> 6월</li>
-                    <li><strong>건강과 휴식이 필요한 달:</strong> 11월</li>
-                  </ul>
+                {/* 타이틀 */}
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-gray-800 block font-myeongjo">• {name} 님의 올해 좋은 시기와 조심할 시기 종합</span>
+                  <p className="text-[10px] text-gray-500 font-light font-sans">
+                    사주 원국의 오행 분포와 일간의 생극 구조를 대입하여 올 한 해의 최적 타이밍을 분석합니다.
+                  </p>
+                </div>
+
+                {/* 시각화: 분기별 기류 타임라인 대시보드 */}
+                <div className="bg-[#F9F8F6] p-4 rounded-lg border border-[#E2DDD5]/60 space-y-3.5 shadow-inner">
+                  <span className="text-[10.5px] font-bold text-[#A3845B] font-myeongjo block text-center">📅 {name} 님의 올해 4대 분기별 운세 흐름도</span>
+                  
+                  <div className="grid grid-cols-4 gap-2 text-center text-[9px] font-sans">
+                    <div className="bg-emerald-50 border border-emerald-100/50 p-2 rounded">
+                      <span className="font-bold text-emerald-800 block mb-1">1분기 (2~4월)</span>
+                      <span className="text-gray-500 leading-tight block font-light">{curTiming.q1}</span>
+                    </div>
+                    <div className="bg-red-50 border border-red-100/50 p-2 rounded">
+                      <span className="font-bold text-red-800 block mb-1">2분기 (5~7월)</span>
+                      <span className="text-gray-500 leading-tight block font-light">{curTiming.q2}</span>
+                    </div>
+                    <div className="bg-amber-50 border border-amber-100/50 p-2 rounded">
+                      <span className="font-bold text-amber-800 block mb-1">3분기 (8~10월)</span>
+                      <span className="text-gray-500 leading-tight block font-light">{curTiming.q3}</span>
+                    </div>
+                    <div className="bg-blue-50 border border-blue-100/50 p-2 rounded">
+                      <span className="font-bold text-blue-800 block mb-1">4분기 (11~1월)</span>
+                      <span className="text-gray-500 leading-tight block font-light">{curTiming.q4}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2열 종합 진단 */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="border border-emerald-100 bg-emerald-50/10 p-4 rounded-lg space-y-3">
+                    <span className="text-xs font-bold text-emerald-800 block">🟢 활로가 열리는 시기</span>
+                    <div className="space-y-2.5">
+                      {curTiming.goodMonths.map((item, idx) => (
+                        <div key={idx} className="space-y-0.5">
+                          <span className="text-[10px] text-emerald-700 font-bold block">• {item.label} ({item.val})</span>
+                          <p className="text-[9.5px] text-gray-600 leading-normal font-sans font-light">{item.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="border border-red-100 bg-red-50/10 p-4 rounded-lg space-y-3">
+                    <span className="text-xs font-bold text-red-800 block">🔴 조율이 필요한 시기</span>
+                    <div className="space-y-2.5">
+                      {curTiming.badMonths.map((item, idx) => (
+                        <div key={idx} className="space-y-0.5">
+                          <span className="text-[10px] text-red-700 font-bold block">• {item.label} ({item.val})</span>
+                          <p className="text-[9.5px] text-gray-600 leading-normal font-sans font-light">{item.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 타이밍 핵심 가이드 */}
+                <div className="bg-[#A3845B]/5 p-4 rounded border border-[#A3845B]/15 text-[10.5px] text-gray-600 leading-relaxed font-sans font-light">
+                  <span className="font-bold text-[#A3845B] block mb-1 font-myeongjo">💡 {name} 님을 위한 타이밍 사용설명서</span>
+                  사주 기운은 차고 기울어지는 주기를 지닙니다. 좋은 시기에는 새로운 기획과 확장을 주저 없이 관철하되, 
+                  조율기에 해당하는 시점에는 충동적인 거액 소비와 계약서 서명을 2~3일 미뤄두는 지혜를 발휘하여 리스크를 원천 소각하십시오.
+                </div>
+
+                {/* 올해 개운 루틴 실천법 (블랙 테마 하단 여백 제거 카드) */}
+                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-2 shadow-inner text-center">
+                  <span className="text-[10px] font-bold text-[#C2A378] tracking-wider block font-myeongjo">🧘 올해 운의 파도를 올라타는 하루 5분 개운 리추얼</span>
+                  <p className="text-[10.5px] text-gray-300 font-light font-sans leading-relaxed">
+                    올해는 나의 주관이 흔들리기 쉬운 계절적 특성이 관여합니다. 
+                    <br />
+                    아침에 일어난 후 <strong className="text-white">나를 잡아주는 부족 오행 &lsquo;{lackElName}&rsquo;의 호흡법</strong>을 실행하며 
+                    내면의 평정심을 조율할 때, 모든 정체는 걷히고 다가올 활로의 문이 온전하게 열릴 것입니다.
+                  </p>
                 </div>
               </div>
+              <div className="text-right text-[9px] text-gray-300 pt-2">Page 18 / 22</div>
             </div>
-
-            <div className="bg-[#A3845B]/5 p-5 rounded-lg border border-[#A3845B]/15 text-[11px] text-gray-600 leading-relaxed">
-              <span className="font-bold text-[#A3845B] block mb-1">💡 타이밍 핵심 가이드</span>
-              올해 귀하는 사주 전반의 흐름에서 조급증과 충동이 주기적으로 들어오는 시기를 거치게 됩니다. 
-              좋은 달에는 지체 말고 제안과 계약을 강하게 관철하되, 주의나 재정비로 지목된 달에는 계약서 서명이나 충동적인 거액 결제를 반드시 지연시켜 리스크를 영구 소각하십시오.
-            </div>
-          </div>
-          <div className="text-right text-[9px] text-gray-300 pt-2">Page 18 / 22</div>
-        </div>
+          );
+        })()}
 
         {/* -------------------- Page 18. Chapter 3. 올해 운의 타이밍 (세운 - 2) -------------------- */}
         <div className="print-page-wrapper relative min-h-[1100px] flex flex-col justify-between bg-white border border-[#E2DDD5] rounded-xl p-12 shadow-md print-border-none print-shadow-none">
