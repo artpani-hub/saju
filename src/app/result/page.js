@@ -7237,15 +7237,33 @@ return val;
                   조율기에 해당하는 시점에는 충동적인 거액 소비와 계약서 서명을 2~3일 미뤄두는 지혜를 발휘하여 리스크를 원천 소각하십시오.
                 </div>
 
-                {/* 올해 개운 루틴 실천법 (블랙 테마 하단 여백 제거 카드) */}
-                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-2 shadow-inner text-center">
-                  <span className="text-[10px] font-bold text-[#C2A378] tracking-wider block font-myeongjo">🧘 올해 운의 파도를 올라타는 하루 5분 개운 리추얼</span>
-                  <p className="text-[10.5px] text-gray-300 font-light font-sans leading-relaxed">
-                    올해는 나의 주관이 흔들리기 쉬운 계절적 특성이 관여합니다. 
-                    <br />
-                    아침에 일어난 후 <strong className="text-white">나를 잡아주는 부족 오행 &lsquo;{lackElName}&rsquo;의 호흡법</strong>을 실행하며 
-                    내면의 평정심을 조율할 때, 모든 정체는 걷히고 다가올 활로의 문이 온전하게 열릴 것입니다.
-                  </p>
+                {/* 올해 개운 루틴 및 운세 자가진단 패널 (하단 여백 제거용 통합 다크 패널) */}
+                <div className="bg-[#1A1A1A] text-white p-4 rounded-lg border border-[#A3845B]/40 space-y-3 shadow-inner">
+                  <span className="text-[10px] font-bold text-[#C2A378] tracking-wider block font-myeongjo text-center">• {name} 님만을 위한 올해 운세 수호 & 자가 조율 비법</span>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[10px] font-sans font-light text-left">
+                    {/* 왼쪽: 개운 리추얼 */}
+                    <div className="space-y-1.5 border-b md:border-b-0 md:border-r border-gray-700/50 pb-3 md:pb-0 pr-0 md:pr-4">
+                      <span className="text-[#C2A378] font-bold text-[9.5px] block">🧘 5분 개운 리추얼 (호흡 및 생활 습관)</span>
+                      <p className="text-gray-300 leading-relaxed font-sans font-light">
+                        올해는 나의 주관이 흔들리기 쉬운 계절적 특성이 관여합니다. 아침에 일어난 후 <strong className="text-white">나를 단단히 잡아주는 부족 오행 &lsquo;{lackElName}&rsquo;의 고유 색상 호흡법</strong>을 실행하십시오. 부족한 주파수를 의식적으로 수혈해줄 때 1년 내내 의사결정 미스로 인한 금전 손실이나 대인 마찰을 완벽히 방어할 수 있습니다.
+                      </p>
+                    </div>
+
+                    {/* 오른쪽: 자가 경고등 */}
+                    <div className="space-y-1.5 flex flex-col justify-between">
+                      <div>
+                        <span className="text-[#C2A378] font-bold text-[9.5px] block">⚠️ 올해 운이 막힐 때 나타나는 내면의 경고등</span>
+                        <p className="text-gray-300 leading-relaxed font-sans font-light">
+                          {dayStemEl === "목" && "유독 목덜미나 어깨가 뻐근해지고, 타협하지 않는 쓸데없는 고집이 앞서며 주변의 정당한 비판조차 잔소리로 느껴지기 시작했다면, 이는 현재 사주 운기가 정체되었다는 신호입니다. 즉시 활동을 멈추고 환기하십시오."}
+                          {dayStemEl === "화" && "유독 심장이 벌렁거리며 조급해져서 상대방의 말을 끝까지 듣지 않고 속사포처럼 내뱉는 실수가 반복된다면, 열기가 지나쳐 에너지가 과부하된 상태입니다. 즉시 찬물이나 차가운 음료로 수(水) 기운을 충전하십시오."}
+                          {dayStemEl === "토" && "유독 소화가 되지 않고 더부룩하며, 침대 밖으로 나가기 싫어 무기력함에 사로잡혀 있다면 대운과 세운의 흙 기운이 너무 굳어져 고인 것입니다. 의도적으로 바깥 공기를 쐬고 가벼운 산책(목 기운)을 시작하십시오."}
+                          {dayStemEl === "금" && "피부가 건조해지고 말씨가 지나치게 칼같이 차가워져 소중한 사람들에게 자꾸 뾰족한 칼날 같은 상처를 입힌다면, 스스로의 예리함에 운세가 베이고 있는 것입니다. 부드러운 화법과 여유를 유지하며 보듬어주십시오."}
+                          {dayStemEl === "수" && "생각이 끊임없이 꼬리를 물어 불면증이 찾아오고, 현실성 없는 환상이나 막연한 불안감에 정처 없이 배회하고 있다면, 수(水) 기운의 범람으로 인한 정체입니다. 단호하게 하루 할 일의 매듭(金)을 짓고 휴식하십시오."}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="text-right text-[9px] text-gray-300 pt-2">Page 18 / 22</div>
