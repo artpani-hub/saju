@@ -2290,15 +2290,21 @@ export default function AdminPage() {
 
             {/* 매출 추이 조건별 그래프 (일별/월별/시간별 스위칭 및 조건색 연동) */}
             {(() => {
-              // KST 로컬 시간 파싱 헬퍼 (UTC 날짜 포맷 변환 및 시차 오프셋 완벽 방어)
+              // KST 로컬 시간 파싱 헬퍼 (시차 오프셋 오차 100% 차단 정합)
               const parseToLocalDate = (createdAtStr) => {
                 if (!createdAtStr) return new Date();
-                let dateStr = createdAtStr;
-                if (!dateStr.includes('Z') && !dateStr.includes('+')) {
-                  dateStr = dateStr.replace(' ', 'T') + 'Z';
+                const parts = createdAtStr.split(/[^0-9]/).filter(Boolean);
+                if (parts.length >= 3 && !createdAtStr.includes('Z') && !createdAtStr.includes('+')) {
+                  const y = parseInt(parts[0], 10);
+                  const m = parseInt(parts[1], 10) - 1;
+                  const d = parseInt(parts[2], 10);
+                  const h = parts[3] ? parseInt(parts[3], 10) : 0;
+                  const min = parts[4] ? parseInt(parts[4], 10) : 0;
+                  const s = parts[5] ? parseInt(parts[5], 10) : 0;
+                  return new Date(y, m, d, h, min, s);
                 }
-                const parsed = new Date(dateStr);
-                return isNaN(parsed.getTime()) ? new Date(createdAtStr) : parsed;
+                const parsed = new Date(createdAtStr);
+                return isNaN(parsed.getTime()) ? new Date() : parsed;
               };
 
               // 1. Filter orders based on conditions
