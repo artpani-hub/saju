@@ -3282,7 +3282,7 @@ function ResultContent() {
     if (typeof window !== "undefined") {
       const debugUnlock = window.location.search.includes("unlock=true") || window.location.search.includes("debug=true");
       if (debugUnlock) return true;
-      const reportGrade = new URLSearchParams(window.location.search).get("reportGrade") || "sms";
+      const reportGrade = new URLSearchParams(window.location.search).get("reportGrade") || "free";
       if (reportGrade === "premium" || reportGrade === "deep" || reportGrade === "sms" || reportGrade === "free") return false;
     }
     return false;
@@ -3404,7 +3404,7 @@ return val;
   const emailParam = searchParams.get("email") || "";
   const phoneParam = searchParams.get("phone") || "";
   const getReportGrade = () => {
-    const paramGrade = searchParams.get("reportGrade") || "sms";
+    const paramGrade = searchParams.get("reportGrade") || "free";
     if (paramGrade === "free") return "free";
     if (typeof window !== "undefined") {
       try {
@@ -4283,7 +4283,7 @@ return val;
       console.error("결제 요청 전 로컬스토리지 조회 실패:", e);
     }
 
-    const currentGrade = reportGrade === "free" ? "sms" : (reportGrade || "premium");
+    const currentGrade = reportGrade === "free" ? "premium" : (reportGrade || "premium");
 
     // 로컬 환경 혹은 개발 테스트를 위해 채널 키가 없으면 바로 잠금 해제
     if (!channelKey) {
@@ -4313,7 +4313,14 @@ return val;
       const isTojeong = typeParam === "tojeong";
       const paymentTitle = isTojeong ? `${name}님 정통 토정비결 보고서` : `${name}님 정통 사주 풀이 보고서`;
 
-      const amount = currentGrade === "deep" ? 49900 : (currentGrade === "premium" ? 34900 : 14900);
+      let amount = 14900;
+      if (currentGrade === "deep") {
+        amount = 49900;
+      } else if (currentGrade === "premium") {
+        amount = reportGrade === "free" ? 14900 : 34900;
+      } else if (currentGrade === "sms") {
+        amount = 3900;
+      }
 
       // 결제요청 직전에 사용자 정보를 임시 저장 (모바일 리다이렉트 유실 대비)
       try {
