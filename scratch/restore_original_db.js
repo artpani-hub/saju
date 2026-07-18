@@ -6,12 +6,12 @@ const conn = new Client();
 conn.on('ready', () => {
   console.log('SSH Connected.');
 
-  // 원본 백업본(dev.db_backup_1784323281146)을 진짜 dev.db 경로로 복사하여 데이터 원상복구 진행
+  // 최초 원본 백업본(dev.db_backup_1784323281146)으로 강제 롤백하여 오염된 상태값을 완전히 초기화
   const command = `
-    echo "=== Restoring database from original backup ===";
+    echo "=== Force rolling back to original untampered backup ===";
     cp /home/www/saju-artpani/frontend/data_backup/dev.db_backup_1784323281146 /home/www/saju-artpani/frontend/prisma/dev.db
     cp /home/www/saju-artpani/frontend/data_backup/dev.db_backup_1784323281146 /home/www/saju-artpani/frontend/.next/standalone/prisma/dev.db 2>/dev/null || true
-    echo "Database restored successfully.";
+    echo "Original status database restored successfully.";
   `;
 
   conn.exec(command, (err, stream) => {

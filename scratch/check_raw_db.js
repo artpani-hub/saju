@@ -5,17 +5,26 @@ const fs = require('fs');
 const conn = new Client();
 conn.on('ready', () => {
   console.log('SSH Connected.');
+  
+  // sqlite3 CLI로 Order 테이블의 원시(raw) 데이터 조회
+  const command = `sqlite3 /home/www/saju-artpani/frontend/prisma/dev.db "SELECT id, status, createdAt FROM \\"Order\\" ORDER BY createdAt DESC LIMIT 15;"`;
 
-  // pm2 env 0을 실행하여 런타임에 설정된 DATABASE_URL 환경변수 값 조회
-  conn.exec(`pm2 env 0`, (err, stream) => {
+  conn.exec(command, (err, stream) => {
     if (err) throw err;
     let stdout = '';
+    let stderr = '';
     stream.on('close', () => {
-      console.log('=== PM2 Env for saju-app ===');
+      console.log('=== Raw DB Output ===');
       console.log(stdout);
+      if (stderr) {
+        console.log('=== Stderr ===');
+        console.log(stderr);
+      }
       conn.end();
     }).on('data', (data) => {
       stdout += data.toString();
+    }).stderr.on('data', (data) => {
+      stderr += data.toString();
     });
   });
 }).connect({

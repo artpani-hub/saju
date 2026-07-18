@@ -6,16 +6,31 @@ const conn = new Client();
 conn.on('ready', () => {
   console.log('SSH Connected.');
 
-  // pm2 env 0을 실행하여 런타임에 설정된 DATABASE_URL 환경변수 값 조회
-  conn.exec(`pm2 env 0`, (err, stream) => {
+  // Nginx 설정 문법 검사 및 리로드 실행
+  const command = `
+    echo "=== Testing Nginx Config ===";
+    sudo nginx -t;
+    
+    echo "\\n=== Reloading Nginx ===";
+    sudo nginx -s reload || sudo systemctl reload nginx || service nginx reload;
+  `;
+
+  conn.exec(command, (err, stream) => {
     if (err) throw err;
     let stdout = '';
+    let stderr = '';
     stream.on('close', () => {
-      console.log('=== PM2 Env for saju-app ===');
+      console.log('=== Nginx Reload Output ===');
       console.log(stdout);
+      if (stderr) {
+        console.log('=== Stderr ===');
+        console.log(stderr);
+      }
       conn.end();
     }).on('data', (data) => {
       stdout += data.toString();
+    }).stderr.on('data', (data) => {
+      stderr += data.toString();
     });
   });
 }).connect({

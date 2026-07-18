@@ -5,13 +5,13 @@ const fs = require('fs');
 const conn = new Client();
 conn.on('ready', () => {
   console.log('SSH Connected.');
-
-  // pm2 env 0을 실행하여 런타임에 설정된 DATABASE_URL 환경변수 값 조회
-  conn.exec(`pm2 env 0`, (err, stream) => {
+  
+  // 서버 시간과 타임존 확인
+  conn.exec(`date; timedatectl status 2>/dev/null || echo "No timedatectl"`, (err, stream) => {
     if (err) throw err;
     let stdout = '';
     stream.on('close', () => {
-      console.log('=== PM2 Env for saju-app ===');
+      console.log('=== Remote Server Time ===');
       console.log(stdout);
       conn.end();
     }).on('data', (data) => {

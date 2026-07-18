@@ -1,21 +1,26 @@
 const { Client } = require('ssh2');
+const path = require('path');
+const fs = require('fs');
+
 const conn = new Client();
 conn.on('ready', () => {
   console.log('SSH Connected.');
-  conn.exec('pm2 list', (err, stream) => {
+  
+  // pm2 list 실행하여 가동 중인 다른 앱 데몬 확인
+  conn.exec(`pm2 list`, (err, stream) => {
     if (err) throw err;
+    let stdout = '';
     stream.on('close', () => {
+      console.log('=== PM2 List ===');
+      console.log(stdout);
       conn.end();
-      console.log('SSH Closed.');
     }).on('data', (data) => {
-      process.stdout.write(data);
-    }).stderr.on('data', (data) => {
-      process.stderr.write(data);
+      stdout += data.toString();
     });
   });
 }).connect({
   host: '121.125.61.114',
   port: 22,
   username: 'saju-artpani',
-  password: 'saju_artpani_ssh_2026!'
+  privateKey: fs.readFileSync(path.join(require('os').homedir(), '.ssh', 'id_ed25519_121_125_61_114'))
 });

@@ -6,12 +6,19 @@ const conn = new Client();
 conn.on('ready', () => {
   console.log('SSH Connected.');
 
-  // pm2 env 0을 실행하여 런타임에 설정된 DATABASE_URL 환경변수 값 조회
-  conn.exec(`pm2 env 0`, (err, stream) => {
+  // 백업된 DB 파일이 존재하는지 확인하고, 현재 DB의 Order 날짜 분포를 상위 5개 출력하여 진단
+  const command = `
+    echo "=== DB Backups ===";
+    ls -la /home/www/saju-artpani/frontend/prisma/ || ls -la /home/www/saju-artpani/frontend/data_backup/;
+    
+    echo "\\n=== Current Order CreatedAt Samples ===";
+    sqlite3 /home/www/saju-artpani/frontend/prisma/dev.db "SELECT id, createdAt FROM \\"Order\\" LIMIT 5;" 2>/dev/null || echo "sqlite3 command failed";
+  `;
+
+  conn.exec(command, (err, stream) => {
     if (err) throw err;
     let stdout = '';
     stream.on('close', () => {
-      console.log('=== PM2 Env for saju-app ===');
       console.log(stdout);
       conn.end();
     }).on('data', (data) => {

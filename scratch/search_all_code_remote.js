@@ -6,12 +6,12 @@ const conn = new Client();
 conn.on('ready', () => {
   console.log('SSH Connected.');
 
-  // pm2 env 0을 실행하여 런타임에 설정된 DATABASE_URL 환경변수 값 조회
-  conn.exec(`pm2 env 0`, (err, stream) => {
+  // 원격지 홈 디렉토리 내부에서 '보고서 생성 완료' 단어가 들어간 소스 코드 위치를 전수 조사
+  conn.exec('grep -rn "보고서 생성 완료" /home/www/saju-artpani/', (err, stream) => {
     if (err) throw err;
     let stdout = '';
     stream.on('close', () => {
-      console.log('=== PM2 Env for saju-app ===');
+      console.log('=== Grep "보고서 생성 완료" Remote ===');
       console.log(stdout);
       conn.end();
     }).on('data', (data) => {

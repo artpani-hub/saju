@@ -247,7 +247,11 @@ export async function GET(req) {
         amount: latestOrder?.amount || 0,
         status: latestOrder ? latestOrder.status.toLowerCase() : "pending",
         unlocked: latestReport ? latestReport.unlocked : false,
-        createdAt: latestOrder ? latestOrder.createdAt.toISOString() : new Date().toISOString()
+        createdAt: latestOrder ? latestOrder.createdAt.toISOString() : new Date().toISOString(),
+        year: String(user.birthYear || ""),
+        month: String(user.birthMonth || ""),
+        day: String(user.birthDay || ""),
+        hour: user.birthHour || ""
       }]);
     }
 
@@ -281,32 +285,56 @@ export async function GET(req) {
       const user = order.user;
       const latestReport = user?.reports?.[0] || null;
 
+      // createdAt 날짜 객체를 타입 안전하게 파싱
+      let parsedDate;
+      try {
+        if (order.createdAt instanceof Date) {
+          parsedDate = order.createdAt;
+        } else if (typeof order.createdAt === "number" || !isNaN(Number(order.createdAt))) {
+          parsedDate = new Date(Number(order.createdAt));
+        } else {
+          parsedDate = new Date(order.createdAt);
+        }
+      } catch (e) {
+        parsedDate = new Date();
+      }
+      if (isNaN(parsedDate.getTime())) {
+        parsedDate = new Date();
+      }
+
       // 서버 UTC 날짜를 한국 표준시(KST, UTC+9)로 변환
-      const kstDate = new Date(order.createdAt.getTime() + (9 * 60 * 60 * 1000));
+      const kstDate = new Date(parsedDate.getTime() + (9 * 60 * 60 * 1000));
       const formattedDate = kstDate.toISOString().slice(0, 19).replace('T', ' ');
 
       return {
         id: order.id,
-        name: user?.name || "알 수 없음",
+        name: order.userName || user?.name || "알 수 없음",
         email: user?.email || "",
         phone: user?.phone || "",
         productName: "평생 종합 사주팔자 보감",
         amount: order.amount,
         status: order.status.toLowerCase(), // paid, pending 등
-        sajuGanji: user ? `${user.birthYear}년 ${user.birthMonth}월 ${user.birthDay}일 (${user.birthHour || "미정"})` : "기록 없음",
+        // 주문 테이블에 격리 보존된 사주 정보가 있다면 그것을 우선 표기, 없을 때만 하위호환용으로 유저 테이블 정보 참조
+        sajuGanji: order.birthYear 
+          ? `${order.birthYear}년 ${order.birthMonth}월 ${order.birthDay}일 (${order.birthHour || "미정"})` 
+          : (user ? `${user.birthYear}년 ${user.birthMonth}월 ${user.birthDay}일 (${user.birthHour || "미정"})` : "기록 없음"),
         emailStatus: "sent",
         createdAt: formattedDate,
-        gender: user?.gender || "female",
-        calendar: user?.calendarType || "solar",
-        year: String(user?.birthYear || ""),
-        month: String(user?.birthMonth || ""),
-        day: String(user?.birthDay || ""),
-        hour: user?.birthHour || "",
-        worryText: user?.worryText || "",
+        rawTime: parsedDate.getTime(), // 자바스크립트 정렬을 위해 원시 밀리초 시간 기록
+        gender: order.gender || user?.gender || "female",
+        calendar: order.calendarType || user?.calendarType || "solar",
+        year: String(order.birthYear || user?.birthYear || ""),
+        month: String(order.birthMonth || user?.birthMonth || ""),
+        day: String(order.birthDay || user?.birthDay || ""),
+        hour: order.birthHour || user?.birthHour || "",
+        worryText: order.worryText || user?.worryText || "",
         referer: order.referer || "direct",
         histories: latestReport?.histories || []
       };
     });
+
+    // 데이터베이스 정렬 꼬임을 방지하기 위해 자바스크립트단에서 실시간 최신순(내림차순) 물리 강제 정렬!
+    formattedOrders.sort((a, b) => b.rawTime - a.rawTime);
 
     return NextResponse.json(formattedOrders, {
       headers: {
@@ -364,7 +392,7 @@ export async function POST(req) {
         data: {
           userId: user.id,
           unlocked: unlockedState,
-          status: unlockedState ? "결제 완료" : "INPUT_COMPLETED"
+          status: unlockedState ? "보고서 생성 완료" : "INPUT_COMPLETED"
         }
       });
 
@@ -377,11 +405,20 @@ export async function POST(req) {
           applicationNum: appNum,
           userId: user.id,
           productName: newOrderData.productName || "평생 종합 사주팔자 보감",
+          userName: name, // 주문 결제 시점의 고객명 저장
           amount: Number(amount) || 0,
           paymentMethod: newOrderData.paymentMethod || (status === "free" ? "free" : "CARD"),
           status: status ? status.toUpperCase() : "PENDING",
           reportStatus: unlockedState ? "COMPLETED" : "PENDING",
-          referer: referer || "direct"
+          referer: referer || "direct",
+          // 주문 당시의 사주 정보 일체 격리 저장
+          birthYear: Number(year) || null,
+          birthMonth: Number(month) || null,
+          birthDay: Number(day) || null,
+          birthHour: hour || null,
+          calendarType: calendar || null,
+          gender: gender || null,
+          worryText: worryText || null
         }
       });
 
@@ -437,7 +474,7 @@ export async function PUT(req) {
       if (status === "paid" || status === "PAID") {
         await tx.sajuReport.updateMany({
           where: { userId: order.userId },
-          data: { unlocked: true }
+          data: { unlocked: true, status: "보고서 생성 완료" }
         });
       }
     });

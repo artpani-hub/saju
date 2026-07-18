@@ -156,7 +156,7 @@ conn.on('ready', () => {
                 mkdir -p .next/standalone/node_modules
                 cp -r node_modules/.prisma .next/standalone/node_modules/ 2>/dev/null || true
                 cp -r node_modules/@prisma .next/standalone/node_modules/ 2>/dev/null || true
-                PORT=3012 pm2 start server.js --name saju-app --cwd ${remoteRoot}/.next/standalone
+                DATABASE_URL="file:${remoteRoot}/prisma/dev.db" PORT=3012 pm2 start server.js --name saju-app --cwd ${remoteRoot}/.next/standalone
               `;
                 conn.exec(pm2Cmd, (execErr, stream) => {
                   if (execErr) {

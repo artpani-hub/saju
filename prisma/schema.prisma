@@ -85,6 +85,7 @@ model Order {
   userId         String
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   productName    String   // 상품명
+  userName       String?  // 주문 시점의 고객명 (전화번호 중복 시 덮어쓰기 방지)
   amount         Int      // 결제금액
   paymentMethod  String   // 결제수단
   status         String   // 결제상태 (결제 대기, 결제 완료, 결제 실패, 결제 취소, 부분 환불, 전체 환불, 입금 확인 대기)
@@ -95,6 +96,15 @@ model Order {
   paymentDate    DateTime? // 결제일
   referer        String?  // 유입 경로 (naver, google, meta, insta, youtube, kakao, direct, etc)
   createdAt      DateTime @default(now())
+
+  // 주문 시점의 고객 사주 정보 격리 보존 필드 신설 (동일 연락처 중복 주문 시 덮어쓰기 방지)
+  birthYear      Int?
+  birthMonth     Int?
+  birthDay       Int?
+  birthHour      String?
+  calendarType   String?
+  gender         String?
+  worryText      String?
 }
 
 // 6. 메시지 및 고객 문의 관리

@@ -6,12 +6,14 @@ const conn = new Client();
 conn.on('ready', () => {
   console.log('SSH Connected.');
 
-  // pm2 env 0을 실행하여 런타임에 설정된 DATABASE_URL 환경변수 값 조회
-  conn.exec(`pm2 env 0`, (err, stream) => {
+  // 시스템 전체에서 dev.db 파일을 검색 (권한 에러 차단 2>/dev/null 적용)
+  const command = `find /home/www/ -name "dev.db" -exec ls -la {} \\; 2>/dev/null || find / -name "dev.db" -exec ls -la {} \\; 2>/dev/null`;
+
+  conn.exec(command, (err, stream) => {
     if (err) throw err;
     let stdout = '';
     stream.on('close', () => {
-      console.log('=== PM2 Env for saju-app ===');
+      console.log('=== All dev.db Files on Server System ===');
       console.log(stdout);
       conn.end();
     }).on('data', (data) => {

@@ -3300,23 +3300,32 @@ function ResultContent() {
       return;
     }
 
+    const orderId = searchParams.get("orderId");
+
     fetch(`/api/orders?phone=${encodeURIComponent(phone)}&name=${encodeURIComponent(name)}`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
-          const matched = data.find(o => 
-            o.phone === phone && 
-            o.name === name && 
-            (o.status === "paid" || o.unlocked === true)
-          );
-          if (matched) {
-            setIsPaid(true);
+          // 주소창에 orderId가 존재하면 해당 주문번호와 일치하는 주문의 결제 여부만 단독 판독!
+          if (orderId) {
+            const matched = data.find(o => String(o.id) === String(orderId));
+            if (matched && (matched.status === "paid" || matched.unlocked === true)) {
+              setIsPaid(true);
+            } else {
+              setIsPaid(false);
+            }
+          } else {
+            // orderId가 전달되지 않은 미결제/무료 조회 건은 무조건 블러 가림 처리 유지
+            setIsPaid(false);
           }
         } else {
-          console.warn("Expected array from orders API, but got:", data);
+          setIsPaid(false);
         }
       })
-      .catch(err => console.error("Database query failed:", err));
+      .catch(err => {
+        console.error("Database query failed:", err);
+        setIsPaid(false);
+      });
   }, [searchParams]);
 
   const [cumulativeCount, setCumulativeCount] = useState(14820);

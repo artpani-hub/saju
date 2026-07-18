@@ -319,6 +319,7 @@ function InputFormContent() {
   const [progress, setProgress] = useState(0);
   const [privacyAgreed, setPrivacyAgreed] = useState(false);
   const [payMethod, setPayMethod] = useState("card");
+  const [activeOrderId, setActiveOrderId] = useState(null);
 
   // Coupon States
   const [couponCode, setCouponCode] = useState("");
@@ -520,6 +521,7 @@ function InputFormContent() {
           clearInterval(interval);
           setTimeout(() => {
             const queryParams = new URLSearchParams({
+              orderId: String(activeOrderId || ""), // 상태값 activeOrderId를 안전하게 참조!
               name: formData.name,
               gender: formData.gender,
               type: productKey,
@@ -739,6 +741,7 @@ function InputFormContent() {
     
     try {
       const orderId = Math.floor(Math.random() * 9000) + 1000;
+      setActiveOrderId(orderId);
       const now = new Date();
       const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
       

@@ -6,12 +6,23 @@ const conn = new Client();
 conn.on('ready', () => {
   console.log('SSH Connected.');
 
-  // pm2 env 0을 실행하여 런타임에 설정된 DATABASE_URL 환경변수 값 조회
-  conn.exec(`pm2 env 0`, (err, stream) => {
+  // 빌드 캐시 디렉토리 .next 를 완전히 삭제하고 클린 리빌드 진행
+  const command = `
+    cd /home/www/saju-artpani/frontend
+    echo "=== Cleaning Next.js Build Cache ==="
+    rm -rf .next
+    
+    echo "=== Running Clean Build ==="
+    npm run build
+    
+    echo "=== Restarting saju-app via PM2 ==="
+    pm2 restart saju-app || pm2 start .next/standalone/server.js --name saju-app
+  `;
+
+  conn.exec(command, (err, stream) => {
     if (err) throw err;
     let stdout = '';
     stream.on('close', () => {
-      console.log('=== PM2 Env for saju-app ===');
       console.log(stdout);
       conn.end();
     }).on('data', (data) => {
