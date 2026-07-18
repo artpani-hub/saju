@@ -117,14 +117,17 @@ export async function GET(req) {
       ["PAID", "paid", "결제 완료", "결제완료"].includes(o.status)
     ).reduce((sum, o) => sum + o.amount, 0);
 
-    // 8. 사주 리포트 진행 상태별 요약 카운트
+    // 8. 주문관리(Order) 기준 진행 상태별 요약 카운트 (주문관리 수량과 100% 단순 동기화)
     const statusSummary = {
-      INPUT_COMPLETED: allReports.filter(r => ["INPUT_COMPLETED", "input_completed", "정보 입력 완료"].includes(r.status)).length,
-      WAITING_PAYMENT: allReports.filter(r => ["WAITING_PAYMENT", "waiting_payment", "결제 대기"].includes(r.status)).length,
-      PAID: allReports.filter(r => ["PAID", "paid", "결제 완료", "결제완료"].includes(r.status)).length,
-      ANALYZING: allReports.filter(r => ["ANALYZING", "analyzing", "사주 분석 중"].includes(r.status)).length,
-      COMPLETED: allReports.filter(r => ["COMPLETED", "completed", "보고서 생성 완료", "보고서 생성완료"].includes(r.status)).length,
-      DELIVERED: allReports.filter(r => ["DELIVERED", "delivered", "고객 전달 완료"].includes(r.status)).length
+      INPUT_COMPLETED: allOrders.filter(o => ["INPUT_COMPLETED", "input_completed", "정보 입력 완료"].includes(o.status)).length,
+      WAITING_PAYMENT: allOrders.filter(o => ["WAITING_PAYMENT", "waiting_payment", "결제 대기", "PENDING", "pending"].includes(o.status)).length,
+      PAID: allOrders.filter(o => ["PAID", "paid", "결제 완료", "결제완료"].includes(o.status) && o.reportStatus !== "COMPLETED").length,
+      ANALYZING: allOrders.filter(o => ["ANALYZING", "analyzing", "사주 분석 중"].includes(o.status)).length,
+      COMPLETED: allOrders.filter(o => 
+        ["PAID", "paid", "결제 완료", "결제완료", "FREE", "free", "무료"].includes(o.status) || 
+        o.reportStatus === "COMPLETED"
+      ).length,
+      DELIVERED: allOrders.filter(o => ["DELIVERED", "delivered", "전달 완료", "고객 전달 완료"].includes(o.status)).length
     };
 
     return NextResponse.json({
