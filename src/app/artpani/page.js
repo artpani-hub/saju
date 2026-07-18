@@ -2491,19 +2491,19 @@ export default function AdminPage() {
                       <div className="absolute left-0 right-0 top-2/4 border-t border-[#dee2e6]/20 border-dashed text-[10px] text-[#888] pt-1">50%</div>
                       <div className="absolute left-0 right-0 top-3/4 border-t border-[#dee2e6]/20 border-dashed text-[10px] text-[#888] pt-1">25%</div>
 
-                      {/* 2층: 신청 건수 선 그래프 (SVG 절대 좌표 겹침 레이어) */}
-                      <svg className="absolute inset-0 w-full h-[calc(100%-35px)] pointer-events-none z-20" preserveAspectRatio="none">
+                      {/* 2층: 신청 건수 선 그래프 (SVG 절대 좌표 겹침 레이어 - viewBox 표준 규격 적용) */}
+                      <svg className="absolute inset-0 w-full h-[calc(100%-35px)] pointer-events-none z-20" viewBox="0 0 100 100" preserveAspectRatio="none">
                         {/* 꺾은선 polyline */}
                         <polyline
                           fill="none"
                           stroke="#ff6b6b"
-                          strokeWidth="2.5"
+                          strokeWidth="1.8"
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           points={chartData.map((c, idx) => {
                             const x = ((idx + 0.5) / chartData.length) * 100;
                             const y = 80 - (c.count / maxCount) * 60; // 20% 마진율 기준 상하 폭 조율
-                            return `${x}%,${y}%`;
+                            return `${x},${y}`; // % 단위를 완전히 제거하여 SVG 표준 좌표 매칭!
                           }).join(" ")}
                         />
                         {/* 선그래프 노드 도트 및 건수 텍스트 */}
@@ -2513,19 +2513,19 @@ export default function AdminPage() {
                           return (
                             <g key={idx}>
                               <circle
-                                cx={`${x}%`}
-                                cy={`${y}%`}
-                                r="4.5"
+                                cx={x}
+                                cy={y}
+                                r="2.2"
                                 fill="#ffffff"
                                 stroke="#ff6b6b"
-                                strokeWidth="2.5"
+                                strokeWidth="1.8"
                               />
                               <text
-                                x={`${x}%`}
-                                y={`${y - 12}%`}
+                                x={x}
+                                y={y - 7}
                                 textAnchor="middle"
                                 fill="#ff6b6b"
-                                className="text-[10px] font-extrabold"
+                                className="text-[5px] font-extrabold"
                               >
                                 {c.count}건
                               </text>
