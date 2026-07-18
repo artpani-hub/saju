@@ -2497,35 +2497,38 @@ export default function AdminPage() {
                         <polyline
                           fill="none"
                           stroke="#ff6b6b"
-                          strokeWidth="1.8"
+                          strokeWidth="1.5"
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           points={chartData.map((c, idx) => {
                             const x = ((idx + 0.5) / chartData.length) * 100;
                             const y = 80 - (c.count / maxCount) * 60; // 20% 마진율 기준 상하 폭 조율
-                            return `${x},${y}`; // % 단위를 완전히 제거하여 SVG 표준 좌표 매칭!
+                            return `${x},${y}`;
                           }).join(" ")}
                         />
-                        {/* 선그래프 노드 도트 및 건수 텍스트 */}
+                        {/* 선그래프 노드 도트 및 건수 텍스트 (마우스 호버 인터랙션 연동) */}
                         {chartData.map((c, idx) => {
                           const x = ((idx + 0.5) / chartData.length) * 100;
                           const y = 80 - (c.count / maxCount) * 60;
                           return (
-                            <g key={idx}>
+                            <g key={idx} className="group/dot pointer-events-auto cursor-pointer">
+                              {/* 호버 시 확대 모션이 적용되는 반응형 초소형 도트 */}
                               <circle
                                 cx={x}
                                 cy={y}
-                                r="2.2"
+                                r="1.3"
                                 fill="#ffffff"
                                 stroke="#ff6b6b"
-                                strokeWidth="1.8"
+                                strokeWidth="1.2"
+                                className="transition-all duration-300 group-hover/dot:r-[2.6] group-hover/dot:stroke-width-[1.8]"
                               />
+                              {/* 평소에는 숨겨져 있다가 마우스를 대면 스윽 튀어 나오는 툴팁 건수 텍스트 */}
                               <text
                                 x={x}
-                                y={y - 7}
+                                y={y - 6}
                                 textAnchor="middle"
                                 fill="#ff6b6b"
-                                className="text-[5px] font-extrabold"
+                                className="text-[5.5px] font-extrabold opacity-0 group-hover/dot:opacity-100 transition-all duration-300 pointer-events-none"
                               >
                                 {c.count}건
                               </text>
