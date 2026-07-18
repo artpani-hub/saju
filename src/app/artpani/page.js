@@ -2321,88 +2321,43 @@ export default function AdminPage() {
 
               // 2. Generate stats points based on statsChartType (금액과 건수를 동시에 연동 집계)
               let chartData = [];
-              let conditionColor = "bg-green-500"; // Default color
-              let gradientFrom = "from-green-500";
-              let gradientTo = "to-emerald-600";
               let chartTitle = "최근 7일 일별 매출 및 신청 건수 추이";
 
               if (statsChartType === "daily") {
-                conditionColor = "bg-green-500";
-                gradientFrom = "from-green-500";
-                gradientTo = "to-emerald-600";
                 chartTitle = "최근 7일 일별 매출 및 신청 건수 추이";
-
-                // Generate recent 7 days
                 const now = new Date();
                 for (let i = 6; i >= 0; i--) {
                   const d = new Date(now);
                   d.setDate(now.getDate() - i);
-                  const year = d.getFullYear();
-                  const month = String(d.getMonth() + 1).padStart(2, '0');
-                  const dateVal = String(d.getDate()).padStart(2, '0');
-                  const dateStr = `${year}-${month}-${dateVal}`;
+                  const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
                   chartData.push({ label: dateStr.slice(5), key: dateStr, amount: 0, count: 0 });
                 }
-
                 targetOrders.forEach(o => {
-                  if (!o.createdAt || !o.status) return;
-                  const statusLower = o.status.toLowerCase();
-                  const isPaid = statusLower === "paid" || o.status === "결제 완료" || o.status === "결제완료";
-                  if (!isPaid) return;
-                  if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return;
-                  
-                  const localDate = parseToLocalDate(o.createdAt);
-                  const year = localDate.getFullYear();
-                  const month = String(localDate.getMonth() + 1).padStart(2, '0');
-                  const dateVal = String(localDate.getDate()).padStart(2, '0');
-                  const dateStr = `${year}-${month}-${dateVal}`;
-                  
-                  const slot = chartData.find(c => c.key === dateStr);
-                  if (slot) {
-                    slot.amount += (o.amount || 0);
-                    slot.count += 1;
+                  const statusLower = o.status?.toLowerCase();
+                  if (["paid", "결제 완료", "결제완료"].includes(statusLower) && !(o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase()))) {
+                    const localDate = parseToLocalDate(o.createdAt);
+                    const dateStr = `${localDate.getFullYear()}-${String(localDate.getMonth() + 1).padStart(2, '0')}-${String(localDate.getDate()).padStart(2, '0')}`;
+                    const slot = chartData.find(c => c.key === dateStr);
+                    if (slot) { slot.amount += (o.amount || 0); slot.count += 1; }
                   }
                 });
-
               } else if (statsChartType === "monthly") {
-                conditionColor = "bg-blue-500";
-                gradientFrom = "from-blue-500";
-                gradientTo = "to-indigo-600";
                 chartTitle = "최근 5개월 월별 매출 및 신청 건수 추이";
-
-                // Generate recent 5 months
                 const now = new Date();
                 for (let i = 4; i >= 0; i--) {
                   const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                  const yearPart = d.getFullYear();
-                  const monthPart = String(d.getMonth() + 1).padStart(2, '0');
-                  chartData.push({ label: `${monthPart}월`, key: `${yearPart}-${monthPart}`, amount: 0, count: 0 });
+                  chartData.push({ label: `${String(d.getMonth() + 1).padStart(2, '0')}월`, key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`, amount: 0, count: 0 });
                 }
-
                 targetOrders.forEach(o => {
-                  if (!o.createdAt || !o.status) return;
-                  const statusLower = o.status.toLowerCase();
-                  const isPaid = statusLower === "paid" || o.status === "결제 완료" || o.status === "결제완료";
-                  if (!isPaid) return;
-                  if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return;
-                  
-                  const localDate = parseToLocalDate(o.createdAt);
-                  const yearPart = localDate.getFullYear();
-                  const monthPart = String(localDate.getMonth() + 1).padStart(2, '0');
-                  const monthStr = `${yearPart}-${monthPart}`;
-                  
-                  const slot = chartData.find(c => c.key === monthStr);
-                  if (slot) {
-                    slot.amount += (o.amount || 0);
-                    slot.count += 1;
+                  const statusLower = o.status?.toLowerCase();
+                  if (["paid", "결제 완료", "결제완료"].includes(statusLower) && !(o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase()))) {
+                    const localDate = parseToLocalDate(o.createdAt);
+                    const monthStr = `${localDate.getFullYear()}-${String(localDate.getMonth() + 1).padStart(2, '0')}`;
+                    const slot = chartData.find(c => c.key === monthStr);
+                    if (slot) { slot.amount += (o.amount || 0); slot.count += 1; }
                   }
                 });
-
               } else if (statsChartType === "hourly") {
-                conditionColor = "bg-amber-500";
-                gradientFrom = "from-amber-500";
-                gradientTo = "to-orange-600";
-                
                 // 기간 검색이 '어제'인 경우 어제 날짜를 차트 기준일로 동적 설정
                 const d = new Date();
                 if (statsDateFilter === "yesterday") {
@@ -2417,26 +2372,24 @@ export default function AdminPage() {
                   ? "어제 시간대별 매출 및 신청 건수 추이 (4시간 간격)"
                   : "오늘 시간대별 매출 및 신청 건수 추이 (4시간 간격)";
 
-                // Generate 6 slots: 4시, 8시, 12시, 16시, 20시, 24시
                 const slots = [4, 8, 12, 16, 20, 24];
                 chartData = slots.map(h => ({ label: `${h}시`, key: h, amount: 0, count: 0 }));
-                
+
                 targetOrders.forEach(o => {
                   if (!o.createdAt || !o.status) return;
-                  
                   const localDate = parseToLocalDate(o.createdAt);
                   const oYear = localDate.getFullYear();
                   const oMonth = String(localDate.getMonth() + 1).padStart(2, '0');
                   const oDateVal = String(localDate.getDate()).padStart(2, '0');
                   const oDateStr = `${oYear}-${oMonth}-${oDateVal}`;
-                  
+
                   if (oDateStr !== targetDateStr) return;
-                  
+
                   const statusLower = o.status.toLowerCase();
                   const isPaid = statusLower === "paid" || o.status === "결제 완료" || o.status === "결제완료";
                   if (!isPaid) return;
                   if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return;
-                  
+
                   const hourVal = localDate.getHours();
                   const slot = chartData.find(c => hourVal >= (c.key - 4) && hourVal < c.key);
                   if (slot) {
@@ -2446,15 +2399,24 @@ export default function AdminPage() {
                 });
               }
 
-              const maxAmount = Math.max(...chartData.map(c => c.amount), 50000);
-              const maxCount = Math.max(...chartData.map(c => c.count), 5); // 선 그래프 꺾임 높이용 최대 건수
-
-              chartData = chartData.map(c => ({
-                ...c,
-                percent: Math.min(100, Math.max(12, (c.amount / maxAmount) * 100))
+              const statsData = chartData.map(c => ({
+                dateLabel: c.label,
+                totalCount: c.count,
+                totalSales: c.amount
               }));
 
-              const totalFilteredSales = chartData.reduce((sum, c) => sum + c.amount, 0);
+              const maxCount = Math.max(...statsData.map(d => d.totalCount), 5);
+              const maxSales = Math.max(...statsData.map(d => d.totalSales), 50000);
+              const N = statsData.length;
+
+              const pointsTotal = statsData.map((d, i) => {
+                const x = 60 + i * (500 / (N - 1 || 1));
+                const y = 180 - (d.totalCount / maxCount) * 140;
+                return { x, y };
+              });
+              const pathTotalStr = pointsTotal.map(p => `${p.x},${p.y}`).join(' ');
+
+              const totalFilteredSales = statsData.reduce((sum, d) => sum + d.totalSales, 0);
 
               return (
                 <div className="space-y-6">
@@ -2474,82 +2436,96 @@ export default function AdminPage() {
                     {/* 이중 축 차트 범례(Legend) 추가 */}
                     <div className="flex justify-end gap-4 mb-4 px-2 text-[11px] font-extrabold">
                       <div className="flex items-center gap-1.5">
-                        <div className="w-3 h-3 bg-gradient-to-t from-orange-500 to-amber-400 rounded-sm"></div>
+                        <div className="w-3.5 h-3 bg-gradient-to-t from-[#8e724b] to-[#e2b17a] rounded-sm"></div>
                         <span className="text-[#666]">매출 금액 (막대)</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <div className="w-3.5 h-0.5 bg-[#ff6b6b] relative flex items-center justify-center">
-                          <div className="w-1.5 h-1.5 rounded-full bg-[#ff6b6b]"></div>
+                        <div className="w-3.5 h-0.5 bg-blue-500 relative flex items-center justify-center">
+                          <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
                         </div>
-                        <span className="text-[#ff6b6b]">신청 건수 (선)</span>
+                        <span className="text-blue-600">신청 건수 (선)</span>
                       </div>
                     </div>
 
-                    <div className="h-64 flex items-end justify-between gap-4 pt-8 px-4 border-b border-[#dee2e6] relative">
-                      {/* 배경 그리드선 */}
-                      <div className="absolute left-0 right-0 top-1/4 border-t border-[#dee2e6]/20 border-dashed text-[10px] text-[#888] pt-1">75%</div>
-                      <div className="absolute left-0 right-0 top-2/4 border-t border-[#dee2e6]/20 border-dashed text-[10px] text-[#888] pt-1">50%</div>
-                      <div className="absolute left-0 right-0 top-3/4 border-t border-[#dee2e6]/20 border-dashed text-[10px] text-[#888] pt-1">25%</div>
+                    <div className="relative w-full overflow-x-auto">
+                      <svg className="w-full min-w-[600px] h-[240px]" viewBox="0 0 600 240">
+                        <defs>
+                          <linearGradient id="statsBarGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#e2b17a" />
+                            <stop offset="100%" stopColor="#8e724b" />
+                          </linearGradient>
+                        </defs>
 
-                      {/* 2층: 신청 건수 선 그래프 (SVG 절대 좌표 겹침 레이어 - viewBox 표준 규격 적용) */}
-                      <svg className="absolute inset-0 w-full h-[calc(100%-35px)] pointer-events-none z-20" viewBox="0 0 100 100" preserveAspectRatio="none">
-                        {/* 꺾은선 polyline */}
-                        <polyline
-                          fill="none"
-                          stroke="#ff6b6b"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          points={chartData.map((c, idx) => {
-                            const x = ((idx + 0.5) / chartData.length) * 100;
-                            const y = 80 - (c.count / maxCount) * 60; // 20% 마진율 기준 상하 폭 조율
-                            return `${x},${y}`;
-                          }).join(" ")}
-                        />
-                        {/* 선그래프 노드 도트 및 건수 텍스트 (마우스 호버 인터랙션 연동) */}
-                        {chartData.map((c, idx) => {
-                          const x = ((idx + 0.5) / chartData.length) * 100;
-                          const y = 80 - (c.count / maxCount) * 60;
+                        {/* 배경 그리드선 및 수치 레이블 */}
+                        {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
+                          const y = 180 - ratio * 140;
+                          const countVal = Math.round(ratio * maxCount);
+                          const salesVal = Math.round(ratio * maxSales);
                           return (
-                            <g key={idx} className="group/dot pointer-events-auto cursor-pointer">
-                              {/* 호버 시 확대 모션이 적용되는 반응형 초소형 도트 */}
-                              <circle
-                                cx={x}
-                                cy={y}
-                                r="1.3"
-                                fill="#ffffff"
-                                stroke="#ff6b6b"
-                                strokeWidth="1.2"
-                                className="transition-all duration-300 group-hover/dot:r-[2.6] group-hover/dot:stroke-width-[1.8]"
+                            <g key={i} className="opacity-40">
+                              <line x1="60" y1={y} x2="560" y2={y} stroke="#dee2e6" strokeDasharray="4 4" strokeWidth="1" />
+                              <text x="45" y={y + 4} textAnchor="end" className="text-[10px] fill-[#666] font-bold">{countVal}건</text>
+                              <text x="575" y={y + 4} textAnchor="start" className="text-[10px] fill-[#8e724b] font-bold">{salesVal.toLocaleString()}원</text>
+                            </g>
+                          );
+                        })}
+
+                        {/* X축 날짜 레이블 */}
+                        {statsData.map((d, i) => {
+                          const x = 60 + i * (500 / (N - 1 || 1));
+                          return (
+                            <text key={i} x={x} y="215" textAnchor="middle" className="text-[10px] fill-[#666] font-bold">{d.dateLabel}</text>
+                          );
+                        })}
+
+                        {/* 1층: 매출 금액 막대 그래프 (rect 기둥 렌더링) */}
+                        {statsData.map((d, i) => {
+                          const x = 60 + i * (500 / (N - 1 || 1));
+                          const barWidth = 24;
+                          const barHeight = (d.totalSales / maxSales) * 140;
+                          const y = 180 - barHeight;
+                          return (
+                            <g key={i} className="group cursor-pointer">
+                              <rect
+                                x={x - barWidth / 2}
+                                y={y}
+                                width={barWidth}
+                                height={barHeight}
+                                fill="url(#statsBarGradient)"
+                                rx="3"
+                                className="hover:brightness-110 transition-all duration-300"
                               />
-                              {/* 평소에는 숨겨져 있다가 마우스를 대면 스윽 튀어 나오는 툴팁 건수 텍스트 */}
-                              <text
-                                x={x}
-                                y={y - 6}
-                                textAnchor="middle"
-                                fill="#ff6b6b"
-                                className="text-[5.5px] font-extrabold opacity-0 group-hover/dot:opacity-100 transition-all duration-300 pointer-events-none"
-                              >
-                                {c.count}건
+                              {/* 마우스 호버 시 금액 툴팁 팝업 */}
+                              <rect x={x - 35} y={y - 25} width="70" height="16" rx="4" fill="#8e724b" className="opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                              <text x={x} y={y - 14} textAnchor="middle" className="text-[9px] fill-[#fff] font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                {d.totalSales.toLocaleString()}원
                               </text>
                             </g>
                           );
                         })}
-                      </svg>
 
-                      {/* 1층: 매출 금액 막대 그래프 */}
-                      {chartData.map((slot, idx) => (
-                        <div key={idx} className="flex-1 h-full flex flex-col justify-end items-center group z-10">
-                          <span className="text-[10px] text-[#8e724b] font-bold opacity-0 group-hover:opacity-100 transition-opacity mb-2">
-                            {slot.amount.toLocaleString()}원
-                          </span>
-                          <div 
-                            style={{ height: `${slot.percent}%` }}
-                            className={`w-full max-w-[45px] bg-gradient-to-t ${gradientFrom} ${gradientTo} rounded-t hover:brightness-110 transition-all duration-500 shadow-md`}
-                          ></div>
-                          <span className="text-[10px] text-[#666] font-extrabold mt-3">{slot.label}</span>
-                        </div>
-                      ))}
+                        {/* 2층: 신청 건수 파란색 꺾은선 (대시보드 꺾은선 스타일 이식) */}
+                        {pathTotalStr && (
+                          <polyline
+                            fill="none"
+                            stroke="#3b82f6"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            points={pathTotalStr}
+                            className="drop-shadow-sm pointer-events-none"
+                          />
+                        )}
+
+                        {/* 꺾은선 노드 도트 및 건수 호버 툴팁 */}
+                        {pointsTotal.map((p, i) => (
+                          <g key={i} className="group cursor-pointer">
+                            <circle cx={p.x} cy={p.y} r="3.5" fill="#3b82f6" stroke="#fff" strokeWidth="1.5" />
+                            <rect x={p.x - 20} y={p.y - 25} width="40" height="16" rx="4" fill="#3b82f6" className="opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                            <text x={p.x} y={p.y - 14} textAnchor="middle" className="text-[9px] fill-[#fff] font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-200">{statsData[i].totalCount}건</text>
+                          </g>
+                        ))}
+                      </svg>
                     </div>
                   </div>
 
