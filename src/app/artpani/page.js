@@ -2319,20 +2319,20 @@ export default function AdminPage() {
                 return evaluateDateFilter(o.createdAt, statsDateFilter, statsStartDate, statsEndDate);
               });
 
-              // 2. Generate stats points based on statsChartType
+              // 2. Generate stats points based on statsChartType (금액과 건수를 동시에 연동 집계)
               let chartData = [];
               let conditionColor = "bg-green-500"; // Default color
               let gradientFrom = "from-green-500";
               let gradientTo = "to-emerald-600";
-              let chartTitle = "최근 7일 일별 매출 추이";
+              let chartTitle = "최근 7일 일별 매출 및 신청 건수 추이";
 
               if (statsChartType === "daily") {
                 conditionColor = "bg-green-500";
                 gradientFrom = "from-green-500";
                 gradientTo = "to-emerald-600";
-                chartTitle = "최근 7일 일별 매출 추이";
+                chartTitle = "최근 7일 일별 매출 및 신청 건수 추이";
 
-                // Generate recent 7 days (로컬 타임존 시차 오프셋 완벽 방어)
+                // Generate recent 7 days
                 const now = new Date();
                 for (let i = 6; i >= 0; i--) {
                   const d = new Date(now);
@@ -2341,7 +2341,7 @@ export default function AdminPage() {
                   const month = String(d.getMonth() + 1).padStart(2, '0');
                   const dateVal = String(d.getDate()).padStart(2, '0');
                   const dateStr = `${year}-${month}-${dateVal}`;
-                  chartData.push({ label: dateStr.slice(5), key: dateStr, amount: 0 });
+                  chartData.push({ label: dateStr.slice(5), key: dateStr, amount: 0, count: 0 });
                 }
 
                 targetOrders.forEach(o => {
@@ -2358,14 +2358,17 @@ export default function AdminPage() {
                   const dateStr = `${year}-${month}-${dateVal}`;
                   
                   const slot = chartData.find(c => c.key === dateStr);
-                  if (slot) slot.amount += (o.amount || 0);
+                  if (slot) {
+                    slot.amount += (o.amount || 0);
+                    slot.count += 1;
+                  }
                 });
 
               } else if (statsChartType === "monthly") {
                 conditionColor = "bg-blue-500";
                 gradientFrom = "from-blue-500";
                 gradientTo = "to-indigo-600";
-                chartTitle = "최근 5개월 월별 매출 추이";
+                chartTitle = "최근 5개월 월별 매출 및 신청 건수 추이";
 
                 // Generate recent 5 months
                 const now = new Date();
@@ -2373,7 +2376,7 @@ export default function AdminPage() {
                   const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
                   const yearPart = d.getFullYear();
                   const monthPart = String(d.getMonth() + 1).padStart(2, '0');
-                  chartData.push({ label: `${monthPart}월`, key: `${yearPart}-${monthPart}`, amount: 0 });
+                  chartData.push({ label: `${monthPart}월`, key: `${yearPart}-${monthPart}`, amount: 0, count: 0 });
                 }
 
                 targetOrders.forEach(o => {
@@ -2389,24 +2392,34 @@ export default function AdminPage() {
                   const monthStr = `${yearPart}-${monthPart}`;
                   
                   const slot = chartData.find(c => c.key === monthStr);
-                  if (slot) slot.amount += (o.amount || 0);
+                  if (slot) {
+                    slot.amount += (o.amount || 0);
+                    slot.count += 1;
+                  }
                 });
 
               } else if (statsChartType === "hourly") {
                 conditionColor = "bg-amber-500";
                 gradientFrom = "from-amber-500";
                 gradientTo = "to-orange-600";
-                chartTitle = "오늘 시간대별 매출 추이 (4시간 간격)";
-
-                // Generate 6 slots: 4시, 8시, 12시, 16시, 20시, 24시
-                const slots = [4, 8, 12, 16, 20, 24];
-                chartData = slots.map(h => ({ label: `${h}시`, key: h, amount: 0 }));
-
+                
+                // 기간 검색이 '어제'인 경우 어제 날짜를 차트 기준일로 동적 설정
                 const d = new Date();
+                if (statsDateFilter === "yesterday") {
+                  d.setDate(d.getDate() - 1);
+                }
                 const year = d.getFullYear();
                 const month = String(d.getMonth() + 1).padStart(2, '0');
                 const dateVal = String(d.getDate()).padStart(2, '0');
-                const todayStr = `${year}-${month}-${dateVal}`;
+                const targetDateStr = `${year}-${month}-${dateVal}`;
+
+                chartTitle = statsDateFilter === "yesterday"
+                  ? "어제 시간대별 매출 및 신청 건수 추이 (4시간 간격)"
+                  : "오늘 시간대별 매출 및 신청 건수 추이 (4시간 간격)";
+
+                // Generate 6 slots: 4시, 8시, 12시, 16시, 20시, 24시
+                const slots = [4, 8, 12, 16, 20, 24];
+                chartData = slots.map(h => ({ label: `${h}시`, key: h, amount: 0, count: 0 }));
                 
                 targetOrders.forEach(o => {
                   if (!o.createdAt || !o.status) return;
@@ -2417,7 +2430,7 @@ export default function AdminPage() {
                   const oDateVal = String(localDate.getDate()).padStart(2, '0');
                   const oDateStr = `${oYear}-${oMonth}-${oDateVal}`;
                   
-                  if (oDateStr !== todayStr) return;
+                  if (oDateStr !== targetDateStr) return;
                   
                   const statusLower = o.status.toLowerCase();
                   const isPaid = statusLower === "paid" || o.status === "결제 완료" || o.status === "결제완료";
@@ -2426,11 +2439,16 @@ export default function AdminPage() {
                   
                   const hourVal = localDate.getHours();
                   const slot = chartData.find(c => hourVal >= (c.key - 4) && hourVal < c.key);
-                  if (slot) slot.amount += (o.amount || 0);
+                  if (slot) {
+                    slot.amount += (o.amount || 0);
+                    slot.count += 1;
+                  }
                 });
               }
 
               const maxAmount = Math.max(...chartData.map(c => c.amount), 50000);
+              const maxCount = Math.max(...chartData.map(c => c.count), 5); // 선 그래프 꺾임 높이용 최대 건수
+
               chartData = chartData.map(c => ({
                 ...c,
                 percent: Math.min(100, Math.max(12, (c.amount / maxAmount) * 100))
@@ -2442,14 +2460,28 @@ export default function AdminPage() {
                 <div className="space-y-6">
                   {/* 매출 추이 그래프 카드 */}
                   <div className="bg-white rounded-xl border border-[#dee2e6] p-6 shadow-sm">
-                    <div className="flex justify-between items-center mb-6">
+                    <div className="flex justify-between items-center mb-2">
                       <div>
                         <h3 className="text-lg font-bold text-[#212529]">{chartTitle}</h3>
-                        <p className="text-xs text-[#888] mt-1 font-semibold">선택한 분류 조건 및 검색어에 따라 매출이 가변 집계됩니다.</p>
+                        <p className="text-xs text-[#888] mt-1 font-semibold">선택한 분류 조건 및 검색어에 따라 매출과 신청 건수가 가변 집계됩니다.</p>
                       </div>
                       <div className="text-right">
                         <span className="text-xs text-[#666] font-bold">조건 내 매출 합계</span>
                         <div className="text-xl font-extrabold text-[#8e724b] mt-0.5">{totalFilteredSales.toLocaleString()} 원</div>
+                      </div>
+                    </div>
+
+                    {/* 이중 축 차트 범례(Legend) 추가 */}
+                    <div className="flex justify-end gap-4 mb-4 px-2 text-[11px] font-extrabold">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-3 h-3 bg-gradient-to-t from-orange-500 to-amber-400 rounded-sm"></div>
+                        <span className="text-[#666]">매출 금액 (막대)</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-3.5 h-0.5 bg-[#ff6b6b] relative flex items-center justify-center">
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#ff6b6b]"></div>
+                        </div>
+                        <span className="text-[#ff6b6b]">신청 건수 (선)</span>
                       </div>
                     </div>
 
@@ -2459,6 +2491,50 @@ export default function AdminPage() {
                       <div className="absolute left-0 right-0 top-2/4 border-t border-[#dee2e6]/20 border-dashed text-[10px] text-[#888] pt-1">50%</div>
                       <div className="absolute left-0 right-0 top-3/4 border-t border-[#dee2e6]/20 border-dashed text-[10px] text-[#888] pt-1">25%</div>
 
+                      {/* 2층: 신청 건수 선 그래프 (SVG 절대 좌표 겹침 레이어) */}
+                      <svg className="absolute inset-0 w-full h-[calc(100%-35px)] pointer-events-none z-20" preserveAspectRatio="none">
+                        {/* 꺾은선 polyline */}
+                        <polyline
+                          fill="none"
+                          stroke="#ff6b6b"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          points={chartData.map((c, idx) => {
+                            const x = ((idx + 0.5) / chartData.length) * 100;
+                            const y = 80 - (c.count / maxCount) * 60; // 20% 마진율 기준 상하 폭 조율
+                            return `${x}%,${y}%`;
+                          }).join(" ")}
+                        />
+                        {/* 선그래프 노드 도트 및 건수 텍스트 */}
+                        {chartData.map((c, idx) => {
+                          const x = ((idx + 0.5) / chartData.length) * 100;
+                          const y = 80 - (c.count / maxCount) * 60;
+                          return (
+                            <g key={idx}>
+                              <circle
+                                cx={`${x}%`}
+                                cy={`${y}%`}
+                                r="4.5"
+                                fill="#ffffff"
+                                stroke="#ff6b6b"
+                                strokeWidth="2.5"
+                              />
+                              <text
+                                x={`${x}%`}
+                                y={`${y - 12}%`}
+                                textAnchor="middle"
+                                fill="#ff6b6b"
+                                className="text-[10px] font-extrabold"
+                              >
+                                {c.count}건
+                              </text>
+                            </g>
+                          );
+                        })}
+                      </svg>
+
+                      {/* 1층: 매출 금액 막대 그래프 */}
                       {chartData.map((slot, idx) => (
                         <div key={idx} className="flex-1 h-full flex flex-col justify-end items-center group z-10">
                           <span className="text-[10px] text-[#8e724b] font-bold opacity-0 group-hover:opacity-100 transition-opacity mb-2">
