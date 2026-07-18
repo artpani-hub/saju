@@ -234,6 +234,13 @@ export default function AdminPage() {
   useEffect(() => {
     if (isAuthenticated) {
       loadAllData();
+      
+      // 5초 간격으로 주문 및 통계 데이터 자동 백그라운드 리로드
+      const intervalId = setInterval(() => {
+        loadAllData();
+      }, 5000);
+
+      return () => clearInterval(intervalId);
     }
   }, [isAuthenticated]);
 
