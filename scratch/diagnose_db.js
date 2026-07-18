@@ -1,34 +1,20 @@
-const { Client } = require('ssh2');
-const path = require('path');
-const fs = require('fs');
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
-const conn = new Client();
-const remoteRoot = '/home/www/saju-artpani/frontend';
-
-conn.on('ready', () => {
-  console.log('SSH Client Connected for Diagnosis');
-  
-  // 1. 디렉토리 구조 및 .env 확인
-  const cmd = `
-    echo "=== RELOADING NGINX ==="
-    sudo systemctl reload nginx || sudo nginx -s reload || echo "Nginx reload skipped due to permission"
-  `;
-  
-  conn.exec(cmd, (err, stream) => {
-    if (err) throw err;
-    
-    stream.on('close', (code) => {
-      console.log(`Diagnosis finished with code: ${code}`);
-      conn.end();
-    }).on('data', (data) => {
-      process.stdout.write(data.toString());
-    }).stderr.on('data', (data) => {
-      process.stderr.write(data.toString());
-    });
+async function main() {
+  console.log("=== Diagnosing Database ===");
+  const users = await prisma.user.findMany({
+    include: {
+      orders: true
+    }
   });
-}).connect({
-  host: '121.125.61.114',
-  port: 22,
-  username: 'saju-artpani',
-  privateKey: fs.readFileSync(path.join(require('os').homedir(), '.ssh', 'id_ed25519_121_125_61_114'))
-});
+
+  for (const u of users) {
+    console.log(`User: ${u.name} (Phone: ${u.phone}) has ${u.orders.length} orders:`);
+    for (const o of u.orders) {
+      console.log(`  - Order ID: ${o.id}, userName: "${o.userName}", amount: ${o.amount}, status: ${o.status}`);
+    }
+  }
+}
+
+main().finally(() => prisma.$disconnect());

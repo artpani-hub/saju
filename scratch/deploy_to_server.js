@@ -60,7 +60,9 @@ const filesToUpload = [
   'next.config.mjs',
   'postcss.config.js',
   'tailwind.config.js',
-  'scratch/import_json_to_sqlite.js'
+  'scratch/import_json_to_sqlite.js',
+  'scratch/backfill_order_usernames.js',
+  'scratch/diagnose_db.js'
 ];
 
 for (const file of filesToUpload) {
