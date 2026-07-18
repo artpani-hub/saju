@@ -2347,7 +2347,8 @@ export default function AdminPage() {
                 targetOrders.forEach(o => {
                   if (!o.createdAt || !o.status) return;
                   const statusLower = o.status.toLowerCase();
-                  if (statusLower !== "paid") return;
+                  const isPaid = statusLower === "paid" || o.status === "결제 완료" || o.status === "결제완료";
+                  if (!isPaid) return;
                   if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return;
                   
                   const localDate = parseToLocalDate(o.createdAt);
@@ -2378,7 +2379,8 @@ export default function AdminPage() {
                 targetOrders.forEach(o => {
                   if (!o.createdAt || !o.status) return;
                   const statusLower = o.status.toLowerCase();
-                  if (statusLower !== "paid") return;
+                  const isPaid = statusLower === "paid" || o.status === "결제 완료" || o.status === "결제완료";
+                  if (!isPaid) return;
                   if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return;
                   
                   const localDate = parseToLocalDate(o.createdAt);
@@ -2418,7 +2420,8 @@ export default function AdminPage() {
                   if (oDateStr !== todayStr) return;
                   
                   const statusLower = o.status.toLowerCase();
-                  if (statusLower !== "paid") return;
+                  const isPaid = statusLower === "paid" || o.status === "결제 완료" || o.status === "결제완료";
+                  if (!isPaid) return;
                   if (o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase())) return;
                   
                   const hourVal = localDate.getHours();
