@@ -116,17 +116,14 @@ export async function GET(req) {
       isThisMonth(o.createdAt) && 
       ["PAID", "paid", "결제 완료", "결제완료"].includes(o.status)
     ).reduce((sum, o) => sum + o.amount, 0);
-
-    // 8. 주문관리(Order) 기준 진행 상태별 요약 카운트 (주문관리 수량과 100% 단순 동기화)
+ 
+    // 8. 주문관리(Order) 기준 진행 상태별 요약 카운트 (주문관리 전체 수량 1:1 단순 대입)
     const statusSummary = {
       INPUT_COMPLETED: allOrders.filter(o => ["INPUT_COMPLETED", "input_completed", "정보 입력 완료"].includes(o.status)).length,
-      WAITING_PAYMENT: allOrders.filter(o => ["WAITING_PAYMENT", "waiting_payment", "결제 대기", "PENDING", "pending"].includes(o.status)).length,
-      PAID: allOrders.filter(o => ["PAID", "paid", "결제 완료", "결제완료"].includes(o.status) && o.reportStatus !== "COMPLETED").length,
+      WAITING_PAYMENT: allOrders.filter(o => ["WAITING_PAYMENT", "waiting_payment", "결제 대기", "PENDING", "pending", "READY", "ready"].includes(o.status)).length,
+      PAID: allOrders.filter(o => ["PAID", "paid", "결제 완료", "결제완료"].includes(o.status)).length, // 주문관리상 전체 누적 결제 완료 수
       ANALYZING: allOrders.filter(o => ["ANALYZING", "analyzing", "사주 분석 중"].includes(o.status)).length,
-      COMPLETED: allOrders.filter(o => 
-        ["PAID", "paid", "결제 완료", "결제완료", "FREE", "free", "무료"].includes(o.status) || 
-        o.reportStatus === "COMPLETED"
-      ).length,
+      COMPLETED: allOrders.length, // 주문관리 전체기간 전체 주문서 총 수량 (사장님 지시 사항)
       DELIVERED: allOrders.filter(o => ["DELIVERED", "delivered", "전달 완료", "고객 전달 완료"].includes(o.status)).length
     };
 
