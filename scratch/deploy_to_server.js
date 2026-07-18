@@ -62,7 +62,8 @@ const filesToUpload = [
   'tailwind.config.js',
   'scratch/import_json_to_sqlite.js',
   'scratch/backfill_order_usernames.js',
-  'scratch/diagnose_db.js'
+  'scratch/diagnose_db.js',
+  'scratch/insert_lost_order.js'
 ];
 
 for (const file of filesToUpload) {
