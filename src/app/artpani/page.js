@@ -2330,14 +2330,42 @@ export default function AdminPage() {
               let chartTitle = "최근 7일 일별 매출 및 신청 건수 추이";
 
               if (statsChartType === "daily") {
-                chartTitle = "최근 7일 일별 매출 및 신청 건수 추이";
-                const now = new Date();
-                for (let i = 6; i >= 0; i--) {
-                  const d = new Date(now);
-                  d.setDate(now.getDate() - i);
+                chartTitle = "일별 매출 및 신청 건수 추이";
+                
+                let start = new Date();
+                let daysCount = 7; // 기본 7일
+
+                if (statsDateFilter === "today") {
+                  daysCount = 1;
+                } else if (statsDateFilter === "yesterday") {
+                  start.setDate(start.getDate() - 1);
+                  daysCount = 1;
+                } else if (statsDateFilter === "7days") {
+                  daysCount = 7;
+                } else if (statsDateFilter === "30days") {
+                  daysCount = 30;
+                } else if (statsDateFilter === "thisMonth") {
+                  const now = new Date();
+                  daysCount = now.getDate(); // 1일부터 오늘까지
+                } else if (statsDateFilter === "custom" && statsStartDate && statsEndDate) {
+                  const sD = new Date(statsStartDate);
+                  const eD = new Date(statsEndDate);
+                  const diffTime = Math.abs(eD - sD);
+                  daysCount = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                  start = eD; // 종료일을 종착지로 설정
+                } else {
+                  // 전체기간("all") 등의 경우 최근 15일로 쾌적하게 렌더링
+                  daysCount = 15;
+                }
+
+                // daysCount 만큼 뒤로 돌며 가변 슬롯 생성
+                for (let i = daysCount - 1; i >= 0; i--) {
+                  const d = new Date(start);
+                  d.setDate(start.getDate() - i);
                   const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
                   chartData.push({ label: dateStr.slice(5), key: dateStr, amount: 0, count: 0 });
                 }
+
                 targetOrders.forEach(o => {
                   const statusLower = o.status?.toLowerCase();
                   if (["paid", "결제 완료", "결제완료"].includes(statusLower) && !(o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase()))) {
@@ -2348,12 +2376,27 @@ export default function AdminPage() {
                   }
                 });
               } else if (statsChartType === "monthly") {
-                chartTitle = "최근 5개월 월별 매출 및 신청 건수 추이";
-                const now = new Date();
-                for (let i = 4; i >= 0; i--) {
-                  const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                chartTitle = "월별 매출 및 신청 건수 추이";
+                
+                let monthsCount = 5; // 기본 5개월
+                let start = new Date();
+
+                if (statsDateFilter === "custom" && statsStartDate && statsEndDate) {
+                  const sD = new Date(statsStartDate);
+                  const eD = new Date(statsEndDate);
+                  const diffMonth = (eD.getFullYear() - sD.getFullYear()) * 12 + (eD.getMonth() - sD.getMonth()) + 1;
+                  monthsCount = Math.max(1, diffMonth);
+                  start = eD;
+                } else if (statsDateFilter === "thisMonth") {
+                  monthsCount = 1;
+                }
+
+                // monthsCount 만큼 뒤로 돌며 가변 슬롯 생성
+                for (let i = monthsCount - 1; i >= 0; i--) {
+                  const d = new Date(start.getFullYear(), start.getMonth() - i, 1);
                   chartData.push({ label: `${String(d.getMonth() + 1).padStart(2, '0')}월`, key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`, amount: 0, count: 0 });
                 }
+
                 targetOrders.forEach(o => {
                   const statusLower = o.status?.toLowerCase();
                   if (["paid", "결제 완료", "결제완료"].includes(statusLower) && !(o.refundStatus && ["refunded", "refund_completed", "refund_requested"].includes(o.refundStatus.toLowerCase()))) {
