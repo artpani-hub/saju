@@ -4288,7 +4288,7 @@ return val;
       console.error("결제 요청 전 로컬스토리지 조회 실패:", e);
     }
 
-    const currentGrade = reportGrade === "free" ? "premium" : (reportGrade || "premium");
+    const currentGrade = reportGrade === "free" ? "sms" : (reportGrade || "premium");
 
     // 로컬 환경 혹은 개발 테스트를 위해 채널 키가 없으면 바로 잠금 해제
     if (!channelKey) {
