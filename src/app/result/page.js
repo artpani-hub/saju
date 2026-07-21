@@ -4325,7 +4325,7 @@ return val;
       } else if (currentGrade === "premium") {
         amount = reportGrade === "free" ? 14900 : 34900;
       } else if (currentGrade === "sms") {
-        amount = 3900;
+        amount = reportGrade === "free" ? 14900 : 3900;
       }
 
       // 결제요청 직전에 사용자 정보를 임시 저장 (모바일 리다이렉트 유실 대비)
