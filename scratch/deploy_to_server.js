@@ -135,6 +135,8 @@ conn.on('ready', () => {
               npx prisma@6.2.1 generate
               npx prisma@6.2.1 db push
               node scratch/import_json_to_sqlite.js
+              export NEXT_PRIVATE_WORKER_LIMIT=1
+              export NODE_OPTIONS="--max-old-space-size=2048"
               npx next build
             `;
             conn.exec(setupCmd, (dbErr, dbStream) => {

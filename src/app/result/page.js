@@ -3381,8 +3381,12 @@ function ResultContent() {
     const val = searchParams.get(key);
     if (!val) return fallback;
     try {
-      // 이미 디코딩되어 있는 값은 한 번 더 디코딩 시 예외가 발생하므로 디코딩 복제 안정화
-      return val.includes("%") ? decodeURIComponent(val) : val;
+      let decoded = val.includes("%") ? decodeURIComponent(val) : val;
+      // 이중 인코딩 방어: 디코딩 후에도 % 기호가 들어있다면 한번 더 디코딩 시도
+      if (decoded.includes("%")) {
+        decoded = decodeURIComponent(decoded);
+      }
+      return decoded;
     } catch (e) {
 return val;
     }
