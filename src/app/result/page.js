@@ -3482,7 +3482,9 @@ return val;
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
-      const isMobileSuccess = params.get("imp_success") === "true" || (params.has("paymentId") && !params.has("code"));
+      const hasErrorCode = params.has("code") || params.has("error_code") || params.has("error_msg");
+      const hasPaymentIdentifier = params.has("paymentId") || params.has("payment_id") || params.has("txId") || params.has("transactionId") || params.has("imp_uid") || params.has("merchant_uid");
+      const isMobileSuccess = !hasErrorCode && (params.get("imp_success") === "true" || hasPaymentIdentifier);
 
       // [파라미터 유실 방어] 모바일 결제 성공 리다이렉트 시 파라미터가 유실된 경우 임시 보관 정보로 복구하여 리다이렉트
       if (isMobileSuccess && (!params.has("name") || !params.has("phone") || !params.has("email"))) {
@@ -11553,37 +11555,16 @@ return val;
 
         {/* SMS 요약 보고서일 때 유료 결제 유도 하단 고정 플로팅 바 (오늘의 운세 및 무료 사주는 제외) */}
         {type !== "today" && type !== "tarot" && type !== "gunghap" && type !== "wealth" && type !== "dream" && reportGrade === "sms" && isPaid && (
-          typeParam === "tojeong" ? (
-            <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
-              <button
-                type="button"
-                onClick={() => handleUpgradeFromSms("premium", 20000)}
-                className="w-full bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] py-4 px-6 rounded-xl font-myeongjo font-bold text-xs sm:text-sm flex items-center justify-between shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#A3845B]/20"
-              >
-                <span>고급 리포트 업그레이드 (+20,000원)</span>
-                <span className="text-lg">➔</span>
-              </button>
-            </div>
-          ) : (
-            <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp flex gap-2 sm:gap-3">
-              <button
-                type="button"
-                onClick={() => handleUpgradeFromSms("premium", 20000)}
-                className="flex-1 bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] py-3.5 px-4 rounded-xl font-myeongjo font-bold text-xs sm:text-sm flex items-center justify-center gap-1 shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#A3845B]/20"
-              >
-                <span>고급 리포트 업그레이드 (+20,000원)</span>
-                <span className="text-[10px] sm:text-xs">➔</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleUpgradeFromSms("deep", 35000)}
-                className="flex-1 bg-[#2C2420] hover:bg-[#3d322c] text-[#E2DDD5] py-3.5 px-4 rounded-xl font-myeongjo font-bold text-xs sm:text-sm flex items-center justify-center gap-1 shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#A3845B]/30"
-              >
-                <span>👑 프리미엄 리포트 (+35,000원)</span>
-                <span className="text-[10px] sm:text-xs text-[#A3845B]">➔</span>
-              </button>
-            </div>
-          )
+          <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
+            <button
+              type="button"
+              onClick={() => handleUpgradeFromSms("premium", 20000)}
+              className="w-full bg-[#A3845B] hover:bg-[#8A6F4C] text-[#1C1613] py-4 px-6 rounded-xl font-myeongjo font-bold text-xs sm:text-sm flex items-center justify-between shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#A3845B]/20"
+            >
+              <span>👑 고급 리포트로 업그레이드 (+20,000원)</span>
+              <span className="text-lg">➔</span>
+            </button>
+          </div>
         )}
 
         {/* 오늘의 맞춤 운세 혜안당 운세 상품 이동 플로팅 바 */}
@@ -11621,7 +11602,7 @@ return val;
               onClick={handleUpgradePayment}
               className="w-full bg-[#5F7A68] hover:bg-[#465A4B] text-white py-4 px-6 rounded-xl font-myeongjo font-bold text-xs sm:text-sm md:text-base flex items-center justify-between shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#5F7A68]/20"
             >
-              <span>👑 {name}님 {type === "newyear" ? "신년운세" : "평생종합사주"} 프리미엄 리포트로 업그레이드 (+15,000원)</span>
+              <span>👑 {name}님 {type === "newyear" ? "신년운세" : "평생종합사주"} 최상위 심화 리포트로 업그레이드 (+15,000원)</span>
               <span className="text-lg">➔</span>
             </button>
           </div>
