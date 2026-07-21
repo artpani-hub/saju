@@ -3503,7 +3503,8 @@ return val;
               gunghapType: tempInfo.gunghapType || "compatibility",
               email: tempInfo.email || "",
               phone: tempInfo.phone || "",
-              reportGrade: tempInfo.targetGrade || "premium",
+              reportGrade: tempInfo.targetGrade || "sms",
+              unlock: "true",
               imp_success: "true"
             });
             window.location.href = `${window.location.origin}${window.location.pathname}?${redirectParams.toString()}`;
@@ -3525,7 +3526,7 @@ return val;
                 return JSON.parse(tempStr).targetGrade;
               }
             } catch(e) {}
-            return "premium";
+            return "sms";
           })()
         );
         // 모바일 리다이렉트 등으로 들어왔을 때 해당 주문 정보를 로컬 스토리지에 업데이트
@@ -4309,6 +4310,7 @@ return val;
       if (resolvedEmail) queryParams.set("email", resolvedEmail);
       if (resolvedPhone) queryParams.set("phone", resolvedPhone);
       queryParams.set("reportGrade", currentGrade);
+      queryParams.set("unlock", "true");
 
       const redirectUrl = typeof window !== "undefined" 
         ? `${window.location.origin}/result?${queryParams.toString()}`
