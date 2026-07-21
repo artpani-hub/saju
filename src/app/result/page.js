@@ -3280,6 +3280,8 @@ function ResultContent() {
 
   const [isPaid, setIsPaid] = useState(() => {
     if (typeof window !== "undefined") {
+      const hasError = window.location.search.includes("code=") || window.location.search.includes("error_code=") || window.location.search.includes("message=");
+      if (hasError) return false;
       const debugUnlock = window.location.search.includes("unlock=true") || window.location.search.includes("debug=true");
       if (debugUnlock) return true;
       const reportGrade = new URLSearchParams(window.location.search).get("reportGrade") || "free";
@@ -3293,6 +3295,12 @@ function ResultContent() {
     const phone = searchParams.get("phone");
     const name = searchParams.get("name");
     if (!phone || !name) return;
+
+    const hasError = searchParams.has("code") || searchParams.has("error_code") || searchParams.has("message");
+    if (hasError) {
+      setIsPaid(false);
+      return;
+    }
 
     const debugUnlock = searchParams.get("unlock") === "true" || searchParams.get("debug") === "true";
     if (debugUnlock) {
@@ -3504,7 +3512,6 @@ return val;
               email: tempInfo.email || "",
               phone: tempInfo.phone || "",
               reportGrade: tempInfo.targetGrade || "sms",
-              unlock: "true",
               imp_success: "true"
             });
             window.location.href = `${window.location.origin}${window.location.pathname}?${redirectParams.toString()}`;
@@ -4310,7 +4317,6 @@ return val;
       if (resolvedEmail) queryParams.set("email", resolvedEmail);
       if (resolvedPhone) queryParams.set("phone", resolvedPhone);
       queryParams.set("reportGrade", currentGrade);
-      queryParams.set("unlock", "true");
 
       const redirectUrl = typeof window !== "undefined" 
         ? `${window.location.origin}/result?${queryParams.toString()}`
