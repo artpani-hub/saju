@@ -3543,6 +3543,15 @@ return val;
           const paymentIdParam = params.get("payment_id") || params.get("paymentId") || params.get("merchant_uid") || "";
           await updateLocalStorageOrderToPaid(currentGradeParam, paymentIdParam);
         })();
+
+        if (!params.has("unlock")) {
+          try {
+            const url = new URL(window.location.href);
+            url.searchParams.set("unlock", "true");
+            if (currentGradeParam) url.searchParams.set("reportGrade", currentGradeParam);
+            window.history.replaceState({}, "", url.toString());
+          } catch (e) {}
+        }
         
         // [모바일 리다이렉트 대응] 결제 완료 시점 메일 및 문자 자동 전송 처리
         const sendNotificationOnMobileRedirect = async () => {
