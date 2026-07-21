@@ -4331,7 +4331,7 @@ return val;
       } else if (currentGrade === "premium") {
         amount = reportGrade === "free" ? 14900 : 34900;
       } else if (currentGrade === "sms") {
-        amount = reportGrade === "free" ? 14900 : 3900;
+        amount = 14900;
       }
 
       // 결제요청 직전에 사용자 정보를 임시 저장 (모바일 리다이렉트 유실 대비)
@@ -11552,7 +11552,7 @@ return val;
         )}
 
         {/* SMS 요약 보고서일 때 유료 결제 유도 하단 고정 플로팅 바 (오늘의 운세 및 무료 사주는 제외) */}
-        {type !== "today" && type !== "tarot" && type !== "gunghap" && type !== "wealth" && type !== "dream" && reportGrade === "sms" && (
+        {type !== "today" && type !== "tarot" && type !== "gunghap" && type !== "wealth" && type !== "dream" && reportGrade === "sms" && isPaid && (
           typeParam === "tojeong" ? (
             <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
               <button
@@ -11600,7 +11600,7 @@ return val;
         )}
 
         {/* 무료 사주 보고서 하단 고정 문자요약 신청 플로팅 바 */}
-        {reportGrade === "free" && !isPaid && (
+        {(reportGrade === "free" || (reportGrade === "sms" && !isPaid)) && !isPaid && (
           <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
             <button
               type="button"

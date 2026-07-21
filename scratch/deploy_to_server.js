@@ -203,10 +203,23 @@ conn.on('ready', () => {
       });
     });
   });
-}).connect({
-  host: '121.125.61.114',
-  port: 22,
-  username: 'saju-artpani',
-  privateKey: fs.readFileSync(path.join(require('os').homedir(), '.ssh', 'id_ed25519_121_125_61_114'))
 });
+
+conn.on('error', (err) => {
+  console.error('SSH Error:', err.message);
+  console.log('Retrying connection in 5 seconds...');
+  setTimeout(startConnect, 5000);
+});
+
+function startConnect() {
+  conn.connect({
+    host: '121.125.61.114',
+    port: 22,
+    username: 'saju-artpani',
+    privateKey: fs.readFileSync(path.join(require('os').homedir(), '.ssh', 'id_ed25519_121_125_61_114')),
+    readyTimeout: 120000
+  });
+}
+
+startConnect();
 
