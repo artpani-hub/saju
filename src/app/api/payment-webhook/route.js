@@ -87,7 +87,7 @@ export async function POST(req) {
       return NextResponse.json({ success: true, message: `Order status set to ${result.status.toLowerCase()}` });
     } catch (dbErr) {
       console.log(`[Webhook mismatch] Order not found for id: ${orderIdStr}, error: ${dbErr.message}`);
-      return NextResponse.json({ success: false, message: "Order not found in DB" }, { status: 404 });
+      return NextResponse.json({ success: true, message: "Order not found in DB, but acknowledged" });
     }
   } catch (err) {
     console.error("Webhook parse error:", err);

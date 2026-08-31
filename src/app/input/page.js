@@ -240,7 +240,7 @@ const buildTodaySmsText = (name, gender, year, month, day, hour) => {
   const analysis = stemAnalysis[dayStem] || stemAnalysis["甲"];
   const myPresc = elementPrescriptions[dayStemEl] || elementPrescriptions["목"];
 
-  const origin = "https://saju.artpani.com";
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
 
   return `[혜안당 명리연구소] ${name} 님 오늘의 수호 보감\n오늘의 일진: ${formattedToday} (${dayStem}${dayBranch}일 - ${dayStemEl}의 기운)\n\n● 총운: ${analysis.summary}\n● 금전운: ${analysis.wealth.score}% (${analysis.wealth.desc})\n● 연애운: ${analysis.love.score}% (${analysis.love.desc})\n● 대인관계: ${analysis.social.score}% (${analysis.social.desc})\n\n행운의 개운 비법:\n- 수호 색상: ${myPresc.color}\n- 수호 숫자: ${myPresc.number}\n- 수호 방향: ${myPresc.direction}\n- 조언: ${analysis.advice}\n\n상세한 분석 및 만세력 결과는 아래 링크에서 확인하실 수 있습니다.\n▶ 결과 보기: ${origin}/result?name=${name}&gender=${gender === "female" ? "female" : "male"}&type=today&year=${year}&month=${month}&day=${day}&hour=${hour}&reportGrade=sms`;
 };
@@ -274,7 +274,7 @@ const buildGeneralSmsText = (name, productName, email, phone, productKey, formDa
     queryParams.set("cards", selectedCards.join(","));
   }
 
-  const origin = "https://saju.artpani.com";
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
 
   return `[혜안당 명리연구소] ${name} 님, 주문하신 [${productName}] 분석이 무사히 완료되었습니다.\n\n적어주신 이메일(${email})로 상세 보고서 PDF 가이드를 전송해 드렸습니다. 혹은 아래의 온라인 결과 보감 링크를 통해 즉시 확인해 보실 수 있습니다.\n\n▶ 모바일 결과 보기: ${origin}/result?${queryParams.toString()}&unlock=true\n\n🎁 [재구매 10% 할인쿠폰]\n혜안당을 이용해 주셔서 감사합니다. 다음 서비스 이용 시 결제창에서 쿠폰번호 [HYEAN-WELCOME-10]을 입력하시면 10% 추가 할인을 받으실 수 있습니다.\n\n귀하의 앞날에 늘 지혜의 빛이 함께하기를 기원합니다. 감사합니다.`;
 };
@@ -318,6 +318,65 @@ function InputFormContent() {
   const [selectedCards, setSelectedCards] = useState([]);
   const [progress, setProgress] = useState(0);
   const [privacyAgreed, setPrivacyAgreed] = useState(false);
+
+  // DB 상품 최신 정보 맵핑 상태값
+  const [dbProductsMap, setDbProductsMap] = useState({});
+
+  useEffect(() => {
+    fetch("/api/admin/products")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.products)) {
+          const pMap = {};
+          data.products.forEach((p) => {
+            if (p.key) pMap[p.key] = p;
+            if (p.reportType) pMap[p.reportType] = p;
+            if (p.reportType === "free" || p.key === "free_sample") {
+              pMap["free_sample"] = p;
+              pMap["free"] = p;
+            }
+          });
+          setDbProductsMap(pMap);
+        }
+      })
+      .catch((err) => console.error("Failed to load DB products", err));
+  }, []);
+
+  const getCurrentProductDbKey = () => {
+    if (reportGrade === "free") return "free_sample";
+    if (productKey === "saju") return `saju_${reportGrade}`;
+    if (productKey === "newyear") return `newyear_${reportGrade}`;
+    if (productKey === "tojeong") return reportGrade === "deep" ? "tojeong_premium" : `tojeong_${reportGrade}`;
+    if (productKey === "gunghap") {
+      if (gunghapType === "deep_compatibility") return "gunghap_deep";
+      if (gunghapType === "reunion") return "gunghap_reunion";
+      return "gunghap_basic";
+    }
+    return productKey;
+  };
+
+  const getActiveProductPrice = () => {
+    const dbKey = getCurrentProductDbKey();
+    if (dbProductsMap[dbKey] && typeof dbProductsMap[dbKey].price === "number") {
+      return dbProductsMap[dbKey].price;
+    }
+    if (dbProductsMap["free_sample"] && typeof dbProductsMap["free_sample"].price === "number") {
+      return dbProductsMap["free_sample"].price;
+    }
+    if (dbProductsMap["free"] && typeof dbProductsMap["free"].price === "number") {
+      return dbProductsMap["free"].price;
+    }
+    if (reportGrade === "free" || dbKey === "free_sample") {
+      return 1000;
+    }
+    const base = productKey === "gunghap" 
+      ? (gunghapType === "reunion" ? 19900 : 26900)
+      : (products[productKey]?.price || 14900);
+    if (productKey === "saju" || productKey === "newyear" || productKey === "tojeong") {
+      return reportGrade === "deep" ? base + 35000 : reportGrade === "premium" ? base + 20000 : base;
+    }
+    return base;
+  };
   const [payMethod, setPayMethod] = useState("card");
   const [activeOrderId, setActiveOrderId] = useState(null);
 
@@ -363,13 +422,7 @@ function InputFormContent() {
       const base = productKey === "gunghap" 
         ? (gunghapType === "reunion" ? 19900 : 26900)
         : (products[productKey]?.price || 30000);
-      const currentPrice = reportGrade === "free" ? 0 : ((productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
-        ? (reportGrade === "deep" 
-          ? base + 15000 
-          : reportGrade === "sms" 
-          ? Math.max(5000, base - 20000) 
-          : base)
-        : base);
+      const currentPrice = getActiveProductPrice();
 
       if (coupon.minOrderAmount > 0 && currentPrice < coupon.minOrderAmount) {
         setCouponError(`이 쿠폰은 최소 ${coupon.minOrderAmount.toLocaleString()}원 이상 결제 시 사용 가능합니다. (현재 결제 금액: ${currentPrice.toLocaleString()}원)`);
@@ -399,13 +452,7 @@ function InputFormContent() {
     const base = productKey === "gunghap" 
       ? (gunghapType === "reunion" ? 19900 : 26900)
       : (products[productKey]?.price || 30000);
-    const currentPrice = reportGrade === "free" ? 0 : ((productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
-      ? (reportGrade === "deep" 
-        ? base + 15000 
-        : reportGrade === "sms" 
-        ? Math.max(5000, base - 20000) 
-        : base)
-      : base);
+    const currentPrice = getActiveProductPrice();
 
     if (appliedCoupon.minOrderAmount > 0 && currentPrice < appliedCoupon.minOrderAmount) {
       setAppliedCoupon(null);
@@ -728,8 +775,11 @@ function InputFormContent() {
       return;
     }
     
-    // If it's a free trial, bypass paying step and start analysis directly
-    if (reportGrade === "free") {
+    const currentFinalPrice = getActiveProductPrice();
+    const currentDiscountedPrice = getDiscountedPrice(currentFinalPrice);
+
+    // 실제 결제 금액이 0원 무료인 경우에만 바로 보고서 생성, 0원이 아닌 유료일 경우 결제 단계로 진입
+    if (currentDiscountedPrice === 0) {
       startAnalysis();
     } else {
       setStep("paying");
@@ -748,16 +798,7 @@ function InputFormContent() {
       const traditionalTime = getTraditionalTimeName(formData.birthHour);
       const sajuGanji = `${formData.birthYear}년 ${formData.birthMonth}월 ${formData.birthDay}일 (${traditionalTime})`;
 
-      const base = productKey === "gunghap"
-        ? (gunghapType === "reunion" ? 19900 : 26900)
-        : (products[productKey]?.price || 30000);
-      const finalPrice = reportGrade === "free" ? 0 : ((productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
-        ? (reportGrade === "deep" 
-          ? base + 35000 
-          : reportGrade === "premium" 
-          ? base + 20000 
-          : base)
-        : base);
+      const finalPrice = getActiveProductPrice();
       const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
 
       const gunghapLabel = productKey === "gunghap" ? (gunghapType === "deep_compatibility" ? " (밀착궁합)" : gunghapType === "reunion" ? " (재회운)" : " (궁합)") : "";
@@ -766,9 +807,9 @@ function InputFormContent() {
         name: formData.name || "홍길동",
         email: formData.email || "today_sms@hyeandang.com",
         phone: formData.phone || "010-0000-0000",
-        productName: `${products[productKey]?.title || "맞춤 사주"}${gunghapLabel}${reportGrade === "free" ? " (무료 체험판)" : ""}`,
+        productName: `${products[productKey]?.title || "맞춤 사주"}${gunghapLabel}${finalPriceWithDiscount === 0 ? " (체험판 리포트)" : ""}`,
         amount: finalPriceWithDiscount,
-        status: reportGrade === "free" ? "free" : "paid",
+        status: finalPriceWithDiscount === 0 ? "free" : "paid",
         sajuGanji: sajuGanji,
         emailStatus: "pending",
         createdAt: formattedDate,
@@ -1097,16 +1138,7 @@ function InputFormContent() {
       const traditionalTime = getTraditionalTimeName(formData.birthHour);
       const sajuGanji = `${formData.birthYear}년 ${formData.birthMonth}월 ${formData.birthDay}일 (${traditionalTime})`;
 
-      const base = productKey === "gunghap"
-        ? (gunghapType === "reunion" ? 19900 : 26900)
-        : (products[productKey]?.price || 30000);
-      const finalPrice = reportGrade === "free" ? 0 : ((productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
-        ? (reportGrade === "deep" 
-          ? base + 35000 
-          : reportGrade === "premium" 
-          ? base + 20000 
-          : base)
-        : base);
+      const finalPrice = getActiveProductPrice();
       const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
 
       const gunghapLabel = productKey === "gunghap" ? (gunghapType === "deep_compatibility" ? " (밀착궁합)" : gunghapType === "reunion" ? " (재회운)" : " (궁합)") : "";
@@ -1182,7 +1214,17 @@ function InputFormContent() {
     await savePendingOrder();
 
     const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "store-312155f8-f523-4067-a568-285c7bbec6e0";
-    const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "";
+    const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "channel-key-3e4c1ebd-636a-40b5-9245-85163ebff861";
+
+    const finalPrice = getActiveProductPrice();
+    const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
+
+    // 무료 (0원) 상품인 경우 결제창 없이 즉시 분석 진입
+    if (finalPriceWithDiscount === 0) {
+      alert("🎁 선택하신 상품은 무료(0원) 이벤트 상품입니다. 결제창 호출 없이 즉시 사주 분석 및 보고서 생성을 시작합니다.");
+      startAnalysis();
+      return;
+    }
 
     // 채널 키가 환경변수로 제공되지 않은 임시 환경인 경우 모의 테스트로 분석 즉시 진입
     if (!channelKey) {
@@ -1198,18 +1240,6 @@ function InputFormContent() {
 
     const PortOne = window.PortOne;
 
-    const base = productKey === "gunghap" 
-      ? (gunghapType === "reunion" ? 19900 : 26900)
-      : activeProduct.price;
-    const finalPrice = (productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
-      ? (reportGrade === "deep" 
-        ? base + 35000 
-        : reportGrade === "premium" 
-        ? base + 20000 
-        : base)
-      : base;
-    const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
-
     // KCP 결제 채널은 신용카드(CARD) 결제창을 호출하고, 해당 결제창 내에서 카드/카카오페이/네이버페이 등을 모두 처리합니다.
     let payMethodParam = "CARD";
 
@@ -1218,11 +1248,15 @@ function InputFormContent() {
         ? `${window.location.origin}/result?name=${encodeURIComponent(formData.name)}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendarType}&year=${formData.birthYear}&month=${formData.birthMonth}&day=${formData.birthDay}&hour=${formData.birthHour}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText)}&email=${encodeURIComponent(formData.email)}&phone=${encodeURIComponent(formData.phone)}&reportGrade=${reportGrade}&partnerName=${encodeURIComponent(formData.partnerName || "")}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendarType}&partnerYear=${formData.partnerBirthYear}&partnerMonth=${formData.partnerBirthMonth}&partnerDay=${formData.partnerBirthDay}&partnerHour=${formData.partnerBirthHour}&gunghapType=${gunghapType}`
         : "https://saju.artpani.com/result";
 
+      const orderTitleName = reportGrade === "free" || getCurrentProductDbKey() === "free_sample" 
+        ? "사주 체험판 리포트" 
+        : activeProduct.title;
+
       const paymentData = {
         storeId,
         channelKey,
         paymentId: `payment_${new Date().getTime()}`,
-        orderName: `${formData.name || "의뢰인"}님 ${activeProduct.title}`,
+        orderName: `${formData.name || "의뢰인"}님 ${orderTitleName}`,
         totalAmount: finalPriceWithDiscount,
         currency: "KRW",
         payMethod: payMethodParam,
@@ -1906,18 +1940,10 @@ function InputFormContent() {
                       </span>
                       <span className="text-lg font-bold text-brass font-sans">
                         {(() => {
-                          const base = productKey === "gunghap" 
-                            ? (gunghapType === "reunion" ? 19900 : 26900)
-                            : activeProduct.price;
-                          const finalPrice = (productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
-                            ? (reportGrade === "deep" 
-                              ? base + 35000 
-                              : reportGrade === "premium" 
-                              ? base + 20000 
-                              : base)
-                            : base;
-                          return getDiscountedPrice(finalPrice).toLocaleString();
-                        })()}원
+                          const finalPrice = getActiveProductPrice();
+                          const discounted = getDiscountedPrice(finalPrice);
+                          return discounted === 0 ? "무료 (0원)" : `${discounted.toLocaleString()}원`;
+                        })()}
                       </span>
                     </div>
                     {/* 상세 괄호 페이지 스펙 노출 */}
@@ -1941,7 +1967,7 @@ function InputFormContent() {
                   type="submit"
                   className="w-full py-4 bg-jade text-background rounded-lg font-myeongjo text-lg font-bold shadow-md hover:bg-jade-dark hover:shadow-lg transition-all cursor-pointer"
                 >
-                  {reportGrade === "free" ? "내 사주 무료 확인하기" : "기입 완료 및 결제 진행"}
+                  사주 체험판 보러 가기
                 </button>
                 {/* 다른 상품 보러 가기 링크 */}
                 <Link
@@ -2225,7 +2251,7 @@ function InputFormContent() {
                     <div className="text-center pb-2.5 border-b border-border-custom/60">
                       <span className="text-[10px] text-jade font-bold tracking-widest block mb-1">무료 분석</span>
                       <h3 className="font-myeongjo text-base font-bold text-foreground">
-                        🎁 혜안당 무료 사주 보감
+                        🎁 혜안당 사주 체험판 보감
                       </h3>
                     </div>
 
@@ -2267,17 +2293,17 @@ function InputFormContent() {
                       </div>
 
                       <div className="border-t border-border-custom/60 pt-4 text-center text-[10px] text-foreground-muted/70">
-                        💡 정보 기입을 완료하고 하단의 <strong className="text-jade">"내 사주 무료 확인하기"</strong> 버튼을 누르면 즉시 사주 분석이 개시됩니다.
+                        💡 정보 기입을 완료하고 하단의 <strong className="text-jade">"사주 체험판 보러 가기"</strong> 버튼을 누르면 사주 분석이 개시됩니다.
                       </div>
                     </div>
                   </div>
-                  {/* 모바일 화면 전용 확인 버튼 (무료체험판) */}
+                  {/* 모바일 화면 전용 확인 버튼 */}
                   <button
                     type="submit"
                     form="saju-input-form"
                     className="lg:hidden w-full mt-5 py-4 bg-jade text-background hover:bg-jade-dark rounded-lg font-myeongjo text-lg font-bold shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
                   >
-                    내 사주 무료 확인하기
+                    사주 체험판 보러 가기
                   </button>
                 </>
               )}
@@ -2301,23 +2327,18 @@ function InputFormContent() {
                   <span className="text-base font-bold text-foreground">혜안당 (慧眼堂)</span>
                 </div>
                 {(() => {
-                  const base = productKey === "gunghap" 
-                    ? (gunghapType === "reunion" ? 19900 : 26900)
-                    : activeProduct.price;
-                  const finalPrice = (productKey === "saju" || productKey === "newyear" || productKey === "tojeong")
-                    ? (reportGrade === "deep" 
-                      ? base + 35000 
-                      : reportGrade === "premium" 
-                      ? base + 20000 
-                      : base)
-                    : base;
+                  const finalPrice = getActiveProductPrice();
                   const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
+                  const isFreeSample = reportGrade === "free" || getCurrentProductDbKey() === "free_sample";
+                  const displayProductName = isFreeSample
+                    ? "사주 체험판 리포트"
+                    : `${activeProduct.title} ${(productKey === "saju" || productKey === "newyear" || productKey === "tojeong") ? `(${reportGrade === "premium" ? "고급 리포트" : reportGrade === "deep" ? "프리미엄 리포트" : (productKey === "tojeong" ? "문자메시지요약" : "문자 요약")})` : ""}`;
                   return (
                     <>
                       <div>
                         <span className="text-[10px] text-foreground-muted block">상품명</span>
                         <span className="text-sm text-foreground">
-                          {activeProduct.title} {(productKey === "saju" || productKey === "newyear" || productKey === "tojeong") && `(${reportGrade === "premium" ? "고급 리포트" : reportGrade === "deep" ? "프리미엄 리포트" : (productKey === "tojeong" ? "문자메시지요약" : "문자 요약")})`}
+                          {displayProductName}
                         </span>
                       </div>
                       <div>

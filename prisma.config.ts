@@ -9,7 +9,6 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    // Provide hardcoded fallback url to ensure Next.js build workers don't fail when env is undefined
-    url: process.env["DATABASE_URL"] || "file:d:/인터그리비티/saju/prisma/dev.db",
+    url: "file:d:/인터그리비티/saju/prisma/dev.db",
   },
 });

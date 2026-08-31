@@ -283,7 +283,7 @@ export default function Home() {
               href="/input?product=saju&reportGrade=free"
               className="inline-flex items-center gap-2 bg-[#8B221E] hover:bg-[#6D1B18] text-white px-4 py-2 rounded-md text-sm font-medium shadow-sm transition-all font-traditional"
             >
-              무료 사주 보기
+              사주 체험판 보기
               <ArrowRight className="w-4 h-4 text-brass-light" />
             </Link>
           </div>
@@ -529,7 +529,7 @@ export default function Home() {
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#8B221E] hover:bg-[#6D1B18] text-white px-8 py-4 rounded-md text-base font-medium shadow-md transition-all duration-300 transform hover:-translate-y-0.5 font-traditional tracking-wider"
             >
               <Scroll className="w-5 h-5 text-brass-light" />
-              내 사주 무료 확인하기 ➔
+              사주 체험판 보러 가기 ➔
             </Link>
             <a
               href="#services"

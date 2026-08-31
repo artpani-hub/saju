@@ -1,6 +1,6 @@
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:d:/인터그리비티/saju/prisma/dev.db"
 }
 
 generator client {
@@ -62,19 +62,25 @@ model SajuReport {
 // 4. 상품 관리
 model Product {
   id               String   @id @default(uuid())
-  name             String   // 상품명 (평생 종합사주, 신년운세, 토정비결, 재물&비즈니스운 등)
-  reportType       String   // 리포트 구분 (문자메시지요약, 고급리포트, 심화리포트 등)
-  price            Int      // 판매가격
+  key              String   @unique // 상품 식별 키 (예: saju_sms, saju_premium, saju_deep, free_sample 등)
+  name             String   // 상품명 (평생 종합사주, 신년운세, 토정비결 등)
+  category         String?  // 카테고리 (사주팔자, 신년운세, 궁합 등)
+  badge            String?  // 배지 (37페이지 이상 PDF, 인기 등)
+  tag              String?  // 태그 (기본, 추천, 인기, 무료 등)
+  reportType       String?  // 리포트 구분 (문자메시지요약, 고급리포트, 심화리포트 등)
+  price            Int      // 판매가격 (0원은 무료)
+  originalPrice    Int?     // 원가/시중가
   discountPrice    Int?     // 할인가격
   description      String?  // 상품 설명
   pageCount        Int      @default(21) // 보고서 페이지 수
-  toc              String   // 보고서 목차 (JSON 포맷)
-  requiredInputs   String   // 필요한 고객 입력정보 항목 (JSON 포맷)
+  toc              String?  // 보고서 목차 (JSON 포맷)
+  requiredInputs   String?  // 필요한 고객 입력정보 항목 (JSON 포맷)
   generationMethod String   @default("AUTO") // 결과 생성 방식 (AUTO, MANUAL)
   pdfTemplate      String?  // PDF 템플릿 경로/설정
-  estimatedTime    String   // 예상 생성시간 안내
+  estimatedTime    String?  // 예상 생성시간 안내
   isSale           Boolean  @default(true) // 판매 여부
   displayOrder     Int      @default(0) // 노출 순서
+  parentKey        String?  // 상위 상품 그룹 키 (예: saju, newyear)
   createdAt        DateTime @default(now())
 }
 

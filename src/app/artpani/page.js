@@ -129,6 +129,76 @@ export default function AdminPage() {
   const [searchType, setSearchType] = useState("all"); // all, name, email, phone, product
   const [paymentStatusFilter, setPaymentStatusFilter] = useState("all"); // all, paid, pending
 
+  // DB 상품 관리 전용 상태값
+  const [productsList, setProductsList] = useState([]);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [editProductForm, setEditProductForm] = useState({
+    price: 0,
+    originalPrice: "",
+    name: "",
+    tag: "",
+    badge: "",
+    isSale: true,
+    description: ""
+  });
+
+  const handleOpenEditProductModal = (prod) => {
+    setEditingProduct(prod);
+    setEditProductForm({
+      price: prod.price ?? 0,
+      originalPrice: prod.originalPrice ?? "",
+      name: prod.name || "",
+      tag: prod.tag || "",
+      badge: prod.badge || "",
+      isSale: prod.isSale !== false,
+      description: prod.description || ""
+    });
+  };
+
+  const handleSaveProduct = async () => {
+    if (!editingProduct) return;
+    try {
+      const activePassword = adminPassword || (typeof window !== "undefined" ? sessionStorage.getItem("adminPassword") : "") || "artpani1234";
+      const res = await fetch("/api/admin/products", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          adminPassword: activePassword,
+          key: editingProduct.key,
+          id: editingProduct.id,
+          price: editProductForm.price,
+          originalPrice: editProductForm.originalPrice,
+          name: editProductForm.name,
+          tag: editProductForm.tag,
+          badge: editProductForm.badge,
+          isSale: editProductForm.isSale,
+          description: editProductForm.description,
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(`[${editProductForm.name}] 상품 금액 및 정보가 성공적으로 DB에 변경되었습니다.`);
+        setEditingProduct(null);
+        // 즉시 로컬 productsList 상태 업데이트
+        if (data.product) {
+          setProductsList((prev) => {
+            const exists = prev.some((p) => p.key === data.product.key);
+            if (exists) {
+              return prev.map((p) => (p.key === data.product.key ? data.product : p));
+            } else {
+              return [...prev, data.product];
+            }
+          });
+        }
+        loadAllData();
+      } else {
+        alert("저장 실패: " + data.error);
+      }
+    } catch (err) {
+      alert("상품 정보 저장 중 오류가 발생했습니다: " + err.message);
+    }
+  };
+
   // Handler: Open Status Change Modal
   const handleOpenStatusModal = (order) => {
     setStatusModalOrder(order);
@@ -225,6 +295,13 @@ export default function AdminPage() {
       const promoRes = await fetch(`/api/admin/promotions?adminPassword=${adminPassword}&_=${timestamp}`);
       const promoData = await promoRes.json();
       if (Array.isArray(promoData)) setPromotions(promoData);
+
+      // 5. Load product list from DB
+      const prodRes = await fetch(`/api/admin/products?adminPassword=${adminPassword}&_=${timestamp}`);
+      const prodData = await prodRes.json();
+      if (prodData.success && Array.isArray(prodData.products)) {
+        setProductsList(prodData.products);
+      }
 
     } catch (e) {
       console.error("API load failed", e);
@@ -444,7 +521,7 @@ export default function AdminPage() {
       const filterLower = paymentStatusFilter.toLowerCase();
       
       const isPaidStatus = statusLower === "paid" || o.status === "결제 완료" || o.status === "결제완료";
-      const isFreeStatus = statusLower === "free" || o.status === "무료";
+      const isFreeStatus = statusLower === "free" || o.status === "무료" || o.status === "체험판";
       const isRefundedStatus = statusLower === "refunded" || o.status === "환불완료" || o.status === "환불 완료";
       const isCancelledStatus = statusLower === "cancelled" || o.status === "취소";
       const isPendingStatus = statusLower === "pending" || statusLower === "ready" || o.status === "결제 대기" || o.status === "대기";
@@ -923,7 +1000,7 @@ export default function AdminPage() {
               >
                 <option value="all">전체 결제상태</option>
                 <option value="paid">결제완료</option>
-                <option value="free">무료</option>
+                <option value="free">체험판</option>
                 <option value="pending">대기</option>
                 <option value="cancelled">취소</option>
                 <option value="refunded">환불완료</option>
@@ -995,14 +1072,14 @@ export default function AdminPage() {
                         {(() => {
                           const statusLower = (order.status || "").toLowerCase();
                           const isPaid = statusLower === "paid" || order.status === "결제 완료" || order.status === "결제완료";
-                          const isFree = statusLower === "free" || order.status === "무료";
+                          const isFree = statusLower === "free" || order.status === "무료" || order.status === "체험판";
                           const isRefunded = statusLower === "refunded" || order.status === "환불완료" || order.status === "환불 완료";
                           const isCancelled = statusLower === "cancelled" || order.status === "취소";
 
                           if (isPaid) {
                             return <span className="px-2 py-1 rounded text-xs font-bold bg-green-100 text-green-800">결제완료</span>;
                           } else if (isFree) {
-                            return <span className="px-2 py-1 rounded text-xs font-bold bg-blue-100 text-blue-800">무료</span>;
+                            return <span className="px-2 py-1 rounded text-xs font-bold bg-blue-100 text-blue-800">체험판</span>;
                           } else if (isRefunded) {
                             return <span className="px-2 py-1 rounded text-xs font-bold bg-purple-100 text-purple-800">환불완료</span>;
                           } else if (isCancelled) {
@@ -1391,12 +1468,20 @@ export default function AdminPage() {
         )}
 
         {/* TAB 4. PRODUCTS 
-            - 큰 카테고리 내부에 세부 등급별 상품과 금액을 일목요연하게 나열한 완성형 구조 */}
+            - DB 기반 실시간 단가 및 원가, 무료(0원) 상품 포함 동적 노출 및 수정 관리 */}
         {activeTab === "products" && (
           <div className="space-y-6">
-            <div>
-              <h2 className="text-3xl font-extrabold text-[#8e724b]">사주 상품 및 리포트 구성</h2>
-              <p className="text-[#666] mt-1 font-medium font-semibold">혜안당 공식 판매 상품군 실시간 단가 및 원가 노출 관리</p>
+            <div className="flex justify-between items-end">
+              <div>
+                <h2 className="text-3xl font-extrabold text-[#8e724b]">사주 상품 및 리포트 구성</h2>
+                <p className="text-[#666] mt-1 font-medium font-semibold">혜안당 공식 판매 상품군 실시간 단가 (0원 무료 포함) 및 원가 노출 관리</p>
+              </div>
+              <button 
+                onClick={loadAllData} 
+                className="text-xs bg-[#A3845B]/10 hover:bg-[#A3845B]/20 text-[#8e724b] font-bold px-3 py-1.5 rounded-lg border border-[#A3845B]/30 transition-all cursor-pointer flex items-center gap-1"
+              >
+                🔄 DB 단가 새로고침
+              </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
@@ -1406,9 +1491,9 @@ export default function AdminPage() {
                   badge: "37페이지 이상 PDF",
                   description: "타고난 오행 분포, 평생의 흐름을 짚어주는 10년 주기 대운, 인생의 황금기와 솔루션을 포함한 종합 보고서.",
                   subProducts: [
-                    { name: "문자메시지 요약", price: "14,900", originalPrice: "35,000", tag: "기본" },
-                    { name: "고급 리포트", price: "34,900", originalPrice: "55,000", tag: "추천" },
-                    { name: "심화 리포트", price: "49,900", originalPrice: "70,000", tag: "인기" }
+                    { key: "saju_sms", name: "문자메시지 요약", defaultPrice: 14900, defaultOrig: 35000, tag: "기본" },
+                    { key: "saju_premium", name: "고급 리포트", defaultPrice: 34900, defaultOrig: 55000, tag: "추천" },
+                    { key: "saju_deep", name: "심화 리포트", defaultPrice: 49900, defaultOrig: 70000, tag: "인기" }
                   ]
                 },
                 {
@@ -1416,9 +1501,9 @@ export default function AdminPage() {
                   badge: "51페이지 이상 PDF",
                   description: "새해에 가장 많이 찾는 상품으로, 한 해의 총체적인 흐름, 오행의 상생상극 융합 및 신수비결 분석.",
                   subProducts: [
-                    { name: "문자메시지 요약", price: "14,900", originalPrice: "40,000", tag: "기본" },
-                    { name: "고급 리포트", price: "34,900", originalPrice: "55,000", tag: "추천" },
-                    { name: "심화 리포트", price: "49,900", originalPrice: "70,000", tag: "인기" }
+                    { key: "newyear_sms", name: "문자메시지 요약", defaultPrice: 14900, defaultOrig: 40000, tag: "기본" },
+                    { key: "newyear_premium", name: "고급 리포트", defaultPrice: 34900, defaultOrig: 55000, tag: "추천" },
+                    { key: "newyear_deep", name: "심화 리포트", defaultPrice: 49900, defaultOrig: 70000, tag: "인기" }
                   ]
                 },
                 {
@@ -1426,8 +1511,8 @@ export default function AdminPage() {
                   badge: "30페이지 이상 PDF",
                   description: "조선 전통 토정 이지함 선생의 원본 해석에 따른 1년 신수비결과 생존 전략.",
                   subProducts: [
-                    { name: "문자메시지 요약", price: "14,900", originalPrice: "25,000", tag: "기본" },
-                    { name: "고급 리포트", price: "34,900", originalPrice: "36,000", tag: "추천" }
+                    { key: "tojeong_sms", name: "문자메시지 요약", defaultPrice: 14900, defaultOrig: 25000, tag: "기본" },
+                    { key: "tojeong_premium", name: "고급 리포트", defaultPrice: 34900, defaultOrig: 36000, tag: "추천" }
                   ]
                 },
                 {
@@ -1435,9 +1520,9 @@ export default function AdminPage() {
                   badge: "인기 상승",
                   description: "두 사람의 타고난 오행 분포 조화, 밀착/정서적 궁합, 백년해로 타이밍 및 관계 유지 솔루션 제공.",
                   subProducts: [
-                    { name: "궁합", price: "26,900", originalPrice: "45,000", tag: "기본" },
-                    { name: "밀착 궁합", price: "26,900", originalPrice: "55,000", tag: "인기" },
-                    { name: "재회운", price: "19,900", originalPrice: "30,000", tag: "재회" }
+                    { key: "gunghap_basic", name: "궁합", defaultPrice: 26900, defaultOrig: 45000, tag: "기본" },
+                    { key: "gunghap_deep", name: "밀착 궁합", defaultPrice: 26900, defaultOrig: 55000, tag: "인기" },
+                    { key: "gunghap_reunion", name: "재회운", defaultPrice: 19900, defaultOrig: 30000, tag: "재회" }
                   ]
                 },
                 {
@@ -1445,7 +1530,7 @@ export default function AdminPage() {
                   badge: "비즈니스",
                   description: "평생의 재물 성향(안정 vs 투자), 재물이 들어오는 최적의 타이밍, 이직 및 사업 확장 적합 시기 집중 분석.",
                   subProducts: [
-                    { name: "재물&비즈니스운", price: "19,900", originalPrice: "30,000", tag: "34% 할인" }
+                    { key: "wealth", name: "재물&비즈니스운", defaultPrice: 19900, defaultOrig: 30000, tag: "34% 할인" }
                   ]
                 },
                 {
@@ -1453,7 +1538,7 @@ export default function AdminPage() {
                   badge: "타로 상담",
                   description: "선택하신 가장 고민인 분야를 중점으로 타로 카드가 제시하는 미래와 조언.",
                   subProducts: [
-                    { name: "타로상담 (온라인 단일)", price: "9,900", originalPrice: "30,000", tag: "특별가" }
+                    { key: "tarot", name: "타로상담 (온라인 단일)", defaultPrice: 9900, defaultOrig: 30000, tag: "특별가" }
                   ]
                 },
                 {
@@ -1461,7 +1546,7 @@ export default function AdminPage() {
                   badge: "신규",
                   description: "어젯밤 꿈의 길흉 해몽과 내 사주 오행의 동조 현상 분석. 꿈이 현실과 어떤 관계인지 명리학으로 풀어드립니다.",
                   subProducts: [
-                    { name: "꿈해몽&사주조율", price: "9,900", originalPrice: "30,000", tag: "67% 할인" }
+                    { key: "dream", name: "꿈해몽&사주조율", defaultPrice: 9900, defaultOrig: 30000, tag: "67% 할인" }
                   ]
                 },
                 {
@@ -1469,7 +1554,15 @@ export default function AdminPage() {
                   badge: "맞춤 운세",
                   description: "개인별 사주 원국과 대운을 기반으로 제공하는 1:1 커스텀 맞춤형 일일 운세.",
                   subProducts: [
-                    { name: "나만의 맞춤 운세", price: "3,900", originalPrice: "5,000", tag: "인기" }
+                    { key: "today", name: "나만의 맞춤 운세", defaultPrice: 3900, defaultOrig: 5000, tag: "인기" }
+                  ]
+                },
+                {
+                  name: "🎁 사주 체험판 리포트",
+                  badge: "체험 혜택",
+                  description: "신규 고객 및 이벤트 진단용 사주 오행 체험판 리포트.",
+                  subProducts: [
+                    { key: "free_sample", name: "사주 체험판 리포트", defaultPrice: 1000, defaultOrig: 15000, tag: "인기 체험" }
                   ]
                 }
               ].map((p, i) => (
@@ -1482,30 +1575,110 @@ export default function AdminPage() {
                     <h3 className="text-lg font-extrabold text-[#212529] mt-2.5">{p.name}</h3>
                     <p className="text-[11px] text-[#666] mt-1 font-semibold leading-relaxed">{p.description}</p>
 
-                    {/* 하위 세부 상품 리스트 및 가격 나열 (원가 취소선 포함) */}
+                    {/* 하위 세부 상품 리스트 및 DB 연동 가격 나열 */}
                     <div className="mt-4 bg-[#fcfaf7] rounded-lg border border-[#f1f3f5] p-3 space-y-2.5 text-xs font-semibold">
                       <div className="text-[10px] text-[#8e724b] border-b border-[#A3845B]/10 pb-1 font-extrabold flex justify-between">
                         <span>세부 등급 및 상품</span>
                         <span>판매 금액</span>
                       </div>
-                      {p.subProducts.map((sub, sidx) => (
-                        <div key={sidx} className="flex justify-between items-center text-[#495057]">
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-[11px] font-semibold text-[#212529]">{sub.name}</span>
-                            <span className="bg-slate-200/60 text-[#666] text-[8px] font-extrabold px-1 rounded-sm">{sub.tag}</span>
+                      {p.subProducts.map((sub, sidx) => {
+                        // DB에서 로드된 실제 최신 상품 찾기
+                        const dbProd = productsList.find((dbItem) => dbItem.key === sub.key || dbItem.reportType === sub.key || (sub.key === "free_sample" && dbItem.reportType === "free"));
+                        const currentPrice = dbProd ? dbProd.price : sub.defaultPrice;
+                        const currentOrigPrice = dbProd ? (dbProd.originalPrice || dbProd.discountPrice) : sub.defaultOrig;
+                        const currentTag = dbProd ? (dbProd.tag || sub.tag) : sub.tag;
+                        const currentName = dbProd ? dbProd.name : sub.name;
+
+                        const targetProdObj = dbProd || {
+                          key: sub.key,
+                          name: currentName,
+                          price: currentPrice,
+                          originalPrice: currentOrigPrice,
+                          tag: currentTag,
+                          badge: p.badge,
+                          description: p.description,
+                          isSale: true
+                        };
+
+                        return (
+                          <div 
+                            key={sidx} 
+                            onClick={() => handleOpenEditProductModal(targetProdObj)}
+                            className="flex justify-between items-center text-[#495057] hover:bg-[#A3845B]/10 p-1.5 rounded transition-all cursor-pointer border border-transparent hover:border-[#A3845B]/30 group"
+                            title="클릭 시 금액 및 정보 수정"
+                          >
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[11px] font-semibold text-[#212529] group-hover:text-[#8e724b]">
+                                {currentName.includes(" - ") ? currentName.split(" - ")[1] : currentName}
+                              </span>
+                              {currentTag && (
+                                <span className={`text-[8px] font-extrabold px-1 rounded-sm ${currentPrice === 0 ? "bg-amber-200 text-amber-900" : "bg-slate-200/60 text-[#666]"}`}>
+                                  {currentTag}
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-right flex items-center gap-1.5">
+                              <div>
+                                {currentOrigPrice && (
+                                  <span className="text-[9.5px] text-[#999] line-through mr-1 font-medium">
+                                    {currentOrigPrice.toLocaleString()}원
+                                  </span>
+                                )}
+                                <span className={`font-extrabold text-xs ${currentPrice === 0 ? "text-amber-600 font-extrabold bg-amber-50 px-1 py-0.5 rounded" : "text-[#212529]"}`}>
+                                  {currentPrice === 0 ? "0원 (무료)" : `${currentPrice.toLocaleString()} 원`}
+                                </span>
+                              </div>
+                              <span className="text-[9px] bg-[#A3845B] text-white px-1.5 py-0.5 rounded font-bold group-hover:scale-105 transition-all">
+                                수정
+                              </span>
+                            </div>
                           </div>
-                          <div className="text-right">
-                            <span className="text-[9.5px] text-[#999] line-through mr-1.5 font-medium">{sub.originalPrice}원</span>
-                            <span className="text-[#212529] font-extrabold text-xs">{sub.price} 원</span>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
 
                   <div className="flex justify-end gap-1.5 mt-5 pt-3 border-t border-[#f1f3f5]">
-                    <button className="text-[11px] border border-[#dee2e6] hover:border-[#A3845B] hover:bg-[#A3845B]/5 text-[#8e724b] px-2.5 py-1.2 rounded transition-all font-bold cursor-pointer">구성 편집</button>
-                    <button className="text-[11px] bg-[#A3845B] hover:bg-[#8e724b] text-white px-3 py-1.2 rounded transition-all font-bold cursor-pointer">금액 수정</button>
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        const firstSub = p.subProducts[0];
+                        const dbProd = productsList.find((dbItem) => dbItem.key === firstSub.key || dbItem.reportType === firstSub.key || (firstSub.key === "free_sample" && dbItem.reportType === "free"));
+                        handleOpenEditProductModal(dbProd || {
+                          key: firstSub.key,
+                          name: firstSub.name,
+                          price: firstSub.defaultPrice,
+                          originalPrice: firstSub.defaultOrig,
+                          tag: firstSub.tag,
+                          badge: p.badge,
+                          description: p.description,
+                          isSale: true
+                        });
+                      }}
+                      className="text-[11px] border border-[#dee2e6] hover:border-[#A3845B] hover:bg-[#A3845B]/5 text-[#8e724b] px-2.5 py-1.2 rounded transition-all font-bold cursor-pointer"
+                    >
+                      구성 편집
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        const firstSub = p.subProducts[0];
+                        const dbProd = productsList.find((dbItem) => dbItem.key === firstSub.key || dbItem.reportType === firstSub.key || (firstSub.key === "free_sample" && dbItem.reportType === "free"));
+                        handleOpenEditProductModal(dbProd || {
+                          key: firstSub.key,
+                          name: firstSub.name,
+                          price: firstSub.defaultPrice,
+                          originalPrice: firstSub.defaultOrig,
+                          tag: firstSub.tag,
+                          badge: p.badge,
+                          description: p.description,
+                          isSale: true
+                        });
+                      }}
+                      className="text-[11px] bg-[#A3845B] hover:bg-[#8e724b] text-white px-3 py-1.2 rounded transition-all font-bold cursor-pointer shadow-sm"
+                    >
+                      금액 수정
+                    </button>
                   </div>
                 </div>
               ))}
@@ -3134,6 +3307,129 @@ export default function AdminPage() {
                 className="flex-1 bg-white border border-[#dee2e6] hover:bg-gray-50 text-[#666] py-2 rounded text-xs font-semibold transition-all cursor-pointer"
               >
                 취소
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 5. DB 상품 가격 및 정보 동적 수정 모달 */}
+      {editingProduct && (
+        <div className="fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-[#A3845B]/30 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex justify-between items-center border-b border-[#f1f3f5] pb-3">
+              <h3 className="text-base font-extrabold text-[#212529]">🛍️ 상품 DB 금액 및 정보 수정</h3>
+              <button onClick={() => setEditingProduct(null)} className="text-[#888] hover:text-black font-bold text-base cursor-pointer">✕</button>
+            </div>
+
+            <div className="space-y-3 text-xs font-semibold text-left">
+              <div>
+                <label className="block text-[#666] mb-1">상품 식별 키 (KEY)</label>
+                <input type="text" value={editingProduct.key} disabled className="w-full bg-slate-100 border border-slate-200 rounded px-3 py-2 text-slate-500 font-mono text-[11px]" />
+              </div>
+
+              <div>
+                <label className="block text-[#666] mb-1">상품명</label>
+                <input 
+                  type="text" 
+                  value={editProductForm.name} 
+                  onChange={(e) => setEditProductForm({ ...editProductForm, name: e.target.value })}
+                  className="w-full border border-slate-300 rounded px-3 py-2 text-sm text-[#212529] focus:outline-none focus:border-[#A3845B]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <div className="flex justify-between items-center mb-1">
+                    <label className="text-[#666]">판매 금액 (원)</label>
+                    <button 
+                      type="button" 
+                      onClick={() => setEditProductForm({ ...editProductForm, price: 0 })}
+                      className="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold hover:bg-amber-200 cursor-pointer"
+                    >
+                      무료 (0원)
+                    </button>
+                  </div>
+                  <input 
+                    type="number" 
+                    value={editProductForm.price} 
+                    onChange={(e) => setEditProductForm({ ...editProductForm, price: parseInt(e.target.value) || 0 })}
+                    className="w-full border border-slate-300 rounded px-3 py-2 text-sm text-[#212529] font-bold focus:outline-none focus:border-[#A3845B]"
+                    placeholder="0원 이상 입력"
+                  />
+                  {editProductForm.price === 0 && (
+                    <p className="text-[10px] text-amber-600 font-bold mt-1">🎁 현재 무료 (0원) 상품으로 설정됨</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-[#666] mb-1">원가 / 시중가 (원)</label>
+                  <input 
+                    type="number" 
+                    value={editProductForm.originalPrice} 
+                    onChange={(e) => setEditProductForm({ ...editProductForm, originalPrice: e.target.value })}
+                    className="w-full border border-slate-300 rounded px-3 py-2 text-sm text-slate-500 focus:outline-none focus:border-[#A3845B]"
+                    placeholder="취소선 노출용"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[#666] mb-1">태그 (Tag)</label>
+                  <input 
+                    type="text" 
+                    value={editProductForm.tag} 
+                    onChange={(e) => setEditProductForm({ ...editProductForm, tag: e.target.value })}
+                    className="w-full border border-slate-300 rounded px-3 py-2 text-xs text-[#212529] focus:outline-none focus:border-[#A3845B]"
+                    placeholder="예: 추천, 인기, 무료 등"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#666] mb-1">배지 (Badge)</label>
+                  <input 
+                    type="text" 
+                    value={editProductForm.badge} 
+                    onChange={(e) => setEditProductForm({ ...editProductForm, badge: e.target.value })}
+                    className="w-full border border-slate-300 rounded px-3 py-2 text-xs text-[#212529] focus:outline-none focus:border-[#A3845B]"
+                    placeholder="예: 37페이지 이상 PDF"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[#666] mb-1">상품 설명</label>
+                <textarea 
+                  rows={2}
+                  value={editProductForm.description} 
+                  onChange={(e) => setEditProductForm({ ...editProductForm, description: e.target.value })}
+                  className="w-full border border-slate-300 rounded px-3 py-2 text-xs text-[#212529] focus:outline-none focus:border-[#A3845B]"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <input 
+                  type="checkbox" 
+                  id="isSaleCheck"
+                  checked={editProductForm.isSale} 
+                  onChange={(e) => setEditProductForm({ ...editProductForm, isSale: e.target.checked })}
+                  className="w-4 h-4 accent-[#A3845B] cursor-pointer"
+                />
+                <label htmlFor="isSaleCheck" className="text-[#212529] cursor-pointer select-none font-bold">현재 판매 중 (공개 노출)</label>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-3 border-t border-[#f1f3f5]">
+              <button 
+                onClick={() => setEditingProduct(null)} 
+                className="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg font-bold text-xs hover:bg-slate-50 cursor-pointer"
+              >
+                취소
+              </button>
+              <button 
+                onClick={handleSaveProduct} 
+                className="px-5 py-2 bg-[#A3845B] hover:bg-[#8e724b] text-white rounded-lg font-bold text-xs transition-all cursor-pointer shadow-sm"
+              >
+                DB에 동적 저장
               </button>
             </div>
           </div>

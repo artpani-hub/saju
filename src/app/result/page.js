@@ -3280,12 +3280,13 @@ function ResultContent() {
 
   const [isPaid, setIsPaid] = useState(() => {
     if (typeof window !== "undefined") {
-      const hasError = window.location.search.includes("code=") || window.location.search.includes("error_code=") || window.location.search.includes("message=");
+      const search = window.location.search;
+      const hasError = search.includes("code=") || search.includes("error_code=") || search.includes("message=");
       if (hasError) return false;
-      const debugUnlock = window.location.search.includes("unlock=true") || window.location.search.includes("debug=true");
+      const debugUnlock = search.includes("unlock=true") || search.includes("debug=true") || search.includes("isPaid=true") || search.includes("imp_uid") || search.includes("merchant_uid") || search.includes("paymentId");
       if (debugUnlock) return true;
-      const reportGrade = new URLSearchParams(window.location.search).get("reportGrade") || "free";
-      if (reportGrade === "premium" || reportGrade === "deep" || reportGrade === "sms" || reportGrade === "free") return false;
+      const reportGrade = new URLSearchParams(search).get("reportGrade");
+      if (reportGrade && reportGrade !== "free") return true;
     }
     return false;
   });
@@ -3294,7 +3295,7 @@ function ResultContent() {
   useEffect(() => {
     const phone = searchParams.get("phone");
     const name = searchParams.get("name");
-    if (!phone || !name) return;
+    const search = typeof window !== "undefined" ? window.location.search : "";
 
     const hasError = searchParams.has("code") || searchParams.has("error_code") || searchParams.has("message");
     if (hasError) {
@@ -3302,37 +3303,37 @@ function ResultContent() {
       return;
     }
 
-    const debugUnlock = searchParams.get("unlock") === "true" || searchParams.get("debug") === "true";
-    if (debugUnlock) {
+    const debugUnlock = searchParams.get("unlock") === "true" || searchParams.get("debug") === "true" || searchParams.get("isPaid") === "true" || searchParams.has("imp_uid") || searchParams.has("merchant_uid") || searchParams.has("paymentId") || search.includes("unlock=true") || search.includes("imp_uid");
+    const reportGradeParam = searchParams.get("reportGrade");
+    const isPaidGrade = reportGradeParam && reportGradeParam !== "free";
+
+    if (debugUnlock || isPaidGrade) {
       setIsPaid(true);
       return;
     }
 
+    if (!phone || !name) return;
     const orderId = searchParams.get("orderId");
 
     fetch(`/api/orders?phone=${encodeURIComponent(phone)}&name=${encodeURIComponent(name)}`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
-          // 주소창에 orderId가 존재하면 해당 주문번호와 일치하는 주문의 결제 여부만 단독 판독!
           if (orderId) {
             const matched = data.find(o => String(o.id) === String(orderId));
             if (matched && (matched.status === "paid" || matched.unlocked === true)) {
               setIsPaid(true);
-            } else {
-              setIsPaid(false);
+              return;
             }
-          } else {
-            // orderId가 전달되지 않은 미결제/무료 조회 건은 무조건 블러 가림 처리 유지
-            setIsPaid(false);
           }
-        } else {
-          setIsPaid(false);
+          const anyPaid = data.some(o => o.status === "paid" || o.unlocked === true);
+          if (anyPaid) {
+            setIsPaid(true);
+          }
         }
       })
       .catch(err => {
         console.error("Database query failed:", err);
-        setIsPaid(false);
       });
   }, [searchParams]);
 
@@ -3467,7 +3468,7 @@ return val;
   const partnerSajuInfo = getGanjiTable(partnerYear, partnerMonth, partnerDay, partnerHour);
   const prescriptions = getDeficientPrescription(sajuInfo.elements);
   const metrics = getCharacterMetrics(sajuInfo);
-  const isFree = (reportGrade === "free" && !isPaid) || (reportGrade === "premium" && !isPaid) || (reportGrade === "sms" && !isPaid);
+  const isFree = reportGrade === "free" || (reportGrade === "premium" && !isPaid) || (reportGrade === "sms" && !isPaid);
   const isSmsLocked = (reportGrade === "sms" && !isPaid);
 
   // Determine user's base element for 2026 compatibility (일간 오행 기준)
@@ -3538,10 +3539,10 @@ return val;
             return "sms";
           })()
         );
-        // 모바일 리다이렉트 등으로 들어왔을 때 해당 주문 정보를 로컬 스토리지에 업데이트
         (async () => {
           const paymentIdParam = params.get("payment_id") || params.get("paymentId") || params.get("merchant_uid") || "";
           await updateLocalStorageOrderToPaid(currentGradeParam, paymentIdParam);
+          setIsPaid(true);
         })();
 
         if (!params.has("unlock")) {
@@ -3552,6 +3553,7 @@ return val;
             window.history.replaceState({}, "", url.toString());
           } catch (e) {}
         }
+        setIsPaid(true);
         
         // [모바일 리다이렉트 대응] 결제 완료 시점 메일 및 문자 자동 전송 처리
         const sendNotificationOnMobileRedirect = async () => {
@@ -3689,7 +3691,7 @@ return val;
                 phone: targetPhone
               });
 
-              const origin = "https://saju.artpani.com";
+              const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
               const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=${currentGradeParam}&unlock=true`;
               const smsContent = `[혜안당 명리연구소] ${name} 님, 주문하신 ${isTojeong ? "정통 토정비결" : "정통 사주"} 분석이 완료되었습니다.\n\n적어주신 이메일(${targetEmail || "지정 이메일"})로 상세 보감 PDF가 전송되었으며, 아래 온라인 보감 링크로도 즉시 열람이 가능합니다.\n\n▶ 결과 보기: ${mobileResultUrl}\n\n감사합니다.`;
 
@@ -3987,6 +3989,7 @@ return val;
       
       const url = new URL(window.location.href);
       url.searchParams.set("reportGrade", grade);
+      url.searchParams.set("unlock", "true");
       window.location.href = url.toString();
     };
 
@@ -4138,127 +4141,122 @@ return val;
             if (currentProgress >= 100) {
               clearInterval(interval);
               setTimeout(async () => {
-                // 이메일 자동 발송 트리거 연동
-                const targetEmail = emailParam || (rsp && rsp.buyer_email);
+                // 이메일 및 핸드폰 번호 최종 복원 (URL 파라미터 유실 대비)
+                const targetEmail = resolvedEmail || emailParam || (rsp && rsp.buyer_email);
+                const targetPhone = resolvedPhone || phoneParam || (rsp && rsp.buyer_tel);
+
+                const tasks = [];
+
+                // 1. 이메일 발송 작업 준비
                 if (targetEmail && targetEmail.includes("@") && targetEmail !== "today_sms@hyeandang.com") {
-                  try {
-                    const queryParams = new URLSearchParams({
-                      name: name,
-                      gender: genderVal || "female",
-                      type: typeParam,
-                      calendar: calendar,
-                      year: String(year),
-                      month: String(month),
-                      day: String(day),
-                      hour: hour,
-                      worryCategory: worryCategory,
-                      worryText: worryText || "",
-                      partnerName: partnerName || "",
-                      partnerGender: partnerGender === "여성" ? "female" : "male",
-                      partnerCalendar: partnerCalendar,
-                      partnerYear: String(partnerYear),
-                      partnerMonth: String(partnerMonth),
-                      partnerDay: String(partnerDay),
-                      partnerHour: partnerHour,
-                      gunghapType: gunghapType,
-                      email: targetEmail,
-                      phone: targetPhone
-                    });
+                  const queryParams = new URLSearchParams({
+                    name: name,
+                    gender: genderVal || "female",
+                    type: typeParam,
+                    calendar: calendar,
+                    year: String(year),
+                    month: String(month),
+                    day: String(day),
+                    hour: hour,
+                    worryCategory: worryCategory,
+                    worryText: worryText || "",
+                    partnerName: partnerName || "",
+                    partnerGender: partnerGender === "여성" ? "female" : "male",
+                    partnerCalendar: partnerCalendar,
+                    partnerYear: String(partnerYear),
+                    partnerMonth: String(partnerMonth),
+                    partnerDay: String(partnerDay),
+                    partnerHour: partnerHour,
+                    gunghapType: gunghapType,
+                    email: targetEmail,
+                    phone: targetPhone
+                  });
 
-                    const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
-                    const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=${grade}&unlock=true`;
-                    
-                    const mailSubject = `[혜안당 명리연구소] ${name} 님 주문하신 [정통 사주 업그레이드 보고서] 분석결과서가 도착했습니다.`;
-                    const mailHtml = `
-                      <div style="font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; border: 1px solid #E2DDD5; border-radius: 12px; background-color: #F9F8F6;">
-                        <div style="text-align: center; margin-bottom: 30px;">
-                          <span style="font-size: 24px; font-weight: bold; color: #A3845B; letter-spacing: 2px;">慧眼堂</span>
-                          <p style="font-size: 12px; color: #888; margin-top: 5px;">지혜로운 눈으로 밝히는 운명</p>
-                        </div>
-                        <div style="background-color: #ffffff; padding: 30px; border-radius: 8px; border: 1px solid #E1E1E1; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                          <h2 style="font-size: 18px; font-weight: bold; color: #1A1A1A; margin-top: 0; border-bottom: 2px solid #A3845B; padding-bottom: 15px;">운세 분석 보고서 완료 안내</h2>
-                          <p style="font-size: 14px; color: #333; line-height: 1.6; margin-top: 20px;">
-                            안녕하세요, <strong>${name}</strong> 님.<br />
-                            혜안당 명리연구소에 의뢰해 주신 <strong>[정통 사주 업그레이드 보고서]</strong> 분석 작업이 정교한 명리 해석을 거쳐 최종 완료되었습니다.
-                          </p>
-                          <p style="font-size: 14px; color: #333; line-height: 1.6;">
-                            작성된 정밀 보감 보고서는 아래의 '결과 확인하기' 버튼을 누르시면 온라인 결과 화면으로 즉시 연결되어 열람 및 가이드를 확인해 보실 수 있습니다.
-                          </p>
-                          <div style="text-align: center; margin: 35px 0;">
-                            <a href="${resultUrl}" target="_blank" style="display: inline-block; background-color: #A3845B; color: #ffffff; text-decoration: none; padding: 14px 35px; border-radius: 6px; font-size: 15px; font-weight: bold; box-shadow: 0 4px 6px rgba(163,132,91,0.25);">결과 확인하기</a>
-                          </div>
-                          <p style="font-size: 12px; color: #666; line-height: 1.5; background-color: #F3F3F3; padding: 15px; border-radius: 6px; margin-bottom: 0;">
-                            ※ 본 메일은 발신전용으로 회신이 되지 않습니다.<br />
-                            ※ 문의 사항은 홈페이지 하단 대표번호 혹은 아트파니 고객센터로 연락 주시기 바랍니다.
-                          </p>
-                        </div>
-                        <div style="text-align: center; margin-top: 30px; font-size: 11px; color: #888; line-height: 1.6;">
-                          © 2026 혜안당. All rights reserved.
-                        </div>
+                  const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
+                  const resultUrl = `${origin}/result?${queryParams.toString()}&reportGrade=${grade}&unlock=true`;
+                  
+                  const mailSubject = `[혜안당 명리연구소] ${name} 님 주문하신 [정통 사주 업그레이드 보고서] 분석결과서가 도착했습니다.`;
+                  const mailHtml = `
+                    <div style="font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; border: 1px solid #E2DDD5; border-radius: 12px; background-color: #F9F8F6;">
+                      <div style="text-align: center; margin-bottom: 30px;">
+                        <span style="font-size: 24px; font-weight: bold; color: #A3845B; letter-spacing: 2px;">慧眼堂</span>
+                        <p style="font-size: 12px; color: #888; margin-top: 5px;">지혜로운 눈으로 밝히는 운명</p>
                       </div>
-                    `;
+                      <div style="background-color: #ffffff; padding: 30px; border-radius: 8px; border: 1px solid #E1E1E1; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                        <h2 style="font-size: 18px; font-weight: bold; color: #1A1A1A; margin-top: 0; border-bottom: 2px solid #A3845B; padding-bottom: 15px;">운세 분석 보고서 완료 안내</h2>
+                        <p style="font-size: 14px; color: #333; line-height: 1.6; margin-top: 20px;">
+                          안녕하세요, <strong>${name}</strong> 님.<br />
+                          혜안당 명리연구소에 의뢰해 주신 <strong>[정통 사주 업그레이드 보고서]</strong> 분석 작업이 정교한 명리 해석을 거쳐 최종 완료되었습니다.
+                        </p>
+                        <p style="font-size: 14px; color: #333; line-height: 1.6;">
+                          작성된 정밀 보감 보고서는 아래의 '결과 확인하기' 버튼을 누르시면 온라인 결과 화면으로 즉시 연결되어 열람 및 가이드를 확인해 보실 수 있습니다.
+                        </p>
+                        <div style="text-align: center; margin: 35px 0;">
+                          <a href="${resultUrl}" target="_blank" style="display: inline-block; background-color: #A3845B; color: #ffffff; text-decoration: none; padding: 14px 35px; border-radius: 6px; font-size: 15px; font-weight: bold; box-shadow: 0 4px 6px rgba(163,132,91,0.25);">결과 확인하기</a>
+                        </div>
+                        <p style="font-size: 12px; color: #666; line-height: 1.5; background-color: #F3F3F3; padding: 15px; border-radius: 6px; margin-bottom: 0;">
+                          ※ 본 메일은 발신전용으로 회신이 되지 않습니다.<br />
+                          ※ 문의 사항은 홈페이지 하단 대표번호 혹은 아트파니 고객센터로 연락 주시기 바랍니다.
+                        </p>
+                      </div>
+                      <div style="text-align: center; margin-top: 30px; font-size: 11px; color: #888; line-height: 1.6;">
+                        © 2026 혜안당. All rights reserved.
+                      </div>
+                    </div>
+                  `;
 
-                    await fetch("/api/email", {
+                  tasks.push(
+                    fetch("/api/email", {
                       method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({
-                        to: targetEmail,
-                        subject: mailSubject,
-                        html: mailHtml,
-                      }),
-                    });
-                  } catch (mailErr) {
-                    console.error("결제 후 이메일 전송 실패:", mailErr);
-                  }
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ to: targetEmail, subject: mailSubject, html: mailHtml })
+                    }).catch(err => console.error("이메일 전송 예외:", err))
+                  );
                 }
 
-                // SMS 자동 발송 트리거 연동
-                const targetPhone = phoneParam || (rsp && rsp.buyer_tel);
+                // 2. SMS 자동 발송 작업 준비
                 if (targetPhone && targetPhone.replace(/[^0-9]/g, "").length >= 9) {
-                  try {
-                    const smsQueryParams = new URLSearchParams({
-                      name: name,
-                      gender: genderVal || "female",
-                      type: typeParam,
-                      calendar: calendar,
-                      year: String(year),
-                      month: String(month),
-                      day: String(day),
-                      hour: hour,
-                      worryCategory: worryCategory,
-                      worryText: worryText || "",
-                      partnerName: partnerName || "",
-                      partnerGender: partnerGender === "여성" ? "female" : "male",
-                      partnerCalendar: partnerCalendar,
-                      partnerYear: String(partnerYear),
-                      partnerMonth: String(partnerMonth),
-                      partnerDay: String(partnerDay),
-                      partnerHour: partnerHour,
-                      gunghapType: gunghapType,
-                      email: targetEmail,
-                      phone: targetPhone
-                    });
+                  const smsQueryParams = new URLSearchParams({
+                    name: name,
+                    gender: genderVal || "female",
+                    type: typeParam,
+                    calendar: calendar,
+                    year: String(year),
+                    month: String(month),
+                    day: String(day),
+                    hour: hour,
+                    worryCategory: worryCategory,
+                    worryText: worryText || "",
+                    partnerName: partnerName || "",
+                    partnerGender: partnerGender === "여성" ? "female" : "male",
+                    partnerCalendar: partnerCalendar,
+                    partnerYear: String(partnerYear),
+                    partnerMonth: String(partnerMonth),
+                    partnerDay: String(partnerDay),
+                    partnerHour: partnerHour,
+                    gunghapType: gunghapType,
+                    email: targetEmail,
+                    phone: targetPhone
+                  });
 
-                    const origin = "https://saju.artpani.com";
-                    const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=${grade}&unlock=true`;
-                    const smsContent = `[혜안당 명리연구소] ${name} 님, 주문하신 정통 사주 업그레이드 분석이 완료되었습니다.\n\n적어주신 이메일(${targetEmail || "지정 이메일"})로 상세 보감 PDF가 전송되었으며, 아래 온라인 보감 링크로도 즉시 열람이 가능합니다.\n\n▶ 결과 보기: ${mobileResultUrl}\n\n감사합니다.`;
+                  const origin = typeof window !== "undefined" ? window.location.origin : "https://saju.artpani.com";
+                  const mobileResultUrl = `${origin}/result?${smsQueryParams.toString()}&reportGrade=${grade}&unlock=true`;
+                  const smsContent = `[혜안당 명리연구소] ${name} 님, 주문하신 정통 사주 업그레이드 분석이 완료되었습니다.\n\n적어주신 이메일(${targetEmail || "지정 이메일"})로 상세 보감 PDF가 전송되었으며, 아래 온라인 보감 링크로도 즉시 열람이 가능합니다.\n\n▶ 결과 보기: ${mobileResultUrl}\n\n감사합니다.`;
 
-                    await fetch("/api/sms", {
+                  tasks.push(
+                    fetch("/api/sms", {
                       method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({
-                        receiver: targetPhone,
-                        msg: smsContent,
-                        title: "[혜안당 사주분석]"
-                      }),
-                    });
-                  } catch (smsErr) {
-                    console.error("결제 후 SMS 문자 전송 실패:", smsErr);
-                  }
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ receiver: targetPhone, msg: smsContent, title: "[혜안당 사주분석]" })
+                    }).catch(err => console.error("SMS 전송 예외:", err))
+                  );
+                }
+
+                // 이메일 및 문자 전송이 완료될 때까지 확실히 기다린 후 페이지 전환 실행
+                try {
+                  await Promise.all(tasks);
+                } catch (e) {
+                  console.error("비동기 알림 전송 오류:", e);
                 }
 
                 setIsProcessing(false);
@@ -4606,6 +4604,10 @@ return val;
   };
 
 
+  const handleUpgradeToPremium = () => {
+    handleUpgradeFromSms("premium", 20000);
+  };
+
   const handleUpgradePayment = () => {
     handleUpgradeFromSms("deep", 15000);
   };
@@ -4801,7 +4803,7 @@ return val;
   // Render: 평생 종합 사주 SMS 요약본
   // ----------------------------------------------------
   const renderSmsSajuContent = () => {
-    const isFree = (reportGrade === "free" && !isPaid) || (reportGrade === "premium" && !isPaid) || (reportGrade === "sms" && !isPaid);
+    const isFree = reportGrade === "free" || (reportGrade === "sms" && !isPaid);
     const blurClass = isFree ? "blur-[5px] select-none pointer-events-none" : "";
 
     // 1. 개인화 데이터 추출 및 만세력 기반 정보 생성
@@ -11589,8 +11591,8 @@ return val;
           </div>
         )}
 
-        {/* 무료 사주 보고서 하단 고정 문자요약 신청 플로팅 바 */}
-        {(reportGrade === "free" || (reportGrade === "sms" && !isPaid)) && !isPaid && (
+        {/* 1단계: 체험판 상태 및 체험판 결제 완료 후 (reportGrade === "free") -> 14,900원 문자요약 가림 해제 플로팅 바 */}
+        {reportGrade === "free" && (
           <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
             <button
               type="button"
@@ -11603,7 +11605,21 @@ return val;
           </div>
         )}
 
-        {/* 고급 리포트일 때 프리미엄 업그레이드 하단 고정 플로팅 바 (결제 완료 상태에서도 노출되도록 !isPaid 조건 제거) */}
+        {/* 2단계: 14,900원 결제 완료 후 (reportGrade === "sms") -> 고급 리포트 (+20,000원) 업그레이드 플로팅 바 */}
+        {reportGrade === "sms" && (
+          <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
+            <button
+              type="button"
+              onClick={handleUpgradeToPremium}
+              className="w-full bg-[#8B221E] hover:bg-[#6D1B18] text-white py-4 px-6 rounded-xl font-myeongjo font-bold text-xs sm:text-sm md:text-base flex items-center justify-between shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 border border-[#8B221E]/20"
+            >
+              <span>👑 {name}님 고급 리포트로 업그레이드 (+20,000원)</span>
+              <span className="text-lg">➔</span>
+            </button>
+          </div>
+        )}
+
+        {/* 3단계: 20,000원 고급 리포트 결제 완료 후 (reportGrade === "premium") -> 최상위 심화 리포트 (+15,000원) 업그레이드 플로팅 바 */}
         {reportGrade === "premium" && (type === "saju" || (type === "newyear" && typeParam !== "tojeong")) && (
           <div className="fixed bottom-4 left-4 right-4 md:max-w-xl md:mx-auto z-50 print:hidden animate-slideUp">
             <button
