@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "../../../lib/db";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 // GET: 주문 내역 목록 조회 (관리자 전용 및 개별 고객 조회)
 // Mock simulation fallback orders to ensure graphs & tables render beautifully even under DB connection delay
@@ -311,9 +312,11 @@ export async function GET(req) {
         name: order.userName || user?.name || "알 수 없음",
         email: user?.email || "",
         phone: user?.phone || "",
-        productName: "평생 종합 사주팔자 보감",
+        productName: order.productName || "평생 종합 사주팔자",
+        reportGrade: order.reportGrade || (order.amount === 14900 ? "sms" : (order.amount === 20000 || order.amount === 34900) ? "premium" : (order.amount === 15000 || order.amount === 49900) ? "deep" : "free"),
+        paymentId: order.paymentId || "",
         amount: order.amount,
-        status: order.status.toLowerCase(), // paid, pending 등
+        status: order.status ? order.status.toLowerCase() : "pending", // paid, pending 등
         // 주문 테이블에 격리 보존된 사주 정보가 있다면 그것을 우선 표기, 없을 때만 하위호환용으로 유저 테이블 정보 참조
         sajuGanji: order.birthYear 
           ? `${order.birthYear}년 ${order.birthMonth}월 ${order.birthDay}일 (${order.birthHour || "미정"})` 

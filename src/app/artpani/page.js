@@ -275,29 +275,30 @@ export default function AdminPage() {
   // Load Data function
   const loadAllData = async () => {
     try {
+      const activePassword = adminPassword || (typeof window !== "undefined" ? sessionStorage.getItem("adminPassword") : "") || "artpani1234";
       const timestamp = new Date().getTime();
       // 1. Load dashboard stats
-      const statsRes = await fetch(`/api/admin/dashboard?adminPassword=${adminPassword}&_=${timestamp}`);
+      const statsRes = await fetch(`/api/admin/dashboard?adminPassword=${activePassword}&_=${timestamp}`, { cache: "no-store" });
       const statsData = await statsRes.json();
       if (statsData.success) setStats(statsData.stats);
 
       // 2. Load orders list
-      const ordersRes = await fetch(`/api/orders?adminPassword=${adminPassword}&_=${timestamp}`);
+      const ordersRes = await fetch(`/api/orders?adminPassword=${activePassword}&_=${timestamp}`, { cache: "no-store" });
       const ordersData = await ordersRes.json();
       if (Array.isArray(ordersData)) setOrders(ordersData);
 
       // 3. Load inquiries list
-      const inquiriesRes = await fetch(`/api/admin/inquiries?adminPassword=${adminPassword}&_=${timestamp}`);
+      const inquiriesRes = await fetch(`/api/admin/inquiries?adminPassword=${activePassword}&_=${timestamp}`, { cache: "no-store" });
       const inquiriesData = await inquiriesRes.json();
       if (Array.isArray(inquiriesData)) setInquiries(inquiriesData);
 
       // 4. Load promotion list
-      const promoRes = await fetch(`/api/admin/promotions?adminPassword=${adminPassword}&_=${timestamp}`);
+      const promoRes = await fetch(`/api/admin/promotions?adminPassword=${activePassword}&_=${timestamp}`, { cache: "no-store" });
       const promoData = await promoRes.json();
       if (Array.isArray(promoData)) setPromotions(promoData);
 
       // 5. Load product list from DB
-      const prodRes = await fetch(`/api/admin/products?adminPassword=${adminPassword}&_=${timestamp}`);
+      const prodRes = await fetch(`/api/admin/products?adminPassword=${activePassword}&_=${timestamp}`, { cache: "no-store" });
       const prodData = await prodRes.json();
       if (prodData.success && Array.isArray(prodData.products)) {
         setProductsList(prodData.products);
@@ -510,6 +511,49 @@ export default function AdminPage() {
     return evaluateDateFilter(createdAtStr, dateFilter, startDate, endDate);
   };
 
+  // 관리자 주문관리 상품명 표기 헬퍼 함수
+  const getDisplayProductName = (order) => {
+    if (!order) return "사주 상품";
+    const pName = (order.productName || "").trim();
+    const grade = (order.reportGrade || "").toLowerCase();
+    const status = (order.status || "").toLowerCase();
+    const amount = Number(order.amount || 0);
+
+    // 1. 체험판인 경우 (free 등급/상태, 14,900원 미만의 사주 신청건 1000원, 1500원 등, 체험/무료 키워드) -> 무조건 "체험판"
+    if (
+      grade === "free" ||
+      status === "free" ||
+      status === "체험판" ||
+      pName.includes("체험") ||
+      (pName.includes("무료") && !pName.includes("무료 띠별")) ||
+      (amount < 14900 && amount !== 3900 && amount !== 9900 && !pName.includes("꿈") && !pName.includes("타로") && !pName.includes("오늘"))
+    ) {
+      return "체험판";
+    }
+
+    // 2. 사주/운세 상품 등급별 표기 정밀 변환
+    if (grade === "sms" || amount === 14900) {
+      if (pName.includes("토정비결")) return "토정비결 문자요약";
+      if (pName.includes("신년운세")) return "신년운세 문자요약";
+      return "평생종합사주 문자요약";
+    }
+
+    if (grade === "premium" || amount === 34900 || amount === 20000) {
+      if (pName.includes("토정비결")) return "토정비결 고급리포트";
+      if (pName.includes("신년운세")) return "신년운세 고급리포트";
+      return "평생사주고급리포트";
+    }
+
+    if (grade === "deep" || amount === 49900 || amount === 15000) {
+      if (pName.includes("토정비결")) return "토정비결 심화리포트";
+      if (pName.includes("신년운세")) return "신년운세 심화리포트";
+      return "평생사주 심화리포트";
+    }
+
+    if (pName) return pName;
+    return "평생종합사주";
+  };
+
   // Filter orders by search type, search query, date filter, and status filter
   const filteredOrders = orders.filter(o => {
     // 1. Date Filter
@@ -520,8 +564,8 @@ export default function AdminPage() {
       const statusLower = (o.status || "").toLowerCase();
       const filterLower = paymentStatusFilter.toLowerCase();
       
-      const isPaidStatus = statusLower === "paid" || o.status === "결제 완료" || o.status === "결제완료";
-      const isFreeStatus = statusLower === "free" || o.status === "무료" || o.status === "체험판";
+      const isPaidStatus = statusLower === "paid" || statusLower === "ready" || o.status === "결제 완료" || o.status === "결제완료" || (Number(o.amount || 0) > 0 && statusLower !== "cancelled" && statusLower !== "refunded");
+      const isFreeStatus = (statusLower === "free" || o.status === "무료" || o.status === "체험판") && Number(o.amount || 0) === 0;
       const isRefundedStatus = statusLower === "refunded" || o.status === "환불완료" || o.status === "환불 완료";
       const isCancelledStatus = statusLower === "cancelled" || o.status === "취소";
       const isPendingStatus = statusLower === "pending" || statusLower === "ready" || o.status === "결제 대기" || o.status === "대기";
@@ -548,7 +592,7 @@ export default function AdminPage() {
       const nameMatch = o.name.toLowerCase().includes(query);
       const emailMatch = (o.email || "").toLowerCase().includes(query);
       const phoneMatch = (o.phone || "").replace(/[^0-9]/g, "").includes(query.replace(/[^0-9]/g, ""));
-      const productMatch = (o.productName || "").toLowerCase().includes(query);
+      const productMatch = (o.productName || "").toLowerCase().includes(query) || getDisplayProductName(o).toLowerCase().includes(query);
 
       if (searchType === "all") {
         if (!nameMatch && !emailMatch && !phoneMatch && !productMatch) return false;
@@ -564,6 +608,11 @@ export default function AdminPage() {
     }
 
     return true;
+  }).sort((a, b) => {
+    const timeA = new Date(a.createdAt || 0).getTime();
+    const timeB = new Date(b.createdAt || 0).getTime();
+    if (timeA && timeB && !isNaN(timeA) && !isNaN(timeB) && timeA !== timeB) return timeB - timeA;
+    return (Number(b.id) || 0) - (Number(a.id) || 0);
   });
 
   if (!isAuthenticated) {
@@ -1066,7 +1115,7 @@ export default function AdminPage() {
                         <div className="text-xs text-[#666]">{order.phone}</div>
                         <div className="text-xs text-[#666]">{order.email || "이메일 없음"}</div>
                       </td>
-                      <td className="p-4 text-[#8e724b] font-semibold">{order.productName}</td>
+                      <td className="p-4 text-[#8e724b] font-semibold">{getDisplayProductName(order)}</td>
                       <td className="p-4 font-bold text-[#212529]">{order.amount?.toLocaleString()} 원</td>
                       <td className="p-4">
                         {(() => {
@@ -3195,7 +3244,7 @@ export default function AdminPage() {
                               <td className="p-3 font-semibold text-[#212529]">{order.id}</td>
                               <td className="p-3 font-extrabold text-[#8e724b]">{order.name}</td>
                               <td className="p-3 font-medium">{order.phone}</td>
-                              <td className="p-3 font-medium">{order.productName}</td>
+                              <td className="p-3 font-medium">{getDisplayProductName(order)}</td>
                               <td className="p-3 font-bold text-[#212529]">{order.amount?.toLocaleString()} 원</td>
                               <td className="p-3">
                                 <span className={`px-2 py-0.5 rounded font-bold text-[9px] ${

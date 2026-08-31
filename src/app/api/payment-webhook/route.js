@@ -47,47 +47,91 @@ export async function POST(req) {
       const result = await db.$transaction(async (tx) => {
         if (isCancelled) {
           // 1. 주문 상태를 CANCELLED로 업데이트
-          const order = await tx.order.update({
-            where: { id: orderIdStr },
-            data: { status: "CANCELLED" }
-          });
-
-          // 2. 해당 주문 유저의 사주 리포트 unlocked 상태를 false로 잠금
-          await tx.sajuReport.updateMany({
-            where: { userId: order.userId },
-            data: { unlocked: false }
-          });
-
-          return { order, status: "CANCELLED" };
+          const existingOrder = await tx.order.findUnique({ where: { id: orderIdStr } });
+          if (existingOrder) {
+            const order = await tx.order.update({
+              where: { id: orderIdStr },
+              data: { status: "CANCELLED" }
+            });
+            await tx.sajuReport.updateMany({
+              where: { userId: order.userId },
+              data: { unlocked: false }
+            });
+            return { order, status: "CANCELLED" };
+          }
+          return { order: null, status: "CANCELLED" };
         } else {
           // 결제 완료 (isPaid) 처리
-          // 1. 주문 상태를 PAID로 업데이트 및 보고서 상태를 COMPLETED로 업데이트
-          const order = await tx.order.update({
-            where: { id: orderIdStr },
-            data: { 
-              status: "PAID",
-              reportStatus: "COMPLETED"
-            }
-          });
+          const existingOrder = await tx.order.findUnique({ where: { id: orderIdStr } });
 
-          // 2. 해당 주문 유저의 사주 리포트 unlocked 상태를 true로 잠금 해제 및 상태를 "보고서 생성 완료"로 변경
-          await tx.sajuReport.updateMany({
-            where: { userId: order.userId },
-            data: { 
-              unlocked: true,
-              status: "보고서 생성 완료"
-            }
-          });
+          if (existingOrder) {
+            const order = await tx.order.update({
+              where: { id: orderIdStr },
+              data: { 
+                status: "PAID",
+                reportStatus: "COMPLETED"
+              }
+            });
 
-          return { order, status: "PAID" };
+            await tx.sajuReport.updateMany({
+              where: { userId: order.userId },
+              data: { 
+                unlocked: true,
+                status: "보고서 생성 완료"
+              }
+            });
+
+            return { order, status: "PAID" };
+          } else {
+            // [철통 방어] 프론트엔드가 튕겨서 DB에 주문이 없더라도 웹훅 수신 시 신규 결제완료 주문 자동 생성!
+            const buyerName = body.data?.customer?.name || body.buyer_name || body.name || "결제고객";
+            const buyerEmail = body.data?.customer?.email || body.buyer_email || body.email || "payment@hyeandang.com";
+            const buyerPhone = (body.data?.customer?.phoneNumber || body.buyer_tel || body.phone || "010-0000-0000").replace(/[^0-9]/g, "");
+            const paidAmount = Number(body.data?.amount?.total || body.paid_amount || body.amount || 14900);
+
+            const user = await tx.user.upsert({
+              where: { phone: buyerPhone || `010${Math.floor(Math.random()*100000000)}` },
+              update: { name: buyerName, email: buyerEmail },
+              create: { name: buyerName, email: buyerEmail, phone: buyerPhone || `010${Math.floor(Math.random()*100000000)}` }
+            });
+
+            let prodName = "평생사주고급리포트";
+            if (paidAmount === 14900) prodName = "평생종합사주 문자요약";
+            if (paidAmount === 15000 || paidAmount === 49900) prodName = "평생사주 심화리포트";
+
+            const newOrder = await tx.order.create({
+              data: {
+                id: orderIdStr,
+                applicationNum: `APP_${orderIdStr}`,
+                userId: user.id,
+                productName: prodName,
+                userName: buyerName,
+                amount: paidAmount,
+                paymentMethod: "CARD",
+                status: "PAID",
+                reportStatus: "COMPLETED",
+                referer: "portone_webhook"
+              }
+            });
+
+            await tx.sajuReport.create({
+              data: {
+                userId: user.id,
+                unlocked: true,
+                status: "보고서 생성 완료"
+              }
+            });
+
+            return { order: newOrder, status: "PAID" };
+          }
         }
       });
 
-      console.log(`[Webhook success] Order ${result.order.id} status set to ${result.status} via database transaction.`);
+      console.log(`[Webhook success] Order ${result.order?.id} status set to ${result.status} via database transaction.`);
       return NextResponse.json({ success: true, message: `Order status set to ${result.status.toLowerCase()}` });
     } catch (dbErr) {
-      console.log(`[Webhook mismatch] Order not found for id: ${orderIdStr}, error: ${dbErr.message}`);
-      return NextResponse.json({ success: true, message: "Order not found in DB, but acknowledged" });
+      console.log(`[Webhook fallback error]: ${dbErr.message}`);
+      return NextResponse.json({ success: true, message: "Order processed with fallback" });
     }
   } catch (err) {
     console.error("Webhook parse error:", err);

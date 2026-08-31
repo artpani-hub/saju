@@ -3913,70 +3913,38 @@ return val;
             orders = [];
           }
         }
-        let matchedIdx = orders.findIndex(o => 
-          o &&
-          o.name === name && 
-          parseInt(o.year) === year &&
-          parseInt(o.month) === month &&
-          parseInt(o.day) === day &&
-          (o.status === "pending" || o.status === "ready")
-        );
-        if (matchedIdx > -1) {
-          orders[matchedIdx].status = "paid";
-          orders[matchedIdx].reportGrade = targetGrade;
-          if (typeParam === "tojeong") {
-            orders[matchedIdx].productName = "정통 토정비결";
-          }
-          localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
 
-          // 서버 API PUT 업데이트 추가
-          try {
-            await fetch("/api/orders", {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                adminPassword: "artpani1234",
-                id: orders[matchedIdx].id,
-                status: "paid",
-                reportGrade: targetGrade,
-                productName: orders[matchedIdx].productName
-              })
-            });
-          } catch (e) {
-            console.error("업그레이드 paid API 업데이트 실패:", e);
-          }
-        } else {
-          const newOrder = {
-            id: Math.floor(Math.random() * 9000) + 1000,
-            name: name,
-            email: emailParam || "today_sms@hyeandang.com",
-            phone: phoneParam || "010-0000-0000",
-            productName: typeParam === "tojeong" ? "정통 토정비결" : (type === "newyear" ? "신년운세" : "평생 종합 사주팔자"),
-            amount: amount,
-            status: "paid",
-            createdAt: getLocalDateString(),
-            gender: genderVal || "female",
-            calendar: calendar,
-            year: String(year),
-            month: String(month),
-            day: String(day),
-            hour: hour,
-            worryText: worryText || "오늘의 운세",
-            reportGrade: targetGrade
-          };
-          orders.push(newOrder);
-          localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+        const newOrder = {
+          id: Math.floor(Math.random() * 9000) + 1000,
+          name: name,
+          email: emailParam || "today_sms@hyeandang.com",
+          phone: phoneParam || "010-0000-0000",
+          productName: typeParam === "tojeong" ? "정통 토정비결" : (type === "newyear" ? "신년운세" : "평생 종합 사주팔자"),
+          amount: amount,
+          status: "paid",
+          createdAt: getLocalDateString(),
+          gender: genderVal || "female",
+          calendar: calendar,
+          year: String(year),
+          month: String(month),
+          day: String(day),
+          hour: hour,
+          worryText: worryText || "오늘의 운세",
+          reportGrade: targetGrade
+        };
 
-          // 서버 API POST 생성 추가
-          try {
-            await fetch("/api/orders", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(newOrder)
-            });
-          } catch (e) {
-            console.error("신규 업그레이드 주문 API 등록 실패:", e);
-          }
+        orders.unshift(newOrder);
+        localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+
+        // 서버 DB 신규 결제완료 주문 POST 등록
+        try {
+          await fetch("/api/orders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newOrder)
+          });
+        } catch (e) {
+          console.error("신규 업그레이드 주문 API 등록 실패:", e);
         }
       } catch (e) {
         console.error(e);
@@ -4459,11 +4427,6 @@ return val;
                 setIsPaid(true);
                 await updateLocalStorageOrderToPaid(currentGrade, rsp.paymentId);
 
-                // URL을 업데이트하여 reportGrade가 결제 등급(sms 등)으로 적용되도록 리다이렉트
-                const url = new URL(window.location.href);
-                url.searchParams.set("reportGrade", currentGrade);
-                window.location.href = url.toString();
-
                 // SMS 및 이메일 전송용 연락처 복원
                 const targetPhone = phoneParam || (rsp && rsp.buyer_tel);
 
@@ -4589,6 +4552,11 @@ return val;
                     console.error("주문 완료 SMS 발송 실패:", smsErr);
                   }
                 }
+
+                // DB 저장 및 SMS/이메일 전송이 완전히 완료된 후에 리다이렉트 실행
+                const url = new URL(window.location.href);
+                url.searchParams.set("reportGrade", currentGrade);
+                window.location.href = url.toString();
               }, 1800);
             } else {
               setProgress(currentProgress);
