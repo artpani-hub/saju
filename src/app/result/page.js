@@ -3487,29 +3487,27 @@ return val;
       const paymentStatus = (params.get("payment_status") || params.get("status") || "").toUpperCase();
       const isExplicitSuccess = params.get("imp_success") === "true" || paymentStatus === "PAID" || paymentStatus === "SUCCESS";
       const paymentIdParam = params.get("payment_id") || params.get("paymentId") || params.get("merchant_uid") || "";
-      const isMobileSuccess = !hasErrorCode && (isExplicitSuccess || (paymentIdParam.length > 0 && !hasErrorCode));
+      const isMobileSuccess = !hasErrorCode && isExplicitSuccess;
 
-      // 모바일 리다이렉트 복귀 시 서버 DB에서 실제 결제 완료(paid) 상태인지 엄격 검증
-      if (paymentIdParam || isMobileSuccess) {
+      // 오직 명시적 결제 성공(imp_success=true 또는 status=PAID)이 파라미터에 존재할 때만 결제 상태 갱신
+      if (isMobileSuccess && paymentIdParam) {
         (async () => {
           try {
             const res = await fetch(`/api/orders?limit=20&ts=${Date.now()}`);
             if (res.ok) {
               const data = await res.json();
               const serverOrders = data.orders || [];
+              // 오직 해당 paymentIdParam과 1:1로 일치하는 주문만 정밀 매칭 (이름 기반 타 주문 오염 100% 차단)
               const targetOrder = serverOrders.find(o => 
                 o.id === paymentIdParam || 
                 o.applicationNum === paymentIdParam || 
-                `payment_${o.id}` === paymentIdParam ||
-                (o.userName === name || o.name === name)
+                `payment_${o.id}` === paymentIdParam
               );
               
               if (targetOrder && (targetOrder.status === "paid" || targetOrder.status === "PAID")) {
-                console.log("포트원 검증 완료: 서버 DB paid 승인 확정 -> 결제 승인 완료!");
+                console.log("포트원 검증 완료: 1:1 일치 주문 paid 승인 확인!");
                 setIsPaid(true);
                 updateLocalStorageOrderToPaid(targetOrder.reportGrade || "sms", paymentIdParam);
-              } else {
-                console.log("포트원 결제 미완료/대기 상태 유지:", targetOrder ? targetOrder.status : "not_found");
               }
             }
           } catch (err) {
