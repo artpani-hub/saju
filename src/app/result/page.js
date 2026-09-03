@@ -4285,7 +4285,9 @@ return val;
             }
           }, 150);
         } else {
-          alert(`결제에 실패하였습니다. 에러 내용: ${rsp.message}`);
+          console.log("포트원 결제 취소/실패 발생 -> 보고서 100% 강제 재잠금(Lock)");
+          setIsPaid(false);
+          alert(`결제가 취소되거나 완료되지 않았습니다.\n(사유: ${rsp.message || "사용자 취소"})\n\n보고서 풀이를 확인하시려면 결제를 진행해 주세요.`);
         }
       });
     } catch (err) {
@@ -4613,7 +4615,9 @@ return val;
             }
           }, 180);
         } else {
-          alert(`결제에 실패하였습니다. 에러 내용: ${rsp.message}`);
+          console.log("포트원 결제 취소/실패 발생 -> 보고서 100% 강제 재잠금(Lock)");
+          setIsPaid(false);
+          alert(`결제가 취소되거나 완료되지 않았습니다.\n(사유: ${rsp.message || "사용자 취소"})\n\n보고서 풀이를 확인하시려면 결제를 진행해 주세요.`);
         }
       });
     } catch (err) {
