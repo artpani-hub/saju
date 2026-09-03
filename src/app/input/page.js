@@ -1143,15 +1143,17 @@ function InputFormContent() {
 
       const gunghapLabel = productKey === "gunghap" ? (gunghapType === "deep_compatibility" ? " (밀착궁합)" : gunghapType === "reunion" ? " (재회운)" : " (궁합)") : "";
       
+      const generatedOrderId = `payment_${new Date().getTime()}`;
       const pendingOrder = {
-        id: Math.floor(Math.random() * 9000) + 1000,
-        name: formData.name || "홍길동",
+        id: generatedOrderId,
+        applicationNum: generatedOrderId,
+        name: formData.name || "의뢰인",
         email: formData.email || "today_sms@hyeandang.com",
         phone: formData.phone || "010-0000-0000",
         productName: `${products[productKey]?.title || "맞춤 사주"}${gunghapLabel}`,
         amount: finalPriceWithDiscount,
         couponCode: appliedCoupon ? appliedCoupon.code : null,
-        status: "ready", // 대기 상태
+        status: "PENDING", // 대기 상태
         sajuGanji: sajuGanji,
         emailStatus: "pending",
         createdAt: formattedDate,
@@ -1183,7 +1185,7 @@ function InputFormContent() {
         String(o.year) === String(pendingOrder.year) &&
         String(o.month) === String(pendingOrder.month) &&
         String(o.day) === String(pendingOrder.day) &&
-        o.status === "ready"
+        (o.status === "ready" || o.status === "PENDING")
       );
 
       if (matchedIdx > -1) {
@@ -1195,23 +1197,31 @@ function InputFormContent() {
 
       // 서버 API 전송 추가 (대기 주문 등록)
       try {
-        await fetch("/api/orders", {
+        const apiRes = await fetch("/api/orders", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(pendingOrder)
         });
+        if (apiRes.ok) {
+          const apiData = await apiRes.json();
+          if (apiData.order && apiData.order.id) {
+            return apiData.order.id;
+          }
+        }
       } catch (e) {
         console.error("대기 주문 API 전송 실패:", e);
       }
+      return generatedOrderId;
     } catch (e) {
       console.error("Pending order 임시 저장 실패:", e);
+      return `payment_${new Date().getTime()}`;
     }
   };
 
   // 실제 포트원 결제창 호출 및 처리 (V2 마이그레이션)
   const handlePortonePayment = async () => {
-    // 결제창 띄우기 직전, 대기 주문 정보를 로컬 스토리지에 미리 기록 (모바일 리다이렉트 대응)
-    await savePendingOrder();
+    // 결제창 띄우기 직전, 대기 주문 정보를 DB 및 스토리지에 생성 후 주문 ID 수신
+    const activeOrderId = await savePendingOrder();
 
     const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "store-312155f8-f523-4067-a568-285c7bbec6e0";
     const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "channel-key-3e4c1ebd-636a-40b5-9245-85163ebff861";
@@ -1239,13 +1249,11 @@ function InputFormContent() {
     }
 
     const PortOne = window.PortOne;
-
-    // KCP 결제 채널은 신용카드(CARD) 결제창을 호출하고, 해당 결제창 내에서 카드/카카오페이/네이버페이 등을 모두 처리합니다.
     let payMethodParam = "CARD";
 
     try {
       const redirectUrl = typeof window !== "undefined"
-        ? `${window.location.origin}/result?name=${encodeURIComponent(formData.name)}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendarType}&year=${formData.birthYear}&month=${formData.birthMonth}&day=${formData.birthDay}&hour=${formData.birthHour}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText)}&email=${encodeURIComponent(formData.email)}&phone=${encodeURIComponent(formData.phone)}&reportGrade=${reportGrade}&partnerName=${encodeURIComponent(formData.partnerName || "")}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendarType}&partnerYear=${formData.partnerBirthYear}&partnerMonth=${formData.partnerBirthMonth}&partnerDay=${formData.partnerBirthDay}&partnerHour=${formData.partnerBirthHour}&gunghapType=${gunghapType}`
+        ? `${window.location.origin}/result?orderId=${activeOrderId}&paymentId=${activeOrderId}&name=${encodeURIComponent(formData.name)}&gender=${formData.gender}&type=${productKey}&calendar=${formData.calendarType}&year=${formData.birthYear}&month=${formData.birthMonth}&day=${formData.birthDay}&hour=${formData.birthHour}&worryCategory=${formData.worryCategory}&worryText=${encodeURIComponent(formData.worryText)}&email=${encodeURIComponent(formData.email)}&phone=${encodeURIComponent(formData.phone)}&reportGrade=${reportGrade}&partnerName=${encodeURIComponent(formData.partnerName || "")}&partnerGender=${formData.partnerGender}&partnerCalendar=${formData.partnerCalendarType}&partnerYear=${formData.partnerBirthYear}&partnerMonth=${formData.partnerBirthMonth}&partnerDay=${formData.partnerBirthDay}&partnerHour=${formData.partnerBirthHour}&gunghapType=${gunghapType}`
         : "https://saju.artpani.com/result";
 
       const orderTitleName = reportGrade === "free" || getCurrentProductDbKey() === "free_sample" 
@@ -1255,7 +1263,7 @@ function InputFormContent() {
       const paymentData = {
         storeId,
         channelKey,
-        paymentId: `payment_${new Date().getTime()}`,
+        paymentId: activeOrderId,
         orderName: `${formData.name || "의뢰인"}님 ${orderTitleName}`,
         totalAmount: finalPriceWithDiscount,
         currency: "KRW",
