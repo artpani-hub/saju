@@ -3485,7 +3485,8 @@ return val;
       const params = new URLSearchParams(window.location.search);
       const hasErrorCode = params.has("code") || params.has("error_code") || params.has("error_msg") || params.get("status") === "CANCELLED" || params.get("status") === "FAILED";
       const paymentStatus = (params.get("payment_status") || params.get("status") || "").toUpperCase();
-      const isExplicitSuccess = params.get("imp_success") === "true" || paymentStatus === "PAID" || paymentStatus === "SUCCESS";
+      const hasPaymentIdentifier = params.has("paymentId") || params.has("payment_id") || params.has("txId") || params.has("imp_uid");
+      const isExplicitSuccess = params.get("imp_success") === "true" || paymentStatus === "PAID" || paymentStatus === "SUCCESS" || hasPaymentIdentifier;
       const isMobileSuccess = !hasErrorCode && isExplicitSuccess;
 
       // [파라미터 유실 방어] 모바일 결제 성공 리다이렉트 시 파라미터가 유실된 경우 임시 보관 정보로 복구하여 리다이렉트
@@ -3755,6 +3756,27 @@ return val;
         setHasCheckedPayment(true);
         return;
       }
+
+      // [철통 자동 해제] 로컬스토리지에 유효 결제가 없더라도 서버 DB에 이름/전화번호로 'paid' 결제완료 주문이 존재하면 즉시 가림 해제
+      (async () => {
+        try {
+          const res = await fetch(`/api/orders?limit=20&ts=${Date.now()}`);
+          if (res.ok) {
+            const data = await res.json();
+            const serverOrders = data.orders || [];
+            const hasPaidInDb = serverOrders.some(o => 
+              (o.status === "paid" || o.status === "PAID") &&
+              (o.userName === name || o.name === name || (phone && (o.phone === phone || o.user?.phone === phone)))
+            );
+            if (hasPaidInDb) {
+              console.log("서버 DB 결제완료 확정 주문 감지 -> 즉시 가림 해제!");
+              setIsPaid(true);
+            }
+          }
+        } catch (dbErr) {
+          console.error("서버 DB 실시간 결제 검증 오류:", dbErr);
+        }
+      })();
 
       // 그 외의 경우 (특히 free가 아닌 상태에서 hyeandang_orders도 없는 경우) 결제 유도
       if (reportGrade === "premium" || reportGrade === "deep" || reportGrade === "sms") {

@@ -65,10 +65,16 @@ export async function POST(req) {
           const existingOrder = await tx.order.findUnique({ where: { id: orderIdStr } });
 
           if (existingOrder) {
+            let prodName = existingOrder.productName || "평생종합사주 문자요약";
+            if (Number(existingOrder.amount || 14900) === 14900) prodName = "평생종합사주 문자요약";
+            if (Number(existingOrder.amount) === 20000) prodName = "평생사주고급리포트";
+            if (Number(existingOrder.amount) === 15000) prodName = "평생사주 심화리포트";
+
             const order = await tx.order.update({
               where: { id: orderIdStr },
               data: { 
-                status: "PAID",
+                status: "paid",
+                productName: prodName,
                 reportStatus: "COMPLETED"
               }
             });

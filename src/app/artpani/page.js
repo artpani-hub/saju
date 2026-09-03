@@ -564,11 +564,11 @@ export default function AdminPage() {
       const statusLower = (o.status || "").toLowerCase();
       const filterLower = paymentStatusFilter.toLowerCase();
       
-      const isPaidStatus = statusLower === "paid" || statusLower === "ready" || o.status === "결제 완료" || o.status === "결제완료" || (Number(o.amount || 0) > 0 && statusLower !== "cancelled" && statusLower !== "refunded");
+      const isPaidStatus = statusLower === "paid" || o.status === "결제 완료" || o.status === "결제완료";
       const isFreeStatus = (statusLower === "free" || o.status === "무료" || o.status === "체험판") && Number(o.amount || 0) === 0;
       const isRefundedStatus = statusLower === "refunded" || o.status === "환불완료" || o.status === "환불 완료";
       const isCancelledStatus = statusLower === "cancelled" || o.status === "취소";
-      const isPendingStatus = statusLower === "pending" || statusLower === "ready" || o.status === "결제 대기" || o.status === "대기";
+      const isPendingStatus = statusLower === "pending" || statusLower === "ready" || o.status === "결제 대기" || o.status === "대기" || (!isPaidStatus && !isFreeStatus && !isRefundedStatus && !isCancelledStatus);
 
       if (filterLower === "paid") {
         if (!isPaidStatus) return false;
