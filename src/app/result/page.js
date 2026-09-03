@@ -3293,48 +3293,8 @@ function ResultContent() {
 
   // DB 연동 실시간 결제 상태 조회 훅 신설
   useEffect(() => {
-    const phone = searchParams.get("phone");
-    const name = searchParams.get("name");
-    const search = typeof window !== "undefined" ? window.location.search : "";
-
-    const hasError = searchParams.has("code") || searchParams.has("error_code") || searchParams.has("message");
-    if (hasError) {
-      setIsPaid(false);
-      return;
-    }
-
-    const debugUnlock = searchParams.get("unlock") === "true" || searchParams.get("debug") === "true" || searchParams.get("isPaid") === "true" || searchParams.has("imp_uid") || searchParams.has("merchant_uid") || searchParams.has("paymentId") || search.includes("unlock=true") || search.includes("imp_uid");
-    const reportGradeParam = searchParams.get("reportGrade");
-    const isPaidGrade = reportGradeParam && reportGradeParam !== "free";
-
-    if (debugUnlock || isPaidGrade) {
-      setIsPaid(true);
-      return;
-    }
-
-    if (!phone || !name) return;
-    const orderId = searchParams.get("orderId");
-
-    fetch(`/api/orders?phone=${encodeURIComponent(phone)}&name=${encodeURIComponent(name)}`)
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-          if (orderId) {
-            const matched = data.find(o => String(o.id) === String(orderId));
-            if (matched && (matched.status === "paid" || matched.unlocked === true)) {
-              setIsPaid(true);
-              return;
-            }
-          }
-          const anyPaid = data.some(o => o.status === "paid" || o.unlocked === true);
-          if (anyPaid) {
-            setIsPaid(true);
-          }
-        }
-      })
-      .catch(err => {
-        console.error("Database query failed:", err);
-      });
+    // [보안강화] 구형 debugUnlock 및 isPaidGrade 무단 열람 헛점 100% 삭제
+    // 결제 성공 여부는 오직 아래의 exact orderId DB 검증으로만 판독
   }, [searchParams]);
 
   const [cumulativeCount, setCumulativeCount] = useState(14820);
