@@ -3744,29 +3744,31 @@ return val;
         return;
       }
 
-      // [철통 승인 해제] 포트원에서 카드 결제가 100% 완료(paid)된 주문만 해제 (무료 체험판 및 결제 미완료/실패 건은 100% 차단 유지)
-      if (reportGrade !== "free") {
-        (async () => {
-          try {
-            const res = await fetch(`/api/orders?limit=20&ts=${Date.now()}`);
-            if (res.ok) {
-              const data = await res.json();
-              const serverOrders = data.orders || [];
-              const hasPaidInDb = serverOrders.some(o => 
-                (o.status === "paid" || o.status === "PAID") &&
-                (o.userName === name || o.name === name) &&
-                Number(o.amount || 0) > 0
-              );
-              if (hasPaidInDb) {
-                console.log("포트원 실시간 결제완료(PAID) 확정 주문 감지 -> 가림 해제!");
-                setIsPaid(true);
-              }
+      // [철통 결제 검증] 모든 상품(체험판 1,000원 포함)에 대해 서버 DB에 'paid' 승인 주문이 확인되어야만 보고서 노출
+      (async () => {
+        try {
+          const res = await fetch(`/api/orders?limit=20&ts=${Date.now()}`);
+          if (res.ok) {
+            const data = await res.json();
+            const serverOrders = data.orders || [];
+            const hasPaidInDb = serverOrders.some(o => 
+              (o.status === "paid" || o.status === "PAID") &&
+              (o.userName === name || o.name === name) &&
+              Number(o.amount || 0) > 0
+            );
+            if (hasPaidInDb) {
+              console.log("포트원 실시간 결제완료(PAID) 확정 주문 감지 -> 가림 해제!");
+              setIsPaid(true);
+            } else {
+              // 결제가 미완료되거나 취소된 경우 무조건 가림 및 결제 유도창(Lock) 100% 유지
+              console.log("결제 미완료/취소 감지 -> 보고서 가림 100% 유지");
+              setIsPaid(false);
             }
-          } catch (dbErr) {
-            console.error("서버 DB 실시간 결제 검증 오류:", dbErr);
           }
-        })();
-      }
+        } catch (dbErr) {
+          console.error("서버 DB 실시간 결제 검증 오류:", dbErr);
+        }
+      })();
 
       // 그 외의 경우 (특히 free가 아닌 상태에서 hyeandang_orders도 없는 경우) 결제 유도
       if (reportGrade === "premium" || reportGrade === "deep" || reportGrade === "sms") {
