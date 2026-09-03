@@ -3916,7 +3916,7 @@ return val;
     }
   };
 
-  const handleUpgradeFromSms = (grade, amount) => {
+  const handleUpgradeFromSms = async (grade, amount) => {
     if (typeof window === "undefined") return;
 
     const updateLocalStorageOrderGrade = async (targetGrade) => {
@@ -4100,10 +4100,40 @@ return val;
         ? `${window.location.origin}/result?${queryParams.toString()}`
         : "https://saju.artpani.com/result";
 
+      // 결제창 호출 전 DB에 'PENDING (대기)' 주문 선 생성하여 실패/취소 시에도 관리자에 대기 주문 보존
+      let targetPaymentId = `payment_${new Date().getTime()}`;
+      try {
+        const preOrderRes = await fetch("/api/orders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            productName: `${name}님 ${typeParam === "tojeong" ? "토정비결" : "신수비결"} ${grade === "premium" ? "고급" : "프리미엄"} 업그레이드`,
+            amount: amount,
+            userName: name,
+            phone: resolvedPhone || "",
+            email: resolvedEmail || "",
+            birthYear: String(year || ""),
+            birthMonth: String(month || ""),
+            birthDay: String(day || ""),
+            status: "PENDING",
+            paymentMethod: "CARD"
+          })
+        });
+        if (preOrderRes.ok) {
+          const preOrderData = await preOrderRes.json();
+          if (preOrderData.order && preOrderData.order.id) {
+            targetPaymentId = preOrderData.order.id;
+            queryParams.set("paymentId", targetPaymentId);
+          }
+        }
+      } catch (preErr) {
+        console.error("결제 전 대기 주문 사전 생성 오류:", preErr);
+      }
+
       PortOne.requestPayment({
         storeId,
         channelKey,
-        paymentId: `payment_${new Date().getTime()}`,
+        paymentId: targetPaymentId,
         orderName: `${name}님 ${typeParam === "tojeong" ? "토정비결" : "신수비결"} ${grade === "premium" ? "고급" : "프리미엄"} 업그레이드`,
         totalAmount: amount,
         currency: "KRW",
