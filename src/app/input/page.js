@@ -2228,7 +2228,7 @@ function InputFormContent() {
                     form="saju-input-form"
                     className="lg:hidden w-full mt-5 py-4 bg-brass text-[#1C1613] hover:bg-[#8A6F4C] rounded-lg font-myeongjo text-lg font-bold shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
                   >
-                    {reportGrade === "free" ? "확인하기" : "기입 완료 및 결제 진행"}
+                    {reportGrade === "free" ? "사주 체험판 보러 가기" : "기입 완료 및 결제 진행"}
                   </button>
                   {/* 다른 상품 보러 가기 링크 (모바일) */}
                   <Link

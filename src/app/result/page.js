@@ -3483,9 +3483,10 @@ return val;
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
-      const hasErrorCode = params.has("code") || params.has("error_code") || params.has("error_msg");
-      const hasPaymentIdentifier = params.has("paymentId") || params.has("payment_id") || params.has("txId") || params.has("transactionId") || params.has("imp_uid") || params.has("merchant_uid");
-      const isMobileSuccess = !hasErrorCode && (params.get("imp_success") === "true" || hasPaymentIdentifier);
+      const hasErrorCode = params.has("code") || params.has("error_code") || params.has("error_msg") || params.get("status") === "CANCELLED" || params.get("status") === "FAILED";
+      const paymentStatus = (params.get("payment_status") || params.get("status") || "").toUpperCase();
+      const isExplicitSuccess = params.get("imp_success") === "true" || paymentStatus === "PAID" || paymentStatus === "SUCCESS";
+      const isMobileSuccess = !hasErrorCode && isExplicitSuccess;
 
       // [파라미터 유실 방어] 모바일 결제 성공 리다이렉트 시 파라미터가 유실된 경우 임시 보관 정보로 복구하여 리다이렉트
       if (isMobileSuccess && (!params.has("name") || !params.has("phone") || !params.has("email"))) {
@@ -3830,6 +3831,7 @@ return val;
               status: "paid",
               reportGrade: targetGrade || orders[matchedIdx].reportGrade,
               productName: orders[matchedIdx].productName,
+              amount: orders[matchedIdx].amount,
               paymentId: paymentId || orders[matchedIdx].paymentId
             })
           });
@@ -3850,14 +3852,18 @@ return val;
         const tempStr = localStorage.getItem("hyeandang_temp_upgrade_info");
         let restoredEmail = emailParam || "today_sms@hyeandang.com";
         let restoredPhone = phoneParam || "010-0000-0000";
-        let restoredAmount = 30000;
+        let restoredAmount = 0;
         if (tempStr) {
           try {
             const tempInfo = JSON.parse(tempStr);
             restoredEmail = tempInfo.email || restoredEmail;
             restoredPhone = tempInfo.phone || restoredPhone;
-            restoredAmount = tempInfo.amount || restoredAmount;
+            restoredAmount = Number(tempInfo.amount) || restoredAmount;
           } catch (e) {}
+        }
+        if (!restoredAmount) {
+          const gradePrices = { sms: 14900, premium: 20000, deep: 15000 };
+          restoredAmount = gradePrices[targetGrade] || 14900;
         }
         
         const newOrder = {
