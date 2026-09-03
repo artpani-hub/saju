@@ -3486,49 +3486,39 @@ return val;
       const hasErrorCode = params.has("code") || params.has("error_code") || params.has("error_msg") || params.get("status") === "CANCELLED" || params.get("status") === "FAILED" || params.has("cancellation");
       const paymentStatus = (params.get("payment_status") || params.get("status") || "").toUpperCase();
       const isExplicitSuccess = params.get("imp_success") === "true" || paymentStatus === "PAID" || paymentStatus === "SUCCESS";
-      const isMobileSuccess = !hasErrorCode && isExplicitSuccess;
+      const paymentIdParam = params.get("payment_id") || params.get("paymentId") || params.get("merchant_uid") || "";
+      const isMobileSuccess = !hasErrorCode && (isExplicitSuccess || (paymentIdParam.length > 0 && !hasErrorCode));
 
-      // [파라미터 유실 방어] 모바일 결제 성공 리다이렉트 시 파라미터가 유실된 경우 임시 보관 정보로 복구하여 리다이렉트
-      if (isMobileSuccess && (!params.has("name") || !params.has("phone") || !params.has("email"))) {
-        try {
-          const tempStr = localStorage.getItem("hyeandang_temp_upgrade_info");
-          if (tempStr) {
-            const tempInfo = JSON.parse(tempStr);
-            const redirectParams = new URLSearchParams({
-              name: tempInfo.name,
-              gender: tempInfo.genderVal || "female",
-              type: tempInfo.typeParam || "saju",
-              calendar: tempInfo.calendar || "solar",
-              year: String(tempInfo.year),
-              month: String(tempInfo.month),
-              day: String(tempInfo.day),
-              hour: tempInfo.hour || "10:00",
-              worryCategory: tempInfo.worryCategory || "general",
-              worryText: tempInfo.worryText || "",
-              partnerName: tempInfo.partnerName || "",
-              partnerGender: tempInfo.partnerGender || "male",
-              partnerCalendar: tempInfo.partnerCalendar || "solar",
-              partnerYear: String(tempInfo.partnerYear || 1993),
-              partnerMonth: String(tempInfo.partnerMonth || 11),
-              partnerDay: String(tempInfo.partnerDay || 12),
-              partnerHour: tempInfo.partnerHour || "unknown",
-              gunghapType: tempInfo.gunghapType || "compatibility",
-              email: tempInfo.email || "",
-              phone: tempInfo.phone || "",
-              reportGrade: tempInfo.targetGrade || "sms",
-              imp_success: "true"
-            });
-            window.location.href = `${window.location.origin}${window.location.pathname}?${redirectParams.toString()}`;
-            return;
+      // 모바일 리다이렉트 복귀 시 서버 DB에서 실제 결제 완료(paid) 상태인지 엄격 검증
+      if (paymentIdParam || isMobileSuccess) {
+        (async () => {
+          try {
+            const res = await fetch(`/api/orders?limit=20&ts=${Date.now()}`);
+            if (res.ok) {
+              const data = await res.json();
+              const serverOrders = data.orders || [];
+              const targetOrder = serverOrders.find(o => 
+                o.id === paymentIdParam || 
+                o.applicationNum === paymentIdParam || 
+                `payment_${o.id}` === paymentIdParam ||
+                (o.userName === name || o.name === name)
+              );
+              
+              if (targetOrder && (targetOrder.status === "paid" || targetOrder.status === "PAID")) {
+                console.log("포트원 검증 완료: 서버 DB paid 승인 확정 -> 결제 승인 완료!");
+                setIsPaid(true);
+                updateLocalStorageOrderToPaid(targetOrder.reportGrade || "sms", paymentIdParam);
+              } else {
+                console.log("포트원 결제 미완료/대기 상태 유지:", targetOrder ? targetOrder.status : "not_found");
+              }
+            }
+          } catch (err) {
+            console.error("서버 DB 결제 검증 에러:", err);
           }
-        } catch (e) {
-          console.error("모바일 성공 리다이렉트 파라미터 복구 실패:", e);
-        }
+        })();
       }
 
-      // 만약 URL 파라미터에 성공(imp_success) 플래그가 들어있는 경우도 결제 완료 처리
       if (isMobileSuccess) {
-        setIsPaid(true);
         const currentGradeParam = params.get("reportGrade") || (
           (() => {
             try {
