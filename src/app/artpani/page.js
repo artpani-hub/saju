@@ -26,8 +26,11 @@ import {
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [adminPassword, setAdminPassword] = useState("artpani1234");
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [adminPassword, setAdminPassword] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authError, setAuthError] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [dataLoadError, setDataLoadError] = useState("");
 
   // States for DB data
   const [stats, setStats] = useState({
@@ -158,7 +161,7 @@ export default function AdminPage() {
   const handleSaveProduct = async () => {
     if (!editingProduct) return;
     try {
-      const activePassword = adminPassword || (typeof window !== "undefined" ? sessionStorage.getItem("adminPassword") : "") || "artpani1234";
+      const activePassword = adminPassword || (typeof window !== "undefined" ? sessionStorage.getItem("adminPassword") : "") || "";
       const res = await fetch("/api/admin/products", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -272,55 +275,167 @@ export default function AdminPage() {
     }
   };
 
-  // Load Data function
-  const loadAllData = async () => {
+  // Login & Verification function
+  const verifyAndLogin = async (pwToVerify) => {
+    const pw = (pwToVerify !== undefined ? pwToVerify : adminPassword) || "";
+    if (!pw.trim()) {
+      setAuthError("관리자 비밀번호를 입력해 주세요.");
+      return;
+    }
+    setIsVerifying(true);
+    setAuthError("");
     try {
-      const activePassword = adminPassword || (typeof window !== "undefined" ? sessionStorage.getItem("adminPassword") : "") || "artpani1234";
       const timestamp = new Date().getTime();
+      const res = await fetch(`/api/orders?adminPassword=${encodeURIComponent(pw)}&_=${timestamp}`, { cache: "no-store" });
+      if (res.status === 401) {
+        setAuthError("인증 실패: 관리자 비밀번호가 일치하지 않습니다.");
+        setIsAuthenticated(false);
+        if (typeof window !== "undefined") sessionStorage.removeItem("adminPassword");
+      } else if (res.ok) {
+        setIsAuthenticated(true);
+        setAdminPassword(pw);
+        if (typeof window !== "undefined") sessionStorage.setItem("adminPassword", pw);
+        loadAllData(pw);
+      } else {
+        setAuthError(`서버 연결 오류가 발생했습니다. (HTTP ${res.status})`);
+      }
+    } catch (err) {
+      setAuthError(`네트워크 연결 오류: ${err.message}`);
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  // Load Data function with comprehensive error reporting
+  const loadAllData = async (pwOverride) => {
+    const activePassword = pwOverride || adminPassword || (typeof window !== "undefined" ? sessionStorage.getItem("adminPassword") : "") || "";
+    if (!activePassword) {
+      setIsAuthenticated(false);
+      return;
+    }
+
+    try {
+      const timestamp = new Date().getTime();
+      let has401 = false;
+      let loadErrors = [];
+
       // 1. Load dashboard stats
-      const statsRes = await fetch(`/api/admin/dashboard?adminPassword=${activePassword}&_=${timestamp}`, { cache: "no-store" });
-      const statsData = await statsRes.json();
-      if (statsData.success) setStats(statsData.stats);
+      try {
+        const statsRes = await fetch(`/api/admin/dashboard?adminPassword=${encodeURIComponent(activePassword)}&_=${timestamp}`, { cache: "no-store" });
+        if (statsRes.status === 401) {
+          has401 = true;
+        } else if (statsRes.ok) {
+          const statsData = await statsRes.json();
+          if (statsData.success) setStats(statsData.stats);
+        } else {
+          loadErrors.push(`대시보드 통계 조회 실패(HTTP ${statsRes.status})`);
+        }
+      } catch (err) {
+        loadErrors.push("대시보드 네트워크 오류");
+      }
 
       // 2. Load orders list
-      const ordersRes = await fetch(`/api/orders?adminPassword=${activePassword}&_=${timestamp}`, { cache: "no-store" });
-      const ordersData = await ordersRes.json();
-      if (Array.isArray(ordersData)) setOrders(ordersData);
+      try {
+        const ordersRes = await fetch(`/api/orders?adminPassword=${encodeURIComponent(activePassword)}&_=${timestamp}`, { cache: "no-store" });
+        if (ordersRes.status === 401) {
+          has401 = true;
+        } else if (ordersRes.ok) {
+          const ordersData = await ordersRes.json();
+          if (Array.isArray(ordersData)) {
+            setOrders(ordersData);
+          } else {
+            loadErrors.push("주문 데이터 형식 불일치");
+          }
+        } else {
+          loadErrors.push(`주문 목록 조회 실패(HTTP ${ordersRes.status})`);
+        }
+      } catch (err) {
+        loadErrors.push("주문 목록 네트워크 오류");
+      }
 
       // 3. Load inquiries list
-      const inquiriesRes = await fetch(`/api/admin/inquiries?adminPassword=${activePassword}&_=${timestamp}`, { cache: "no-store" });
-      const inquiriesData = await inquiriesRes.json();
-      if (Array.isArray(inquiriesData)) setInquiries(inquiriesData);
+      try {
+        const inquiriesRes = await fetch(`/api/admin/inquiries?adminPassword=${encodeURIComponent(activePassword)}&_=${timestamp}`, { cache: "no-store" });
+        if (inquiriesRes.status === 401) {
+          has401 = true;
+        } else if (inquiriesRes.ok) {
+          const inquiriesData = await inquiriesRes.json();
+          if (Array.isArray(inquiriesData)) {
+            setInquiries(inquiriesData);
+          }
+        } else {
+          loadErrors.push(`문의 목록 조회 실패(HTTP ${inquiriesRes.status})`);
+        }
+      } catch (err) {
+        loadErrors.push("문의 목록 네트워크 오류");
+      }
 
       // 4. Load promotion list
-      const promoRes = await fetch(`/api/admin/promotions?adminPassword=${activePassword}&_=${timestamp}`, { cache: "no-store" });
-      const promoData = await promoRes.json();
-      if (Array.isArray(promoData)) setPromotions(promoData);
+      try {
+        const promoRes = await fetch(`/api/admin/promotions?adminPassword=${encodeURIComponent(activePassword)}&_=${timestamp}`, { cache: "no-store" });
+        if (promoRes.status === 401) {
+          has401 = true;
+        } else if (promoRes.ok) {
+          const promoData = await promoRes.json();
+          if (Array.isArray(promoData)) setPromotions(promoData);
+        }
+      } catch (err) {}
 
       // 5. Load product list from DB
-      const prodRes = await fetch(`/api/admin/products?adminPassword=${activePassword}&_=${timestamp}`, { cache: "no-store" });
-      const prodData = await prodRes.json();
-      if (prodData.success && Array.isArray(prodData.products)) {
-        setProductsList(prodData.products);
+      try {
+        const prodRes = await fetch(`/api/admin/products?adminPassword=${encodeURIComponent(activePassword)}&_=${timestamp}`, { cache: "no-store" });
+        if (prodRes.ok) {
+          const prodData = await prodRes.json();
+          if (prodData.success && Array.isArray(prodData.products)) {
+            setProductsList(prodData.products);
+          }
+        }
+      } catch (err) {}
+
+      // 401 Unauthorized 감지 시 세션 해제 및 로그인 화면으로 즉시 전환
+      if (has401) {
+        setIsAuthenticated(false);
+        if (typeof window !== "undefined") sessionStorage.removeItem("adminPassword");
+        setAuthError("관리자 인증이 만료되었거나 비밀번호가 일치하지 않습니다. 다시 로그인해 주세요.");
+        return;
+      }
+
+      // 에러 메시지 업데이트 (빈 목록 대신 명확한 에러 안내)
+      if (loadErrors.length > 0) {
+        setDataLoadError(loadErrors.join(" / "));
+      } else {
+        setDataLoadError("");
       }
 
     } catch (e) {
       console.error("API load failed", e);
+      setDataLoadError(`데이터 동기화 실패: ${e.message}`);
     }
   };
 
+  // 초기 마운트 시 세션 비밀번호 확인
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedPw = sessionStorage.getItem("adminPassword");
+      if (savedPw) {
+        setAdminPassword(savedPw);
+        verifyAndLogin(savedPw);
+      }
+    }
+  }, []);
+
+  // 인증 완료 후 주기적 갱신
   useEffect(() => {
     if (isAuthenticated) {
       loadAllData();
       
-      // 5초 간격으로 주문 및 통계 데이터 자동 백그라운드 리로드
       const intervalId = setInterval(() => {
         loadAllData();
       }, 5000);
 
       return () => clearInterval(intervalId);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, adminPassword]);
 
   // Handler: Modify customer details (Email, Phone)
   const handleUpdateUser = async (e) => {
@@ -619,20 +734,44 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center text-[#212529] px-4">
         <div className="bg-white p-8 rounded-xl border border-[#A3845B]/30 max-w-md w-full shadow-2xl">
-          <h2 className="text-2xl font-bold text-[#A3845B] text-center mb-6">혜안당 관리자 로그인</h2>
+          <div className="flex justify-center mb-4">
+            <div className="w-12 h-12 rounded bg-[#A3845B] flex items-center justify-center text-white text-xl font-bold shadow-md">寶</div>
+          </div>
+          <h2 className="text-2xl font-bold text-[#A3845B] text-center mb-2">혜안당 관리자 로그인</h2>
+          <p className="text-xs text-[#888] text-center mb-6">보안 인증을 위해 관리자 비밀번호를 입력해 주세요.</p>
+          
+          {authError && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs font-semibold flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
+              <span>{authError}</span>
+            </div>
+          )}
+
           <div className="space-y-4">
             <input 
               type="password" 
               placeholder="관리자 인증 비밀번호" 
               value={adminPassword}
-              onChange={(e) => setAdminPassword(e.target.value)}
+              onChange={(e) => {
+                setAdminPassword(e.target.value);
+                if (authError) setAuthError("");
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  verifyAndLogin();
+                }
+              }}
               className="w-full bg-white border border-[#dee2e6] rounded p-3 text-[#212529] focus:outline-none focus:border-[#A3845B]"
+              autoFocus
             />
             <button 
-              onClick={() => setIsAuthenticated(true)}
-              className="w-full bg-[#A3845B] hover:bg-[#8e724b] text-white font-bold p-3 rounded transition-all duration-300 shadow-md"
+              onClick={() => verifyAndLogin()}
+              disabled={isVerifying}
+              className={`w-full bg-[#A3845B] hover:bg-[#8e724b] text-white font-bold p-3 rounded transition-all duration-300 shadow-md ${
+                isVerifying ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+              }`}
             >
-              대시보드 진입
+              {isVerifying ? "인증 확인 중..." : "대시보드 진입"}
             </button>
           </div>
         </div>
@@ -679,9 +818,24 @@ export default function AdminPage() {
             })}
           </nav>
         </div>
-        <div className="p-4 border-t border-[#A3845B]/10 text-xs text-[#888] text-center">
-          <p>© 2026 혜안당 명리연구소</p>
-          <p className="mt-1">v1.2 (SQLite+Prisma)</p>
+        <div className="p-4 border-t border-[#A3845B]/10 space-y-3">
+          <button
+            onClick={() => {
+              if (confirm("관리자 로그아웃 하시겠습니까?")) {
+                setIsAuthenticated(false);
+                setAdminPassword("");
+                if (typeof window !== "undefined") sessionStorage.removeItem("adminPassword");
+              }
+            }}
+            className="w-full py-2 px-3 bg-white border border-[#dee2e6] hover:border-red-300 text-[#495057] hover:text-red-600 rounded text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
+          >
+            <Lock className="w-3.5 h-3.5" />
+            <span>관리자 로그아웃</span>
+          </button>
+          <div className="text-[11px] text-[#888] text-center">
+            <p>© 2026 혜안당 명리연구소</p>
+            <p className="mt-0.5 text-[10px]">v1.2 (SQLite+Prisma)</p>
+          </div>
         </div>
       </aside>
 
@@ -1079,6 +1233,21 @@ export default function AdminPage() {
               </div>
             </div>
 
+            {dataLoadError && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-bold flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-red-500 shrink-0" />
+                  <span>데이터 조회 오류: {dataLoadError}</span>
+                </div>
+                <button
+                  onClick={() => loadAllData()}
+                  className="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white rounded font-bold transition-all"
+                >
+                  다시 시도
+                </button>
+              </div>
+            )}
+
             {/* 검색 결과 수량 노출 */}
             <div className="flex justify-between items-center px-1">
               <h3 className="text-sm font-bold text-[#495057] flex items-center gap-2">
@@ -1103,6 +1272,27 @@ export default function AdminPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#dee2e6] text-sm text-[#495057]">
+                  {filteredOrders.length === 0 && (
+                    <tr>
+                      <td colSpan="7" className="p-8 text-center">
+                        {dataLoadError ? (
+                          <div className="flex flex-col items-center justify-center gap-2 text-red-600">
+                            <AlertTriangle className="w-6 h-6 text-red-500" />
+                            <span className="font-bold text-sm">주문 데이터를 불러오는 중 오류가 발생했습니다.</span>
+                            <span className="text-xs text-red-500">{dataLoadError}</span>
+                            <button
+                              onClick={() => loadAllData()}
+                              className="mt-2 px-3 py-1 bg-[#A3845B] hover:bg-[#8e724b] text-white rounded text-xs font-bold transition-all shadow-sm"
+                            >
+                              재조회 시도
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-[#888] italic text-sm">접수된 주문 내역이 없습니다.</span>
+                        )}
+                      </td>
+                    </tr>
+                  )}
                   {filteredOrders.map((order, i) => (
                     <tr key={i} className="hover:bg-[#f8f9fa] transition-all">
                       <td className="p-4">
@@ -1611,7 +1801,7 @@ export default function AdminPage() {
                   badge: "체험 혜택",
                   description: "신규 고객 및 이벤트 진단용 사주 오행 체험판 리포트.",
                   subProducts: [
-                    { key: "free_sample", name: "사주 체험판 리포트", defaultPrice: 1000, defaultOrig: 15000, tag: "인기 체험" }
+                    { key: "free_sample", name: "사주 체험판 리포트", defaultPrice: 1900, defaultOrig: 15000, tag: "인기 체험" }
                   ]
                 }
               ].map((p, i) => (
@@ -1925,7 +2115,21 @@ export default function AdminPage() {
                             <button
                               onClick={async () => {
                                 if (confirm("해당 문의를 삭제하시겠습니까?")) {
-                                  alert("문의가 성공적으로 삭제되었습니다.");
+                                  try {
+                                    const activePw = adminPassword || (typeof window !== "undefined" ? sessionStorage.getItem("adminPassword") : "") || "";
+                                    const res = await fetch(`/api/admin/inquiries?adminPassword=${encodeURIComponent(activePw)}&id=${inq.id}`, {
+                                      method: "DELETE"
+                                    });
+                                    const data = await res.json();
+                                    if (data.success) {
+                                      alert("문의가 성공적으로 삭제되었습니다.");
+                                      loadAllData();
+                                    } else {
+                                      alert("삭제 실패: " + (data.error || "알 수 없는 오류"));
+                                    }
+                                  } catch (err) {
+                                    alert("삭제 중 오류가 발생했습니다: " + err.message);
+                                  }
                                 }
                               }}
                               className="w-20 bg-white border border-[#dee2e6] hover:border-red-500 text-red-500 hover:bg-red-50 py-1 rounded transition-all font-bold cursor-pointer"
@@ -1977,21 +2181,29 @@ export default function AdminPage() {
                   <div className="flex gap-2 pt-2">
                     <button 
                       onClick={async () => {
-                        // Implement update answer
-                        answerModalInquiry.answer = modalAnswerText;
-                        answerModalInquiry.status = "ANSWERED";
-                        
+                        const activePw = adminPassword || (typeof window !== "undefined" ? sessionStorage.getItem("adminPassword") : "") || "";
                         try {
-                          // Try updating backend DB
-                          await fetch(`/api/admin/inquiries?adminPassword=artpani1234`, {
+                          const res = await fetch(`/api/admin/inquiries?adminPassword=${encodeURIComponent(activePw)}`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ id: answerModalInquiry.id, answer: modalAnswerText })
+                            body: JSON.stringify({ 
+                              adminPassword: activePw,
+                              id: answerModalInquiry.id, 
+                              inquiryId: answerModalInquiry.id, 
+                              answer: modalAnswerText 
+                            })
                           });
-                        } catch(e){}
-
-                        alert("답변이 성공적으로 등록되었습니다!");
-                        setAnswerModalInquiry(null);
+                          const data = await res.json();
+                          if (data.success) {
+                            alert("답변이 성공적으로 등록되었습니다!");
+                            setAnswerModalInquiry(null);
+                            loadAllData();
+                          } else {
+                            alert("답변 등록 실패: " + (data.error || "알 수 없는 오류"));
+                          }
+                        } catch (err) {
+                          alert("답변 등록 중 오류가 발생했습니다: " + err.message);
+                        }
                       }}
                       className="flex-1 bg-[#A3845B] hover:bg-[#8e724b] text-white py-2 rounded text-xs font-bold shadow-sm transition-all cursor-pointer text-center"
                     >
@@ -2347,18 +2559,20 @@ export default function AdminPage() {
                         };
 
                         try {
-                          const res = await fetch("/api/admin/promotions?adminPassword=artpani1234", {
+                          const activePw = adminPassword || (typeof window !== "undefined" ? sessionStorage.getItem("adminPassword") : "") || "";
+                          const res = await fetch(`/api/admin/promotions?adminPassword=${encodeURIComponent(activePw)}`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(newPromoObj)
+                            body: JSON.stringify({ ...newPromoObj, adminPassword: activePw })
                           });
                           const data = await res.json();
                           if (data.success) {
                             alert("할인 쿠폰이 성공적으로 발행되었습니다!");
                             setCouponCodeInput("");
-                            const res2 = await fetch("/api/admin/promotions?adminPassword=artpani1234");
+                            const res2 = await fetch(`/api/admin/promotions?adminPassword=${encodeURIComponent(activePw)}`);
                             const data2 = await res2.json();
-                            if (data2.success) setPromotions(data2.promotions);
+                            if (Array.isArray(data2)) setPromotions(data2);
+                            else if (data2.success && data2.promotions) setPromotions(data2.promotions);
                           } else {
                             alert("쿠폰 발행 완료");
                             setPromotions([...promotions, { ...newPromoObj, usedCount: 0, isActive: true }]);

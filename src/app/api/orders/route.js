@@ -207,11 +207,6 @@ export async function GET(req) {
     const adminPassword = searchParams.get("adminPassword");
     
     // If admin check passes, we can safely return the mock fallback list to guarantee client rendering!
-    // Commented out to fetch real SQLite/MySQL DB orders instead of simulated mock data.
-    // if (adminPassword === "artpani1234") {
-    //   return NextResponse.json(fallbackOrdersList);
-    // }
-    
     const queryPhone = searchParams.get("phone");
     const queryName = searchParams.get("name");
 
@@ -257,7 +252,8 @@ export async function GET(req) {
     }
 
     // 2. 전체 주문 관리자 조회 모드 (보안 비밀번호 필수)
-    if (adminPassword !== "artpani1234") {
+    const serverPassword = process.env.ADMIN_PASSWORD;
+    if (!serverPassword || adminPassword !== serverPassword) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
@@ -313,10 +309,11 @@ export async function GET(req) {
         email: user?.email || "",
         phone: user?.phone || "",
         productName: order.productName || "평생 종합 사주팔자",
-        reportGrade: order.reportGrade || (order.amount === 14900 ? "sms" : (order.amount === 20000 || order.amount === 34900) ? "premium" : (order.amount === 15000 || order.amount === 49900) ? "deep" : "free"),
+        reportGrade: order.reportGrade || (order.amount === 14900 ? "sms" : (order.amount === 20000 || order.amount === 30000 || order.amount === 34900) ? "premium" : (order.amount === 15000 || order.amount === 49900) ? "deep" : (order.amount === 0 ? "free" : "basic")),
         paymentId: order.paymentId || "",
         amount: order.amount,
         status: order.status ? order.status.toLowerCase() : "pending", // paid, pending 등
+        adminMemo: order.adminMemo || "",
         // 주문 테이블에 격리 보존된 사주 정보가 있다면 그것을 우선 표기, 없을 때만 하위호환용으로 유저 테이블 정보 참조
         sajuGanji: order.birthYear 
           ? `${order.birthYear}년 ${order.birthMonth}월 ${order.birthDay}일 (${order.birthHour || "미정"})` 
@@ -355,11 +352,18 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     const newOrderData = await req.json();
-    const { id, name, email, phone, amount, status, gender, calendar, year, month, day, hour, worryText, referer } = newOrderData;
+    const { id, name, email, phone, amount, status, gender, calendar, year, month, day, hour, worryText, referer, paymentId } = newOrderData;
 
     if (!phone || !name) {
       return NextResponse.json({ success: false, error: "이름과 연락처는 필수 입력입니다." }, { status: 400 });
     }
+
+    const orderAmount = Number(amount) || 0;
+    // [보안 강화] 클라이언트가 임의로 status: "paid"를 전달해도 결제 금액이 0원이 아닌 유료 주문은
+    // 서버 검증/웹훅 없이 즉시 PAID로 등록되지 않도록 PENDING으로 강제합니다.
+    const isFreeOrder = orderAmount === 0 || status === "free";
+    const initialStatus = isFreeOrder ? "FREE" : "PENDING";
+    const unlockedState = isFreeOrder;
 
     // 트랜잭션으로 유저 생성/조회, 리포트 생성, 주문 생성 처리
     const result = await db.$transaction(async (tx) => {
@@ -390,7 +394,6 @@ export async function POST(req) {
         }
       });
 
-      const unlockedState = status === "paid" || status === "PAID";
       const report = await tx.sajuReport.create({
         data: {
           userId: user.id,
@@ -402,31 +405,69 @@ export async function POST(req) {
       const orderId = id ? String(id) : `ORD_${new Date().getTime()}_${Math.floor(Math.random() * 1000)}`;
       const appNum = `APP_${orderId}`;
 
-      const order = await tx.order.create({
-        data: {
-          id: orderId,
-          applicationNum: appNum,
-          userId: user.id,
-          productName: newOrderData.productName || "평생 종합 사주팔자 보감",
-          userName: name, // 주문 결제 시점의 고객명 저장
-          amount: Number(amount) || 0,
-          paymentMethod: newOrderData.paymentMethod || (status === "free" ? "free" : "CARD"),
-          status: status ? status.toUpperCase() : "PENDING",
-          reportStatus: unlockedState ? "COMPLETED" : "PENDING",
-          referer: referer || "direct",
-          // 주문 당시의 사주 정보 일체 격리 저장
-          birthYear: Number(year) || null,
-          birthMonth: Number(month) || null,
-          birthDay: Number(day) || null,
-          birthHour: hour || null,
-          calendarType: calendar || null,
-          gender: gender || null,
-          worryText: worryText || null
+      let order;
+      try {
+        order = await tx.order.create({
+          data: {
+            id: orderId,
+            applicationNum: appNum,
+            userId: user.id,
+            productName: newOrderData.productName || "평생 종합 사주팔자 보감",
+            userName: name, // 주문 결제 시점의 고객명 저장
+            amount: orderAmount,
+            paymentMethod: newOrderData.paymentMethod || (isFreeOrder ? "free" : "CARD"),
+            status: initialStatus,
+            reportStatus: unlockedState ? "COMPLETED" : "PENDING",
+            referer: referer || "direct",
+            paymentId: paymentId ? String(paymentId) : null,
+            // 주문 당시의 사주 정보 일체 격리 저장
+            birthYear: Number(year) || null,
+            birthMonth: Number(month) || null,
+            birthDay: Number(day) || null,
+            birthHour: hour || null,
+            calendarType: calendar || null,
+            gender: gender || null,
+            worryText: worryText || null
+          }
+        });
+      } catch (createErr) {
+        // Prisma Client 모델에 paymentId가 아직 반영되지 않은 환경 대비 fallback
+        order = await tx.order.create({
+          data: {
+            id: orderId,
+            applicationNum: appNum,
+            userId: user.id,
+            productName: newOrderData.productName || "평생 종합 사주팔자 보감",
+            userName: name,
+            amount: orderAmount,
+            paymentMethod: newOrderData.paymentMethod || (isFreeOrder ? "free" : "CARD"),
+            status: initialStatus,
+            reportStatus: unlockedState ? "COMPLETED" : "PENDING",
+            referer: referer || "direct",
+            birthYear: Number(year) || null,
+            birthMonth: Number(month) || null,
+            birthDay: Number(day) || null,
+            birthHour: hour || null,
+            calendarType: calendar || null,
+            gender: gender || null,
+            worryText: worryText || null
+          }
+        });
+        if (paymentId) {
+          try {
+            await tx.$executeRawUnsafe(
+              'UPDATE "Order" SET paymentId = ? WHERE id = ?',
+              String(paymentId),
+              orderId
+            );
+          } catch (e) {}
         }
-      });
+      }
 
       return { user, report, order };
     });
+
+
 
     return NextResponse.json({ 
       success: true, 
@@ -458,7 +499,8 @@ export async function PUT(req) {
     const body = await req.json();
     const { adminPassword, id, status, ...updatedFields } = body;
 
-    if (adminPassword !== "artpani1234") {
+    const serverPassword = process.env.ADMIN_PASSWORD;
+    if (!serverPassword || adminPassword !== serverPassword) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
@@ -495,7 +537,8 @@ export async function DELETE(req) {
     const adminPassword = searchParams.get("adminPassword");
     const id = searchParams.get("id");
 
-    if (adminPassword !== "artpani1234") {
+    const serverPassword = process.env.ADMIN_PASSWORD;
+    if (!serverPassword || adminPassword !== serverPassword) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 

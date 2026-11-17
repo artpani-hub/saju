@@ -9,7 +9,8 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const adminPassword = searchParams.get("adminPassword");
 
-    if (adminPassword !== "artpani1234") {
+    const serverPassword = process.env.ADMIN_PASSWORD;
+    if (!serverPassword || adminPassword !== serverPassword) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
@@ -34,7 +35,8 @@ export async function POST(req) {
     const body = await req.json();
     const { adminPassword, code, type, value, maxUses, expiryDate } = body;
 
-    if (adminPassword !== "artpani1234") {
+    const serverPassword = process.env.ADMIN_PASSWORD;
+    if (!serverPassword || adminPassword !== serverPassword) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 

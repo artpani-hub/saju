@@ -266,7 +266,7 @@ const initialProducts = [
     badge: "체험 혜택",
     tag: "인기 체험",
     reportType: "free",
-    price: 1000,
+    price: 1900,
     originalPrice: 15000,
     description: "혜안당 사주 오행 핵심 분석 및 진단 체험판 리포트",
     parentKey: "free",

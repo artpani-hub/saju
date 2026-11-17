@@ -33,5 +33,6 @@ Thumbs.db
 
 # misc
 *.pem
+/backups/
 
 /src/generated/prisma

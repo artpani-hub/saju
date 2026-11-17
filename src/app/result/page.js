@@ -1,6 +1,5 @@
 "use client";
 import { renderNewYearPageContent } from "./components/renderNewYearPageContent";
-
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -3819,31 +3818,16 @@ return val;
         }
         localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
 
-        // 서버 API PUT 업데이트 추가
+        // 클라이언트에서 서버 DB 임의 결제완료 변경(PUT) 차단 - 결제완료는 서버 웹훅을 통해서만 처리됨
         try {
-          const putRes = await fetch("/api/orders", {
-            method: "PUT",
+          const orderToPost = { ...orders[matchedIdx], status: "pending", paymentId: paymentId || orders[matchedIdx].paymentId };
+          await fetch("/api/orders", {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              adminPassword: "artpani1234",
-              id: orders[matchedIdx].id,
-              status: "paid",
-              reportGrade: targetGrade || orders[matchedIdx].reportGrade,
-              productName: orders[matchedIdx].productName,
-              paymentId: paymentId || orders[matchedIdx].paymentId
-            })
+            body: JSON.stringify(orderToPost)
           });
-          if (!putRes.ok) {
-            console.warn("주문 업데이트(PUT) 실패. 서버 DB에 주문이 없어 신규 등록(POST)을 시도합니다.");
-            const orderToPost = { ...orders[matchedIdx], status: "paid", paymentId: paymentId || orders[matchedIdx].paymentId };
-            await fetch("/api/orders", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(orderToPost)
-            });
-          }
         } catch (e) {
-          console.error("주문 paid API 업데이트 실패:", e);
+          console.error("주문 동기화 실패:", e);
         }
       } else {
         // [방어 로직] 임시 저장된 모바일/결제 정보가 없을 경우 복구하여 주문 생성 후 서버 POST 등록
@@ -3867,7 +3851,7 @@ return val;
           phone: restoredPhone,
           productName: typeParam === "tojeong" ? "정통 토정비결" : (type === "newyear" ? "신년운세" : "평생 종합 사주팔자"),
           amount: restoredAmount,
-          status: "paid",
+          status: "pending",
           createdAt: getLocalDateString(),
           gender: genderVal || "female",
           calendar: calendar,
@@ -3882,7 +3866,7 @@ return val;
         orders.push(newOrder);
         localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
 
-        // 서버 API POST 생성
+        // 서버 API POST 생성 (초기 상태 pending)
         try {
           await fetch("/api/orders", {
             method: "POST",
@@ -3890,7 +3874,7 @@ return val;
             body: JSON.stringify(newOrder)
           });
         } catch (e) {
-          console.error("신규 주문 API 복구 등록 실패:", e);
+          console.error("신규 주문 API 등록 실패:", e);
         }
       }
     } catch (e) {
@@ -3898,7 +3882,7 @@ return val;
     }
   };
 
-  const handleUpgradeFromSms = (grade, amount) => {
+  const handleUpgradeFromSms = async (grade, amount) => {
     if (typeof window === "undefined") return;
 
     const updateLocalStorageOrderGrade = async (targetGrade) => {
@@ -3921,7 +3905,7 @@ return val;
           phone: phoneParam || "010-0000-0000",
           productName: typeParam === "tojeong" ? "정통 토정비결" : (type === "newyear" ? "신년운세" : "평생 종합 사주팔자"),
           amount: amount,
-          status: "paid",
+          status: "pending",
           createdAt: getLocalDateString(),
           gender: genderVal || "female",
           calendar: calendar,
@@ -3936,7 +3920,7 @@ return val;
         orders.unshift(newOrder);
         localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
 
-        // 서버 DB 신규 결제완료 주문 POST 등록
+        // 서버 DB 신규 주문 등록 (결제 완료 전이므로 pending)
         try {
           await fetch("/api/orders", {
             method: "POST",
@@ -3953,7 +3937,6 @@ return val;
 
     const performUpgrade = async () => {
       await updateLocalStorageOrderGrade(grade);
-      setIsPaid(true);
       
       const url = new URL(window.location.href);
       url.searchParams.set("reportGrade", grade);
@@ -3961,10 +3944,8 @@ return val;
       window.location.href = url.toString();
     };
 
-    const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "store-312155f8-f523-4067-a568-285c7bbec6e0";
-    const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "";
+    const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "channel-key-3e4c1ebd-636a-40b5-9245-85163ebff861";
 
-    // 결제요청 직전에 사용자 정보를 임시 저장 (모바일 리다이렉트 유실 대비)
     try {
       const tempUpgradeInfo = {
         name,
@@ -3992,6 +3973,9 @@ return val;
       };
       localStorage.setItem("hyeandang_temp_upgrade_info", JSON.stringify(tempUpgradeInfo));
 
+      // 결제 식별자(paymentId) 사전 발급 및 주문-결제 명시적 1:1 연결
+      const explicitPaymentId = `pay_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+
       // 결제 검증을 위한 로컬스토리지 orders 정보도 pending 상태로 선등록
       const existingStr = localStorage.getItem("hyeandang_orders");
       let orders = [];
@@ -4012,8 +3996,9 @@ return val;
         o.reportGrade === grade
       );
       if (matchedIdx === -1) {
-        orders.push({
+        const upgradeOrder = {
           id: Math.floor(Math.random() * 9000) + 1000,
+          paymentId: explicitPaymentId,
           name: name,
           email: emailParam || "today_sms@hyeandang.com",
           phone: phoneParam || "010-0000-0000",
@@ -4029,16 +4014,37 @@ return val;
           hour: hour,
           worryText: worryText || "오늘의 운세",
           reportGrade: grade
-        });
+        };
+        orders.push(upgradeOrder);
         localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+
+        // 서버 DB에 pending 주문 명시적 선등록
+        try {
+          fetch("/api/orders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(upgradeOrder)
+          }).catch(e => console.error("업그레이드 대기 주문 등록 예외:", e));
+        } catch (e) {}
+      } else {
+        // 기존 주문이 있더라도 새 결제식별자(paymentId)를 1:1 업데이트
+        orders[matchedIdx].paymentId = explicitPaymentId;
+        orders[matchedIdx].status = "pending";
+        localStorage.setItem("hyeandang_orders", JSON.stringify(orders));
+        try {
+          fetch("/api/orders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orders[matchedIdx])
+          }).catch(e => console.error("업그레이드 주문 paymentId 갱신 예외:", e));
+        } catch (e) {}
       }
     } catch (tempErr) {
       console.error("임시 정보 백업 실패:", tempErr);
     }
 
     if (!channelKey) {
-      alert("[개발자 테스트 안내] V2 결제 채널 키가 지정되지 않아 모의 결제를 즉시 완료합니다.");
-      performUpgrade();
+      alert("결제 채널 키가 설정되지 않았습니다. 관리자에게 문의해주세요.");
       return;
     }
 
@@ -4085,7 +4091,7 @@ return val;
       PortOne.requestPayment({
         storeId,
         channelKey,
-        paymentId: `payment_${new Date().getTime()}`,
+        paymentId: explicitPaymentId,
         orderName: `${name}님 ${typeParam === "tojeong" ? "토정비결" : "신수비결"} ${grade === "premium" ? "고급" : "프리미엄"} 업그레이드`,
         totalAmount: amount,
         currency: "KRW",
@@ -4311,6 +4317,13 @@ return val;
         amount = 14900;
       }
 
+      const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "channel-key-3e4c1ebd-636a-40b5-9245-85163ebff861";
+
+      if (!channelKey) {
+        alert("결제 채널 키가 설정되지 않았습니다. 관리자에게 문의해주세요.");
+        return;
+      }
+
       // 결제요청 직전에 사용자 정보를 임시 저장 (모바일 리다이렉트 유실 대비)
       try {
         const tempUpgradeInfo = {
@@ -4337,6 +4350,9 @@ return val;
           targetGrade: currentGrade,
           amount: amount
         };
+        // 결제 식별자(paymentId) 사전 발급 및 주문-결제 명시적 1:1 연결
+        const explicitPaymentId = `pay_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+        tempUpgradeInfo.paymentId = explicitPaymentId;
         localStorage.setItem("hyeandang_temp_upgrade_info", JSON.stringify(tempUpgradeInfo));
 
         // 결제 검증을 위한 로컬스토리지 orders 정보도 pending 상태로 선등록
@@ -4361,6 +4377,7 @@ return val;
         if (matchedIdx === -1) {
           const newOrderPending = {
             id: Math.floor(Math.random() * 9000) + 1000,
+            paymentId: explicitPaymentId,
             name: name,
             email: emailParam || "today_sms@hyeandang.com",
             phone: phoneParam || "010-0000-0000",
@@ -4398,7 +4415,7 @@ return val;
       PortOne.requestPayment({
         storeId,
         channelKey,
-        paymentId: `payment_${new Date().getTime()}`,
+        paymentId: explicitPaymentId,
         orderName: paymentTitle,
         totalAmount: amount,
         currency: "KRW",

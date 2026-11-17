@@ -108,10 +108,16 @@ model Order {
   birthMonth     Int?
   birthDay       Int?
   birthHour      String?
+
   calendarType   String?
   gender         String?
   worryText      String?
+  adminMemo      String?
+  paymentId      String?
+  transactionId  String?
 }
+
+
 
 // 6. 메시지 및 고객 문의 관리
 model Inquiry {

@@ -357,17 +357,17 @@ function InputFormContent() {
 
   const getActiveProductPrice = () => {
     const dbKey = getCurrentProductDbKey();
+    if (reportGrade === "free" || dbKey === "free_sample") {
+      if (dbProductsMap["free_sample"] && typeof dbProductsMap["free_sample"].price === "number") {
+        return dbProductsMap["free_sample"].price;
+      }
+      if (dbProductsMap["free"] && typeof dbProductsMap["free"].price === "number") {
+        return dbProductsMap["free"].price;
+      }
+      return 1900;
+    }
     if (dbProductsMap[dbKey] && typeof dbProductsMap[dbKey].price === "number") {
       return dbProductsMap[dbKey].price;
-    }
-    if (dbProductsMap["free_sample"] && typeof dbProductsMap["free_sample"].price === "number") {
-      return dbProductsMap["free_sample"].price;
-    }
-    if (dbProductsMap["free"] && typeof dbProductsMap["free"].price === "number") {
-      return dbProductsMap["free"].price;
-    }
-    if (reportGrade === "free" || dbKey === "free_sample") {
-      return 1000;
     }
     const base = productKey === "gunghap" 
       ? (gunghapType === "reunion" ? 19900 : 26900)
@@ -1105,11 +1105,8 @@ function InputFormContent() {
                     await fetch("/api/orders", {
                       method: "PUT",
                       headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        adminPassword: "artpani1234",
                         id: orderId,
                         emailStatus: newOrder.emailStatus
-                      })
                     });
                   } catch (e) {
                     console.error("주문 emailStatus API 업데이트 실패:", e);
@@ -1131,7 +1128,7 @@ function InputFormContent() {
   };
 
   // 결제 전 모바일 리다이렉트 대비용 대기 주문(ready) 생성 및 임시 저장
-  const savePendingOrder = async () => {
+  const savePendingOrder = async (explicitPaymentId) => {
     try {
       const now = new Date();
       const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -1145,6 +1142,7 @@ function InputFormContent() {
       
       const pendingOrder = {
         id: Math.floor(Math.random() * 9000) + 1000,
+        paymentId: explicitPaymentId || null,
         name: formData.name || "홍길동",
         email: formData.email || "today_sms@hyeandang.com",
         phone: formData.phone || "010-0000-0000",
@@ -1193,7 +1191,7 @@ function InputFormContent() {
       }
       localStorage.setItem("hyeandang_orders", JSON.stringify(currentOrders));
 
-      // 서버 API 전송 추가 (대기 주문 등록)
+      // 서버 API 전송 추가 (대기 주문 등록 시 명시적 paymentId 저장)
       try {
         await fetch("/api/orders", {
           method: "POST",
@@ -1210,26 +1208,24 @@ function InputFormContent() {
 
   // 실제 포트원 결제창 호출 및 처리 (V2 마이그레이션)
   const handlePortonePayment = async () => {
-    // 결제창 띄우기 직전, 대기 주문 정보를 로컬 스토리지에 미리 기록 (모바일 리다이렉트 대응)
-    await savePendingOrder();
-
-    const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "store-312155f8-f523-4067-a568-285c7bbec6e0";
-    const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "channel-key-3e4c1ebd-636a-40b5-9245-85163ebff861";
+    // 결제창 띄우기 직전, 대기 주문 정보를 로컬 스토리지 및 서버 DB에 미리 기록 (명시적 paymentId 발급)
+    const explicitPaymentId = `pay_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+    await savePendingOrder(explicitPaymentId);
 
     const finalPrice = getActiveProductPrice();
     const finalPriceWithDiscount = getDiscountedPrice(finalPrice);
 
     // 무료 (0원) 상품인 경우 결제창 없이 즉시 분석 진입
     if (finalPriceWithDiscount === 0) {
-      alert("🎁 선택하신 상품은 무료(0원) 이벤트 상품입니다. 결제창 호출 없이 즉시 사주 분석 및 보고서 생성을 시작합니다.");
       startAnalysis();
       return;
     }
 
-    // 채널 키가 환경변수로 제공되지 않은 임시 환경인 경우 모의 테스트로 분석 즉시 진입
+    const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "store-312155f8-f523-4067-a568-285c7bbec6e0";
+    const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || "channel-key-3e4c1ebd-636a-40b5-9245-85163ebff861";
+
     if (!channelKey) {
-      alert("[개발자 테스트 안내] V2 결제 채널 키가 지정되지 않아 모의 결제 성공 시뮬레이션을 즉시 실행합니다.\n\n확인을 누르시면 주문 정보가 관리자 페이지에 결제완료(paid) 상태로 즉시 등록되고 분석 화면으로 넘어갑니다.");
-      startAnalysis();
+      alert("결제 채널 키가 설정되지 않았습니다. 관리자에게 문의해주세요.");
       return;
     }
 
@@ -1255,7 +1251,7 @@ function InputFormContent() {
       const paymentData = {
         storeId,
         channelKey,
-        paymentId: `payment_${new Date().getTime()}`,
+        paymentId: explicitPaymentId,
         orderName: `${formData.name || "의뢰인"}님 ${orderTitleName}`,
         totalAmount: finalPriceWithDiscount,
         currency: "KRW",
